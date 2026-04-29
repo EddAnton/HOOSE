@@ -1,0 +1,137 @@
+<div class="sidebar-container">
+	<div class="sidebar">
+		<div class="header">
+			<div class="brand">
+				<span class="brand-icon"><i class="bx bx-building-house bx-sm"></i></span>
+				<span class="brand-title">{{ appData.appName }}</span>
+			</div>
+			<span class="version">{{ appData.appVersion }}</span>
+			<hr />
+		</div>
+		<div class="menu-options">
+			<div class="menu-option" *ngFor="let menuOption of menuOptions" routerLinkActive="active">
+				<div *ngIf="menuOption.path.startsWith('|')" class="menu-divider"><hr /></div>
+
+				<a *ngIf="menuOption.path.startsWith('/')" [routerLink]="[menuOption.path]">
+					<span *ngIf="menuOption.icon && menuOption.icon != ''" class="menu-option-icon"
+						><i ngClass="{{ menuOption.icon }} "></i
+					></span>
+					<span class="menu-option-title">{{ menuOption.titleMenu || menuOption.title }}</span>
+					<!-- <span *ngIf="menuOption.messageCount" class="menu-option-counter">{{ menuOption.messageCount }}</span> -->
+				</a>
+			</div>
+			<!-- Salir -->
+			<div class="menu-option">
+				<div class="menu-divider"><hr /></div>
+			</div>
+			<div class="menu-option">
+				<a style="cursor: pointer" (click)="onSalir()">
+					<span class="menu-option-icon"><i class="bi bi-box-arrow-left"></i></span>
+					<span class="menu-option-title">Salir</span>
+				</a>
+			</div>
+			<!-- <div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-building"></i></span>
+					<span class="menu-option-title">Condominios</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-building-house"></i></span>
+					<span class="menu-option-title">Edificios</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-house"></i></span>
+					<span class="menu-option-title">Unidades</span>
+				</a>
+			</div>
+			<div class="menu-option active">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-person-rolodex"></i></span>
+					<span class="menu-option-title">Colaboradores</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-user-detail"></i></span>
+					<span class="menu-option-title">Propietarios</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-person-video2"></i></span>
+					<span class="menu-option-title">Condóminos</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-envelope"></i></span>
+					<span class="menu-option-title">Avisos</span>
+					<span class="menu-option-counter">26</span>
+				</a>
+			</div> -->
+		</div>
+		<!-- <div class="menu-options">
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-dashboard"></i></span>
+					<span class="menu-option-title">Dashboard</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-building"></i></span>
+					<span class="menu-option-title">Condominios</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-building-house"></i></span>
+					<span class="menu-option-title">Edificios</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-house"></i></span>
+					<span class="menu-option-title">Unidades</span>
+				</a>
+			</div>
+			<div class="menu-option active">
+				<a href="#" class="">
+					<span class="menu-option-icon"><i class="bi bi-person-rolodex"></i></span>
+					<span class="menu-option-title">Colaboradores</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-user-detail"></i></span>
+					<span class="menu-option-title">Propietarios</span>
+				</a>
+			</div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-person-video2"></i></span>
+					<span class="menu-option-title">Condóminos</span>
+				</a>
+			</div>
+			<div class="menu-divider"><hr /></div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bx bxs-envelope"></i></span>
+					<span class="menu-option-title">Avisos</span>
+					<span class="menu-option-counter">26</span>
+				</a>
+			</div>
+		</div> -->
+		<!-- <div class="menu-divider"></div>
+			<div class="menu-option">
+				<a href="#">
+					<span class="menu-option-icon"><i class="bi bi-box-arrow-left"></i></span>
+					<span class="menu-option-title">Salir</span>
+				</a>
+			</div> -->
+	</div>
+</div>

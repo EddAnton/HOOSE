@@ -1,0 +1,40 @@
+.p-tooltip {
+	width: auto !important;
+	max-width: 400px !important;
+	height: auto !important;
+	display: inline-block !important;
+	z-index: 1059 !important;
+}
+.p-tooltip .p-content,
+.p-tooltip .p-tooltip-text {
+	width: auto !important;
+}
+/*  .p-tooltip .p-content {
+  box-shadow: 10px 10px 19px 0px rgba(0, 0, 0, 0.75);
+	-webkit-box-shadow: 10px 10px 19px 0px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 10px 10px 19px 0px rgba(0, 0, 0, 0.75);
+} */
+.p-tooltip .p-tooltip-text {
+	/* background-color: #336699fc !important;
+	color: #ffffff !important; */
+	white-space: pre-wrap !important;
+	overflow-wrap: break-word !important;
+}
+/* .p-tooltip.p-tooltip-right,
+.p-tooltip.p-tooltip-left,
+.p-tooltip.p-tooltip-top,
+.p-tooltip.p-tooltip-bottom {
+	background-color: #000;
+} */
+/* .p-tooltip.p-tooltip-right .p-tooltip-arrow {
+	border-right-color: #336699fc;
+}
+.p-tooltip.p-tooltip-left .p-tooltip-arrow {
+	border-left-color: #336699fc;
+}
+.p-tooltip.p-tooltip-top .p-tooltip-arrow {
+	border-top-color: #336699fc;
+}
+.p-tooltip.p-tooltip-bottom .p-tooltip-arrow {
+	border-bottom-color: #336699fc;
+} */

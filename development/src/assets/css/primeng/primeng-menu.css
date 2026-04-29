@@ -1,0 +1,12 @@
+.p-menu-align-right .p-menu-overlay {
+	right: 0 !important;
+	left: unset !important;
+}
+
+.p-splitbutton {
+	height: 23px !important;
+}
+.p-splitbutton .p-splitbutton-defaultbutton {
+	width: auto !important;
+	padding: 0 6px !important;
+}

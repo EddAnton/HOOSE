@@ -1,0 +1,1052 @@
+<!-- Tabla Convocatorias de Asambleas-->
+<div class="card shadow-sm">
+  <p-table #ptConvocatorias [responsive]="true" [value]="Convocatorias" [columns]="ConvocatoriasCols" [rowHover]="true"
+    [globalFilterFields]="ConvocatoriasFilter" [showCurrentPageReport]="true" [paginator]="Convocatorias.length > 0"
+    [rows]="50" dataKey="id_asamblea" styleClass="p-datatable-striped"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros">
+    <ng-template pTemplate="caption">
+      <div class="d-flex align-items-center p-1">
+        <div class="me-auto">
+          <!-- Botón Nuevo -->
+          <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised p-button-success ms-1"
+            pTooltip="Agregar asamblea" tooltipPosition="right" (click)="onConvocatoriaEditar()"></button>
+        </div>
+        <!-- Opciones Filtrado -->
+        <div class="ms-auto">
+          <!-- Botón Actualizar -->
+          <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
+            class="p-button-rounded p-button-text p-button-secondary me-2" pTooltip="Actualizar información"
+            tooltipPosition="right" (click)="onActualizarInformacion()"></button>
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input type="text" id="txtGlobalFilter" class="form-control ms-1 ps-4"
+              (input)="ptConvocatorias.filterGlobal($event.target.value, 'contains')" placeholder="Filtrar" />
+          </span>
+        </div>
+        <div>
+          <button pButton pRipple type="button" id="btnLimpiarFiltro" icon="pi pi-times"
+            class="p-button-rounded p-button-text p-button-danger ms-3" pTooltip="Limpiar filtro" tooltipPosition="left"
+            (click)="hlpPrimeNGTable.reset(ptConvocatorias)"></button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" class="text-center" [ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}">
+          {{ col.header ? col.header : '&nbsp;' }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-Convocatoria>
+      <tr>
+        <td class="text-md-end"><span
+            class="p-column-title">Fecha</span>{{ Convocatoria.fecha_hora | date : 'MMMM dd, yyyy' | uppercase }}<br />
+          {{ Convocatoria.fecha_hora | date : 'hh:mm aaa' | uppercase }}
+        </td>
+        <td class="text-md-center"><span class="p-column-title">Tipo</span>{{ Convocatoria.tipo_asamblea }}</td>
+        <td class="text-md-center"><span class="p-column-title">Lugar</span>{{ Convocatoria.lugar }}</td>
+        <td class="text-md-center"><span class="p-column-title">Emite</span>{{ Convocatoria.convocatoria_quien_emite }}
+        </td>
+        <!-- Botones -->
+        <td class="text-end">
+          <!-- Botones relacionados con el Acta -->
+          <!-- Botón Redactar acta -->
+          <button
+            *ngIf="Convocatoria.estatus == 1 && Convocatoria.convocatoria_vencida == 1 && Convocatoria.id_acta == 0"
+            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success me-1"
+            pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
+          <!-- Botón Detalles acta -->
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta  > 0" pButton type="button"
+            icon="pi pi-file-pdf" class="p-button-rounded p-button-text p-button-primary me-1"
+            pTooltip="Detalles del acta" tooltipPosition="left" (click)="onActaDetalles(Convocatoria.id_acta)"></button>
+          <!-- Botón Eliminar acta -->
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta > 0" pButton type="button" icon="pi pi-trash"
+            class="p-button-rounded p-button-text p-button-danger me-1" pTooltip="Eliminar acta" tooltipPosition="left"
+            (click)="onActaEliminar(Convocatoria.id_acta)"></button>
+          <br>
+
+          <!-- Botones relacionados con la Convocatoria -->
+          <!-- Botón Editar convocatoria-->
+          <button
+            *ngIf="Convocatoria.estatus == 1 && Convocatoria.convocatoria_vencida == 0 && Convocatoria.id_acta == 0"
+            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success me-1"
+            pTooltip="Editar convocatoria" tooltipPosition="left"
+            (click)="onConvocatoriaEditar(Convocatoria.id_asamblea)"></button>
+          <!-- Botón Detalle convocatoria -->
+          <button pButton type="button" icon="pi pi-file-pdf"
+            class="p-button-rounded p-button-text p-button-primary me-1" pTooltip="Detalles de la convocatoria"
+            tooltipPosition="left" (click)="onConvocatoriaDetalles(Convocatoria.id_asamblea)"></button>
+          <!-- Botón Eliminar convocatoria -->
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta == 0" pButton type="button"
+            icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger me-1"
+            pTooltip="Eliminar convocatoria" tooltipPosition="left"
+            (click)="onConvocatoriaEliminar(Convocatoria.id_asamblea)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="no-records">
+        <td>Sin registros.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Diálogo de inserción/edición acta -->
+<!-- (onShow)="onMostrarEdicionActa()" -->
+<p-dialog #dlgActa [(visible)]="mostrarDialogoEdicionActa" [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
+  [style]="{ width: '80vw' }" [modal]="true" [closable]="false" position="top"
+  header="Detalles de la Acta {{ Acta && Acta.id_acta == 0 ? ' Nueva' : '' }}" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmActa" class="mt-1" [formGroup]="frmActa" autocomplete="off">
+
+      <!-- Apertura -->
+      <p-fieldset legend="Apertura del acta" [toggleable]="true" styleClass="mt-2">
+        <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
+          [modules]="ModulosEditorDescripcion">
+          <p-header>
+            <span class="ql-formats">
+              <select class="ql-header" tabindex="-1">
+                <option value="1" tabindex="-1">Título</option>
+                <option value="2" tabindex="-1">Subtítulo</option>
+                <option selected tabindex="-1">Normal</option>
+              </select>
+              <select class="ql-font" tabindex="-1">
+                <option selected tabindex="-1">Sans Serif</option>
+                <option value="serif" tabindex="-1">Serif</option>
+                <option value="monospace" tabindex="-1">Monospace</option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+              <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+              <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+              <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+              <select class="ql-align" tabindex="-1">
+                <option selected tabindex="-1"></option>
+                <option value="center" tabindex="-1"></option>
+                <option value="right" tabindex="-1"></option>
+                <option value="justify" tabindex="-1"></option>
+              </select>
+            </span>
+          </p-header>
+        </p-editor>
+      </p-fieldset>
+      <!-- <div class="row py-1">
+        <div class="col-12">
+          <span><b>Apertura del acta</b></span>
+          <div class="col-12 ms-2">
+            <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
+              [modules]="ModulosEditorDescripcion">
+              <p-header>
+                <span class="ql-formats">
+                  <select class="ql-header" tabindex="-1">
+                    <option value="1" tabindex="-1">Título</option>
+                    <option value="2" tabindex="-1">Subtítulo</option>
+                    <option selected tabindex="-1">Normal</option>
+                  </select>
+                  <select class="ql-font" tabindex="-1">
+                    <option selected tabindex="-1">Sans Serif</option>
+                    <option value="serif" tabindex="-1">Serif</option>
+                    <option value="monospace" tabindex="-1">Monospace</option>
+                  </select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                  <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                  <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                  <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                  <select class="ql-align" tabindex="-1">
+                    <option selected tabindex="-1"></option>
+                    <option value="center" tabindex="-1"></option>
+                    <option value="right" tabindex="-1"></option>
+                    <option value="justify" tabindex="-1"></option>
+                  </select>
+                </span>
+              </p-header>
+            </p-editor>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Pase de lista -->
+      <!-- <p-divider></p-divider> -->
+      <p-fieldset legend="Pase de lista" [toggleable]="true" styleClass="mt-2">
+        <p-table #ptPaseLista [value]="actaPaseLista.controls" [columns]="PaseListaCols" [responsive]="true"
+          [rowHover]="true" dataKey="id_unidad" styleClass="p-datatable-striped">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <!-- <th *ngIf="!frmActa.disabled" style="width: 3rem;"></th> -->
+              <th *ngFor="let col of columns" class="text-center"
+                [ngStyle]="{width: col.width ? col.width : 'inherit'}">
+                {{ col.header ? col.header : '&nbsp;' }}
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" formArrayName="actaPaseLista" let-pase let-i="rowIndex">
+            <tr [formGroupName]="i">
+              <td><span class="p-column-title">Unidad</span>{{ pase.get('unidad').value }}
+              </td>
+              <td><span class="p-column-title">Nombre</span>
+                <div *ngIf="pase.get('total_usuarios').value == 1; else variosUsuariosUnidad" class="ps-2">
+                  {{ pase.get('usuarios').value[0].usuario }} - {{ pase.get('usuarios').value[0].perfil_usuario }}
+                </div>
+                <ng-template #variosUsuariosUnidad>
+                  <select id="{{'paseListaUsuario-' + pase.get('id_unidad').value}}" class="form-select" (change)="onPaseListaUsuarioChange(+$event.target.selectedOptions[0].dataset.value,
+                      $event.target.value,
+                      pase.get('id_unidad').value)">
+                    <option [ngValue]="null" [attr.data-value]="0" [selected]="pase.get('id_usuario').value == 0">
+                      SELECCIONA QUIEN ASISTE</option>
+                    <option *ngFor="let usuario of pase.get('usuarios').value | keyvalue"
+                      [attr.data-value]="usuario.value.id_usuario" [ngValue]="usuario.value"
+                      [selected]="pase.get('id_usuario').value == usuario.value.id_usuario">
+                      {{ usuario.value.usuario }} - {{ usuario.value.perfil_usuario }}
+                    </option>
+                  </select>
+                </ng-template>
+              </td>
+
+              <td class="text-center">
+                <p-inputSwitch formControlName="asistencia"
+                  id="{{'paseListaUsuarioAsistencia-' + pase.get('id_unidad').value}}"
+                  (onChange)="onPaseListaAsistenciaChange($event, pase.controls)"></p-inputSwitch>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-fieldset>
+      <!--       <p-divider></p-divider>
+      <div class="row py-1">
+        <div class="col-12 pt-2">
+          <span><b>Pase de lista</b></span>
+          <div class="card ms-2">
+            <p-table #ptPaseLista [value]="actaPaseLista.controls" [columns]="PaseListaCols" [responsive]="true"
+              [rowHover]="true" dataKey="id_usuario" styleClass="p-datatable-striped">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns" class="text-center" [ngStyle]="{width: col.width ? col.width : 'inherit'}">
+                    {{ col.header ? col.header : '&nbsp;' }}
+                  </th>
+                </tr>
+              </ng-template>
+      
+              <ng-template pTemplate="body" formArrayName="paseLista" let-pase let-i="rowIndex">
+                <tr [formGroupName]="i">
+                  <td><span class="p-column-title">Nombre</span>{{ pase.get('usuario').value }}</td>
+                  <td><span class="p-column-title">Perfil</span>{{ pase.get('perfil').value }}</td>
+                  <td class="text-center">
+                    <p-inputSwitch formControlName="asistencia" name="paseListaAsistencia"></p-inputSwitch>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Puntos del Orden del día -->
+      <!-- <p-divider></p-divider> -->
+      <p-fieldset legend="Orden del día{{ !bExisteQuorum ? ' - SIN QUORUM' : ''}}" [toggleable]="bExisteQuorum"
+        [collapsed]="!bExisteQuorum" styleClass="mt-2">
+        <p-tabView styleClass="pt-1">
+          <p-tabPanel header="Punto {{ idxPunto + 1 }}" [disabled]="!bExisteQuorum"
+            *ngFor="let punto of actaOrdenDia.controls; let idxPunto = index" [selected]="idxPunto == 0">
+            <!-- Título punto -->
+            <div class="row py-1">
+              <div class="col-12">
+                <div class="fs-5">{{ idxPunto + 1 }}. <span
+                    class="border-bottom fw-bold fs-5">{{punto.get('orden_dia').value}}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Apertura del orden del día -->
+            <div class="row py-1">
+              <div class="col-12">
+                <span *ngIf="punto.get('requiere_votacion').value == true" class="pt-3"><b>Apertura del
+                    punto</b></span>
+                <div class="col-12 ms-2">
+                  <p-editor id="{{'ordenDiaApertura' + idxPunto}}" [style]="{ height: '150px' }"
+                    [formControl]="punto.get('apertura')" [modules]="ModulosEditorDescripcion">
+                    <p-header>
+                      <span class="ql-formats">
+                        <select class="ql-header" tabindex="-1">
+                          <option value="1" tabindex="-1">Título</option>
+                          <option value="2" tabindex="-1">Subtítulo</option>
+                          <option selected tabindex="-1">Normal</option>
+                        </select>
+                        <select class="ql-font" tabindex="-1">
+                          <option selected tabindex="-1">Sans Serif</option>
+                          <option value="serif" tabindex="-1">Serif</option>
+                          <option value="monospace" tabindex="-1">Monospace</option>
+                        </select>
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                        <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                        <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                        <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                        <select class="ql-align" tabindex="-1">
+                          <option selected tabindex="-1"></option>
+                          <option value="center" tabindex="-1"></option>
+                          <option value="right" tabindex="-1"></option>
+                          <option value="justify" tabindex="-1"></option>
+                        </select>
+                      </span>
+                    </p-header>
+                  </p-editor>
+                </div>
+              </div>
+            </div>
+
+            <!-- Votación del orden del día -->
+            <div *ngIf="punto.get('requiere_votacion').value == true" class="row py-1">
+              <div class="col-12">
+                <span class="pt-3"><b>Votación sobre el punto</b></span><br>
+                <div id="logVotacion{{ punto.get('id_asamblea_orden_dia').value }}"></div>
+                <div class="card ms-2 col-12">
+                  <p-table #ptVotacionPuntoOrdenDia [value]="punto.get('votacion').controls"
+                    [columns]="VotacionPuntoOrdenDiaCols" [responsive]="true" [rowHover]="true" dataKey="id_unidad"
+                    styleClass="p-datatable-striped">
+                    <ng-template pTemplate="header" let-columns>
+                      <tr>
+                        <th *ngFor="let col of columns" class="text-center"
+                          [ngStyle]="{width: col.width ? col.width : 'inherit'}">
+                          {{ col.header ? col.header : '&nbsp;' }}
+                        </th>
+                      </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-votacion let-idxVotacion="rowIndex">
+                      <tr>
+                        <!-- <td colspan="3">{{votacion | json}}</td> -->
+                        <td><span class="p-column-title">Unidad</span>{{ votacion.get('unidad').value }}</td>
+                        <td><span class="p-column-title">Nombre</span>{{ votacion.get('usuario').value }}</td>
+                        <td class="text-center">
+                          <select [formControl]="votacion.get('id_sentido_votacion')" class="form-select">
+                            <option *ngFor="let sentidoVotacion of catSentidoVotacion" [ngValue]="sentidoVotacion.id">
+                              {{ sentidoVotacion.sentido_votacion }}
+                            </option>
+                          </select>
+                          <!-- <select id="{{'votacionP' + votacion.id_asamblea_orden_dia + 'I' + votacion.id_unidad}}"
+                            class="form-select"
+                            (change)="onSentidoVotacionChange($event.target.selectedIndex, votacion)">
+                            <option *ngFor="let sentidoVotacion of catSentidoVotacion"
+                              [ngValue]="sentidoVotacion.id_sentido_votacion">
+                              {{ sentidoVotacion.sentido_votacion }}
+                            </option>
+                          </select> -->
+                        </td>
+                      </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="footer" let-columns>
+                      <tr>
+                        <td [colSpan]="columns.length" class="text-end">
+                          <span
+                            *ngFor="let sentidoVotacion of getTotalesVotacionPuntoOrdenDia(punto.get('id_asamblea_orden_dia').value); let i = index">
+                            {{sentidoVotacion.sentido_votacion}}: {{sentidoVotacion.total}}<span
+                              *ngIf="i + 1 < catSentidoVotacion.length"> |</span></span>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cierre del orden del día -->
+            <div *ngIf="punto.get('requiere_votacion').value == true" class="row py-1">
+              <div class="col-12">
+                <span class="pt-3"><b>Cierre del punto</b></span>
+                <div class="col-12 ms-2">
+                  <p-editor id="{{'ordenDiaCierre' + idxPunto}}" [style]="{ height: '150px' }"
+                    [formControl]="punto.get('cierre')" [modules]="ModulosEditorDescripcion">
+                    <p-header>
+                      <span class="ql-formats">
+                        <select class="ql-header" tabindex="-1">
+                          <option value="1" tabindex="-1">Título</option>
+                          <option value="2" tabindex="-1">Subtítulo</option>
+                          <option selected tabindex="-1">Normal</option>
+                        </select>
+                        <select class="ql-font" tabindex="-1">
+                          <option selected tabindex="-1">Sans Serif</option>
+                          <option value="serif" tabindex="-1">Serif</option>
+                          <option value="monospace" tabindex="-1">Monospace</option>
+                        </select>
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                        <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                        <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                      </span>
+                      <span class="ql-formats">
+                        <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                        <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                        <select class="ql-align" tabindex="-1">
+                          <option selected tabindex="-1"></option>
+                          <option value="center" tabindex="-1"></option>
+                          <option value="right" tabindex="-1"></option>
+                          <option value="justify" tabindex="-1"></option>
+                        </select>
+                      </span>
+                    </p-header>
+                  </p-editor>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+      </p-fieldset>
+
+      <!-- Cierre -->
+      <!-- <p-divider></p-divider> -->
+      <p-fieldset legend="Cierre del acta" [toggleable]="true" styleClass="mt-2">
+        <p-editor #convocatoriaCierre formControlName="cierre" [style]="{ height: '150px' }"
+          [modules]="ModulosEditorDescripcion">
+          <p-header>
+            <span class="ql-formats">
+              <select class="ql-header" tabindex="-1">
+                <option value="1" tabindex="-1">Título</option>
+                <option value="2" tabindex="-1">Subtítulo</option>
+                <option selected tabindex="-1">Normal</option>
+              </select>
+              <select class="ql-font" tabindex="-1">
+                <option selected tabindex="-1">Sans Serif</option>
+                <option value="serif" tabindex="-1">Serif</option>
+                <option value="monospace" tabindex="-1">Monospace</option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+              <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+              <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+              <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+              <select class="ql-align" tabindex="-1">
+                <option selected tabindex="-1"></option>
+                <option value="center" tabindex="-1"></option>
+                <option value="right" tabindex="-1"></option>
+                <option value="justify" tabindex="-1"></option>
+              </select>
+            </span>
+          </p-header>
+        </p-editor>
+
+        <p-divider></p-divider>
+        <div class="row ps-2 pe-2 pb-3">
+          <!-- Fecha y hora -->
+          <div class="col-12 col-md-2">
+            <label for="txtFechaHora">Fecha y hora</label>
+            <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy" showTime="true"
+              [appendTo]="dlgActa" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaActa"
+              inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
+          </div>
+
+          <!-- Lugar -->
+          <div class="col-12 col-md-4">
+            <label for="txtLugar">Lugar</label>
+            <input type="text" pInputText id="txtLugar" formControlName="lugar" class="uppercase"
+              (focus)="hlpApp.selectAllContent($event)" />
+          </div>
+          <!-- Quien emite -->
+          <div class="col-12 col-md-6">
+            <label for="txtQuienEmite">¿Quién emite?</label>
+            <input type="text" pInputText id="txtQuienEmite" formControlName="quien_emite" class="uppercase"
+              (focus)="hlpApp.selectAllContent($event)" />
+          </div>
+          <!-- Finalizada -->
+          <!-- <div class="col-12 col-md-2 align-self-end">
+            <div class="d-flex flex-row-reverse align-items-center me-2">
+              <label for="actaFinalizada" class="ps-3">Finalizada</label>
+              <p-inputSwitch inputId="chkFinalizada" name="actaFinalizada" (onChange)="onFinalizarActaChange($event)"
+                [disabled]="!frmActa.valid || votosPendientes.value"
+                pTooltip="Una vez finalizada el acta no será posible su edición" tooltipPosition="top"></p-inputSwitch>
+            </div>
+          </div> -->
+        </div>
+      </p-fieldset>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Guardar -->
+    <!-- || existenVotosPendientes() -->
+    <button pButton type="button" label="Guardar" icon="pi pi-save" class="p-button-raised p-button-info me-sm-1"
+      [disabled]="!frmActa.valid" pTooltip="Almacenar la información" tooltipPosition="top"
+      (click)="onActaGuardar()"></button>
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2"
+      pTooltip="Cancelar el proceso" tooltipPosition="top" (click)="onActaCancelar()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo de inserción/edición convocatoria -->
+<p-dialog #dlgConvocatoria [(visible)]="mostrarDialogoConvocatoria" [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
+  [style]="{ width: '80vw' }" [modal]="true" [closable]="false"
+  header="Detalles de la Convocatoria {{ Convocatoria && Convocatoria.id_asamblea == 0 ? ' Nueva' : '' }}"
+  styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmConvocatoria" class="mt-1" [formGroup]="frmConvocatoria" autocomplete="off">
+
+      <div class="row py-1">
+        <!-- Tipo asamblea -->
+        <div class="col-12 col-md-3 form-label-group">
+          <label for="cmbTipoAsamblea">Tipo de Asamblea</label>
+          <select #cmbTipoAsamblea id="cmbTipoAsamblea" formControlName="id_tipo_asamblea" class="form-select">
+            <option [value]="0" disabled selected>Selecciona una opción...</option>
+            <option *ngFor="let tipoAsamblea of TiposAsambleas" [value]="tipoAsamblea.id_tipo_asamblea">
+              {{ tipoAsamblea.tipo_asamblea }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Fecha y hora -->
+        <div class="col-12 col-md-3">
+          <label for="txtFechaHora">Fecha y hora asamblea</label>
+          <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy" showTime="true"
+            [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaAsamblea"
+            inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
+        </div>
+
+        <!-- Lugar -->
+        <div class="col-12 col-md-6">
+          <label for="txtLugar">Lugar celebración</label>
+          <input type="text" pInputText id="txtLugar" formControlName="lugar" class="uppercase" autofocus
+            (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+      </div>
+
+      <!-- Fundamento legal -->
+      <!-- Orden del día -->
+      <!-- Convocatoria cierre -->
+      <div class="row py-1">
+        <!-- Fundamento legal -->
+        <div class="col-12">
+          <span><b>Fundamento legal</b></span>
+          <div class="col-12">
+            <ng-container *ngIf="!frmConvocatoria.disabled; then templateFundamentoLegal; else elseFundamentoLegal">
+
+            </ng-container>
+            <ng-template #templateFundamentoLegal>
+              <p-editor #fundamentoLegal formControlName="fundamento_legal" [style]="{ height: '150px' }"
+                [modules]="ModulosEditorDescripcion">
+                <p-header>
+                  <span class="ql-formats">
+                    <select class="ql-header" tabindex="-1">
+                      <option value="1" tabindex="-1">Título</option>
+                      <option value="2" tabindex="-1">Subtítulo</option>
+                      <option selected tabindex="-1">Normal</option>
+                    </select>
+                    <select class="ql-font" tabindex="-1">
+                      <option selected tabindex="-1">Sans Serif</option>
+                      <option value="serif" tabindex="-1">Serif</option>
+                      <option value="monospace" tabindex="-1">Monospace</option>
+                    </select>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                    <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                    <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                    <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                    <select class="ql-align" tabindex="-1">
+                      <option selected tabindex="-1"></option>
+                      <option value="center" tabindex="-1"></option>
+                      <option value="right" tabindex="-1"></option>
+                      <option value="justify" tabindex="-1"></option>
+                    </select>
+                  </span>
+                </p-header>
+              </p-editor>
+            </ng-template>
+            <ng-template #elseFundamentoLegal>
+              <div class="card p-2" [innerHtml]="frmConvocatoria.get('fundamento_legal').value"></div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Orden del día -->
+        <div class="col-12 pt-2">
+          <span><b>Orden del día</b></span>
+          <div class="card">
+            <p-table #ptOrdenesDelDia [value]="OrdenesDelDia" [columns]="OrdenesDelDiaCols" [responsive]="true"
+              [rowHover]="true" dataKey="id_asamblea_orden_dia" styleClass="p-datatable-striped">
+              <ng-template pTemplate="caption">
+                <div *ngIf="!frmConvocatoria.disabled" class="d-flex p-1">
+                  <div class="ms-auto">
+                    <!-- Botón Nuevo -->
+                    <button pButton type="button" icon="pi pi-plus"
+                      class="p-button-rounded p-button-raised p-button-success me-1" pTooltip="Agregar orden del día"
+                      tooltipPosition="right" (click)="onOrdenDelDiaEditar()"></button>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngIf="!frmConvocatoria.disabled" style="width: 3rem;"></th>
+                  <th *ngFor="let col of columns" class="text-center"
+                    [ngStyle]="{width: col.width ? col.width : 'inherit'}">
+                    {{ col.header ? col.header : '&nbsp;' }}
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-OrdenDelDia let-i="rowIndex">
+                <tr [pReorderableRow]="i">
+                  <td *ngIf="!frmConvocatoria.disabled">
+                    <span class="pi pi-bars" pReorderableRowHandle></span>
+                  </td>
+                  <td><span class="p-column-title">Descripción</span>{{ OrdenDelDia.orden_dia }}</td>
+                  <!-- <td><span class="p-column-title">Descripción</span><span
+                        pReorderableRowHandle>{{ OrdenDelDia.orden_dia }}</span></td> -->
+                  <td class="text-center">
+                    <span class="p-column-title"><b>Requiere votación</b></span>
+                    {{ OrdenDelDia.requiere_votacion ? 'SI' : 'NO'}}
+                  </td>
+                  <!-- Botones -->
+                  <td class="text-end">
+                    <!-- Botón Editar -->
+                    <button pButton type="button" *ngIf="!frmConvocatoria.disabled" icon="pi pi-pencil"
+                      class="p-button-rounded p-button-text p-button-success me-1" pTooltip="Editar"
+                      tooltipPosition="left" (click)="onOrdenDelDiaEditar(OrdenDelDia)"></button>
+                    <!-- Botón Eliminar -->
+                    <button pButton type="button" *ngIf="!frmConvocatoria.disabled" icon="pi pi-trash"
+                      class="p-button-rounded p-button-text p-button-danger me-1" pTooltip="Eliminar"
+                      tooltipPosition="left"
+                      (click)="onOrdenDelDiaEliminar(OrdenDelDia.id_asamblea_orden_dia)"></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+
+        <!-- Convocatoria cierre -->
+        <div class="col-12 pt-2">
+          <span><b>Cierre convocatoria</b></span>
+          <div class="col-12">
+            <ng-container
+              *ngIf="!frmConvocatoria.disabled; then templateCierreConvocatoria; else elseCierreConvocatoria">
+            </ng-container>
+            <ng-template #templateCierreConvocatoria>
+              <p-editor #convocatoriaCierre formControlName="convocatoria_cierre" [style]="{ height: '150px' }"
+                [modules]="ModulosEditorDescripcion">
+                <p-header>
+                  <span class="ql-formats">
+                    <select class="ql-header" tabindex="-1">
+                      <option value="1" tabindex="-1">Título</option>
+                      <option value="2" tabindex="-1">Subtítulo</option>
+                      <option selected tabindex="-1">Normal</option>
+                    </select>
+                    <select class="ql-font" tabindex="-1">
+                      <option selected tabindex="-1">Sans Serif</option>
+                      <option value="serif" tabindex="-1">Serif</option>
+                      <option value="monospace" tabindex="-1">Monospace</option>
+                    </select>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                    <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                    <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                    <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                    <select class="ql-align" tabindex="-1">
+                      <option selected tabindex="-1"></option>
+                      <option value="center" tabindex="-1"></option>
+                      <option value="right" tabindex="-1"></option>
+                      <option value="justify" tabindex="-1"></option>
+                    </select>
+                  </span>
+                </p-header>
+              </p-editor>
+            </ng-template>
+            <ng-template #elseCierreConvocatoria>
+              <div class="card p-2" [innerHtml]="frmConvocatoria.get('convocatoria_cierre').value"></div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Convocatoria fecha -->
+      <!-- Convocatoria ciudad -->
+      <!-- Convocatoria quien emite -->
+      <div class="row py-1">
+        <!-- Convocatoria fecha -->
+        <div class="col-12 col-sm-4 col-md-3 pt-2">
+          <label for="txtConvocatoriaFecha">Fecha convocatoria</label>
+          <p-calendar inputId="txtConvocatoriaFecha" formControlName="convocatoria_fecha" dateFormat="dd-MM-yy"
+            [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaConvocatoria"
+            inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
+        </div>
+
+        <!-- Convocatoria ciudad -->
+        <div class="col-12 col-sm-4 col-md-4 pt-2">
+          <label for="txtConvocatoriaCiudad">Ciudad convocatoria</label>
+          <input pInputText type="text" id="txtConvocatoriaCiudad" formControlName="convocatoria_ciudad"
+            class="uppercase" (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+
+        <!-- Convocatoria quien emite -->
+        <div class="col-12 col-sm-4 col-md-5 pt-2">
+          <label for="txtConvocatoriaQuienEmite">¿Quién convoca?</label>
+          <input pInputText type="text" id="txtConvocatoriaQuienEmite" formControlName="convocatoria_quien_emite"
+            class="uppercase" (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Guardar -->
+    <button pButton type="button" *ngIf="!frmConvocatoria.disabled" label="Guardar" icon="pi pi-save"
+      class="p-button-raised p-button-info me-sm-1" pTooltip="Almacenar la información" tooltipPosition="top"
+      [disabled]="!frmConvocatoria.valid" (click)="onConvocatoriaGuardar()"></button>
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="{{ !frmConvocatoria.valid ? 'Cancelar' : 'Regresar'}}" icon="pi pi-times"
+      class="p-button-raised p-button-warning ml-2" pTooltip="Cancelar el proceso" tooltipPosition="top"
+      (click)="onConvocatoriaCancelar()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo para la adición/edición del orden del día -->
+<p-dialog #dlgOrdenDia [(visible)]="mostrarDialogoOrdenDelDia" [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
+  [style]="{ width: '50vw' }" [modal]="true" [closable]="false"
+  header="{{ OrdenDelDia && OrdenDelDia.id_asamblea_orden_dia == 0 ? ' Agregando' : 'Editando' }} orden del día"
+  styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmOrdenDelDia" [formGroup]="frmOrdenDelDia" autocomplete="off">
+      <div class="row pt-4">
+        <!-- Descripción -->
+        <div class="col-12 col-md-9">
+          <label for="OrdenDelDiaDescripcion">Descripción</label>
+          <input pInputText type="text" id="OrdenDelDiaDescripcion" formControlName="orden_dia" class="uppercase"
+            autofocus (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+        <!--       </div>
+      <div class="row pt-4"> -->
+        <!-- Requiere votación -->
+        <div class="col-12 col-md-3 align-self-end">
+          <div class="d-flex align-items-center me-1">
+            <label for="OrdenDelDiaRequiereVotacion" class="me-1">Requiere votación</label>
+            <span class="align-self-center"><p-inputSwitch formControlName="requiere_votacion"
+                name="OrdenDelDiaRequiereVotacion"></p-inputSwitch></span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Aceptar -->
+    <button pButton type="button" label="Aceptar" class="p-button-raised p-button-info me-sm-1"
+      pTooltip="Actualizar orden del día" tooltipPosition="top" (click)="onGuardarOrdenDelDia()"></button>
+
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="Cancelar" class="p-button-raised p-button-warning ml-2" pTooltip="Cancelar"
+      tooltipPosition="top" (click)="onCancelarEdicionOrdenDelDia()"></button>
+
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo Emision del acta -->
+<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '50vw' }"
+  [(visible)]="mostrarDialogoEmisionActa" modal="true" dismissableMask="true" header="Acta de asamblea">
+  <ng-template pTemplate="content">
+    <div class="d-print-none" style="position: absolute; top: 70px; right: 50px">
+      <div class="row">
+        <div class="col-auto pt-2 ms-auto no-print">
+          <button pButton type="button" icon="pi pi-print" class="p-button-raised p-button-rounded p-button-primary"
+            pTooltip="Imprimir" tooltipPosition="left" (click)="hlpApp.imprimirElemento('acta')"></button>
+        </div>
+      </div>
+    </div>
+    <div id="acta" class="container pt-4">
+      <!-- Encabezado -->
+      <div class="row pt-4">
+        <!-- Impresión -->
+        <div class="col-12 text-center d-none d-print-block">
+          <p class="pb-3">ACTA DE ASAMBLEA</p>
+        </div>
+        <!-- Nombre del Condominio -->
+        <!-- Pantalla -->
+        <div class="col-12 col-sm-7 text-center text-sm-start d-print-none">
+          <p class="display-6 m-0">{{ Acta.condominio }}</p>
+        </div>
+        <!-- Impresión -->
+        <div class="col-7 d-none d-print-block">
+          <p class="display-6 m-0">{{ Acta.condominio }}</p>
+        </div>
+        <!-- Fin. Nombre del Condominio -->
+      </div>
+
+      <div class="row pt-3">
+        <!-- Datos del Condominio -->
+        <!-- Pantalla -->
+        <div class="col-12 col-sm-6 text-center text-sm-start d-print-none">
+          <p class="carriage-return m-0">{{ Acta.domicilio }}</p>
+          <p *ngIf="Acta.telefono" class="m-0">
+            Teléfono: {{ Acta.telefono | phoneFormat }}
+          </p>
+          <p *ngIf="Acta.email" class="m-0">Email: {{ Acta.email }}</p>
+        </div>
+        <!-- Impresión -->
+        <div class="col-6 text-start d-none d-print-block">
+          <p class="carriage-return m-0">{{ Acta.domicilio }}</p>
+          <p *ngIf="Acta.telefono" class="m-0">
+            Teléfono: {{ Acta.telefono | phoneFormat }}
+          </p>
+          <p *ngIf="Acta.email" class="m-0">Email: {{ Acta.email }}</p>
+        </div>
+        <!-- Fin. Datos del Condominio -->
+
+        <!-- Lugar y fecha del acta -->
+        <!-- Pantalla -->
+        <div class="col-12 col-sm-6 pt-3 pt-sm-0 text-center text-sm-end d-print-none">
+          <p class="m-0"><b>Lugar y fecha</b></p>
+          <p class="m-0">{{ Acta.lugar }}</p>
+          <p class="m-0">
+            {{ Acta.fecha_hora | date : "dd 'de' MMMM 'de' yyyy, HH:mm a" | uppercase }}
+          </p>
+        </div>
+        <!-- Impresión -->
+        <div class="col-6 pt-0 text-end d-none d-print-block">
+          <p class="m-0"><b>Lugar y fecha</b></p>
+          <p class="m-0">{{ Acta.lugar }}</p>
+          <p class="m-0">
+            {{ Acta.fecha_hora | date : "dd 'de' MMMM 'de' yyyy, HH:mm a" | uppercase }}
+          </p>
+        </div>
+        <!-- Fin. Lugar y fecha del acta -->
+      </div>
+
+      <!-- Apertura acta -->
+      <div class="row pt-3">
+        <div class="col-12 text-white bg-secondary py-1">
+          <div class="flex-fill">
+            <b>Apertura</b>
+          </div>
+        </div>
+        <div class="col-12 p-0">
+          <div class="border border-top-0 rounded-bottom p-2" [innerHtml]="Acta.apertura"></div>
+        </div>
+      </div>
+      <!-- Fin. Apertura acta -->
+
+      <!-- Pase lista -->
+      <div class="row pt-3">
+        <!-- Encabezado Pase lista -->
+        <div class="col-12 d-flex text-white bg-secondary border-bottom py-1">
+          <div class="flex-fill">
+            <b>Pase de lista</b>
+          </div>
+          <div class="rounded px-2">
+            <p-tag severity="{{Acta.pase_lista.length + 1 > Acta.total_unidades / 2 ? 'success' : 'danger'}}"
+              value=" {{ Acta.pase_lista.length }} asistente(s) de {{ Acta.total_unidades}} "></p-tag>
+          </div>
+        </div>
+        <!-- Fin. Encabezado Pase lista -->
+        <!-- Tabla asistentes -->
+        <div class="col-12 mt-1 p-0">
+          <table class="table table-striped table-hover mb-0">
+            <thead>
+              <tr>
+                <th class="text-center py-0">#</th>
+                <th class="text-center py-0">Unidad</th>
+                <th class="text-center py-0">Asistió</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let asistente of Acta.pase_lista; let i = index" class="border h-auto">
+                <td class="text-end py-0">{{ i + 1 }}</td>
+                <td class="py-0">{{ asistente.unidad }}</td>
+                <td class="py-0">{{ asistente.usuario }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Fin. Tabla asistentes -->
+      </div>
+      <!-- Fin. Pase lista -->
+
+      <!-- Orden del día -->
+      <div class="row pt-3" *ngIf="Acta.pase_lista.length + 1 > Acta.total_unidades / 2">
+        <!-- Encabezado Orden del día -->
+        <div class="col-12 text-white bg-secondary py-1">
+          <div class="flex-fill">
+            <b>Orden del día</b>
+          </div>
+        </div>
+        <!-- Mostrar los puntos del Orden del día -->
+        <div class="col-12 pb-1" *ngFor="let punto of Acta.orden_dia; let idxPunto = index">
+          <!-- Punto del orden del día -->
+          <!-- Título del punto -->
+          <div class="row">
+            <div class="col-12">
+              <div class="fs-4">{{ idxPunto + 1 }}. <span class="fw-bold fs-5">{{punto.orden_dia}}</span>
+              </div>
+            </div>
+            <div class="col-12">
+              <!-- Fin. Título del punto -->
+              <div class="row m-1 ps-1 mb-4">
+                <!-- Apertura del punto -->
+                <div class="col-12" *ngIf="punto.apertura">
+                  <!-- <p-divider styleClass="my-0"><b>Apertura del punto</b></p-divider> -->
+                  <div class="ps-2" [innerHtml]="punto.apertura"></div>
+                </div>
+                <!-- Fin. Apertura del punto -->
+                <!-- Tabla votación del punto -->
+                <div class="col-12" *ngIf="punto.votaciones.length > 0">
+                  <p-divider styleClass="my-0"><b>Votación del punto</b></p-divider>
+                  <table class="table table-striped table-hover mb-0 ms-2">
+                    <thead>
+                      <tr>
+                        <th class="text-center py-0">#</th>
+                        <th class="text-center py-0">Unidad</th>
+                        <th class="text-center py-0">Votó</th>
+                        <th class="text-center py-0">Sentido del voto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let votacion of punto.votaciones; let i = index" class="border h-auto">
+                        <td class="text-end py-0">{{ i + 1 }}</td>
+                        <td class="py-0">{{ votacion.unidad }}</td>
+                        <td class="py-0">{{ votacion.usuario }}</td>
+                        <td class="text-center py-0">{{ votacion.sentido_votacion }}</td>
+                      </tr>
+                      <tr *ngFor="let sentido_votacion of punto.totales_sentido_votacion" class="border h-auto">
+                        <td colspan="3" class="text-end py-0">{{ sentido_votacion.sentido_votacion }}</td>
+                        <td class="text-center py-0">{{ sentido_votacion.total }}</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Fin. Tabla votación del punto -->
+                <!-- Cierre del punto -->
+                <div class="col-12" *ngIf="punto.cierre">
+                  <!-- <p-divider styleClass="my-0"><b>Cierre del punto</b></p-divider> -->
+                  <div class="ps-1" [innerHtml]="punto.cierre"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fin. Cierre del punto -->
+        </div>
+        <!-- Fin. Encabezado Orden del día -->
+      </div>
+      <!-- Fin. Orden del día -->
+
+      <!-- Cierre acta -->
+      <div class="row">
+        <div class="col-12 text-white bg-secondary py-1">
+          <div class="flex-fill">
+            <b>Cierre</b>
+          </div>
+        </div>
+        <div class="col-12 p-0">
+          <div class="border border-top-0 rounded-bottom p-2" [innerHtml]="Acta.cierre"></div>
+        </div>
+      </div>
+      <!-- Fin. Cierre acta -->
+
+      <!-- <div *ngIf="CuotaMantenimiento.pagos.length > 0" class="col-12">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th class="text-center py-0">#</th>
+                <th class="text-center py-0">Fecha</th>
+                <th class="text-center py-0">Forma pago</th>
+                <th class="text-center py-0">Referencia</th>
+                <th class="text-center py-0">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pago of CuotaMantenimiento.pagos; let i = index" class="h-auto">
+                <td class="text-center py-0">{{ i + 1 }}</td>
+                <td class="text-center py-0">{{ pago.fecha_pago | date : 'MMMM dd, yyyy' | uppercase }}</td>
+                <td class="text-center py-0">{{ pago.forma_pago }}</td>
+                <td class="text-center py-0">{{ pago.numero_referencia }}</td>
+                <td class="text-center py-0">{{ pago.importe | number : '1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+
+      <!-- <div *ngIf="CuotaMantenimiento.numero_referencia" class="row pt-0">
+        <div class="col py-0 text-end">
+          Referencia: <b>{{ CuotaMantenimiento.numero_referencia }}</b>
+        </div>
+      </div> -->
+
+      <!-- <div class="row pt-4">
+        <div class="col-6 py-1 text-white bg-secondary border-bottom"><b>Concepto</b></div>
+        <div class="col-6 py-1 text-end text-white bg-secondary border-bottom"><b>Importe</b></div>
+      </div> -->
+
+      <!-- <div class="row">
+        <div class="col-6 pe-0">
+          <p class="m-0 ps-3 py-1 border-bottom">Ordinaria</p>
+          <p class="m-0 ps-3 py-1 border-bottom">Extraordinaria</p>
+          <p class="m-0 ps-3 py-1 border-bottom">Otros servicios</p>
+          <p class="m-0 ps-3 py-1 border-bottom">Descuento pronto pago</p>
+        </div>
+        <div class="col-6 text-end ps-0">
+          <p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.ordinaria | number : '1.2-2' }}</p>
+          <p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.extraordinaria | number : '1.2-2' }}</p>
+          <p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.otros_servicios | number : '1.2-2' }}</p>
+          <p class="m-0 pe-2 py-1 border-bottom"
+            [ngClass]="{ 'text-danger': CuotaMantenimiento.descuento_pronto_pago > 0 }">
+            {{ CuotaMantenimiento.descuento_pronto_pago > 0 ? '-' : '' }}
+            {{ CuotaMantenimiento.descuento_pronto_pago | number : '1.2-2' }}
+          </p>
+        </div>
+      </div> -->
+
+      <!-- <div class="row align-items-center pt-2 pb-4">
+        <div class="col-7 col-md-6 text-center sello">
+          <div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 1" class="pendiente-pago">Pago pendiente</div>
+          <div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 2" class="saldo-pendiente">Saldo pendiente</div>
+          <div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 3" class="pagado">Pagado</div>
+        </div>
+        <div class="col-5 col-md-6">
+          <div class="row h-100">
+            <div class="col-12 text-end fs-1 fw-bold">
+              Total: {{ CuotaMantenimiento.total | number : '1.2-2' }}
+              <div *ngIf="CuotaMantenimiento.saldo != 0" class="fs-2 fw-bold">
+                Pagado: {{ CuotaMantenimiento.pagado | number : '1.2-2' }} <br />Saldo:
+                <span class="text-danger fs-2 fw-bold">{{ CuotaMantenimiento.saldo | number : '1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- <div class="row pt-4 mt-4">
+        <div class="col-4 offset-4 text-center border-top mt-4">Firma</div>
+      </div> -->
+
+      <!-- <div *ngIf="CuotaMantenimiento.notas" class="row mt-4 py-4">
+        <div class="col-12 d-flex align-items-start mt-2 pt-1 border-top">
+          <div class=""><b>Notas:</b></div>
+          <div class="flex-grow-1 ps-1">{{ CuotaMantenimiento.notas }}</div>
+        </div>
+      </div> -->
+    </div>
+  </ng-template>
+</p-dialog>

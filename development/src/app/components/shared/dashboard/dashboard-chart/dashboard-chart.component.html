@@ -1,0 +1,14 @@
+<div *ngIf="data.type" class="chart-container">
+  <div class="title">{{ data.title }}</div>
+  <div *ngIf="data.type;else no_chart" class="chart">
+    <p-chart [type]="data.type" [data]="data" [options]="data.options" width="100%" height="100%">
+    </p-chart>
+  </div>
+  <ng-template #no_chart>
+    <div class="no-chart">
+      <div class="display-5 text-center">
+        Información no disponible.
+      </div>
+    </div>
+  </ng-template>
+</div>

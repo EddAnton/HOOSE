@@ -1,0 +1,541 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptCondominios
+		[responsive]="true"
+		[value]="Condominios"
+		[columns]="CondominiosCols"
+		[globalFilterFields]="CondominiosFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Condominios.length > 0"
+		[rows]="50"
+		dataKey="id_condominio"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar condominio"
+						tooltipPosition="right"
+						(click)="onCondominioEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptCondominios.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptCondominios)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width,
+						'min-width': col.minWidth ? col.minWidth : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Condominio>
+			<tr>
+				<td class="me-1 mt-1">
+					<div (click)="onCondominioDetalles(Condominio.id_condominio)" style="cursor: pointer">
+						<img
+							class="rounded-circle"
+							src="{{
+								Condominio.imagen
+									? appData.urlBackendCondominiosFiles + Condominio.id_condominio + '/' + Condominio.imagen
+									: './assets/img/imagen_no_disponible.png'
+							}}"
+							style="width: 70px; height: 70px"
+						/>
+					</div>
+				</td>
+				<td><span class="p-column-title">Condominio</span>{{ Condominio.condominio }}</td>
+				<td><span class="p-column-title">Email</span>{{ Condominio.email }}</td>
+				<td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Condominio.telefono | phoneFormat }}</td>
+				<td class="carriage-return"><span class="p-column-title">Domicilio</span>{{ Condominio.domicilio }}</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Estatus</span>
+					<span style="cursor: pointer">
+						<p-tag
+							severity="{{ Condominio.estatus == 1 ? 'success' : 'danger' }}"
+							value="{{ Condominio.estatus == 1 ? 'A' : 'Ina' }}ctivo"
+							pTooltip="{{ Condominio.estatus == 1 ? 'Desh' : 'H' }}abilitar condominio"
+							tooltipPosition="left"
+							(click)="onCondominioAlternarEstatus(Condominio)"
+						></p-tag>
+					</span>
+				</td>
+				<td class="text-end">
+					<!-- Botón Editar -->
+					<button
+						*ngIf="Condominio.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar condominio"
+						tooltipPosition="left"
+						(click)="onCondominioEditar(Condominio.id_condominio)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles del condominio"
+						tooltipPosition="left"
+						(click)="onCondominioDetalles(Condominio.id_condominio)"
+					></button>
+					<!-- Botón Deshabilitar -->
+					<!-- <button
+						*ngIf="Condominio.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Deshabilitar condominio"
+						tooltipPosition="left"
+						(click)="onCondominioAlternarEstatus(Condominio)"
+					></button> -->
+					<!-- Botón Habilitar -->
+					<!-- <button
+						*ngIf="Condominio.estatus != 1"
+						pButton
+						type="button"
+						icon="pi pi-check"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Habilitar condominio"
+						tooltipPosition="left"
+						(click)="onCondominioAlternarEstatus(Condominio)"
+					></button> -->
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td colspan="3">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	[(visible)]="mostrarDialogoEdicionCondominio"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Condominio {{ Condominio && Condominio.id_condominio == 0 ? ' Nuevo' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmCondominio" class="mt-1" [formGroup]="frmCondominio" autocomplete="off">
+			<div class="row py-1">
+				<!-- Condominio -->
+				<div class="col-12">
+					<label for="condominio">Condominio</label>
+					<input
+						type="text"
+						pInputText
+						id="condominio"
+						formControlName="condominio"
+						class="uppercase"
+						required
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+
+			<!-- Domicilio -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="domicilio">Domicilio</label>
+					<textarea
+						pInputTextarea
+						id="domicilio"
+						formControlName="domicilio"
+						class="uppercase"
+						rows="3"
+						required
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Email  -->
+				<div class="col-12 col-md-6">
+					<label for="email">Email</label>
+					<input
+						type="text"
+						pInputText
+						id="email"
+						formControlName="email"
+						class="lowercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Teléfono -->
+				<div class="col-12 col-sm-6 col-md-3">
+					<label for="telefono">Teléfono</label>
+					<p-inputMask
+						id="telefono"
+						formControlName="telefono"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+					<!-- <input type="text" pInputText id="telefono" formControlName="telefono" /> -->
+				</div>
+				<!-- Año construcción -->
+				<div class="col-12 col-sm-6 col-md-3">
+					<label for="anio_construccion" class="d-none d-lg-block">Año construc.</label>
+					<label for="anio_construccion" class="d-block d-lg-none">Año construcción</label>
+					<p-inputNumber
+						id="anio_construccion"
+						formControlName="anio_construccion"
+						useGrouping="false"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					></p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row pt-1 pb-2">
+				<!-- Teléfonos Guardia -->
+				<div class="col-12 col-md-4">
+					<label for="telefono_guardia">Tel. guardia</label>
+					<p-inputMask
+						id="telefono_guardia"
+						formControlName="telefono_guardia"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+				</div>
+				<!-- Teléfonos Secretaria -->
+				<div class="col-12 col-md-4">
+					<label for="telefono_secretaria">Tel. secretaria</label>
+					<p-inputMask
+						id="telefono_secretaria"
+						formControlName="telefono_secretaria"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+				</div>
+				<!-- Teléfonos Moderador -->
+				<div class="col-12 col-md-4">
+					<label for="telefono_moderador">Tel. moderador</label>
+					<p-inputMask
+						id="telefono_moderador"
+						formControlName="telefono_moderador"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+				</div>
+			</div>
+
+			<!-- Imagen -->
+			<hr />
+			Imagen
+			<div class="row py-1">
+				<!-- Thumbnail de la Imagen del condominio -->
+				<div class="col-12 text-center pb-3">
+					<img
+						class="imagenThumbnail img-thumbnail"
+						style="cursor: pointer"
+						*ngIf="srcImagen != null"
+						[src]="srcImagen"
+						(click)="onImagenMostrar()"
+					/>
+				</div>
+				<div class="col-12 text-center">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar imagen -->
+						<label
+							for="txtImagenArchivo"
+							class="btn btn-dark"
+							pTooltip="Selecciona imagen del condominio"
+							tooltipPosition="top"
+						>
+							<i class="pi pi-folder-open"></i
+						></label>
+						<input
+							type="file"
+							id="txtImagenArchivo"
+							class="form-control d-none"
+							accept=".png,.jpg,.jpeg"
+							aria-describedby="btnClearImagen"
+							pTooltip="Selecciona imagen del condominio"
+							tooltipPosition="top"
+							(change)="onImagenSeleccionada($event)"
+						/>
+						<!-- Botón Eliminar imagen seleccionada -->
+						<button
+							*ngIf="frmCondominio.get('archivo_imagen').value"
+							type="button"
+							id="btnClearImagen"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nueva imagen"
+							tooltipPosition="left"
+							[disabled]="!frmCondominio.get('archivo_imagen').value"
+							(click)="onImagenSeleccionadaCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+						<!-- Botón Eliminar imagen -->
+						<button
+							*ngIf="frmCondominio.get('imagen').value"
+							type="button"
+							icon="pi pi-trash"
+							class="btn btn-danger"
+							pTooltip="Borrar la imagen ya almacenada"
+							tooltipPosition="left"
+							[disabled]="!frmCondominio.get('imagen').value"
+							(click)="onImagenEliminada()"
+						>
+							<i class="pi pi-trash"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+			<div class="row py-1">
+				<!-- Constructora -->
+				<div class="col-12 col-md-8 col-xl-9">
+					<label for="constructora">Constructora</label>
+					<input
+						type="text"
+						pInputText
+						id="constructora"
+						formControlName="constructora"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Constructora. Teléfono -->
+				<div class="col-12 col-md-4 col-xl-3">
+					<label for="constructora_telefono">Tel. constructora</label>
+					<p-inputMask
+						id="constructora_telefono"
+						formControlName="constructora_telefono"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+				</div>
+			</div>
+			<div class="row py-1">
+				<!-- Constructora. Domicilio -->
+				<div class="col-12">
+					<label for="constructora_domicilio">Domicilio</label>
+					<textarea
+						pInputTextarea
+						id="constructora_domicilio"
+						formControlName="constructora_domicilio"
+						class="uppercase"
+						rows="3"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<hr />
+			Reglamento
+			<div class="row">
+				<div class="col-12">
+					<p-editor
+						#reglamento
+						formControlName="reglamento"
+						[style]="{ height: '320px' }"
+						[modules]="ModulosEditorReglamento"
+					>
+						<p-header>
+							<span class="ql-formats">
+								<select class="ql-header" tabindex="-1">
+									<option value="1" tabindex="-1">Título</option>
+									<option value="2" tabindex="-1">Subtítulo</option>
+									<option selected tabindex="-1">Normal</option>
+								</select>
+								<select class="ql-font" tabindex="-1">
+									<option selected tabindex="-1">Sans Serif</option>
+									<option value="serif" tabindex="-1">Serif</option>
+									<option value="monospace" tabindex="-1">Monospace</option>
+								</select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+								<button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+								<button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+							</span>
+							<span class="ql-formats">
+								<select class="ql-color" tabindex="-1"></select>
+								<select class="ql-background" tabindex="-1"></select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+								<button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+								<select class="ql-align" tabindex="-1">
+									<option selected tabindex="-1"></option>
+									<option value="center" tabindex="-1"></option>
+									<option value="right" tabindex="-1"></option>
+									<option value="justify" tabindex="-1"></option>
+								</select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-image" aria-label="Insert Image" tabindex="-1"></button>
+							</span>
+						</p-header>
+					</p-editor>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmCondominio.valid"
+			(click)="onCondominioGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onCondominioCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Imagen del Condominio -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoImagenCondominio"
+	[contentStyle]="{ display: 'flex' }"
+	modal="true"
+	header="Imagen del Condominio"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer imagenPreview">
+			<img [src]="srcImagen" />
+		</div>
+	</ng-template>
+	<!-- <ng-template pTemplate="footer"> </ng-template> -->
+</p-dialog>
+
+<!-- Diálogo Detalles del Condominio -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '60vw' }"
+	[(visible)]="mostrarDialogoDetallesCondominio"
+	modal="true"
+	header="Detalles del Condominio"
+>
+	<ng-template pTemplate="content">
+		<div class="row pt-4">
+			<!-- Thumbnail de la Imagen del condominio -->
+			<div class="col-12 text-center">
+				<div>
+					<img
+						class="imagenThumbnail img-thumbnail"
+						[src]="srcImagen ? srcImagen : './assets/img/imagen_no_disponible.png'"
+						[ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
+						(click)="srcImagen && onImagenMostrar(srcImagen)"
+					/>
+				</div>
+				<div class="mt-1">
+					<b>Estatus: </b>
+					<p-tag *ngIf="Condominio.estatus == 1" severity="success" value="Activo"></p-tag>
+					<p-tag *ngIf="Condominio.estatus != 1" severity="danger" value="Inactivo"></p-tag>
+				</div>
+			</div>
+			<hr class="mt-3" />
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<p class="m-0"><b>Nombre: </b>{{ Condominio.condominio }}</p>
+				<p class="m-0"><b>Email: </b>{{ Condominio.email }}</p>
+				<p class="m-0"><b>Teléfono: </b>{{ Condominio.telefono }}</p>
+				<p class="m-0"><b>Teléfono Guardia: </b>{{ Condominio.telefono_guardia }}</p>
+				<p class="m-0"><b>Teléfono Secretaria: </b>{{ Condominio.telefono_secretaria }}</p>
+				<p class="m-0"><b>Teléfono Moderador: </b>{{ Condominio.telefono_moderador }}</p>
+				<p class="m-0"><b>Año construcción: </b>{{ Condominio.anio_construccion }}</p>
+				<p class="m-0"><b>Domicilio: </b>{{ Condominio.domicilio }}</p>
+			</div>
+			<div class="col-6">
+				<p class="m-0"><b>Constructora: </b>{{ Condominio.constructora }}</p>
+				<p class="m-0"><b>Constructora teléfono: </b>{{ Condominio.constructora_telefono }}</p>
+				<p class="m-0"><b>Constructora dominicilio: </b>{{ Condominio.constructora_domicilio }}</p>
+			</div>
+		</div>
+	</ng-template>
+	<!-- <ng-template pTemplate="footer"> </ng-template> -->
+</p-dialog>

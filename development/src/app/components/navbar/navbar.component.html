@@ -1,0 +1,192 @@
+<nav class="navbar sticky-top navbar-expand-lg">
+  <div class="container-fluid ps-2">
+    <div class="navbar-toggle">
+      <button type="button" class="navbar-toggler animate__faster" (click)="sidebarToggle()">
+        <i #btnToggleSidebar class="bx bx-menu bx-sm animate__animated"></i>
+      </button>
+    </div>
+    <div class="navbar-toggler ms-auto">
+      <span class="navbar-brand m-0 ms-auto"><b>{{ getCondominioUsuario() }} </b> | {{ getTitle() }}</span>
+      <button class="navbar-toggler" type="button" (click)="collapse()" [attr.aria-expanded]="!isCollapsed"
+        aria-controls="navbarToggler">
+        <i class="bx bx-dots-vertical-rounded bx-sm"></i>
+        <!-- <span class="navbar-toggler-icon"></span> -->
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbarToggler" [ngbCollapse]="isCollapsed">
+      <span class="navbar-brand">{{ getTitle() }}</span>
+      <!-- <h3 class="navbar-brand ms-auto">
+				<a (click)="onSeleccionarCondominio()"><i class="bx bx-user bx-sm pe-2"></i></a
+				><span class="badge text-bg-dark me-1">{{ getNombreUsuario() }}</span>
+				<i class="bi bi-building bx-sm ps-3 pe-2"></i
+				><span class="badge text-bg-secondary">{{ getCondominioUsuario() }}</span>
+			</h3> -->
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item pe-1">
+          <a class="nav-link px-0" (click)="onMostrarDetallesUsuario()"><i class="bx bx-user bx-sm pe-2"></i>
+            <span class="badge text-bg-dark me-1">{{ getNombreUsuario() }}</span></a>
+        </li>
+        <li class="nav-item pe-1">
+          <a class="nav-link px-0" [ngStyle]="{ cursor: getIDPerfilUsuario() == 1 ? 'pointer' : 'default' }"
+            (click)="getIDPerfilUsuario() == 1 && onSeleccionarCondominio()"><i class="bx bxs-buildings bx-sm"></i><span
+              class="badge text-bg-primary">{{ getCondominioUsuario() }}</span></a>
+          <!-- <span *ngIf="getPerfilUsuario() != 1">
+						<i class="bx bxs-buildings bx-sm pe-2"></i
+						><span class="badge text-bg-secondary">{{ getCondominioUsuario() }}</span></span
+					> -->
+        </li>
+        <!-- <li class="nav-item">
+					<a class="nav-link" href="#"
+						><i class="bx bx-user bx-sm"></i
+						></a
+					>
+				</li> -->
+        <!-- <span class="d-lg-none d-md-block">Seleccionar condominio</span> -->
+        <!-- <li class="nav-item dropdown">
+					<a
+						class="nav-link dropdown-toggle"
+						role="button"
+						aria-expanded="false"
+						data-bs-toggle="dropdown"
+						data-bs-reference="parent"
+						><i class="bx bx-user bx-sm"></i>
+					</a>
+					<ul id="dropdownUserActions" class="dropdown-menu dropdown-menu-right">
+						<li><a class="dropdown-item" href="#">Ver perfil</a></li>
+						<li><a class="dropdown-item" href="#">Cambiar contraseña</a></li>
+					</ul>
+				</li> -->
+        <li class="nav-item">
+          <a class="nav-link" (click)="onSalir()"><i
+              class="bx bx-power-off bx-sm"></i><!-- <span class="d-lg-none d-md-block">Salir</span> --></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Diálogo de detalles del usuario -->
+<p-dialog [(visible)]="mostrarDialogoDetallesUsuario" [modal]="true" [dismissableMask]="true"
+  [style]="{ width: '450px' }" header="Perfil del usuario" styleClass="p-fluid"
+  (onHide)="(mostrarDialogoDetallesUsuario == false)">
+  <ng-template pTemplate="content">
+    <div class="row pt-4">
+      <!-- Imagen de perfil del usuario -->
+      <div class="col-12 text-center">
+        <div>
+          <img class="imagenThumbnail img-thumbnail"
+            [src]="srcImagenPerfilUsuario ? srcImagenPerfilUsuario : './assets/img/imagen_no_disponible.png'" />
+        </div>
+      </div>
+      <hr class="mt-3" />
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <label for="condominio">Nombre</label>
+        <input type="text" pInputText [value]="getNombreUsuario()" disabled />
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-12">
+        <label for="condominio">Email</label>
+        <input type="text" pInputText [value]="getEmailUsuario()" disabled />
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-12">
+        <label for="condominio">Teléfono</label>
+        <input type="text" pInputText [value]="getTelefonoUsuario()" disabled />
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Cambiar contraseña -->
+    <button pButton type="button" label="Cambiar contraseña" icon="pi pi-key"
+      class="p-button-raised p-button-info me-sm-1" pTooltip="Cambiar la contraseña" tooltipPosition="top"
+      (click)="onCambiarContrasenia()"></button>
+    <!-- Botón Cancelar -->
+    <!-- <button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onCancelarSeleccionarCondominio()"
+		></button> -->
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo para cambiar la contraseña -->
+<p-dialog #dlgCambiarContrasenia [(visible)]="mostrarDialogoCambiarContrasenia" [style]="{ width: '350px' }"
+  [modal]="true" [closable]="false" header="Cambiar contraseña" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmCambiarContrasenia" class="mt-1" [formGroup]="frmCambiarContrasenia" autocomplete="off">
+      <!-- Contraseña actual -->
+      <div class="row py-1">
+        <div class="col-12">
+          <label for="txtContraseniaActual">Contraseña actual</label>
+          <input type="password" pInputText id="txtContraseniaActual" formControlName="contrasenia_actual"
+            (focus)="hlpApp.selectAllContent($event)" autofocus />
+        </div>
+      </div>
+      <!-- Contraseña nueva -->
+      <div class="row py-1">
+        <div class="col-12">
+          <label for="txtContraseniaNueva">Contraseña nueva</label>
+          <input type="password" pInputText id="txtContraseniaNueva" formControlName="contrasenia_nueva"
+            (focus)="hlpApp.selectAllContent($event)" autofocus />
+        </div>
+      </div>
+      <!-- Confirmar nueva contraseña -->
+      <div class="row py-1">
+        <div class="col-12">
+          <label for="txtContraseniaNuevaConfirmada">Confirmar nueva contraseña</label>
+          <input type="password" pInputText id="txtContraseniaNuevaConfirmada"
+            formControlName="contrasenia_nueva_confirmada" (focus)="hlpApp.selectAllContent($event)" autofocus />
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Aceptar -->
+    <button pButton type="button" label="Aceptar" icon="pi pi-save" class="p-button-raised p-button-info me-sm-1"
+      pTooltip="Cambiar contraseña" tooltipPosition="top" [disabled]="
+				frmCambiarContrasenia.get('contrasenia_nueva').value !=
+					frmCambiarContrasenia.get('contrasenia_nueva_confirmada').value || !frmCambiarContrasenia.valid
+			" (click)="onCambiarContraseniaGuardar()"></button>
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2"
+      pTooltip="Cancelar el proceso" tooltipPosition="top" (click)="onCambiarContraseniaCancelar()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo de selección de condominio (Súper Administrador) -->
+<p-dialog [(visible)]="mostrarDialogoSeleccionCondominio" [modal]="true" [style]="{ width: '450px' }"
+  header="Seleccionar Condominio" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmSeleccionarCondominio" class="pt-4" [formGroup]="frmSeleccionarCondominio" autocomplete="off">
+      <!-- Condominio -->
+      <div class="row">
+        <div class="col form-label-group">
+          <select #cmbCondominio id="cmbCondominio" formControlName="id_condominio" class="form-select" autofocus>
+            <option [value]="0" disabled>Selecciona una opción...</option>
+            <option *ngFor="let condominio of Condominios" [value]="condominio.id_condominio">
+              {{ condominio.condominio }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Guardar -->
+    <button pButton type="button" label="Guardar" icon="pi pi-save" class="p-button-raised p-button-info me-sm-1"
+      pTooltip="Confirma la selección del condominio" tooltipPosition="top" [disabled]="!frmSeleccionarCondominio.valid"
+      (click)="onCondominioSeleccionado()"></button>
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2"
+      pTooltip="Cancelar el proceso" tooltipPosition="top" (click)="onCancelarSeleccionarCondominio()"></button>
+  </ng-template>
+</p-dialog>

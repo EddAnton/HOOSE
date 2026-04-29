@@ -1,0 +1,420 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptGastosMantenimiento
+		[responsive]="true"
+		[value]="GastosMantenimiento"
+		[columns]="GastosMantenimientoCols"
+		[globalFilterFields]="GastosMantenimientoFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="GastosMantenimiento.length > 0"
+		[rows]="50"
+		dataKey="id_gasto_mantenimiento"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar gasto de mantenimiento"
+						tooltipPosition="right"
+						(click)="onGastoMantenimientoEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptGastosMantenimiento.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptGastosMantenimiento)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+			<tr *ngIf="GastosMantenimiento.length > 0">
+				<th colspan="3" class="text-end">$&nbsp;{{ FilaTotales.total | number : '1.2-2' }}</th>
+				<th colspan="2">&nbsp;</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-GastoMantenimiento>
+			<tr>
+				<td><span class="p-column-title">Concepto</span>{{ GastoMantenimiento.concepto }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Fecha</span>{{ GastoMantenimiento.fecha | date : 'MMMM dd, yyyy' | uppercase }}
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Importe</span>{{ GastoMantenimiento.importe | number : '1.2-2' }}
+				</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Deducible</span>{{ GastoMantenimiento.es_deducible == 1 ? 'Sí' : 'No' }}
+				</td>
+
+				<td class="text-end">
+					<!-- Botón Mostrar Comprobante -->
+					<button
+						*ngIf="GastoMantenimiento.comprobante != null"
+						pButton
+						type="button"
+						icon="pi pi-file"
+						class="p-button-rounded p-button-text p-button-info me-1"
+						pTooltip="Mostrar comprobante"
+						tooltipPosition="left"
+						(click)="onComprobanteMostrar(GastoMantenimiento)"
+					></button>
+					<!-- Botón Editar -->
+					<!-- <button
+						*ngIf="permitirAgregarEditar && GastoMantenimiento.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar gasto de mantenimiento"
+						tooltipPosition="left"
+						(click)="onGastoMantenimientoEditar(GastoMantenimiento.id_gasto_mantenimiento)"
+					></button> -->
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirAgregarEditar && GastoMantenimiento.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar gasto de mantenimiento"
+						tooltipPosition="left"
+						(click)="onGastoMantenimientoEliminar(GastoMantenimiento)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles del gasto de mantenimiento"
+						tooltipPosition="left"
+						(click)="onGastoMantenimientoDetalles(GastoMantenimiento.id_gasto_mantenimiento)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td colspan="3">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgGastoMantenimiento
+	[(visible)]="mostrarDialogoEdicionGastoMantenimiento"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Gasto de Mantenimiento {{
+		GastoMantenimiento && GastoMantenimiento.id_gasto_mantenimiento == 0 ? ' Nuevo' : ''
+	}}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmGastoMantenimiento" class="mt-1" [formGroup]="frmGastoMantenimiento" autocomplete="off">
+			<!-- Concepto -->
+			<div class="row py-1">
+				<div class="col-12 col-md-6 form-label-group">
+					<label for="cmbGastoFijo">Gasto fijo</label>
+					<select
+						#cmbGastoFijo
+						id="cmbGastoFijo"
+						formControlName="id_gasto_fijo"
+						class="form-select"
+						(change)="onGastoFijoSeleccionado($event.target.value)"
+						autofocus
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let gastoFijo of GastosFijos" [value]="gastoFijo.id_gasto_fijo">
+							{{ gastoFijo.gasto_fijo }}
+						</option>
+					</select>
+				</div>
+				<div class="col-12 col-md-6">
+					<label for="concepto">Concepto</label>
+					<input
+						type="text"
+						pInputText
+						id="txtConcepto"
+						formControlName="concepto"
+						class="uppercase"
+						maxlength="150"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+
+			<!-- Descripcion -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtDescripcion">Descripción</label>
+					<textarea
+						pInputTextarea
+						id="txtDescripcion"
+						formControlName="descripcion"
+						class="uppercase"
+						rows="3"
+						maxlength="1000"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Fecha -->
+				<div class="col-12 col-sm-5">
+					<label for="txtFecha">Fecha</label>
+					<p-calendar
+						inputId="txtFecha"
+						formControlName="fecha"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgGastoMantenimiento"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+				<!-- Importe -->
+				<div class="col-12 col-sm-5">
+					<label for="txtImporte">Importe</label>
+					<p-inputNumber
+						inputId="txtImporte"
+						formControlName="importe"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Es deducible -->
+				<div class="col-12 col-sm-2 align-self-end mt-0 mt-sm-3">
+					<label>
+						<div class="d-flex align-items-center">
+							<p-inputSwitch
+								formControlName="es_deducible"
+								pTooltip="Indicar si el gasto de mantenimiento es deducible"
+								tooltipPosition="top"
+							></p-inputSwitch>
+							<span class="ms-2"> ¿Es deducible?</span>
+						</div></label
+					>
+				</div>
+			</div>
+
+			<!-- Fondo monetario -->
+			<div class="row py-1">
+				<div class="col-12 form-label-group">
+					<label for="cmbFondoMonetario">Fondo monetario</label>
+					<select #cmbFondoMonetario id="cmbFondoMonetario" formControlName="id_fondo_monetario" class="form-select">
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let fondo of FondosMonetarios" [value]="fondo.id_fondo_monetario">
+							{{ fondo.tipo_fondo }} - {{ fondo.fondo_monetario }}
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Comprobante -->
+			<div class="pt-2">Comprobante</div>
+			<div class="row py-1">
+				<!-- Comprobante -->
+				<div class="col-12 text-center">
+					<ng-container *ngIf="srcComprobante != null; then conComprobante; else sinComprobante"></ng-container>
+					<ng-template #conComprobante>
+						<i
+							class="pi pi-file img-thumbnail fs-1 text-success p-3"
+							style="cursor: pointer"
+							pTooltip="Visualizar el comprobante"
+							tooltipPosition="top"
+							(click)="onComprobanteMostrar()"
+						></i>
+					</ng-template>
+					<ng-template #sinComprobante>
+						<i class="bi bi-file-earmark-x img-thumbnail fs-1 text-dark p-3"></i>
+					</ng-template>
+				</div>
+				<div class="col-12 text-center pt-3">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar comprobante -->
+						<label
+							for="txtComprobanteArchivo"
+							class="btn btn-dark"
+							pTooltip="{{ (!GastoMantenimiento.comprobante ? 'Establecer' : 'Actualizar') + ' comprobante' }}"
+							tooltipPosition="top"
+							><i class="pi pi-folder-open"></i>
+						</label>
+						<input
+							type="file"
+							id="txtComprobanteArchivo"
+							class="form-control d-none"
+							accept=".png, .jpg, .jpeg, .pdf"
+							aria-describedby="btnCancelarEleccion"
+							pTooltip="Selecciona comprobante"
+							tooltipPosition="top"
+							(change)="onComprobanteSeleccionado($event)"
+						/>
+						<!-- Botón Eliminar comprobante seleccionado -->
+						<button
+							*ngIf="frmGastoMantenimiento.get('archivo_comprobante').value"
+							type="button"
+							id="btnCancelarEleccion"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nuevo archivo con el comprobante"
+							tooltipPosition="left"
+							[disabled]="!frmGastoMantenimiento.get('archivo_comprobante').value"
+							(click)="onComprobanteSeleccionadoCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+						<!-- Botón Eliminar comprobante -->
+						<button
+							*ngIf="frmGastoMantenimiento.get('comprobante').value"
+							type="button"
+							icon="pi pi-trash"
+							class="btn btn-danger"
+							pTooltip="Borrar el archivo con el comprobante ya almacenado"
+							tooltipPosition="left"
+							[disabled]="!frmGastoMantenimiento.get('comprobante').value"
+							(click)="onComprobanteEliminado()"
+						>
+							<i class="pi pi-trash"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmGastoMantenimiento.valid"
+			(click)="onGastoMantenimientoGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onGastoMantenimientoCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Comprobante -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoComprobanteGastoMantenimiento"
+	[contentStyle]="{ display: 'flex', height: '90vh' }"
+	modal="true"
+	header="Comprobante"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer">
+			<iframe id="fraComprobante" class="img-thumbnail" [src]="comprobanteURL()" (load)="onComprobanteMostrado()">
+			</iframe>
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles del Gasto de Mantenimiento -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[(visible)]="mostrarDialogoDetallesGastoMantenimiento"
+	modal="true"
+	header="Detalles del Gasto de mantenimiento"
+>
+	<ng-template pTemplate="content">
+		<div class="row py-2 border-bottom">
+			<div class="col-12">
+				<p class="m-0"><b>Concepto:</b> {{ GastoMantenimiento.concepto }}</p>
+			</div>
+			<!-- <hr class="mt-3" /> -->
+		</div>
+		<div class="row py-2 border-bottom">
+			<div class="col-6">
+				<p class="m-0"><b>Fecha:</b> {{ GastoMantenimiento.fecha | date : 'MMMM dd, yyyy' | uppercase }}</p>
+			</div>
+			<div class="col-6">
+				<p class="m-0"><b>Importe:</b> {{ GastoMantenimiento.importe | number : '1.2-2' }}</p>
+			</div>
+			<!-- <hr class="mt-3" /> -->
+		</div>
+		<div class="row py-2">
+			<div class="col-12">
+				<p class="m-0"><b>Descripción:</b> {{ GastoMantenimiento.descripcion }}</p>
+			</div>
+		</div>
+	</ng-template>
+</p-dialog>

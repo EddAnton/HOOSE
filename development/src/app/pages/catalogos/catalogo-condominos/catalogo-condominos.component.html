@@ -1,0 +1,505 @@
+<div class="card shadow-sm">
+  <p-table #ptCondominos [responsive]="true" [value]="Condominos" [columns]="CondominosCols"
+    [globalFilterFields]="CondominosFilter" [rowHover]="true" [showCurrentPageReport]="true"
+    [paginator]="Condominos.length > 0" [rows]="50" dataKey="id_usuario" styleClass="p-datatable-striped"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros">
+    <ng-template pTemplate="caption">
+      <div class="d-flex align-items-center p-1">
+        <div class="me-auto">
+          <!-- Botón Nuevo -->
+          <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus"
+            class="p-button-rounded p-button-raised p-button-success ms-1" pTooltip="Agregar condómino"
+            tooltipPosition="right" (click)="onCondominoEditar()"></button>
+        </div>
+        <!-- Opciones Filtrado -->
+        <div class="ms-auto">
+          <!-- Botón Actualizar -->
+          <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
+            class="p-button-rounded p-button-text p-button-secondary me-2" pTooltip="Actualizar información"
+            tooltipPosition="right" (click)="onCondominosListar()"></button>
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input type="text" id="txtGlobalFilter" class="form-control ms-1 ps-4"
+              (input)="ptCondominos.filterGlobal($event.target.value, 'contains')" placeholder="Filtrar" />
+          </span>
+        </div>
+        <div>
+          <button pButton pRipple type="button" id="btnLimpiarFiltro" icon="pi pi-times"
+            class="p-button-rounded p-button-text p-button-danger ms-3" pTooltip="Limpiar filtro" tooltipPosition="left"
+            (click)="hlpPrimeNGTable.reset(ptCondominos)"></button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" class="text-center" [ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}">
+          {{ col.header ? col.header : '&nbsp;' }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-Condomino>
+      <tr>
+        <td class="me-1 mt-1">
+          <div (click)="onCondominoDetalles(Condomino.id_usuario)" style="cursor: pointer">
+            <img class="rounded-circle" src="{{
+								Condomino.imagen
+									? appData.urlBackendUsuariosFiles + Condomino.id_usuario + '/' + Condomino.imagen
+									: './assets/img/imagen_no_disponible.png'
+							}}" style="width: 70px; height: 70px" />
+          </div>
+        </td>
+        <td><span class="p-column-title">Nombre</span>{{ Condomino.nombre }}</td>
+        <td><span class="p-column-title">Usuario</span>{{ Condomino.usuario }}</td>
+        <td><span class="p-column-title">Email</span>{{ Condomino.email }}</td>
+        <td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Condomino.telefono | phoneFormat }}</td>
+        <td class="text-md-center">
+          <span class="p-column-title">Unidad</span>
+          <p-tag severity="info" [value]="Condomino.unidad_edificio"></p-tag>
+        </td>
+        <td class="text-md-end">
+          <span class="p-column-title">Depósito</span>{{ Condomino.deposito | number : '1.2-2' }}
+        </td>
+        <td class="text-md-end"><span class="p-column-title">Renta</span>{{ Condomino.renta | number : '1.2-2' }}</td>
+        <td class="text-md-center">
+          <span class="p-column-title">Estatus</span>
+          <span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
+            <p-tag severity="{{
+								Condomino.estatus == 1 ? 'success' : Condomino.contrato_activo == 1 ? 'warning' : 'danger'
+							}}" value=" {{
+								Condomino.estatus == 1 ? 'Activo' : Condomino.contrato_activo == 1 ? 'Inactivo' : 'Sin contrato'
+							}} " pTooltip="{{ Condomino.estatus == 1 ? 'Desh' : 'H' }}abilitar condómino{{
+								Condomino.contrato_activo != 1 ? ' en nuevo contrato' : ''
+							}}" tooltipPosition="left" tooltipDisabled="{{ !permitirAgregarEditar }}"
+              (click)="permitirAgregarEditar && onCondominoAlternarEstatus(Condomino)"></p-tag>
+          </span>
+        </td>
+        <td class="text-end">
+          <!-- Botón Editar -->
+          <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.estatus == 1" icon="pi pi-pencil"
+            class="p-button-rounded p-button-text p-button-success me-1" pTooltip="Editar condómino"
+            tooltipPosition="left" (click)="onCondominoEditar(Condomino)"></button>
+          <!-- Botón Detalles -->
+          <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-warning me-1"
+            pTooltip="Detalles del condómino" tooltipPosition="left"
+            (click)="onCondominoDetalles(Condomino.id_usuario)"></button>
+          <!-- Botón Deshabilitar -->
+          <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.contrato_activo == 1"
+            icon="pi pi-trash" class="p-button-rounded p-button-text p-button-help me-1" pTooltip="Finalizar contrato"
+            tooltipPosition="left" (click)="onCondominoDeshabilitar(Condomino.id_usuario)"></button>
+          <!-- Botón Reiniciar contraseña -->
+          <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.contrato_activo == 1"
+            icon="pi pi-lock" class="p-button-rounded p-button-text p-button-danger me-1"
+            pTooltip="Reiniciar contraseña" tooltipPosition="left"
+            (click)="onReiniciarContrasenia(Condomino.id_usuario)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="no-records">
+        <td colspan="3">Sin registros.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog #dlgCondomino [(visible)]="mostrarDialogoEdicionCondomino"
+  [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '50vw' }" [modal]="true" [closable]="false"
+  header="Detalles del Condomino {{ Condomino && Condomino.id_usuario == 0 ? ' Nuevo' : '' }}" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmCondomino" class="mt-1" [formGroup]="frmCondomino" autocomplete="off">
+      <div class="row py-1">
+        <!-- Nombre -->
+        <div class="col-12 col-md-8">
+          <label for="txtNombre">Nombre</label>
+          <input type="text" pInputText id="txtNombre" formControlName="nombre" class="uppercase" autofocus
+            (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+        <!-- Usuario -->
+        <div class="col-12 col-md-4">
+          <label for="txtUsuario">Usuario</label>
+          <input type="text" pInputText id="txtUsuario" formControlName="usuario" class="lowercase"
+            (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+      </div>
+
+      <div class="row py-1">
+        <!-- Email  -->
+        <div class="col-12 col-md-6">
+          <label for="txtEmail">Email</label>
+          <input type="text" pInputText id="txtEmail" formControlName="email" class="lowercase"
+            (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+        <!-- Teléfono -->
+        <div class="col-12 col-md-6">
+          <label for="txtTelefono">Teléfono</label>
+          <p-inputMask id="txtTelefono" formControlName="telefono" mask="(9999) 99-9999" unmask="true"
+            placeholder="(9999) 99-9999" (focus)="hlpApp.selectAllContent($event)"></p-inputMask>
+        </div>
+      </div>
+
+      <!-- Domicilio -->
+      <div class="row py-1">
+        <div class="col-12">
+          <label for="txtDomicilio">Domicilio</label>
+          <textarea pInputTextarea id="txtDomicilio" formControlName="domicilio" class="uppercase" rows="3"
+            (focus)="hlpApp.selectAllContent($event)"></textarea>
+        </div>
+      </div>
+
+      <div class="row py-1">
+        <!-- Identificación Folio -->
+        <div class="col-12">
+          <label for="txtIdentificacionFolio">Folio Identificación</label>
+          <input pInputText type="text" id="txtIdentificacionFolio" formControlName="identificacion_folio"
+            class="uppercase" (focus)="hlpApp.selectAllContent($event)" />
+        </div>
+        <!-- Identificación Domicilio -->
+        <div class="col-12">
+          <label for="txtIdentificacionDomicilio">Domicilio Identificación</label>
+          <textarea pInputTextarea id="txtIdentificacionDomicilio" formControlName="identificacion_domicilio"
+            class="uppercase" rows="3" (focus)="hlpApp.selectAllContent($event)"></textarea>
+        </div>
+      </div>
+
+      <!-- Unidad -->
+      <div class="row py-1">
+        <div class="col-12 form-label-group">
+          <label for="cmbUnidad">Unidades disponibles para renta</label>
+          <select #cmbUnidad id="cmbUnidad" formControlName="id_unidad" class="form-select">
+            <option [value]="0" disabled selected>Selecciona una opción...</option>
+            <option *ngFor="let unidad of UnidadesDisponiblesRenta" [value]="unidad.id_unidad">
+              {{ unidad.unidad }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row py-1">
+        <!-- Depósito  -->
+        <div class="col-12 col-sm-4">
+          <label for="txtDeposito">Depósito</label>
+          <!-- <input type="text" pInputText id="txtDeposito" formControlName="deposito" class="lowercase" /> -->
+          <p-inputNumber inputId="txtDeposito" formControlName="deposito" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2" [step]="0" [inputStyle]="{ 'text-align': 'right' }"
+            (onFocus)="hlpApp.selectAllContent($event)">
+          </p-inputNumber>
+        </div>
+        <!-- Renta -->
+        <div class="col-12 col-sm-4">
+          <label for="txtRenta">Renta</label>
+          <p-inputNumber inputId="txtRenta" formControlName="renta" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2" [step]="0" [inputStyle]="{ 'text-align': 'right' }"
+            (onFocus)="hlpApp.selectAllContent($event)">
+          </p-inputNumber>
+        </div>
+        <!-- Fecha inicio -->
+        <div class="col-12 col-sm-4">
+          <label for="txtFechaInicio">Fecha inicio</label>
+          <p-calendar inputId="txtFechaInicio" formControlName="fecha_inicio" dateFormat="dd-MM-yy"
+            [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+        </div>
+      </div>
+
+      <!-- Imagen -->
+      <hr />
+      Imagen
+      <div class="row py-1">
+        <!-- Thumbnail de la Imagen del condómino -->
+        <div class="col-12 text-center pb-3">
+          <img class="imagenThumbnail img-thumbnail" style="cursor: pointer" *ngIf="srcImagen != null" [src]="srcImagen"
+            (click)="onImagenMostrar(srcImagen)" />
+        </div>
+        <!-- Botones de acción -->
+        <div class="col-12 text-center">
+          <div class="input-group" style="display: unset">
+            <!-- Botón Seleccionar imagen -->
+            <label for="txtImagenArchivo" class="btn btn-dark" pTooltip="Selecciona imagen del Condomino"
+              tooltipPosition="top">
+              <i class="pi pi-folder-open"></i></label>
+            <input type="file" id="txtImagenArchivo" class="form-control d-none" accept=".png,.jpg,.jpeg"
+              aria-describedby="btnClearImagen" pTooltip="Selecciona imagen del Condomino" tooltipPosition="top"
+              (change)="onImagenSeleccionada($event, 1)" />
+            <!-- Botón Eliminar imagen seleccionada -->
+            <button *ngIf="frmCondomino.get('archivo_imagen').value" type="button" id="btnClearImagen"
+              class="btn btn-secondary"
+              pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Condomino"
+              tooltipPosition="left" [disabled]="!frmCondomino.get('archivo_imagen').value"
+              (click)="onImagenSeleccionadaCancelar(1)">
+              <i class="pi pi-undo"></i>
+            </button>
+            <!-- Botón Eliminar imagen -->
+            <button *ngIf="frmCondomino.get('imagen').value" type="button" icon="pi pi-trash" class="btn btn-danger"
+              pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Condomino"
+              tooltipPosition="left" [disabled]="!frmCondomino.get('imagen').value" (click)="onImagenEliminar(1)">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identificación -->
+      <hr />
+      Identificación
+      <div class="row py-2">
+        <!-- Imagen del Anverso de la Identificación del condómino -->
+        <div class="col-12">
+          <div class="row">
+            <!-- Thumbnail  Anverso -->
+            <div class="col-12 col-md-6 text-center pb-3">
+              <img class="imagenThumbnail img-thumbnail" style="cursor: pointer"
+                *ngIf="srcIdentificacionAnverso != null" [src]="srcIdentificacionAnverso"
+                (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+              <!-- 							<div
+								*ngIf="srcIdentificacionAnverso == null && srcIdentificacionReverso != null"
+								class="d-none d-md-block h-100"
+							></div> -->
+            </div>
+            <!-- Thumbnail  Reverso -->
+            <div class="col-12 col-md-6 text-center pb-3">
+              <img class="imagenThumbnail img-thumbnail" style="cursor: pointer"
+                *ngIf="srcIdentificacionReverso != null" [src]="srcIdentificacionReverso"
+                (click)="onImagenMostrar(srcIdentificacionReverso)" />
+            </div>
+          </div>
+          <div class="row">
+            <!-- Botones de acción Anverso -->
+            <div class="col-12 col-md-6 text-center">
+              <div class="input-group" style="display: unset">
+                <!-- Botón Seleccionar imagen -->
+                <label for="txtAnversoIdentificacionArchivo" class="btn btn-dark"
+                  pTooltip="Selecciona imagen del anverso de la identificación del Condomino" tooltipPosition="top">
+                  <i class="pi pi-folder-open"></i></label>
+                <input type="file" id="txtAnversoIdentificacionArchivo" class="form-control d-none"
+                  accept=".png,.jpg,.jpeg" aria-describedby="btnClearAnversoIdentificacion"
+                  pTooltip="Selecciona imagen del anverso de la identificación del Condomino" tooltipPosition="top"
+                  (change)="onImagenSeleccionada($event, 2)" />
+                <!-- Botón Eliminar imagen seleccionada -->
+                <button *ngIf="frmCondomino.get('archivo_identificacion_anverso').value" type="button"
+                  id="btnClearAnversoIdentificacion" class="btn btn-secondary"
+                  pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Condomino"
+                  tooltipPosition="left" [disabled]="!frmCondomino.get('archivo_identificacion_anverso').value"
+                  (click)="onImagenSeleccionadaCancelar(2)">
+                  <i class="pi pi-undo"></i>
+                </button>
+                <!-- Botón Eliminar imagen -->
+                <button *ngIf="frmCondomino.get('identificacion_anverso').value" type="button" icon="pi pi-trash"
+                  class="btn btn-danger"
+                  pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Condomino"
+                  tooltipPosition="left" [disabled]="!frmCondomino.get('identificacion_anverso').value"
+                  (click)="onImagenEliminar(2)">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Botones de acción Reverso -->
+            <div class="col-12 col-md-6 text-center">
+              <div class="input-group" style="display: unset">
+                <!-- Botón Seleccionar imagen -->
+                <label for="txtReversoIdentificacionArchivo" class="btn btn-dark"
+                  pTooltip="Selecciona imagen del reverso de la identificación del Condomino" tooltipPosition="top">
+                  <i class="pi pi-folder-open"></i></label>
+                <input type="file" id="txtReversoIdentificacionArchivo" class="form-control d-none"
+                  accept=".png,.jpg,.jpeg" aria-describedby="btnClearReversoIdentificacion"
+                  pTooltip="Selecciona imagen del reverso de la identificación del Condomino" tooltipPosition="top"
+                  (change)="onImagenSeleccionada($event, 3)" />
+                <!-- Botón Eliminar imagen seleccionada -->
+                <button *ngIf="frmCondomino.get('archivo_identificacion_reverso').value" type="button"
+                  id="btnClearReversoIdentificacion" class="btn btn-secondary"
+                  pTooltip="Anular la elección de nueva imagen del reverso de la identificación del Condomino"
+                  tooltipPosition="left" [disabled]="!frmCondomino.get('archivo_identificacion_reverso').value"
+                  (click)="onImagenSeleccionadaCancelar(3)">
+                  <i class="pi pi-undo"></i>
+                </button>
+                <!-- Botón Eliminar imagen -->
+                <button *ngIf="frmCondomino.get('identificacion_reverso').value" type="button" icon="pi pi-trash"
+                  class="btn btn-danger"
+                  pTooltip="Borrar la imagen ya almacenada del reverso de la identificación del Condomino"
+                  tooltipPosition="left" [disabled]="!frmCondomino.get('identificacion_reverso').value"
+                  (click)="onImagenEliminar(3)">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrato -->
+      <hr />
+      Contrato
+      <div class="row py-1">
+        <!-- Contrato de arrendamiento -->
+        <div *ngIf="srcContrato != null" class="col-12 text-center pb-3">
+          <i class="pi pi-file-pdf img-thumbnail text-danger p-3" style="font-size: 7rem; cursor: pointer"
+            pTooltip="Visualizar el contrato de arrendamiento" tooltipPosition="top" (click)="onContratoMostrar()"></i>
+        </div>
+        <div class="col-12 text-center">
+          <div class="input-group" style="display: unset">
+            <!-- Botón Seleccionar contrato -->
+            <label for="txtContratoArchivo" class="btn btn-dark"
+              pTooltip="{{ (!Condomino.contrato_archivo ? 'Establecer' : 'Actualizar') + ' contrato' }}"
+              tooltipPosition="top"><i class="pi pi-folder-open"></i>
+            </label>
+            <input type="file" id="txtContratoArchivo" class="form-control d-none" accept=".pdf"
+              aria-describedby="btnClearContrato" pTooltip="Selecciona contrato de arrendamiento" tooltipPosition="top"
+              (change)="onContratoSeleccionado($event)" />
+            <!-- Botón Eliminar contrato seleccionado -->
+            <button *ngIf="frmCondomino.get('archivo_contrato').value" type="button" id="btnClearContrato"
+              class="btn btn-secondary" pTooltip="Anular la elección de nuevo archivo con el contrato de arrendamiento"
+              tooltipPosition="left" [disabled]="!frmCondomino.get('archivo_contrato').value"
+              (click)="onContratoSeleccionadoCancelar()">
+              <i class="pi pi-undo"></i>
+            </button>
+            <!-- Botón Eliminar contrato -->
+            <button *ngIf="frmCondomino.get('contrato').value" type="button" icon="pi pi-trash" class="btn btn-danger"
+              pTooltip="Borrar el archivo con el contrato de arrendamiento ya almacenado" tooltipPosition="left"
+              [disabled]="!frmCondomino.get('contrato').value" (click)="onContratoEliminado()">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Guardar -->
+    <button pButton type="button" label="Guardar" icon="pi pi-save" class="p-button-raised p-button-info me-sm-1"
+      pTooltip="Almacenar la información" tooltipPosition="top" [disabled]="!frmCondomino.valid"
+      (click)="onCondominoGuardar()"></button>
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2"
+      pTooltip="Cancelar el proceso" tooltipPosition="top" (click)="onCondominoCancelar()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo de deshabilitar -->
+<p-dialog #dlgCondominoDeshabilitar [(visible)]="mostrarDialogoDeshabilitarCondomino" [style]="{ width: '350px' }"
+  [modal]="true" [closable]="false" header="Deshabilitar Condómino" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="frmCondominoDeshabilitar" class="mt-1" [formGroup]="frmCondominoDeshabilitar" autocomplete="off">
+      <div class="row py-1">
+        <!-- Fecha fin -->
+        <div class="col-12">
+          <label for="txtFechaFin">Fecha finalización del contrato</label>
+          <p-calendar inputId="txtFechaFin" formControlName="fecha_fin" dateFormat="dd-MM-yy"
+            [appendTo]="dlgCondominoDeshabilitar" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"
+            autofocus></p-calendar>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Botón Confirmar -->
+    <button pButton type="button" label="Confirmar" icon="pi pi-save" class="p-button-raised p-button-info me-sm-1"
+      pTooltip="Confirma deshabilitar el contrato con el Condomino" tooltipPosition="top"
+      [disabled]="!frmCondominoDeshabilitar.valid" (click)="onCondominoDeshabilitarGuardar()"></button>
+    <!-- Botón Cancelar -->
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2"
+      pTooltip="Cancelar el proceso" tooltipPosition="top" (click)="onCondominoDeshabilitarCancelar()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo Imagen del Condomino -->
+<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '75vw' }"
+  [(visible)]="mostrarDialogoImagenCondomino" [contentStyle]="{ display: 'flex' }" modal="true"
+  header="Imagen del Condomino" baseZIndex="99">
+  <ng-template pTemplate="content">
+    <div class="imagenPreviewContainer imagenPreview">
+      <img [src]="srcImagenMostrar" />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo Contrato -->
+<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '75vw' }"
+  [(visible)]="mostrarDialogoContratoCondomino" [contentStyle]="{ display: 'flex', height: '90vh' }" modal="true"
+  header="Contrato de arrendamiento del Condómino">
+  <ng-template pTemplate="content">
+    <div class="imagenPreviewContainer">
+      <iframe id="fraContrato" class="img-thumbnail" [src]="contratoURL()" (load)="onContratoMostrado()"> </iframe>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles del Condomino -->
+<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '60vw' }"
+  [(visible)]="mostrarDialogoDetallesCondomino" modal="true" header="Detalles del Condomino">
+  <ng-template pTemplate="content">
+    <div class="row pt-4">
+      <!-- Thumbnail de la Imagen del condómino -->
+      <div class="col-12 text-center">
+        <div>
+          <img class="imagenThumbnail img-thumbnail"
+            [src]="srcImagen ? srcImagen : './assets/img/imagen_no_disponible.png'"
+            [ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
+            (click)="srcImagen && onImagenMostrar(srcImagen)" />
+        </div>
+        <!-- <div class="my-1">
+					<b>Imagen del Condomino</b>
+				</div> -->
+        <div class="mt-1">
+          <b>Estatus: </b>
+          <p-tag *ngIf="Condomino.estatus == 1" severity="success" value="Activo"></p-tag>
+          <p-tag *ngIf="Condomino.estatus != 1" severity="danger" value="Inactivo"></p-tag>
+        </div>
+      </div>
+      <hr class="mt-3" />
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+        <p class="m-0"><b>Nombre:</b> {{ Condomino.nombre }}</p>
+        <p class="m-0"><b>Usuario:</b> {{ Condomino.usuario }}</p>
+        <p class="m-0"><b>Email:</b> {{ Condomino.email }}</p>
+        <p class="m-0"><b>Teléfono:</b> {{ Condomino.telefono | phoneFormat }}</p>
+        <p class="m-0"><b>Domicilio:</b> {{ Condomino.domicilio }}</p>
+      </div>
+      <div class="col-6">
+        <p class="m-0"><b>Folio Identificacion:</b> {{ Condomino.identificacion_folio }}</p>
+        <p class="m-0"><b>Domicilio Identificación:</b> {{ Condomino.identificacion_domicilio }}</p>
+        <p class="m-0"><b>Edificio:</b> {{ Condomino.edificio }}</p>
+        <p class="m-0"><b>Unidad:</b> {{ Condomino.unidad }}</p>
+        <p class="m-0"><b>Depósito:</b> {{ Condomino.deposito | number : '1.2-2' }}</p>
+        <p class="m-0"><b>Renta:</b> {{ Condomino.renta | number : '1.2-2' }}</p>
+        <p class="m-0"><b>Fecha inicio:</b> {{ Condomino.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}</p>
+        <!-- <p class="m-0"><b>Estatus:</b> {{ (Condomino.contrato_activo == 1 ? 'A' : 'Ina') + 'ctiva' }}</p> -->
+        <p class="m-0">
+          <b>Estatus contrato: </b>
+          <p-tag *ngIf="Condomino.contrato_activo == 1" severity="success" value="Activo"></p-tag>
+          <p-tag *ngIf="Condomino.contrato_activo != 1" severity="danger" value="Inactivo"></p-tag>
+        </p>
+      </div>
+    </div>
+
+    <!-- Thumbnails de la Identificación del condómino -->
+    <div *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso" class="row mt-2">
+      <hr class="mt-3" />
+      <div class="col-12 text-center my-1"><b>Identificación</b></div>
+      <div *ngIf="srcIdentificacionAnverso" class="col-12 text-end"
+        [ngClass]="{ 'col-md-6': srcIdentificacionReverso }">
+        <img class="imagenThumbnail img-thumbnail" [src]="srcIdentificacionAnverso"
+          [ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
+          (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+      </div>
+      <div *ngIf="srcIdentificacionReverso" class="col-12 text-start"
+        [ngClass]="{ 'col-md-6': srcIdentificacionAnverso }">
+        <img class="imagenThumbnail img-thumbnail" [src]="srcIdentificacionReverso"
+          [ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
+          (click)="onImagenMostrar(srcIdentificacionReverso)" />
+      </div>
+    </div>
+
+    <!-- Contrato -->
+    <div *ngIf="permitirAgregarEditar && Condomino.contrato" class="row mt-2">
+      <div class="col-12 text-center my-1"><b>Contrato</b></div>
+      <div class="col-12 text-center">
+        <i class="pi pi-file-pdf img-thumbnail text-danger p-3" style="font-size: 7rem; cursor: pointer"
+          pTooltip="Visualizar el contrato de arrendamiento" tooltipPosition="top"
+          (click)="onContratoMostrar(Condomino)"></i>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

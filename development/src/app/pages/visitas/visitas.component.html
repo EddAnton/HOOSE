@@ -1,0 +1,350 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptVisitas
+		[responsive]="true"
+		[value]="Visitas"
+		[columns]="VisitasCols"
+		[globalFilterFields]="VisitasFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Visitas.length > 0"
+		[rows]="50"
+		dataKey="id_visita"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar visita"
+						tooltipPosition="right"
+						(click)="onVisitaEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptVisitas.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptVisitas)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Visita>
+			<tr>
+				<td><span class="p-column-title">Visitante</span>{{ Visita.visitante }}</td>
+				<td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Visita.telefono | phoneFormat }}</td>
+				<td><span class="p-column-title">Unidad</span>{{ Visita.unidad }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Entrada</span>{{ Visita.fecha_hora_entrada | date : 'MMMM dd, yyyy' | uppercase
+					}}<br />
+					{{ Visita.fecha_hora_entrada | date : 'hh:mm aaa' | uppercase }}
+				</td>
+
+				<td class="text-md-end">
+					<span class="p-column-title">Salida</span>
+					<span *ngIf="Visita.fecha_hora_salida; else sinSalida">
+						{{ Visita.fecha_hora_salida | date : 'MMMM dd, yyyy' | uppercase }}<br />
+						{{ Visita.fecha_hora_salida | date : 'hh:mm aaa' | uppercase }}
+					</span>
+					<ng-template #sinSalida>
+						<div style="cursor: pointer">
+							<p-tag
+								severity="danger"
+								value="Registrar salida"
+								pTooltip="Registrar salida"
+								tooltipPosition="left"
+								(click)="onVisitaRegistrarSalida(Visita)"
+							></p-tag>
+						</div>
+					</ng-template>
+				</td>
+				<td class="text-end">
+					<!-- Botón Recibo de pago -->
+					<!-- <button
+						pButton
+						type="button"
+						icon="pi pi-file-pdf"
+						class="p-button-rounded p-button-text p-button-primary me-1"
+						pTooltip="Recibo de pago de la visita"
+						tooltipPosition="left"
+						(click)="onVisitaReciboPago(Visita.id_visita)"
+					></button> -->
+					<!-- Botón Editar -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar visita"
+						tooltipPosition="left"
+						(click)="onVisitaEditar(Visita.id_visita)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirEliminar"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar visita"
+						tooltipPosition="left"
+						(click)="onVisitaEliminar(Visita.id_visita)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td colspan="3">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgVisita
+	[(visible)]="mostrarDialogoEdicion"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles de la Visita {{ Visita && Visita.id_visita == 0 ? ' Nueva' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmVisita" class="mt-1" [formGroup]="frmVisita" autocomplete="off">
+			<div class="row py-1">
+				<!-- Visitante -->
+				<div class="col-12 col-md-7">
+					<label for="txtVisitante">Visitante</label>
+					<input
+						type="text"
+						pInputText
+						id="txtVisitante"
+						formControlName="visitante"
+						class="uppercase"
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Teléfono -->
+				<div class="col-12 col-md-5">
+					<label for="txtTelefono">Teléfono</label>
+					<p-inputMask
+						id="txtTelefono"
+						formControlName="telefono"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+				</div>
+			</div>
+
+			<!-- Domicilio -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtDomicilio">Domicilio</label>
+					<textarea
+						pInputTextarea
+						id="txtDomicilio"
+						formControlName="domicilio"
+						rows="3"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Unidad -->
+				<div class="col-12 form-label-group">
+					<label for="cmdUnidad">Unidad</label>
+					<select #cmdUnidad id="cmdUnidad" formControlName="id_unidad" class="form-select">
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let unidad of Unidades" [value]="unidad.id_unidad">
+							{{ unidad.unidad }}
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Identificación Folio -->
+				<div class="col-12 col-sm-4">
+					<label for="txtIdentificacionFolio">Folio Identificación</label>
+					<input
+						pInputText
+						type="text"
+						id="txtIdentificacionFolio"
+						formControlName="identificacion_folio"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Fecha hora entrada -->
+				<div class="col-12 col-sm-4">
+					<label for="txtFechaHoraEntrada">Fecha y hora de entrada</label>
+					<p-calendar
+						inputId="txtFechaHoraEntrada"
+						formControlName="fecha_hora_entrada"
+						dateFormat="dd-MM-yy"
+						showTime="true"
+						[appendTo]="dlgVisita"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[maxDate]="fechaLimite && Visita.fecha_hora_salida"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+				<!-- Fecha hora salida -->
+				<div class="col-12 col-sm-4">
+					<label for="txtFechaHoraSalida">Fecha y hora de salida</label>
+					<p-calendar
+						inputId="txtFechaHoraSalida"
+						formControlName="fecha_hora_salida"
+						dateFormat="dd-MM-yy"
+						showTime="true"
+						[appendTo]="dlgVisita"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[minDate]="Visita.fecha_hora_entrada"
+						[maxDate]="fechaLimite"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmVisita.valid"
+			(click)="onVisitaEditarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onVisitaEditarCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo registrar salida -->
+<p-dialog
+	#dlgRegistrarSalida
+	[(visible)]="mostrarDialogoRegistrarSalida"
+	[style]="{ width: '350px' }"
+	[modal]="true"
+	[closable]="false"
+	header="Registrar salida"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmRegistrarSalida" class="mt-1" [formGroup]="frmRegistrarSalida" autocomplete="off">
+			<div class="row py-1">
+				<!-- Fecha y hora de salida -->
+				<div class="col-12">
+					<label for="txtFechaHoraSalida">Fecha y hora de salida</label>
+					<p-calendar
+						inputId="txtFechaHoraSalida"
+						formControlName="fecha_hora_salida"
+						dateFormat="dd-MM-yy"
+						showTime="true"
+						inputStyleClass="uppercase"
+						[appendTo]="dlgVisita"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[minDate]="Visita.fecha_hora_entrada"
+						[maxDate]="fechaLimite"
+					></p-calendar>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Confirmar -->
+		<button
+			pButton
+			type="button"
+			label="Confirmar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Registrar la salida del visitante"
+			tooltipPosition="top"
+			[disabled]="!frmRegistrarSalida.valid"
+			(click)="onVisitaRegistrarSalidaGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onVisitaRegistrarSalidaCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>

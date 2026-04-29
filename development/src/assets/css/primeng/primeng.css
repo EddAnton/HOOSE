@@ -1,0 +1,35 @@
+@import 'primeng-component.css';
+@import 'primeng-button.css';
+@import 'primeng-table.css';
+@import 'primeng-dialog.css';
+@import 'primeng-tooltip.css';
+@import 'primeng-tag.css';
+@import 'primeng-menu.css';
+@import 'primeng-carousel.css';
+@import 'primeng-fieldset.css';
+/* @import 'primeng-tabview.css'; */
+
+:root {
+  /* Component */
+  --primeng-component-font-family: EncodeSansCondensed, GoogleSans, MerriweatherSans, Helvetica, Arial, sans-serif;
+  --primeng-component-font-size: 0.9rem;
+
+  /* Table */
+  --primeng-table-header-bgcolor: #dddddd;
+  --primeng-table-stripped-even-bgcolor: #f6f6f6;
+
+  /* Dialog */
+  --primeng-dialog-header-footer-bgcolor: #f7f7f7;
+}
+
+@media screen and (max-width: 340px) {
+  :root {
+    --primeng-component-font-size: 0.8rem;
+  }
+}
+
+@media screen and (min-width: 341px) and (max-width: 640px) {
+  :root {
+    --primeng-component-font-size: 0.85rem;
+  }
+}

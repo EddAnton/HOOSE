@@ -1,0 +1,302 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptUnidades
+		[responsive]="true"
+		[value]="Unidades"
+		[columns]="UnidadesCols"
+		[globalFilterFields]="UnidadesFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Unidades.length > 0"
+		[rows]="50"
+		dataKey="id_unidad"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar unidad"
+						tooltipPosition="right"
+						(click)="onUnidadEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptUnidades.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptUnidades)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Unidad>
+			<tr>
+				<td><span class="p-column-title">Unidad</span>{{ Unidad.unidad }}</td>
+				<td><span class="p-column-title">Edificio</span>{{ Unidad.edificio }}</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Escrituras</span>
+					<i
+						*ngIf="Unidad.escrituras_archivo && Unidad.escrituras_archivo != ''"
+						class="pi pi-file-pdf text-danger"
+						style="cursor: pointer; font-size: 1.2rem"
+						pTooltip="Visualizar las escrituras de la Unidad"
+						tooltipPosition="top"
+						(click)="onUnidadEscriturasMostrar(Unidad)"
+					></i>
+				</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Estatus</span>
+					<span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
+						<p-tag
+							severity="{{ Unidad.estatus == 1 ? 'success' : 'danger' }}"
+							value="{{ Unidad.estatus == 1 ? 'A' : 'Ina' }}ctiva"
+							pTooltip="{{ Unidad.estatus == 1 ? 'Desh' : 'H' }}abilitar unidad"
+							tooltipPosition="left"
+							tooltipDisabled="{{ !permitirAgregarEditar }}"
+							(click)="permitirAgregarEditar && onUnidadAlternarEstatus(Unidad)"
+						></p-tag>
+					</span>
+				</td>
+				<td class="text-end">
+					<!-- Botón Mostrar escrituras -->
+					<!-- <button
+						*ngIf="Unidad.escrituras_archivo"
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Mostrar escrituras de la Unidad"
+						tooltipPosition="left"
+						(click)="onUnidadEscriturasMostrar(Unidad)"
+					></button> -->
+					<!-- Botón Editar -->
+					<button
+						pButton
+						*ngIf="permitirAgregarEditar && Unidad.estatus == 1"
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar información de la Unidad"
+						tooltipPosition="left"
+						(click)="onUnidadEditar(Unidad)"
+					></button>
+					<!-- Botón Deshabilitar -->
+					<!-- <button
+						*ngIf="Unidad.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Deshabilitar la Unidad"
+						tooltipPosition="left"
+						(click)="onUnidadDeshabilitar(Unidad)"
+					></button> -->
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td>Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	[(visible)]="mostrarDialogoEdicionUnidad"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles de la Unidad {{ Unidad && Unidad.id_unidad == 0 ? ' Nueva' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmUnidad" class="mt-1" [formGroup]="frmUnidad" autocomplete="off">
+			<!-- Edificio -->
+			<div class="row py-1">
+				<div class="col-12 form-label-group">
+					<label for="cmbEdificio">Edificio</label>
+					<select #cmbEdificio id="cmbEdificio" formControlName="id_edificio" class="form-select" autofocus>
+						<option [value]="0" disabled selected>Selecciona una opción...</option>
+						<option *ngFor="let edificio of Edificios" [value]="edificio.id_edificio">
+							{{ edificio.edificio }}
+						</option>
+					</select>
+				</div>
+			</div>
+			<!-- Unidad -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="unidad">Unidad</label>
+					<input
+						type="text"
+						pInputText
+						id="txtUnidad"
+						formControlName="unidad"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+
+			<!-- Escrituras -->
+			<hr />
+			Escrituras
+			<div class="row py-1">
+				<!-- Escrituras de la Unidad -->
+				<div *ngIf="srcEscrituras != null" class="col-12 text-center pb-3">
+					<i
+						class="pi pi-file-pdf img-thumbnail text-danger p-3"
+						style="font-size: 7rem; cursor: pointer"
+						pTooltip="Visualizar las escrituras de la Unidad"
+						tooltipPosition="top"
+						(click)="onUnidadEscriturasMostrar()"
+					></i>
+				</div>
+				<div class="col-12 text-center">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar escrituras -->
+						<label
+							for="txtEscriturasArchivo"
+							class="btn btn-dark"
+							pTooltip="{{ (!Unidad.escrituras_archivo ? 'Establecer' : 'Actualizar') + ' escrituras' }}"
+							tooltipPosition="top"
+							><i class="pi pi-folder-open"></i>
+						</label>
+						<input
+							type="file"
+							id="txtEscriturasArchivo"
+							class="form-control d-none"
+							accept=".pdf"
+							aria-describedby="btnClearEscrituras"
+							pTooltip="Selecciona escrituras de la unidad"
+							tooltipPosition="top"
+							(change)="onEscriturasSeleccionadas($event)"
+						/>
+						<!-- Botón Eliminar escrituras seleccionada -->
+						<button
+							*ngIf="frmUnidad.get('archivo_escrituras').value"
+							type="button"
+							id="btnClearEscrituras"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nuevo archivo con las  escrituras"
+							tooltipPosition="left"
+							[disabled]="!frmUnidad.get('archivo_escrituras').value"
+							(click)="onEscriturasSeleccionadasCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+						<!-- Botón Eliminar escrituras -->
+						<button
+							*ngIf="frmUnidad.get('escrituras_archivo').value"
+							type="button"
+							icon="pi pi-trash"
+							class="btn btn-danger"
+							pTooltip="Borrar el archivo con las escrituras ya almacenado"
+							tooltipPosition="left"
+							[disabled]="!frmUnidad.get('escrituras_archivo').value"
+							(click)="onEscriturasEliminadas()"
+						>
+							<i class="pi pi-trash"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmUnidad.valid"
+			(click)="onUnidadGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onUnidadCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Escrituras -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoEscriturasUnidad"
+	[contentStyle]="{ display: 'flex', height: '90vh' }"
+	modal="true"
+	header="Escrituras de la Unidad"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer">
+			<iframe id="fraEscrituras" class="img-thumbnail" [src]="escriturasURL()" (load)="onUnidadEscriturasMostradas()">
+			</iframe>
+		</div>
+	</ng-template>
+</p-dialog>

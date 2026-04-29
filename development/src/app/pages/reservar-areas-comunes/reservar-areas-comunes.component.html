@@ -1,0 +1,294 @@
+<full-calendar #calendar [options]="calendarOptions">
+	<ng-template #eventContent let-arg>
+		{{ arg.event.title }}
+	</ng-template>
+</full-calendar>
+
+<!-- Diálogo Detalles del Reservacion -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[(visible)]="mostrarDialogoDetallesReservacion"
+	contentStyleClass="pb-1"
+	modal="true"
+	header="Detalles del Reservación"
+>
+	<ng-template pTemplate="content">
+		<div class="row py-2">
+			<div class="col-12 col-md-6">
+				<p class="m-0"><b>Área:</b> {{ Reservacion.area_comun }}</p>
+			</div>
+			<div class="col-12 col-md-6">
+				<p class="m-0"><b>Usuario:</b> {{ Reservacion.usuario }}</p>
+			</div>
+		</div>
+
+		<div class="row pb-2 border-bottom">
+			<div class="col-6">
+				<p class="m-0">
+					<b>Fecha inicio:</b> {{ Reservacion.fecha_inicio | date : 'MMMM dd, yyyy, h:mm a' | uppercase }}
+				</p>
+			</div>
+			<div class="col-6">
+				<p class="m-0"><b>Fecha fin:</b> {{ Reservacion.fecha_fin | date : 'MMMM dd, yyyy, h:mm a' | uppercase }}</p>
+			</div>
+		</div>
+		<div class="row pb-2">
+			<div class="col-6">
+				<p class="m-0"><b>Pagada:</b> {{ Reservacion.pagado == 1 ? 'SI' : 'NO' }}</p>
+			</div>
+			<div class="col-6">
+				<p *ngIf="Reservacion.pagado == 1" class="m-0">
+					<b>Fecha pago:</b> {{ Reservacion.fecha_pago | date : 'MMMM dd, yyyy' | uppercase }}
+				</p>
+			</div>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<div class="d-flex">
+			<div class="me-auto">
+				<!-- Cancelar reservación -->
+				<button
+					pButton
+					*ngIf="permitirEditarReservacion"
+					type="button"
+					label="Cancelar reservación"
+					icon="bx bx-calendar-edit"
+					class="p-button-raised p-button-warning me-sm-1"
+					pTooltip="Cancelar la reservación"
+					tooltipPosition="top"
+					(click)="onReservacionCancelar(Reservacion.id_area_comun_reservacion)"
+				></button>
+			</div>
+			<div>
+				<!-- Editar -->
+				<button
+					pButton
+					*ngIf="permitirEditarReservacion"
+					type="button"
+					label="Editar reservación"
+					icon="bx bx-calendar-edit"
+					class="p-button-raised p-button-info me-sm-1"
+					pTooltip="Editar la reservación"
+					tooltipPosition="top"
+					(click)="onReservacionEditar(Reservacion.id_area_comun_reservacion)"
+				></button>
+				<!-- Registrar pago -->
+				<button
+					pButton
+					*ngIf="permitirPagoReservacion"
+					type="button"
+					label="Registrar pago"
+					icon="bx bx-calendar-edit"
+					class="p-button-raised p-button-info me-sm-1"
+					pTooltip="Registrar el pago de la reservación"
+					tooltipPosition="top"
+					(click)="onReservacionEditar(Reservacion.id_area_comun_reservacion)"
+				></button>
+				<!-- Botón Cerrar -->
+				<button
+					pButton
+					type="button"
+					label="Cerrar"
+					icon="bi bi-box-arrow-right"
+					class="p-button-raised p-button-danger ml-2"
+					pTooltip="Cerrar la ventana"
+					tooltipPosition="top"
+					(click)="mostrarDialogoDetallesReservacion = false"
+				></button>
+			</div>
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgReservacion
+	[(visible)]="mostrarDialogoEdicionReservacion"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Reservación {{ Reservacion && Reservacion.id_area_comun_reservacion == 0 ? 'Nueva' : 'Modificando' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmReservacion" class="mt-1" [formGroup]="frmReservacion" autocomplete="off">
+			<div class="row py-1">
+				<!-- Área común -->
+				<div class="col-12 col-md-6 form-label-group">
+					<label for="cmbAreaComun">Area común</label>
+					<select
+						#cmbAreaComun
+						id="cmbAreaComun"
+						formControlName="id_area_comun"
+						class="form-select"
+						(change)="onAreaComunSeleccionada($event.target.value)"
+						autofocus
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let areaComun of AreasComunes" [value]="areaComun.id_area_comun">
+							{{ areaComun.nombre }}
+						</option>
+					</select>
+				</div>
+				<!-- Persona -->
+				<div class="col-12 col-md-6 form-label-group">
+					<label for="cmbUsuario">Persona</label>
+					<select #cmbUsuario id="cmbUsuario" formControlName="id_usuario" class="form-select" autofocus>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let usuario of Usuarios" [value]="usuario.id_usuario">
+							{{ usuario.nombre }}
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Fecha inicio -->
+				<div class="col-12 col-sm-4">
+					<label for="txtFechaInicio">Fecha inicio</label>
+					<p-calendar
+						inputId="txtFechaInicio"
+						formControlName="fecha_inicio"
+						dateFormat="dd-MM-yy"
+						inputStyleClass="uppercase"
+						[showTime]="true"
+						[appendTo]="dlgReservacion"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[minDate]="fechaRegistroLimite"
+						(onClose)="onCalcularImporteSugerido()"
+					></p-calendar>
+				</div>
+				<!-- Fecha fin -->
+				<div class="col-12 col-sm-4">
+					<label for="txtFechaFin">Fecha fin</label>
+					<p-calendar
+						inputId="txtFechaFin"
+						formControlName="fecha_fin"
+						dateFormat="dd-MM-yy"
+						inputStyleClass="uppercase"
+						[showTime]="true"
+						[appendTo]="dlgReservacion"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[minDate]="fechaRegistroLimite"
+						(onClose)="onCalcularImporteSugerido()"
+					></p-calendar>
+				</div>
+				<!-- Importe hora-->
+				<div class="col-12 col-sm-4">
+					<label for="txtImporteHora">Importe hora</label>
+					<p-inputNumber
+						inputId="txtImporteHora"
+						formControlName="importe_hora"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="onCalcularImporteSugerido()"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Importe sugerido -->
+				<div class="col-2 offset-6 align-self-center text-end">
+					<label>Importe sugerido:</label>
+				</div>
+				<div class="col-4">
+					<p-inputNumber
+						inputId="txtImporteSugerido"
+						formControlName="importe_sugerido"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Importe total -->
+				<div class="col-2 offset-6 align-self-center text-end">
+					<label>Importe:</label>
+				</div>
+				<!-- Importe -->
+				<div class="col-4">
+					<p-inputNumber
+						inputId="txtImporte"
+						formControlName="importe_total"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Pagada -->
+				<div class="col align-self-center mt-0">
+					<div>
+						<div class="d-flex justify-content-end">
+							<p-inputSwitch
+								formControlName="pagado"
+								pTooltip="Indicar si la reservacion se encuentra pagada"
+								tooltipPosition="top"
+								(onChange)="onPagadoChange($event.checked)"
+							></p-inputSwitch>
+							<span class="ms-2">¿Pagada?&nbsp;&nbsp;&nbsp;Fecha pago:</span>
+						</div>
+					</div>
+				</div>
+				<!-- Fecha pago -->
+				<div class="col-4">
+					<p-calendar
+						inputId="txtFechaPago"
+						formControlName="fecha_pago"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgReservacion"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmReservacion.valid"
+			(click)="onReservacionEditarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onReservacionEditarCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>

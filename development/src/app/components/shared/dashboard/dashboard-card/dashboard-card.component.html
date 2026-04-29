@@ -1,0 +1,16 @@
+<div class="card-container">
+  <div *ngIf="urlLogo == null">
+    <div class="title">{{ titleMessage }}</div>
+    <div *ngIf="contentMessage" class="content">{{ contentMessage }}</div>
+    <div *ngIf="footerPath && idCondominio > 0" class="footer">
+      <a [routerLink]="footerPath">Más información <span><i class="bx bxs-right-arrow-circle"></i></span></a>
+    </div>
+    <div *ngIf="subtitleMessage" class="subtitle">{{ subtitleMessage }}</div>
+  </div>
+  <div *ngIf="urlLogo != null" class="logo">
+    <div class="title">{{ titleMessage }}</div>
+    <div class="image">
+      <img src="{{ urlLogo }}" />
+    </div>
+  </div>
+</div>

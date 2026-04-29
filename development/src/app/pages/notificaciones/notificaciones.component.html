@@ -1,0 +1,422 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptNotificaciones
+		[responsive]="true"
+		[value]="Notificaciones"
+		[columns]="NotificacionesCols"
+		[rowHover]="true"
+		[globalFilterFields]="NotificacionesFilter"
+		[showCurrentPageReport]="true"
+		[paginator]="Notificaciones.length > 0"
+		[rows]="50"
+		dataKey="id_notificacion"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar notificación"
+						tooltipPosition="right"
+						(click)="onNotificacionEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptNotificaciones.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptNotificaciones)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Notificacion>
+			<tr>
+				<td>
+					<span class="p-column-title">Fecha</span
+					>{{ Notificacion.fecha | date : "MMMM dd, yyyy';' h:mm a" | uppercase }}
+				</td>
+				<td><span class="p-column-title">Asunto</span>{{ Notificacion.asunto }}</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Enviado</span>{{ Notificacion.enviado == 1 ? 'SI' : 'NO' }}
+				</td>
+				<td>
+					<span class="p-column-title">Fecha enviado</span
+					>{{ Notificacion.fecha_enviado | date : "MMMM dd, yyyy ';' h:mm a" | uppercase }}
+				</td>
+				<td><span class="p-column-title">Usuario envio</span>{{ Notificacion.usuario_envio }}</td>
+				<td class="text-end">
+					<!-- Botón Enviar -->
+					<button
+						pButton
+						*ngIf="Notificacion.estatus == 1"
+						type="button"
+						icon="pi pi-envelope"
+						class="p-button-rounded p-button-text p-button-primary me-1"
+						pTooltip="{{ Notificacion.enviado == 1 ? 'Ree' : 'E' }}nviar la notificación"
+						tooltipPosition="left"
+						(click)="onNotificacionEnviar(Notificacion)"
+					></button>
+					<!-- Botón Editar -->
+					<button
+						pButton
+						*ngIf="Notificacion.estatus == 1 && Notificacion.enviado != 1"
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar notificación"
+						tooltipPosition="left"
+						(click)="onNotificacionEditar(Notificacion.id_notificacion)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						*ngIf="Notificacion.enviado == 1"
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles de la notificación"
+						tooltipPosition="left"
+						(click)="onNotificacionDetalle(Notificacion.id_notificacion)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						pButton
+						*ngIf="Notificacion.estatus == 1 && Notificacion.enviado != 1"
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar la notificación"
+						tooltipPosition="left"
+						(click)="onNotificacionEliminar(Notificacion.id_notificacion)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td [attr.colspan]="NotificacionesCols.length">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgNotificacion
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '70vw' }"
+	[(visible)]="mostrarDialogoEdicionNotificacion"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles de la Notificación {{ Notificacion && Notificacion.id_notificacion == 0 ? ' Nueva' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmNotificacion" class="mt-1" [formGroup]="frmNotificacion" autocomplete="off">
+			<div class="row py-1">
+				<!-- Asunto -->
+				<div class="col-12 col-sm-8 col-md-9 col-lg-10">
+					<label for="asunto">Asunto</label>
+					<input
+						type="text"
+						pInputText
+						id="asunto"
+						formControlName="asunto"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<div class="col-12 col-sm-4 col-md-3 col-lg-2 align-self-end text-center mt-0 mt-sm-3">
+					<label>
+						<div class="d-flex align-items-center">
+							<p-inputSwitch
+								formControlName="enviar"
+								pTooltip="Indicar si la notificación será enviada al almacenar la información"
+								tooltipPosition="top"
+							></p-inputSwitch>
+							<span class="ms-2"> ¿Enviar?</span>
+						</div></label
+					>
+				</div>
+			</div>
+			<div class="title-line mt-2">Destinatarios</div>
+			<p-tabView styleClass="m-0 p-0">
+				<p-tabPanel
+					header="Propietarios"
+					[disabled]="PropietariosDisponibles.length < 1 && PropietariosSeleccionados.length < 1"
+					><p-pickList
+						[responsive]="true"
+						[dragdrop]="true"
+						[source]="PropietariosDisponibles"
+						[target]="PropietariosSeleccionados"
+						sourceHeader="Disponibles"
+						targetHeader="Seleccionados"
+						[sourceStyle]="{ height: '220px' }"
+						[targetStyle]="{ height: '220px' }"
+						[showSourceControls]="false"
+						[showTargetControls]="false"
+						filterBy="nombre"
+						sourceFilterPlaceholder="Filtrar"
+						targetFilterPlaceholder="Filtrar"
+						(onMoveToSource)="onOrdenarDestinatarios(PropietariosDisponibles)"
+						(onMoveAllToSource)="onOrdenarDestinatarios(PropietariosDisponibles)"
+						(onMoveToTarget)="onOrdenarDestinatarios(PropietariosSeleccionados)"
+						(onMoveAllToTarget)="onOrdenarDestinatarios(PropietariosSeleccionados)"
+					>
+						<ng-template let-Destinatario pTemplate="item">
+							<div>{{ Destinatario.nombre }} <{{ Destinatario.email }}></div>
+						</ng-template>
+					</p-pickList></p-tabPanel
+				>
+				<p-tabPanel
+					header="Condóminos"
+					[disabled]="CondominosDisponibles.length < 1 && CondominosSeleccionados.length < 1"
+					><p-pickList
+						[responsive]="true"
+						[dragdrop]="true"
+						[source]="CondominosDisponibles"
+						[target]="CondominosSeleccionados"
+						sourceHeader="Disponibles"
+						targetHeader="Seleccionados"
+						[sourceStyle]="{ height: '220px' }"
+						[targetStyle]="{ height: '220px' }"
+						[showSourceControls]="false"
+						[showTargetControls]="false"
+						filterBy="nombre"
+						sourceFilterPlaceholder="Filtrar"
+						targetFilterPlaceholder="Filtrar"
+						(onMoveToSource)="onOrdenarDestinatarios(CondominosDisponibles)"
+						(onMoveAllToSource)="onOrdenarDestinatarios(CondominosDisponibles)"
+						(onMoveToTarget)="onOrdenarDestinatarios(CondominosSeleccionados)"
+						(onMoveAllToTarget)="onOrdenarDestinatarios(CondominosSeleccionados)"
+					>
+						<ng-template let-Destinatario pTemplate="item">
+							<div>{{ Destinatario.nombre }} <{{ Destinatario.email }}></div>
+						</ng-template>
+					</p-pickList></p-tabPanel
+				>
+				<p-tabPanel
+					header="Colaboradores"
+					[disabled]="ColaboradoresDisponibles.length < 1 && ColaboradoresSeleccionados.length < 1"
+					><p-pickList
+						[responsive]="true"
+						[dragdrop]="true"
+						[source]="ColaboradoresDisponibles"
+						[target]="ColaboradoresSeleccionados"
+						sourceHeader="Disponibles"
+						targetHeader="Seleccionados"
+						[sourceStyle]="{ height: '220px' }"
+						[targetStyle]="{ height: '220px' }"
+						[showSourceControls]="false"
+						[showTargetControls]="false"
+						filterBy="nombre"
+						sourceFilterPlaceholder="Filtrar"
+						targetFilterPlaceholder="Filtrar"
+						(onMoveToSource)="onOrdenarDestinatarios(ColaboradoresDisponibles)"
+						(onMoveAllToSource)="onOrdenarDestinatarios(ColaboradoresDisponibles)"
+						(onMoveToTarget)="onOrdenarDestinatarios(ColaboradoresSeleccionados)"
+						(onMoveAllToTarget)="onOrdenarDestinatarios(ColaboradoresSeleccionados)"
+					>
+						<ng-template let-Destinatario pTemplate="item">
+							<div>{{ Destinatario.nombre }} <{{ Destinatario.email }}></div>
+						</ng-template>
+					</p-pickList></p-tabPanel
+				>
+			</p-tabView>
+			<div class="title-line m-2">Mensaje</div>
+			<div class="row">
+				<div class="col-12 mx-2">
+					<p-editor #mensaje formControlName="mensaje" [style]="{ height: '320px' }" [modules]="ModulosEditorMensaje">
+						<p-header>
+							<span class="ql-formats">
+								<select class="ql-header" tabindex="-1">
+									<option value="1" tabindex="-1">Título</option>
+									<option value="2" tabindex="-1">Subtítulo</option>
+									<option selected tabindex="-1">Normal</option>
+								</select>
+								<select class="ql-font" tabindex="-1">
+									<option selected tabindex="-1">Sans Serif</option>
+									<option value="serif" tabindex="-1">Serif</option>
+									<option value="monospace" tabindex="-1">Monospace</option>
+								</select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+								<button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+								<button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+							</span>
+							<span class="ql-formats">
+								<select class="ql-color" tabindex="-1"></select>
+								<select class="ql-background" tabindex="-1"></select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+								<button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+								<select class="ql-align" tabindex="-1">
+									<option selected tabindex="-1"></option>
+									<option value="center" tabindex="-1"></option>
+									<option value="right" tabindex="-1"></option>
+									<option value="justify" tabindex="-1"></option>
+								</select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-image" aria-label="Insert Image" tabindex="-1"></button>
+							</span>
+						</p-header>
+					</p-editor>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="
+				!frmNotificacion.valid ||
+				(PropietariosSeleccionados.length == 0 &&
+					CondominosSeleccionados.length == 0 &&
+					ColaboradoresSeleccionados.length == 0)
+			"
+			(click)="onNotificacionGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onNotificacionCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalle -->
+<p-dialog
+	#dlgNotificacionDetalle
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '70vw' }"
+	[(visible)]="mostrarDialogoDetalleNotificacion"
+	modal="true"
+	dismissableMask="true"
+	header="Detalle del notificación"
+>
+	<ng-template pTemplate="content">
+		<div class="pt-2">
+			<!-- Notificación -->
+			<div class="row m-0">
+				<div class="col-12 pt-1 m-0">
+					<b>Fecha:</b> {{ NotificacionDetalle.fecha | date : "MMMM dd, yyyy 'a las' h:mm a" | uppercase }}
+				</div>
+				<div class="col-12 pb-1 m-0"><b>Asunto:</b> {{ NotificacionDetalle.asunto }}</div>
+				<div class="col-12pb-1 m-0">
+					<b>Enviado:</b> {{ NotificacionDetalle.enviado == 1 ? 'SI;' : 'NO' }}
+					<span *ngIf="NotificacionDetalle.enviado == 1"
+						>el {{ NotificacionDetalle.fecha_enviado | date : "dd 'de' MMMM 'de' yyyy" | uppercase }} a las
+						{{ NotificacionDetalle.fecha_enviado | date : 'h:mm a' }};
+					</span>
+					<span *ngIf="NotificacionDetalle.enviado == 1">por {{ NotificacionDetalle.usuario_envio }}</span>
+				</div>
+			</div>
+		</div>
+		<div class="title-line m-2">Destinatarios</div>
+		<p-tabView styleClass="mx-3 my-0 pt-2">
+			<p-tabPanel header="Propietarios" [disabled]="PropietariosSeleccionados.length < 1"
+				><ul>
+					<li *ngFor="let destinatario of PropietariosSeleccionados">
+						{{ destinatario.nombre }} <{{ destinatario.email }}>
+					</li>
+				</ul></p-tabPanel
+			>
+			<p-tabPanel header="Condóminos" [disabled]="CondominosSeleccionados.length < 1"
+				><ul>
+					<li *ngFor="let destinatario of CondominosSeleccionados">
+						{{ destinatario.nombre }} < {{ destinatario.email }} >
+					</li>
+				</ul></p-tabPanel
+			>
+			<p-tabPanel header="Colaboradores" [disabled]="ColaboradoresSeleccionados.length < 1"
+				><ul>
+					<li *ngFor="let destinatario of ColaboradoresSeleccionados">
+						{{ destinatario.nombre }} < {{ destinatario.email }} >
+					</li>
+				</ul></p-tabPanel
+			>
+		</p-tabView>
+		<div class="title-line m-2">Mensaje</div>
+		<div class="row border-start border-end border-bottom rounded m-0">
+			<div class="col-12 py-1" [innerHtml]="NotificacionDetalle.mensaje"></div>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Cerrar -->
+		<button
+			pButton
+			type="button"
+			label="Cerrar"
+			icon="bi bi-box-arrow-right"
+			class="p-button-raised p-button-danger ml-2"
+			pTooltip="Cerrar la ventana"
+			tooltipPosition="top"
+			(click)="mostrarDialogoDetalleNotificacion = false"
+		></button>
+	</ng-template>
+</p-dialog>

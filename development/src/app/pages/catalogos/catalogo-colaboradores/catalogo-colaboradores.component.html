@@ -1,0 +1,773 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptColaboradores
+		[responsive]="true"
+		[value]="Colaboradores"
+		[columns]="ColaboradoresCols"
+		[rowHover]="true"
+		[globalFilterFields]="ColaboradoresFilter"
+		[showCurrentPageReport]="true"
+		[paginator]="Colaboradores.length > 0"
+		[rows]="50"
+		dataKey="id_usuario"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar colaborador"
+						tooltipPosition="right"
+						(click)="onColaboradorEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptColaboradores.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptColaboradores)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngClass]="col.class ? col.class : ''"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Colaborador>
+			<tr>
+				<td class="me-1 mt-1">
+					<div (click)="onColaboradorDetalles(Colaborador.id_usuario)" style="cursor: pointer">
+						<img
+							class="rounded-circle"
+							src="{{
+								Colaborador.imagen
+									? appData.urlBackendUsuariosFiles + Colaborador.id_usuario + '/' + Colaborador.imagen
+									: './assets/img/imagen_no_disponible.png'
+							}}"
+							style="width: 70px; height: 70px"
+						/>
+					</div>
+				</td>
+				<td><span class="p-column-title">Nombre</span>{{ Colaborador.nombre }}</td>
+				<td><span class="p-column-title">Usuario</span>{{ Colaborador.usuario }}</td>
+				<td><span class="p-column-title">Email</span>{{ Colaborador.email }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Contacto</span>{{ Colaborador.telefono | phoneFormat }}
+				</td>
+				<td class="carriage-return"><span class="p-column-title">Domicilio</span>{{ Colaborador.domicilio }}</td>
+				<td><span class="p-column-title">Tipo</span>{{ Colaborador.tipo_miembro }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Inicio</span>{{ Colaborador.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Salario</span>{{ Colaborador.salario | number : '1.2-2' }}
+				</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Estatus</span>
+					<span [ngStyle]="{ cursor: Colaborador.id_estatus_recaudacion == 1 ? 'pointer' : 'context-menu' }">
+						<p-tag
+							severity="{{ Colaborador.estatus == 1 ? 'success' : 'danger' }}"
+							value="{{ Colaborador.estatus == 1 ? 'A' : 'Ina' }}ctivo"
+							pTooltip="{{ Colaborador.estatus == 1 ? 'Desh' : 'H' }}abilitar colaborador"
+							tooltipPosition="left"
+							tooltipDisabled="{{ !permitirAgregarEditar }}"
+							(click)="permitirAgregarEditar && onColaboradorAlternarEstatus(Colaborador)"
+						></p-tag>
+					</span>
+				</td>
+				<td class="text-end">
+					<!-- <p-splitButton
+						icon="pi pi-eye"
+						styleClass="p-button-warning p-menu-align-right"
+						[model]="mnuAcciones"
+						(onClick)="onColaboradorDetalles(Colaborador.id_usuario)"
+						(onDropdownClick)="onDropdownActions(Colaborador)"
+					></p-splitButton> -->
+					<!-- Botón Editar -->
+					<button
+						*ngIf="permitirAgregarEditar && Colaborador.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar colaborador"
+						tooltipPosition="left"
+						(click)="onColaboradorEditar(Colaborador.id_usuario)"
+					></button>
+					<!-- Botón Salarios -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-money-bill"
+						class="p-button-rounded p-button-text me-1"
+						pTooltip="Salarios"
+						tooltipPosition="left"
+						(click)="onColaboradorDetalles(Colaborador.id_usuario)"
+					></button>
+					<!-- Botón Solicitudes ausencia -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-calendar"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Solicitudes de ausencia"
+						tooltipPosition="left"
+						(click)="onColaboradorDetalles(Colaborador.id_usuario)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles del colaborador"
+						tooltipPosition="left"
+						(click)="onColaboradorDetalles(Colaborador.id_usuario)"
+					></button>
+
+					<!-- Botón Deshabilitar -->
+					<!-- <button
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Deshabilitar colaborador"
+						tooltipPosition="left"
+						(click)="onColaboradorDeshabilitar(Colaborador)"
+					></button> -->
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td colspan="2">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgColaborador
+	[(visible)]="mostrarDialogoEdicionColaborador"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Colaborador {{ Colaborador && Colaborador.id_usuario == 0 ? ' Nuevo' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmColaborador" class="mt-1" [formGroup]="frmColaborador" autocomplete="off">
+			<div class="row py-1">
+				<!-- Nombre -->
+				<div class="col-12 col-md-8">
+					<label for="txtNombre">Nombre</label>
+					<input
+						type="text"
+						pInputText
+						id="txtNombre"
+						formControlName="nombre"
+						class="uppercase"
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Usuario -->
+				<div class="col-12 col-md-4">
+					<label for="txtUsuario">Usuario</label>
+					<input
+						type="text"
+						pInputText
+						id="txtUsuario"
+						formControlName="usuario"
+						class="lowercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Email  -->
+				<div class="col-12 col-md-6">
+					<label for="txtEmail">Email</label>
+					<input
+						type="text"
+						pInputText
+						id="txtEmail"
+						formControlName="email"
+						class="lowercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Teléfono -->
+				<div class="col-12 col-md-6">
+					<label for="txtTelefono">Teléfono</label>
+					<p-inputMask
+						id="txtTelefono"
+						formControlName="telefono"
+						mask="(9999) 99-9999"
+						unmask="true"
+						placeholder="(9999) 99-9999"
+						(focus)="hlpApp.selectAllContent($event)"
+					></p-inputMask>
+				</div>
+			</div>
+
+			<!-- Domicilio -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtDomicilio">Domicilio</label>
+					<textarea
+						pInputTextarea
+						id="txtDomicilio"
+						formControlName="domicilio"
+						rows="3"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Identificación Folio -->
+				<div class="col-12">
+					<label for="txtIdentificacionFolio">Folio Identificación</label>
+					<input
+						pInputText
+						type="text"
+						id="txtIdentificacionFolio"
+						formControlName="identificacion_folio"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Identificación Domicilio -->
+				<div class="col-12">
+					<label for="txtIdentificacionDomicilio">Domicilio Identificación</label>
+					<textarea
+						pInputTextarea
+						id="txtIdentificacionDomicilio"
+						formControlName="identificacion_domicilio"
+						rows="3"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<!-- Tipo colaborador -->
+			<div class="row py-1">
+				<div class="col-12 col-sm-4 form-label-group">
+					<label for="cmdTipoMiembro">Tipo de Colaborador</label>
+					<select #cmdTipoMiembro id="cmdTipoMiembro" formControlName="id_tipo_miembro" class="form-select">
+						<option [value]="0" disabled selected>Selecciona una opción...</option>
+						<option *ngFor="let tipoColaborador of TiposColaboradores" [value]="tipoColaborador.id_tipo_miembro">
+							{{ tipoColaborador.tipo_miembro }}
+						</option>
+					</select>
+				</div>
+
+				<!-- Salario -->
+				<div class="col-12 col-sm-4">
+					<label for="txtSalario">Salario</label>
+					<p-inputNumber
+						inputId="txtSalario"
+						formControlName="salario"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Fecha inicio -->
+				<div class="col-12 col-sm-4">
+					<label for="txtFechaInicio">Fecha inicio</label>
+					<p-calendar
+						inputId="txtFechaInicio"
+						formControlName="fecha_inicio"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgColaborador"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+			</div>
+
+			<!-- Imagen -->
+			<hr />
+			Imagen
+			<div class="row py-1">
+				<!-- Thumbnail de la Imagen del colaborador -->
+				<div class="col-12 text-center pb-3">
+					<img
+						*ngIf="srcImagen != null"
+						[src]="srcImagen"
+						class="imagenThumbnail img-thumbnail"
+						style="cursor: pointer"
+						(click)="onImagenMostrar(srcImagen)"
+					/>
+				</div>
+				<!-- Botones de acción -->
+				<div class="col-12 text-center">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar imagen -->
+						<label
+							for="txtImagenArchivo"
+							class="btn btn-dark"
+							pTooltip="Selecciona imagen del Colaborador"
+							tooltipPosition="top"
+						>
+							<i class="pi pi-folder-open"></i
+						></label>
+						<input
+							type="file"
+							id="txtImagenArchivo"
+							class="form-control d-none"
+							accept=".png,.jpg,.jpeg"
+							aria-describedby="btnClearImagen"
+							pTooltip="Selecciona imagen del Colaborador"
+							tooltipPosition="top"
+							(change)="onImagenSeleccionada($event, 1)"
+						/>
+						<!-- Botón Eliminar imagen seleccionada -->
+						<button
+							*ngIf="frmColaborador.get('archivo_imagen').value"
+							type="button"
+							id="btnClearImagen"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Colaborador"
+							tooltipPosition="left"
+							[disabled]="!frmColaborador.get('archivo_imagen').value"
+							(click)="onImagenSeleccionadaCancelar(1)"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+						<!-- Botón Eliminar imagen -->
+						<button
+							*ngIf="frmColaborador.get('imagen').value"
+							type="button"
+							icon="pi pi-trash"
+							class="btn btn-danger"
+							pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Colaborador"
+							tooltipPosition="left"
+							[disabled]="!frmColaborador.get('imagen').value"
+							(click)="onImagenEliminar(1)"
+						>
+							<i class="pi pi-trash"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Identificación -->
+			<hr />
+			Identificación
+			<div class="row py-2">
+				<!-- Imagen del Anverso de la Identificación del colaborador -->
+				<div class="col-12">
+					<div class="row">
+						<!-- Thumbnail  Anverso -->
+						<div class="col-12 col-md-6 text-center pb-3">
+							<img
+								class="imagenThumbnail img-thumbnail"
+								style="cursor: pointer"
+								*ngIf="srcIdentificacionAnverso != null"
+								[src]="srcIdentificacionAnverso"
+								(click)="onImagenMostrar(srcIdentificacionAnverso)"
+							/>
+							<!-- 							<div
+								*ngIf="srcIdentificacionAnverso == null && srcIdentificacionReverso != null"
+								class="d-none d-md-block h-100"
+							></div> -->
+						</div>
+						<!-- Thumbnail  Reverso -->
+						<div class="col-12 col-md-6 text-center pb-3">
+							<img
+								class="imagenThumbnail img-thumbnail"
+								style="cursor: pointer"
+								*ngIf="srcIdentificacionReverso != null"
+								[src]="srcIdentificacionReverso"
+								(click)="onImagenMostrar(srcIdentificacionReverso)"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<!-- Botones de acción Anverso -->
+						<div class="col-12 col-md-6 text-center">
+							<div class="input-group" style="display: unset">
+								<!-- Botón Seleccionar imagen -->
+								<label
+									for="txtAnversoIdentificacionArchivo"
+									class="btn btn-dark"
+									pTooltip="Selecciona imagen del anverso de la identificación del Colaborador"
+									tooltipPosition="top"
+								>
+									<i class="pi pi-folder-open"></i
+								></label>
+								<input
+									type="file"
+									id="txtAnversoIdentificacionArchivo"
+									class="form-control d-none"
+									accept=".png,.jpg,.jpeg"
+									aria-describedby="btnClearAnversoIdentificacion"
+									pTooltip="Selecciona imagen del anverso de la identificación del Colaborador"
+									tooltipPosition="top"
+									(change)="onImagenSeleccionada($event, 2)"
+								/>
+								<!-- Botón Eliminar imagen seleccionada -->
+								<button
+									*ngIf="frmColaborador.get('archivo_identificacion_anverso').value"
+									type="button"
+									id="btnClearAnversoIdentificacion"
+									class="btn btn-secondary"
+									pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Colaborador"
+									tooltipPosition="left"
+									[disabled]="!frmColaborador.get('archivo_identificacion_anverso').value"
+									(click)="onImagenSeleccionadaCancelar(2)"
+								>
+									<i class="pi pi-undo"></i>
+								</button>
+								<!-- Botón Eliminar imagen -->
+								<button
+									*ngIf="frmColaborador.get('identificacion_anverso').value"
+									type="button"
+									icon="pi pi-trash"
+									class="btn btn-danger"
+									pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Colaborador"
+									tooltipPosition="left"
+									[disabled]="!frmColaborador.get('identificacion_anverso').value"
+									(click)="onImagenEliminar(2)"
+								>
+									<i class="pi pi-trash"></i>
+								</button>
+							</div>
+						</div>
+						<!-- Botones de acción Reverso -->
+						<div class="col-12 col-md-6 text-center">
+							<div class="input-group" style="display: unset">
+								<!-- Botón Seleccionar imagen -->
+								<label
+									for="txtReversoIdentificacionArchivo"
+									class="btn btn-dark"
+									pTooltip="Selecciona imagen del reverso de la identificación del Colaborador"
+									tooltipPosition="top"
+								>
+									<i class="pi pi-folder-open"></i
+								></label>
+								<input
+									type="file"
+									id="txtReversoIdentificacionArchivo"
+									class="form-control d-none"
+									accept=".png,.jpg,.jpeg"
+									aria-describedby="btnClearReversoIdentificacion"
+									pTooltip="Selecciona imagen del reverso de la identificación del Colaborador"
+									tooltipPosition="top"
+									(change)="onImagenSeleccionada($event, 3)"
+								/>
+								<!-- Botón Eliminar imagen seleccionada -->
+								<button
+									*ngIf="frmColaborador.get('archivo_identificacion_reverso').value"
+									type="button"
+									id="btnClearReversoIdentificacion"
+									class="btn btn-secondary"
+									pTooltip="Anular la elección de nueva imagen del reverso de la identificación del Colaborador"
+									tooltipPosition="left"
+									[disabled]="!frmColaborador.get('archivo_identificacion_reverso').value"
+									(click)="onImagenSeleccionadaCancelar(3)"
+								>
+									<i class="pi pi-undo"></i>
+								</button>
+								<!-- Botón Eliminar imagen -->
+								<button
+									*ngIf="frmColaborador.get('identificacion_reverso').value"
+									type="button"
+									icon="pi pi-trash"
+									class="btn btn-danger"
+									pTooltip="Borrar la imagen ya almacenada del reverso de la identificación del Colaborador"
+									tooltipPosition="left"
+									[disabled]="!frmColaborador.get('identificacion_reverso').value"
+									(click)="onImagenEliminar(3)"
+								>
+									<i class="pi pi-trash"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Contrato -->
+			<hr />
+			Contrato
+			<div class="row py-1">
+				<!-- Contrato de arrendamiento -->
+				<div *ngIf="srcContrato != null" class="col-12 text-center pb-3">
+					<i
+						class="pi pi-file-pdf img-thumbnail text-danger p-3"
+						style="font-size: 7rem; cursor: pointer"
+						pTooltip="Visualizar el contrato de arrendamiento"
+						tooltipPosition="top"
+						(click)="onContratoMostrar()"
+					></i>
+				</div>
+				<div class="col-12 text-center">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar contrato -->
+						<label
+							for="txtContratoArchivo"
+							class="btn btn-dark"
+							pTooltip="{{ (!Colaborador.contrato_archivo ? 'Establecer' : 'Actualizar') + ' contrato' }}"
+							tooltipPosition="top"
+							><i class="pi pi-folder-open"></i>
+						</label>
+						<input
+							type="file"
+							id="txtContratoArchivo"
+							class="form-control d-none"
+							accept=".pdf"
+							aria-describedby="btnClearContrato"
+							pTooltip="Selecciona contrato de arrendamiento"
+							tooltipPosition="top"
+							(change)="onContratoSeleccionado($event)"
+						/>
+						<!-- Botón Eliminar contrato seleccionado -->
+						<button
+							*ngIf="frmColaborador.get('archivo_contrato').value"
+							type="button"
+							id="btnClearContrato"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nuevo archivo con el contrato de arrendamiento"
+							tooltipPosition="left"
+							[disabled]="!frmColaborador.get('archivo_contrato').value"
+							(click)="onContratoSeleccionadoCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+						<!-- Botón Eliminar contrato -->
+						<button
+							*ngIf="frmColaborador.get('contrato').value"
+							type="button"
+							icon="pi pi-trash"
+							class="btn btn-danger"
+							pTooltip="Borrar el archivo con el contrato de arrendamiento ya almacenado"
+							tooltipPosition="left"
+							[disabled]="!frmColaborador.get('contrato').value"
+							(click)="onContratoEliminado()"
+						>
+							<i class="pi pi-trash"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmColaborador.valid"
+			(click)="onColaboradorGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onColaboradorCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Imagen del Colaborador -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoImagenColaborador"
+	[contentStyle]="{ display: 'flex' }"
+	modal="true"
+	header="Imagen del Colaborador"
+	baseZIndex="99"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer imagenPreview">
+			<img [src]="srcImagenMostrar" />
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Contrato -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoContratoColaborador"
+	[contentStyle]="{ display: 'flex', height: '90vh' }"
+	modal="true"
+	header="Contrato de arrendamiento del Condómino"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer">
+			<iframe id="fraContrato" class="img-thumbnail" [src]="contratoURL()" (load)="onContratoMostrado()"> </iframe>
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles del Colaborador -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '60vw' }"
+	[(visible)]="mostrarDialogoDetallesColaborador"
+	modal="true"
+	header="Detalles del Colaborador"
+>
+	<ng-template pTemplate="content">
+		<div class="row pt-4">
+			<!-- Thumbnail de la Imagen del colaborador -->
+			<div class="col-12 text-center">
+				<div>
+					<img
+						[src]="srcImagen ? srcImagen : './assets/img/imagen_no_disponible.png'"
+						class="imagenThumbnail img-thumbnail"
+						[ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
+						(click)="srcImagen && onImagenMostrar(srcImagen)"
+					/><!-- <br />
+				<b>Imagen del Colaborador</b> -->
+				</div>
+				<div class="mt-1">
+					<b>Estatus: </b>
+					<!-- <span class="p-column-title">Estatus</span> -->
+					<!-- <div style="cursor: pointer" (click)="Condomino.estatus == 1 && onCondominoAlternarEstatus(Condomino)"> -->
+					<p-tag *ngIf="Colaborador.estatus == 1" severity="success" value="Activo"></p-tag>
+					<p-tag *ngIf="Colaborador.estatus != 1" severity="danger" value="Inactivo"></p-tag>
+				</div>
+			</div>
+			<hr class="mt-3" />
+		</div>
+
+		<div class="row">
+			<div class="col-6">
+				<p class="m-0"><b>Nombre:</b> {{ Colaborador.nombre }}</p>
+				<p class="m-0"><b>Usuario:</b> {{ Colaborador.usuario }}</p>
+				<p class="m-0"><b>Email:</b> {{ Colaborador.email }}</p>
+				<p class="m-0"><b>Teléfono:</b> {{ Colaborador.telefono | phoneFormat }}</p>
+				<p class="m-0"><b>Domicilio:</b> {{ Colaborador.domicilio }}</p>
+			</div>
+			<div class="col-6">
+				<p class="m-0"><b>Folio Identificacion:</b> {{ Colaborador.identificacion_folio }}</p>
+				<p class="m-0"><b>Domicilio Identificación:</b> {{ Colaborador.identificacion_domicilio }}</p>
+				<p class="m-0"><b>Tipo:</b> {{ Colaborador.tipo_miembro }}</p>
+				<p class="m-0"><b>Salario:</b> {{ Colaborador.salario | number : '1.2-2' }}</p>
+				<p class="m-0"><b>Fecha inicio:</b> {{ Colaborador.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}</p>
+				<!-- <p class="m-0"><b>Estatus:</b> {{ (Colaborador.contrato_activo == 1 ? 'A' : 'Ina') + 'ctiva' }}</p> -->
+			</div>
+		</div>
+
+		<!-- Thumbnails de la Identificación del colaborador -->
+		<div *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso" class="row mt-2">
+			<hr class="mt-3" />
+			<div class="col-12 text-center my-1"><b>Identificación</b></div>
+			<div
+				*ngIf="srcIdentificacionAnverso"
+				class="col-12 text-end"
+				[ngClass]="{ 'col-md-6': srcIdentificacionReverso }"
+			>
+				<img
+					class="imagenThumbnail img-thumbnail"
+					[src]="srcIdentificacionAnverso"
+					style="cursor: pointer"
+					(click)="onImagenMostrar(srcIdentificacionAnverso)"
+				/>
+			</div>
+			<div
+				*ngIf="srcIdentificacionReverso"
+				class="col-12 text-start"
+				[ngClass]="{ 'col-md-6': srcIdentificacionAnverso }"
+			>
+				<img
+					class="imagenThumbnail img-thumbnail"
+					[src]="srcIdentificacionReverso"
+					style="cursor: pointer"
+					(click)="onImagenMostrar(srcIdentificacionReverso)"
+				/>
+			</div>
+		</div>
+
+		<!-- Contrato -->
+		<div *ngIf="Colaborador.contrato" class="row mt-2">
+			<div class="col-12 text-center my-1"><b>Contrato</b></div>
+			<div class="col-12 text-center">
+				<i
+					class="pi pi-file-pdf img-thumbnail text-danger p-3"
+					style="font-size: 7rem; cursor: pointer"
+					pTooltip="Visualizar el contrato de arrendamiento"
+					tooltipPosition="top"
+					(click)="onContratoMostrar(Colaborador)"
+				></i>
+			</div>
+		</div>
+	</ng-template>
+</p-dialog>

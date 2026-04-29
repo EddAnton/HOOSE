@@ -1,0 +1,785 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptFondosMonetarios
+		[responsive]="true"
+		[value]="FondosMonetarios"
+		[columns]="FondosMonetariosCols"
+		[globalFilterFields]="FondosMonetariosFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="true"
+		[rows]="50"
+		dataKey="id_fondo_monetario"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+		rowExpandMode="single"
+		(onRowExpand)="onMostrarMovimientos($event)"
+		(onRowCollapse)="onOcultarMovimientos($event)"
+		[expandedRowKeys]="expandedRows"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="d-flex align-items-center me-auto">
+					<!-- Botón Nuevo Fondo -->
+					<div class="ps-2">
+						<button
+							*ngIf="permitirAgregarEditar"
+							pButton
+							type="button"
+							icon="pi pi-plus"
+							class="p-button-rounded p-button-raised p-button-success ms-1"
+							pTooltip="Agregar Fondo monetario"
+							tooltipPosition="right"
+							(click)="onFondoMonetarioEditar()"
+						></button>
+					</div>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="hlpPrimeNGTable.reset(ptMovimientosFondoMonetario); onActualizarFondosMonetarios()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							placeholder="Filtrar"
+							(input)="ptFondosMonetarios.filterGlobal($event.target.value, 'contains')"
+						/>
+					</span>
+				</div>
+				<!-- Botón Reiniciar filtro general -->
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptFondosMonetarios)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-FondoMonetario let-expanded="expanded">
+			<tr>
+				<td>
+					<button
+						type="button"
+						pButton
+						pRipple
+						[pRowToggler]="FondoMonetario"
+						class="p-button-text p-button-rounded p-button-plain"
+						[icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+					></button>
+				</td>
+				<td><span class="p-column-title">Tipo</span>{{ FondoMonetario.tipo_fondo }}</td>
+				<td><span class="p-column-title">Nombre</span>{{ FondoMonetario.fondo_monetario }}</td>
+				<td><span class="p-column-title">Banco</span>{{ FondoMonetario.banco }}</td>
+				<td><span class="p-column-title">Cuenta</span>{{ FondoMonetario.numero_cuenta }}</td>
+				<td><span class="p-column-title">CLABE</span>{{ FondoMonetario.clabe }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Saldo</span
+					><span [ngClass]="FondoMonetario.saldo < 0 ? 'text-danger' : ''">{{
+						FondoMonetario.saldo | number : '1.2-2'
+					}}</span>
+				</td>
+
+				<td class="text-end">
+					<!-- Botón Traspasar -->
+					<button
+						pButton
+						*ngIf="permitirAgregarEditar && FondosMonetarios.length > 1"
+						type="button"
+						icon="pi pi-wallet"
+						class="p-button-rounded p-button-text p-button-primary me-1"
+						pTooltip="Traspaso de fondos"
+						tooltipPosition="left"
+						(click)="onTraspasoRegistrar(FondoMonetario)"
+					></button>
+					<!-- Botón Editar  -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar Fondo monetario"
+						tooltipPosition="right"
+						(click)="onFondoMonetarioEditar(FondoMonetario)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirAgregarEditar && FondoMonetario.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar fondo monetario"
+						tooltipPosition="left"
+						(click)="onFondoMonetarioEliminar(FondoMonetario)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<!-- Movimientos -->
+		<ng-template pTemplate="rowexpansion" let-movimiento>
+			<tr>
+				<td [attr.colspan]="FondosMonetariosCols.length">
+					<div class="card shadow-sm ms-2">
+						<p-table
+							#ptMovimientosFondoMonetario
+							[responsive]="true"
+							[value]="MovimientosFondoMonetario"
+							[columns]="MovimientosFondoMonetarioCols"
+							[globalFilterFields]="FondosMonetariosMovimientosFilter"
+							[rowHover]="true"
+							[showCurrentPageReport]="true"
+							[paginator]="MovimientosFondoMonetario?.length > 0"
+							[rows]="50"
+							dataKey="id_fondo_monetario_movimiento"
+							styleClass="p-datatable-striped"
+							currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+						>
+							<ng-template pTemplate="caption">
+								<div class="d-flex align-items-center p-1">
+									<div class="d-flex align-items-center me-auto">
+										<!-- Botón Nuevo Movimiento -->
+										<div class="ps-2">
+											<button
+												*ngIf="permitirAgregarEditar"
+												pButton
+												type="button"
+												icon="bx bx-money-withdraw"
+												class="p-button-rounded p-button-raised p-button-info ms-1"
+												pTooltip="Agregar Movimiento"
+												tooltipPosition="right"
+												(click)="onMovimientoRegistrar()"
+											></button>
+										</div>
+										<div class="ps-2"></div>
+									</div>
+									<!-- Opciones Filtrado -->
+									<div class="ms-auto">
+										<!-- Botón Actualizar -->
+										<button
+											*ngIf="isDevelopment"
+											pButton
+											type="button"
+											icon="pi pi-refresh"
+											class="p-button-rounded p-button-text p-button-secondary me-2"
+											pTooltip="Actualizar información"
+											tooltipPosition="right"
+											(click)="onActualizarMovimientos()"
+										></button>
+										<span class="p-input-icon-left">
+											<i class="pi pi-search"></i>
+											<input
+												type="text"
+												id="txtGlobalFilterMovimientos"
+												class="form-control ms-1 ps-4"
+												placeholder="Filtrar"
+												(input)="ptMovimientosFondoMonetario.filterGlobal($event.target.value, 'contains')"
+											/>
+										</span>
+									</div>
+									<!-- Botón Reiniciar filtro general -->
+									<div>
+										<button
+											pButton
+											pRipple
+											type="button"
+											id="btnLimpiarFiltro"
+											icon="pi pi-times"
+											class="p-button-rounded p-button-text p-button-danger ms-3"
+											pTooltip="Limpiar filtro"
+											tooltipPosition="left"
+											(click)="hlpPrimeNGTable.reset(ptMovimientosFondoMonetario, 'txtGlobalFilterMovimientos')"
+										></button>
+									</div>
+								</div>
+								<!-- 								<div
+									*ngIf="FondoMonetario?.id_fondo_monetario > 0"
+									class="card bg-primary bg-gradient bg-opacity-25 my-2"
+								>
+									<div class="row px-2 py-1">
+										<div class="col-12 col-sm-6">
+											<p class="fw-normal m-1"><b>Banco:</b> {{ FondoMonetario?.banco }}</p>
+											<p class="fw-normal m-1">
+												<b>Cuenta:</b>
+												{{ FondoMonetario?.numero_cuenta }}
+											</p>
+										</div>
+										<div class="col-12 col-sm-6">
+											<p class="fw-normal m-1">
+												<b>CLABE:</b> {{ FondoMonetario?.clabe ? FondoMonetario?.clabe : 'N/D' }}
+											</p>
+											<p class="fw-normal m-1">
+												<b>Saldo: $ </b>
+												{{ FondoMonetario?.saldo | number : '1.2-2' }}
+											</p>
+										</div>
+									</div>
+								</div> -->
+							</ng-template>
+							<ng-template pTemplate="header" let-columns>
+								<tr>
+									<th
+										*ngFor="let col of columns"
+										class="text-center"
+										[ngStyle]="{
+											width: col.width ? col.width : 'inherit'
+										}"
+									>
+										{{ col.header ? col.header : '&nbsp;' }}
+									</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-Movimiento>
+								<tr [ngClass]="Movimiento.estatus != 1 ? 'bg-danger bg-opacity-10 text-decoration-line-through' : ''">
+									<td class="text-md-end">
+										<span class="p-column-title">Fecha</span>{{ Movimiento.fecha | date : 'MMMM dd, yyyy' | uppercase }}
+									</td>
+									<td><span class="p-column-title">Concepto</span>{{ Movimiento.concepto }}</td>
+									<td class="text-md-end">
+										<span class="p-column-title">Importe</span
+										><span [ngClass]="Movimiento.importe < 0 ? 'text-danger' : ''">{{
+											Movimiento.importe | number : '1.2-2'
+										}}</span>
+									</td>
+									<td class="text-md-end">
+										<span class="p-column-title">Saldo nuevo</span>{{ Movimiento.saldo_nuevo | number : '1.2-2' }}
+									</td>
+									<td class="text-end">
+										<!-- Botón Visualizar comprobante -->
+										<button
+											pButton
+											*ngIf="Movimiento.comprobante_archivo"
+											type="button"
+											icon="pi pi-eye"
+											class="p-button-rounded p-button-text p-button-warning me-1"
+											pTooltip="Mostrar comprobante"
+											tooltipPosition="left"
+											(click)="onComprobanteMostrar(Movimiento)"
+										></button>
+										<!-- Botón Eliminar -->
+										<button
+											*ngIf="
+												permitirAgregarEditar &&
+												Movimiento.es_traspaso == 0 &&
+												Movimiento.es_externo == 0 &&
+												Movimiento.estatus == 1
+											"
+											pButton
+											type="button"
+											icon="pi pi-trash"
+											class="p-button-rounded p-button-text p-button-danger me-1"
+											pTooltip="Eliminar movimiento"
+											tooltipPosition="left"
+											(click)="onMovimientoEliminar(Movimiento)"
+										></button>
+									</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="emptymessage"
+								><tr class="no-records">
+									<td [attr.colspan]="MovimientosFondoMonetarioCols.length">
+										<!-- Sin registros. -->
+										Sin registros.
+									</td>
+								</tr></ng-template
+							>
+						</p-table>
+					</div>
+				</td>
+			</tr></ng-template
+		>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td [attr.colspan]="FondosMonetariosCols.length">
+					<!-- Sin registros. -->
+					Sin registros.
+				</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición Fondo Monetario -->
+<p-dialog
+	#dlgFondoMonetario
+	[(visible)]="mostrarDialogoEdicionFondoMonetario"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Fondo {{ FondoMonetario && FondoMonetario.id_fondo_monetario == 0 ? ' Nuevo' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmFondoMonetario" class="mt-1" [formGroup]="frmFondoMonetario" autocomplete="off">
+			<div class="row py-1">
+				<!-- Fondo Monetario -->
+				<div class="col-12 col-sm-5">
+					<label for="txtFondoMonetario">Nombre</label>
+					<input
+						type="text"
+						pInputText
+						id="txtFondoMonetario"
+						formControlName="fondo_monetario"
+						class="uppercase"
+						autofocus
+						required
+					/>
+				</div>
+				<!-- Tipo fondo monetario -->
+				<div class="col-12 col-sm-4 form-label-group">
+					<label for="cmdTipoFondoMonetario">Tipo</label>
+					<select
+						#cmdTipoFondoMonetario
+						id="cmdTipoFondoMonetario"
+						formControlName="id_tipo_fondo_monetario"
+						class="form-select"
+						(change)="onTipoFondoMonetarioSeleccionado($event.target.value)"
+					>
+						<option [value]="0" disabled selected>Selecciona una opción...</option>
+						<option
+							*ngFor="let tipoFondoMonetario of TiposFondosMonetarios"
+							[value]="tipoFondoMonetario.id_tipo_fondo_monetario"
+						>
+							{{ tipoFondoMonetario.tipo_fondo }}
+						</option>
+					</select>
+				</div>
+				<!-- Saldo -->
+				<div class="col-12 col-sm-3">
+					<label for="txSaldo">Saldo</label>
+					<p-inputNumber
+						inputId="txtSaldo"
+						formControlName="saldo"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+			<div class="row py-1">
+				<!-- Banco -->
+				<div class="col-12 col-md-5">
+					<label for="txtBanco">Banco</label>
+					<input type="text" pInputText id="txtBanco" formControlName="banco" class="uppercase" />
+				</div>
+				<!-- Numero Cuenta -->
+				<div class="col-12 col-sm-6 col-md-3">
+					<label for="txtNumeroCuenta">Numero de cuenta</label>
+					<input type="text" pInputText id="txtNumeroCuenta" formControlName="numero_cuenta" class="uppercase" />
+				</div>
+				<!-- CLABE -->
+				<div class="col-12 col-sm-6 col-md-4">
+					<label for="txtClabe">CLABE</label>
+					<input type="text" pInputText id="txtClabe" formControlName="clabe" class="uppercase" />
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmFondoMonetario.valid"
+			(click)="onFondoMonetarioEditarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onFondoMonetarioEditarCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Traspasar -->
+<p-dialog
+	#dlgFondoMonetarioTraspaso
+	[(visible)]="mostrarDialogoRegistrarTraspaso"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Traspaso Nuevo"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmFondoMonetarioTraspaso" class="mt-1" [formGroup]="frmFondoMonetarioTraspaso" autocomplete="off">
+			<div class="row py-1">
+				<!-- Tipo movimiento -->
+				<div class="col-12 form-label-group">
+					<label for="cmbFondoMonetarioDestino">Fondo Destino</label>
+					<select
+						#cmbFondoMonetarioDestino
+						id="cmbFondoMonetarioDestino"
+						formControlName="id_fondo_monetario_destino"
+						class="form-select"
+						autofocus
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option
+							*ngFor="let fondoMonetarioDestino of FondosMonetariosDestino"
+							[value]="fondoMonetarioDestino.id_fondo_monetario"
+						>
+							{{ fondoMonetarioDestino.tipo_fondo }} - {{ fondoMonetarioDestino.fondo_monetario }}
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="row py-1">
+				<!-- Fecha -->
+				<div class="col-12 col-sm-6">
+					<label for="txtFecha">Fecha</label>
+					<p-calendar
+						inputId="txtFecha"
+						formControlName="fecha"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgFondoMonetarioTraspaso"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+						[maxDate]="fechaMovimientoLimite"
+					></p-calendar>
+				</div>
+				<!-- Importe -->
+				<div class="col-12 col-sm-6">
+					<label for="txtImporte">Importe</label>
+					<p-inputNumber
+						inputId="txtImporte"
+						formControlName="importe"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<!-- Comprobante -->
+			<div class="pt-2">Comprobante</div>
+			<div class="row py-1">
+				<!-- Comprobante -->
+				<div class="col-12 text-center">
+					<ng-container *ngIf="srcComprobante != null; then conComprobante; else sinComprobante"></ng-container>
+					<ng-template #conComprobante>
+						<i
+							class="pi pi-file img-thumbnail fs-1 text-success p-3"
+							style="cursor: pointer"
+							pTooltip="Visualizar el comprobante"
+							tooltipPosition="top"
+							(click)="onComprobanteMostrar()"
+						></i>
+					</ng-template>
+					<ng-template #sinComprobante>
+						<i class="bi bi-file-earmark-x img-thumbnail fs-1 text-dark p-3"></i>
+					</ng-template>
+				</div>
+				<div class="col-12 text-center pt-3">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar comprobante -->
+						<label
+							for="txtComprobanteArchivo"
+							class="btn btn-dark"
+							pTooltip="Establecer comprobante"
+							tooltipPosition="top"
+							><i class="pi pi-folder-open"></i>
+						</label>
+						<input
+							type="file"
+							id="txtComprobanteArchivo"
+							class="form-control d-none"
+							accept=".png, .jpg, .jpeg, .pdf"
+							aria-describedby="btnCancelarEleccion"
+							pTooltip="Selecciona comprobante"
+							tooltipPosition="top"
+							(change)="onComprobanteSeleccionado($event)"
+						/>
+						<!-- Botón Eliminar comprobante seleccionado -->
+						<button
+							*ngIf="frmFondoMonetarioTraspaso.get('archivo_comprobante').value"
+							type="button"
+							id="btnCancelarEleccion"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nuevo archivo con el comprobante"
+							tooltipPosition="left"
+							[disabled]="!frmFondoMonetarioTraspaso.get('archivo_comprobante').value"
+							(click)="onComprobanteSeleccionadoCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmFondoMonetarioTraspaso.valid"
+			(click)="onTraspasoRegistrarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onTraspasoRegistrarCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo de inserción Movimiento -->
+<p-dialog
+	#dlgFondoMonetarioMovimiento
+	[(visible)]="mostrarDialogoRegistrarMovimiento"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Movimiento {{
+		FondoMonetarioMovimiento && FondoMonetarioMovimiento.id_fondo_monetario_movimiento == 0 ? ' Nuevo' : ''
+	}}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmFondoMonetarioMovimiento" class="mt-1" [formGroup]="frmFondoMonetarioMovimiento" autocomplete="off">
+			<div class="row py-1">
+				<!-- Tipo movimiento -->
+				<div class="col-12 col-sm-4 form-label-group">
+					<label for="cmbTipoMovimiento">Tipo Movimiento</label>
+					<select
+						#cmbTipoMovimiento
+						id="cmbTipoMovimiento"
+						formControlName="id_tipo_movimiento"
+						class="form-select"
+						autofocus
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let tiposMovimientos of TiposMovimientos" [value]="tiposMovimientos.id_tipo_movimiento">
+							{{ tiposMovimientos.tipo_movimiento }}
+						</option>
+					</select>
+				</div>
+				<!-- Fecha -->
+				<div class="col-12 col-sm-4">
+					<label for="txtFecha">Fecha</label>
+					<p-calendar
+						inputId="txtFecha"
+						formControlName="fecha"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgFondoMonetarioMovimiento"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+						[maxDate]="fechaMovimientoLimite"
+					></p-calendar>
+				</div>
+				<!-- Importe -->
+				<div class="col-12 col-sm-4">
+					<label for="txtImporte">Importe</label>
+					<p-inputNumber
+						inputId="txtImporte"
+						formControlName="importe"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+			<div class="row py-1">
+				<div class="col-12 pt-2">
+					<label for="concepto">Concepto</label>
+					<input
+						type="text"
+						pInputText
+						id="txtConcepto"
+						formControlName="concepto"
+						class="uppercase"
+						maxlength="150"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+
+			<!-- Comprobante -->
+			<div class="pt-2">Comprobante</div>
+			<div class="row py-1">
+				<!-- Comprobante -->
+				<div class="col-12 text-center">
+					<ng-container *ngIf="srcComprobante != null; then conComprobante; else sinComprobante"></ng-container>
+					<ng-template #conComprobante>
+						<i
+							class="pi pi-file img-thumbnail fs-1 text-success p-3"
+							style="cursor: pointer"
+							pTooltip="Visualizar el comprobante"
+							tooltipPosition="top"
+							(click)="onComprobanteMostrar()"
+						></i>
+					</ng-template>
+					<ng-template #sinComprobante>
+						<i class="bi bi-file-earmark-x img-thumbnail fs-1 text-dark p-3"></i>
+					</ng-template>
+				</div>
+				<div class="col-12 text-center pt-3">
+					<div class="input-group" style="display: unset">
+						<!-- Botón Seleccionar comprobante -->
+						<label
+							for="txtComprobanteArchivo"
+							class="btn btn-dark"
+							pTooltip="{{ (!FondoMonetarioMovimiento.comprobante ? 'Establecer' : 'Actualizar') + ' comprobante' }}"
+							tooltipPosition="top"
+							><i class="pi pi-folder-open"></i>
+						</label>
+						<input
+							type="file"
+							id="txtComprobanteArchivo"
+							class="form-control d-none"
+							accept=".png, .jpg, .jpeg, .pdf"
+							aria-describedby="btnCancelarEleccion"
+							pTooltip="Selecciona comprobante"
+							tooltipPosition="top"
+							(change)="onComprobanteSeleccionado($event)"
+						/>
+						<!-- Botón Eliminar comprobante seleccionado -->
+						<button
+							*ngIf="frmFondoMonetarioMovimiento.get('archivo_comprobante').value"
+							type="button"
+							id="btnCancelarEleccion"
+							class="btn btn-secondary"
+							pTooltip="Anular la elección de nuevo archivo con el comprobante"
+							tooltipPosition="left"
+							[disabled]="!frmFondoMonetarioMovimiento.get('archivo_comprobante').value"
+							(click)="onComprobanteSeleccionadoCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+						<!-- Botón Eliminar comprobante -->
+						<!-- <button
+							*ngIf="frmFondoMonetarioMovimiento.get('comprobante').value"
+							type="button"
+							icon="pi pi-trash"
+							class="btn btn-danger"
+							pTooltip="Borrar el archivo con el comprobante ya almacenado"
+							tooltipPosition="left"
+							[disabled]="!frmFondoMonetarioMovimiento.get('comprobante').value"
+							(click)="onComprobanteEliminado()"
+						>
+							<i class="pi pi-trash"></i>
+						</button> -->
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmFondoMonetarioMovimiento.valid"
+			(click)="onMovimientoRegistrarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onMovimientoRegistrarCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Comprobante -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoComprobante"
+	[contentStyle]="{ display: 'flex', height: '90vh' }"
+	modal="true"
+	header="Comprobante"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer">
+			<iframe id="fraComprobante" class="img-thumbnail" [src]="comprobanteURL()" (load)="onComprobanteMostrado()">
+			</iframe>
+		</div>
+	</ng-template>
+</p-dialog>

@@ -1,0 +1,447 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptProyectos
+		[responsive]="true"
+		[value]="Proyectos"
+		[columns]="ProyectosCols"
+		[globalFilterFields]="ProyectosFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Proyectos.length > 0"
+		[rows]="50"
+		dataKey="id_proyecto"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar proyecto"
+						tooltipPosition="right"
+						(click)="onProyectoEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptProyectos.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptProyectos)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Proyecto>
+			<tr>
+				<td><span class="p-column-title">Título</span>{{ Proyecto.titulo }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Presupuesto</span>{{ Proyecto.presupuesto | number : '1.2-2' }}
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Fecha inicio</span
+					>{{ Proyecto.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Fecha fin</span>{{ Proyecto.fecha_fin | date : 'MMMM dd, yyyy' | uppercase }}
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Avance</span>{{ Proyecto.porcentaje_avance | number : '1.0-0' }}%
+				</td>
+				<td class="text-end">
+					<!-- Botón Mostrar Comprobante -->
+					<button
+						*ngIf="Proyecto.comprobante != null"
+						pButton
+						type="button"
+						icon="pi pi-file"
+						class="p-button-rounded p-button-text p-button-info me-1"
+						pTooltip="Mostrar comprobante"
+						tooltipPosition="left"
+						(click)="onComprobanteMostrar(Proyecto)"
+					></button>
+					<!-- Botón Editar -->
+					<button
+						*ngIf="permitirAgregarEditar && Proyecto.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar proyecto"
+						tooltipPosition="left"
+						(click)="onProyectoEditar(Proyecto.id_proyecto)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirAgregarEditar && Proyecto.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar proyecto"
+						tooltipPosition="left"
+						(click)="onProyectoEliminar(Proyecto)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles del proyecto"
+						tooltipPosition="left"
+						(click)="onProyectoDetalles(Proyecto.id_proyecto)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td [attr.colspan]="ProyectosCols.length">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgProyecto
+	[(visible)]="mostrarDialogoEdicionProyecto"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '70vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Proyecto {{ Proyecto && Proyecto.id_proyecto == 0 ? 'Nuevo' : 'Modificando' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmProyecto" class="mt-1" [formGroup]="frmProyecto" autocomplete="off">
+			<!-- Titulo -->
+			<div class="row py-1">
+				<div class="col-12 pt-2">
+					<label for="titulo">Titulo</label>
+					<input
+						type="text"
+						pInputText
+						id="txtTitulo"
+						formControlName="titulo"
+						class="uppercase"
+						maxlength="150"
+						(focus)="hlpApp.selectAllContent($event)"
+						autofocus
+					/>
+				</div>
+			</div>
+
+			<!-- Descripcion -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtDescripcion">Descripción</label>
+					<textarea
+						pInputTextarea
+						id="txtDescripcion"
+						formControlName="descripcion"
+						class="uppercase"
+						rows="3"
+						maxlength="1000"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Presupuesto -->
+				<div class="col-12 col-sm-6 col-lg-2">
+					<label for="txtPresupuesto">Presupuesto proyectado</label>
+					<p-inputNumber
+						inputId="txtPresupuesto"
+						formControlName="presupuesto"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Fecha inicio -->
+				<div class="col-12 col-sm-6 col-lg-4">
+					<label for="txtFechaInicio">Fecha inicio</label>
+					<p-calendar
+						inputId="txtFechaInicio"
+						formControlName="fecha_inicio"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgProyecto"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+				<!-- Fecha fin -->
+				<div class="col-12 col-sm-6 col-lg-4">
+					<label for="txtFechaFin">Fecha fin</label>
+					<p-calendar
+						inputId="txtFechaFin"
+						formControlName="fecha_fin"
+						dateFormat="dd-MM-yy"
+						[appendTo]="dlgProyecto"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+					></p-calendar>
+				</div>
+				<!-- Porcentaje avance -->
+				<div class="col-12 col-sm-6 col-lg-2">
+					<label for="txtPorcentajeAvance">Avance</label>
+					<p-inputNumber
+						inputId="txtPorcentajeAvance"
+						formControlName="porcentaje_avance"
+						locale="es-MX"
+						allowEmpty="false"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<!-- Imágenes registradas-->
+			<div *ngIf="Proyecto.imagenes.length > 0">
+				<div class="title-line mt-3 mb-1">Imágenes registradas</div>
+				<div class="d-flex flex-wrap justify-content-center border pt-2 pb-3 mx-0">
+					<div *ngFor="let item of Proyecto.imagenes; let i = index" class="d-flex flex-column align-items-center pb-1">
+						<div>
+							<img
+								[src]="item.imagen"
+								class="imagenThumbnailSmall img-thumbnail"
+								style="cursor: pointer"
+								(click)="onImagenMostrar(item.imagen)"
+							/>
+						</div>
+						<div class="pt-2">
+							<button
+								pButton
+								type="button"
+								icon="pi pi-trash"
+								class="p-button-rounded p-button-danger"
+								pTooltip="Eliminar imagen"
+								tooltipPosition="left"
+								(click)="onEliminarImagen(item.id_proyecto_imagen)"
+							></button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Agregar imágenes -->
+			<div class="title-line mt-3 mb-1">Agregar imágenes</div>
+			<div class="row py-1">
+				<div class="col-12 text-center">
+					<p-fileUpload
+						#txtArchivosImagenes
+						multiple="multiple"
+						accept=".png, .jpg, .jpeg"
+						[showUploadButton]="false"
+					></p-fileUpload>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<div class="d-flex">
+			<div>
+				<!-- Mostrar galería -->
+				<button
+					pButton
+					*ngIf="Proyecto.imagenes.length > 0"
+					type="button"
+					label="Mostrar galería actual"
+					icon="bi bi-images"
+					class="p-button-raised p-button-info me-sm-1"
+					pTooltip="Mostrar galería actual de las imaágenes ya cargadas"
+					tooltipPosition="top"
+					(click)="onMostrarGaleria()"
+				></button>
+			</div>
+			<div class="ms-auto">
+				<!-- Botón Guardar -->
+				<button
+					pButton
+					type="button"
+					label="Guardar"
+					icon="pi pi-save"
+					class="p-button-raised p-button-info me-sm-1"
+					pTooltip="Almacenar la información"
+					tooltipPosition="top"
+					[disabled]="!frmProyecto.valid"
+					(click)="onProyectoGuardar()"
+				></button>
+				<!-- Botón Cancelar -->
+				<button
+					pButton
+					type="button"
+					label="Cancelar"
+					icon="pi pi-times"
+					class="p-button-raised p-button-warning ml-2"
+					pTooltip="Cancelar el proceso"
+					tooltipPosition="top"
+					(click)="onProyectoCancelar()"
+				></button>
+			</div>
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Imagen -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoImagen"
+	[contentStyle]="{ display: 'flex' }"
+	modal="true"
+	header="Imagen"
+	baseZIndex="99"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer imagenPreview">
+			<img [src]="srcImagen" />
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles del Proyecto -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[(visible)]="mostrarDialogoDetallesProyecto"
+	contentStyleClass="pb-1"
+	modal="true"
+	header="Detalles del Proyecto"
+>
+	<ng-template pTemplate="content">
+		<div class="row py-2 border-bottom">
+			<div class="col-12">
+				<p class="m-0"><b>Título:</b> {{ Proyecto.titulo }}</p>
+			</div>
+			<!-- <hr class="mt-3" /> -->
+		</div>
+		<div class="row py-2 border-bottom">
+			<div class="col-12">
+				<p class="m-0"><b>Descripción:</b></p>
+				<p class="carriage-return m-0">{{ Proyecto.descripcion }}</p>
+			</div>
+		</div>
+		<div class="row pt-2">
+			<div class="col-6">
+				<p class="m-0"><b>Presupuesto:</b> {{ Proyecto.presupuesto | number : '1.2-2' }}</p>
+			</div>
+			<div class="col-6">
+				<p class="m-0"><b>Avance:</b> {{ Proyecto.porcentaje_avance | number : '1.0-0' }}%</p>
+			</div>
+		</div>
+		<div class="row pb-2">
+			<div class="col-6">
+				<p class="m-0"><b>Fecha inicio:</b> {{ Proyecto.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}</p>
+			</div>
+			<div class="col-6">
+				<p class="m-0"><b>Fecha fin:</b> {{ Proyecto.fecha_fin | date : 'MMMM dd, yyyy' | uppercase }}</p>
+			</div>
+			<!-- <hr class="mt-3" /> -->
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Mostrar galería -->
+		<button
+			pButton
+			*ngIf="Proyecto.imagenes.length > 0"
+			type="button"
+			label="Mostrar galería"
+			icon="bi bi-images"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Mostrar galería actual de las imaágenes ya cargadas"
+			tooltipPosition="top"
+			(click)="onMostrarGaleria()"
+		></button>
+		<!-- Botón Cerrar -->
+		<button
+			pButton
+			type="button"
+			label="Cerrar"
+			icon="bi bi-box-arrow-right"
+			class="p-button-raised p-button-danger ml-2"
+			pTooltip="Cerrar la ventana"
+			tooltipPosition="top"
+			(click)="mostrarDialogoDetallesProyecto = false"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Galería de imagenes -->
+<p-galleria
+	[(visible)]="mostrarGaleria"
+	[value]="Proyecto?.imagenes"
+	[containerStyle]="{ 'max-width': '850px' }"
+	[baseZIndex]="100000"
+	[numVisible]="6"
+	[circular]="true"
+	[fullScreen]="true"
+	[showThumbnails]="false"
+	[showItemNavigators]="true"
+	[showIndicators]="true"
+	[showIndicatorsOnItem]="false"
+	[(activeIndex)]="galeriaIndiceActivo"
+>
+	<ng-template pTemplate="item" let-item>
+		<img [src]="item.imagen" style="width: 100%; display: block" />
+	</ng-template>
+</p-galleria>

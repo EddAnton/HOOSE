@@ -1,0 +1,304 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptContenido
+		[responsive]="true"
+		[value]="Contenido"
+		[columns]="ContenidoCols"
+		[globalFilterFields]="ContenidoFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Contenido.length > 0"
+		[rows]="50"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="d-flex align-items-center me-auto">
+					<!-- Botón Crear carpeta -->
+					<div *ngIf="permitirAgregarEditar">
+						<button
+							pButton
+							type="button"
+							icon="bx bx-folder-plus"
+							class="p-button-rounded p-button-raised p-button-success"
+							pTooltip="Crear carpeta"
+							tooltipPosition="right"
+							(click)="onMostrarCrearCarpeta()"
+						></button>
+					</div>
+					<div *ngIf="permitirAgregarEditar">
+						<button
+							pButton
+							type="button"
+							icon="bx bxs-file-plus"
+							class="p-button-rounded p-button-raised ms-2"
+							pTooltip="Subir archivo"
+							tooltipPosition="right"
+							(click)="onMostrarSubirArchivo()"
+						></button>
+					</div>
+					<div class="ps-4">Carpeta actual: {{ Carpeta?.nombre }}</div>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							placeholder="Filtrar"
+							(input)="ptContenido.filterGlobal($event.target.value, 'contains')"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptContenido)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Item>
+			<tr>
+				<td>
+					<!-- Botón Listar carpeta -->
+					<button
+						*ngIf="Item.tipo == 1"
+						pButton
+						type="button"
+						icon="bx bxs-folder-open bx-sm"
+						class="text-warning p-button-rounded p-button-text pt-0"
+						pTooltip="Abrir"
+						tooltipPosition="bottom"
+						(click)="onActualizarInformacion(Item.id)"
+					></button>
+					<!-- Botón Abrir archivo -->
+					<button
+						*ngIf="Item.tipo == 2"
+						pButton
+						type="button"
+						icon="bx bxs-file-blank bx-sm"
+						class="text-success p-button-rounded p-button-text pt-0"
+						pTooltip="Abrir"
+						tooltipPosition="bottom"
+						(click)="onAbrirArchivo(Item.archivo_interno)"
+					></button>
+				</td>
+				<td>
+					<span class="p-column-title">Nombre</span
+					><span
+						style="cursor: pointer"
+						(click)="
+							(Item.tipo == 1 && onActualizarInformacion(Item.id)) ||
+								(Item.tipo == 2 && onAbrirArchivo(Item.archivo_interno))
+						"
+					>
+						<span *ngIf="Item.nombre == '/'"><i class="bi bi-arrow-90deg-up"></i></span>
+						<span *ngIf="Item.nombre != '/'">{{ Item.nombre }}</span>
+					</span>
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Tamaño</span>
+					<span *ngIf="Item.tipo == 2"> {{ Item.tamanio }} {{ Item.unidad_medida }} </span>
+				</td>
+				<td class="text-md-end"><span class="p-column-title">Fecha creación</span>{{ Item.fecha_registro }}</td>
+				<td class="text-end">
+					<!-- Botón Renombrar -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Renombrar"
+						tooltipPosition="left"
+						(click)="onMostrarRenombrarItem(Item)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar"
+						tooltipPosition="left"
+						(click)="onEliminarItem(Item)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td colspan="2">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo crear/renombrar carpeta, renombrar archivo -->
+<p-dialog
+	[(visible)]="mostrarDlgRenombrar"
+	[style]="{ width: '70vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="{{
+		ElementoRenombrar == null ? 'Nueva carpeta' : 'Renombrar ' + (ElementoRenombrar.tipo == 1 ? 'carpeta' : 'archivo')
+	}}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmRenombrar" class="mt-1" [formGroup]="frmRenombrar" autocomplete="off">
+			<div class="row py-1">
+				<!-- Nombre -->
+				<div class="col-12">
+					<label for="txtNombre">Nombre</label>
+					<input
+						type="text"
+						pInputText
+						id="txtNombre"
+						formControlName="nombre"
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Aceptar -->
+		<button
+			pButton
+			type="button"
+			label="Aceptar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="{{
+				ElementoRenombrar == null
+					? 'Crear carpeta'
+					: 'Renombrar ' + (ElementoRenombrar.tipo == 1 ? 'carpeta' : 'archivo')
+			}}"
+			tooltipPosition="top"
+			[disabled]="!frmRenombrar.valid"
+			(click)="onRenombrarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="mostrarDlgRenombrar = false"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Subir archivo -->
+<!-- [breakpoints]="{ '991px': '84vw', '640px': '96vw' }" -->
+<p-dialog
+	#dlgSubirArchivo
+	[style]="{ width: '70vw' }"
+	position="top"
+	[(visible)]="mostrarDlgSubirArchivo"
+	[modal]="true"
+	[closable]="false"
+	styleClass="p-fluid"
+	header="Subir archivo en la carpeta actual"
+>
+	<ng-template pTemplate="content">
+		<form id="frmSubirArchivo" class="mt-1" [formGroup]="frmSubirArchivo" autocomplete="off">
+			<!-- Archivo -->
+			<div class="row pt-4">
+				<div class="col ps-0">
+					<!-- <label for="txtArchivo" class="form-label mb-1">Archivo</label> -->
+					<div class="d-flex">
+						<input
+							class="form-control flex-fill"
+							type="file"
+							id="txtArchivo"
+							accept=".png, .jpg, .jpeg, .pdf, .doc, .docx, .xls, .xlsx, .zip"
+							aria-describedby="btnCancelarEleccion"
+							pTooltip="Selecciona archivo a subir"
+							tooltipPosition="top"
+							(change)="onArchivoSeleccionado($event)"
+						/>
+						<button
+							*ngIf="frmSubirArchivo.get('archivo').value"
+							type="button"
+							id="btnCancelarEleccion"
+							class="btn btn-warning"
+							pTooltip="Cancelar la elección del archivo"
+							tooltipPosition="left"
+							[disabled]="!frmSubirArchivo.get('archivo').value"
+							(click)="onArchivoSeleccionadoCancelar()"
+						>
+							<i class="pi pi-undo"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Aceptar -->
+		<button
+			pButton
+			type="button"
+			label="Aceptar"
+			icon="pi pi-check"
+			class="p-button-raised p-button-primary me-sm-1"
+			pTooltip="Subir el archivo seleccionado"
+			tooltipPosition="top"
+			[disabled]="!frmSubirArchivo.valid"
+			(click)="onSubirArchivoGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-danger ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="mostrarDlgSubirArchivo = false"
+		></button>
+	</ng-template>
+</p-dialog>

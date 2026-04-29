@@ -1,0 +1,67 @@
+<!-- <div class="backgroundImage2"></div> -->
+<div class="backgroundImage">
+	<img src="{{ imgBackground }}" />
+</div>
+<div class="d-flex flex-column h-100">
+	<div
+		class="login-contaniner align-self-center text-center me-auto my-auto ms-4 d-flex flex-column justify-content-between"
+	>
+		<img class="login-logo" src="{{ imgLogo }}" />
+		<h2 class="pt-3 pb-1">Iniciar sesión</h2>
+		<div class="w-100 py-1">
+			<div class="card border py-2 mx-4">
+				<form id="frmLogin" class="m-2" [formGroup]="frmLogin" autocomplete="off">
+					<div class="row py-1">
+						<!-- Usuario -->
+						<div class="col text-end my-auto">
+							<label for="Usuario">Usuario:</label>
+						</div>
+						<div class="col-auto text-start">
+							<input
+								type="text"
+								pInputText
+								id="Usuario"
+								formControlName="usuario"
+								(focus)="hlpApp.selectAllContent($event)"
+								autofocus
+							/>
+						</div>
+					</div>
+					<div class="row py-1">
+						<!-- Contrasenia  -->
+						<div class="col text-end my-auto">
+							<label for="txtContrasenia">Contraseña:</label>
+						</div>
+						<div class="col-auto text-start">
+							<input
+								type="password"
+								pInputText
+								id="txtContrasenia"
+								formControlName="contrasenia"
+								(focus)="hlpApp.selectAllContent($event)"
+							/>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="w-100 pt-3 pb-2 text-end login-footer">
+			<button
+				pButton
+				type="button"
+				label="Aceptar"
+				icon="pi pi-key"
+				class="p-button-raised p-button-info me-4"
+				pTooltip="Iniciar sesion"
+				tooltipPosition="top"
+				[disabled]="!frmLogin.valid"
+				(click)="onAceptar()"
+			></button>
+			<p class="version">{{ appData.appVersion }}</p>
+		</div>
+	</div>
+</div>
+
+<!-- <div class="d-flex flex-column h-100">
+	<div class="login-contaniner shadow"><p>login works!</p></div>
+</div> -->

@@ -1,0 +1,210 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptAreasComunes
+		[responsive]="true"
+		[value]="AreasComunes"
+		[columns]="AreasComunesCols"
+		[rowHover]="true"
+		[globalFilterFields]="AreasComunesFilter"
+		[showCurrentPageReport]="true"
+		[paginator]="AreasComunes.length > 0"
+		[rows]="50"
+		dataKey="id_area_comun"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar área común"
+						tooltipPosition="right"
+						(click)="onAreaComunEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptAreasComunes.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptAreasComunes)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-AreaComun>
+			<tr>
+				<td><span class="p-column-title">Nombre</span>{{ AreaComun.nombre }}</td>
+				<td class="carriage-return"><span class="p-column-title">Descripción</span>{{ AreaComun.descripcion }}</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Importe por hora</span>{{ AreaComun.importe_hora | number : '1.2-2' }}
+				</td>
+				<td class="text-end">
+					<!-- Botón Editar -->
+					<button
+						pButton
+						*ngIf="AreaComun.estatus == 1"
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar área común"
+						tooltipPosition="left"
+						(click)="onAreaComunEditar(AreaComun.id_area_comun)"
+					></button>
+					<!-- Botón Alternar estatus -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-{{ AreaComun.estatus == 1 ? 'trash' : 'check' }}"
+						class="p-button-rounded p-button-text me-1"
+						ngClass="{{ AreaComun.estatus == 1 ? 'p-button-danger' : 'p-button-success' }}"
+						pTooltip="{{ AreaComun.estatus == 1 ? 'Desh' : 'H' }}abilitar área común"
+						tooltipPosition="left"
+						(click)="onAreaComunAlternarEstatus(AreaComun)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td [attr.colspan]="AreasComunesCols.length">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	[(visible)]="mostrarDialogoEdicionAreaComun"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Área común {{ AreaComun && AreaComun.id_area_comun == 0 ? ' Nueva' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmAreaComun" class="mt-1" [formGroup]="frmAreaComun" autocomplete="off">
+			<div class="row py-1">
+				<!-- Nombre -->
+				<div class="col-12 col-md-9">
+					<label for="txtNombre">Nombre</label>
+					<input
+						type="text"
+						pInputText
+						id="txtNombre"
+						formControlName="nombre"
+						class="uppercase"
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Importe por hora -->
+				<div class="col-12 col-md-3">
+					<label for="txtImporteHora">Importe por hora</label>
+					<p-inputNumber
+						inputId="txtImporteHora"
+						formControlName="importe_hora"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<!-- Descripcion -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtDescripcion">Descripción</label>
+					<textarea
+						pInputTextarea
+						id="txtDescripcion"
+						formControlName="descripcion"
+						class="uppercase"
+						rows="3"
+						maxlength="65535"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmAreaComun.valid"
+			(click)="onAreaComunGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onAreaComunCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>

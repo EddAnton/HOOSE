@@ -1,0 +1,17 @@
+.p-fieldset-legend {
+  margin-bottom: 0;
+}
+
+.p-fieldset-legend>a,
+.p-fieldset-legend>span {
+  justify-content: start !important;
+  text-decoration: none;
+}
+
+.p-fieldset-legend .p-fieldset-legend-text {
+  font-size: 1.2rem;
+}
+
+.p-fieldset .p-fieldset-content {
+  padding: 0;
+}

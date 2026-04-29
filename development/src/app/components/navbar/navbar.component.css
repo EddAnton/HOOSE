@@ -1,0 +1,109 @@
+.navbar {
+	/* transition: all 300ms ease 0s; */
+	/* z-index: 99999; */
+	z-index: auto;
+}
+/* .navbar .navbar-collapse {
+	z-index: 99999;
+} */
+.navbar-nav {
+	color: #42424a;
+	transition: all 300ms ease 0s;
+}
+
+.navbar-toggle {
+	transition: all 500ms ease 0s;
+}
+.navbar-toggler,
+.navbar-toggler:focus {
+	border: 0;
+	outline: 0;
+	box-shadow: none;
+}
+
+.navbar-nav a {
+	color: #42424a;
+	text-decoration: none;
+}
+
+.navbar-nav .nav-item .nav-link {
+	display: flex;
+	align-items: center;
+	padding: 5px;
+}
+
+.dropdown-menu-right {
+	right: 0 !important;
+	left: auto !important;
+}
+
+.navbar-nav .nav-item.dropdown .dropdown-menu {
+	padding: 0;
+	box-shadow: 1px 2px 7px 1px rgba(0, 0, 0, 0.125);
+	right: 50px;
+}
+
+.navbar-nav .nav-item.dropdown .dropdown-menu .dropdown-item {
+	margin-left: -1px;
+	width: 100%;
+}
+.navbar-nav .nav-item.dropdown .dropdown-menu .dropdown-item:hover,
+.navbar-nav .nav-item.dropdown .dropdown-menu .dropdown-item:focus {
+	background: #66615b;
+	color: white;
+}
+
+.navbar-nav .nav-item.dropdown .dropdown-menu li:first-child .dropdown-item {
+	margin-top: -1px;
+	border-top-left-radius: var(--bs-dropdown-border-radius);
+	border-top-right-radius: var(--bs-dropdown-border-radius);
+}
+.navbar-nav .nav-item.dropdown .dropdown-menu li:last-child .dropdown-item {
+	margin-bottom: -1px;
+	border-bottom-left-radius: var(--bs-dropdown-border-radius);
+	border-bottom-right-radius: var(--bs-dropdown-border-radius);
+}
+
+.navbar-nav .nav-item .nav-link {
+	cursor: pointer;
+}
+/* Collapsed */
+.navbar .navbar-collapse {
+	transition: all 300ms ease;
+}
+
+.navbar .navbar-collapse,
+.navbar .navbar-collapse.collapse {
+	border: 0;
+}
+
+.navbar .navbar-collapse.collapsing,
+.navbar .navbar-collapse.collapse.show {
+	margin-left: -2px;
+	margin-top: 7px;
+	border-radius: 5px;
+	box-shadow: 1px 2px 7px 1px rgba(0, 0, 0, 0.125);
+	background: whitesmoke;
+	border: 1px solid gray;
+}
+.navbar .navbar-collapse.collapsing,
+.navbar .navbar-collapse.collapse.show .navbar-brand {
+	display: none;
+}
+
+.navbar .navbar-collapse.collapsing #dropdownUserActions,
+.navbar .navbar-collapse.collapse #dropdownUserActions {
+	width: fit-content;
+	margin: auto 10px;
+}
+
+/* .navbar-toggle {
+	margin-left: unset;
+	z-index: unset;
+}
+@media screen and (max-width: 991px) {
+	.navbar-toggle {
+		margin-left: 240px;
+		z-index: 12;
+	}
+} */

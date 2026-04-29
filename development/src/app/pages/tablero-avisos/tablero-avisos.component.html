@@ -1,0 +1,321 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptAvisos
+		[responsive]="true"
+		[value]="Avisos"
+		[columns]="AvisosCols"
+		[globalFilterFields]="AvisosFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Avisos.length > 0"
+		[rows]="50"
+		dataKey="id_aviso"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="d-flex me-auto">
+					<!-- <div class="form-label-group">
+						<label for="cmbPerfilUsuario">Perfil:</label> -->
+					<!-- *ngIf="permitirAgregarEditar" -->
+					<!-- [ngStyle]="{ display: permitirAgregarEditar ? 'block' : 'none' }" -->
+					<select
+						#cmbPerfilUsuario
+						id="cmbPerfilUsuario"
+						[(ngModel)]="PerfilUsuarioSeleccionado"
+						class="form-select"
+						(change)="onActualizarInformacion()"
+					>
+						<option [value]="PerfilUsuarioDefault" selected>Selecciona una opción...</option>
+						<option *ngFor="let perfilUsuario of PerfilesUsuarios" [ngValue]="perfilUsuario">
+							{{ perfilUsuario.perfil_usuario }}
+						</option>
+					</select>
+					<!-- </div> -->
+					<!-- Botón Nuevo -->
+					<div class="ps-2">
+						<button
+							*ngIf="permitirAgregarEditar"
+							pButton
+							type="button"
+							icon="pi pi-plus"
+							class="p-button-rounded p-button-raised p-button-success ms-1"
+							pTooltip="Agregar aviso"
+							tooltipPosition="right"
+							(click)="onAvisoEditar()"
+						></button>
+					</div>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							placeholder="Filtrar"
+							(input)="ptAvisos.filterGlobal($event.target.value, 'contains')"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptAvisos)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Aviso>
+			<tr>
+				<td><span class="p-column-title">Título</span>{{ Aviso.titulo }}</td>
+				<td *ngIf="permitirAgregarEliminar" class="text-md-center">
+					<span class="p-column-title">Publicado</span>
+					<span style="cursor: pointer">
+						<p-tag
+							severity="{{ Aviso.publicado == 1 ? 'success' : 'danger' }}"
+							value="{{ Aviso.publicado == 1 ? 'Si' : 'No' }}"
+							pTooltip="{{ Aviso.publicado == 1 ? 'Desh' : 'H' }}abilitar publicación"
+							tooltipPosition="left"
+							(click)="onAvisoAlternarEstatusPublicado(Aviso)"
+						></p-tag>
+					</span>
+				</td>
+				<td class="text-md-end">
+					<span class="p-column-title">Fecha</span>{{ Aviso.fecha_publicacion | date : 'MMMM dd, yyyy' | uppercase
+					}}<br />
+					{{ Aviso.fecha_publicacion | date : 'hh:mm aaa' | uppercase }}
+				</td>
+				<td class="text-end">
+					<!-- Botón Editar -->
+					<button
+						*ngIf="permitirAgregarEditar && Aviso.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar aviso"
+						tooltipPosition="left"
+						(click)="onAvisoEditar(Aviso.id_aviso)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles del aviso"
+						tooltipPosition="left"
+						(click)="onAvisoDetalle(Aviso.id_aviso)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirAgregarEditar && Aviso.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar aviso"
+						tooltipPosition="left"
+						(click)="onAvisoEliminar(Aviso.id_aviso)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td>
+					Sin registros.
+					<!-- <ng-container *ngIf="idPerfilUsuarioSeleccionado != 0; else elseSinPerfilUsuario">
+						Sin registros.
+					</ng-container>
+					<ng-template #elseSinPerfilUsuario> Selecciona un perfil. </ng-template> -->
+				</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgAviso
+	[(visible)]="mostrarDialogoEdicionAviso"
+	[style]="{ width: '94vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles del Aviso {{ Aviso && Aviso.id_aviso == 0 ? ' Nuevo' : '' }} para el {{
+		PerfilUsuarioSeleccionado.perfil_usuario
+	}}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmAviso" class="mt-1" [formGroup]="frmAviso" autocomplete="off">
+			<div class="row py-1">
+				<!-- Título -->
+				<div class="col-12 col-sm-8 col-md-10">
+					<label for="titulo">Título</label>
+					<input
+						type="text"
+						pInputText
+						id="titulo"
+						formControlName="titulo"
+						class="uppercase"
+						required
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+				<!-- Publicado -->
+				<div class="col-12 col-sm-4 col-md-2 align-self-end text-end mt-2 mt-sm-0">
+					<label>
+						<div class="d-flex align-items-center">
+							<p-inputSwitch
+								formControlName="publicado"
+								pTooltip="Indicar si el aviso será publicado al almacenar la información"
+								tooltipPosition="top"
+							></p-inputSwitch>
+							<span class="ms-2"> ¿Publicado?</span>
+						</div></label
+					>
+				</div>
+			</div>
+
+			Descripción
+			<div class="row">
+				<div class="col">
+					<p-editor
+						#descripcion
+						formControlName="descripcion"
+						[style]="{ height: '320px' }"
+						[modules]="ModulosEditorDescripcion"
+					>
+						<p-header>
+							<span class="ql-formats">
+								<select class="ql-header" tabindex="-1">
+									<option value="1" tabindex="-1">Título</option>
+									<option value="2" tabindex="-1">Subtítulo</option>
+									<option selected tabindex="-1">Normal</option>
+								</select>
+								<select class="ql-font" tabindex="-1">
+									<option selected tabindex="-1">Sans Serif</option>
+									<option value="serif" tabindex="-1">Serif</option>
+									<option value="monospace" tabindex="-1">Monospace</option>
+								</select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+								<button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+								<button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+							</span>
+							<span class="ql-formats">
+								<select class="ql-color" tabindex="-1"></select>
+								<select class="ql-background" tabindex="-1"></select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+								<button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+								<select class="ql-align" tabindex="-1">
+									<option selected tabindex="-1"></option>
+									<option value="center" tabindex="-1"></option>
+									<option value="right" tabindex="-1"></option>
+									<option value="justify" tabindex="-1"></option>
+								</select>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-image" aria-label="Insert Image" tabindex="-1"></button>
+							</span>
+						</p-header>
+					</p-editor>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmAviso.valid"
+			(click)="onAvisoGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onAvisoCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalle -->
+<p-dialog
+	#dlgAvisoDetalle
+	[style]="{ width: '80vw' }"
+	[(visible)]="mostrarDialogoDetalleAviso"
+	modal="true"
+	dismissableMask="true"
+	header="Detalle del Aviso"
+>
+	<ng-template pTemplate="content">
+		<!-- Aviso -->
+		<div class="row border-bottom py-2">
+			<div class="col-auto"><b>Título:</b> {{ Aviso.titulo }}</div>
+			<div class="col-auto ms-auto text-end">
+				<b>Fecha publicación:</b>
+				<ng-container *ngIf="Aviso.fecha_publicacion; else elseSinFechaPublicacion">
+					{{ Aviso.fecha_publicacion | date : 'MMMM dd, yyyy hh:mm aaa' | uppercase }}
+				</ng-container>
+				<ng-template #elseSinFechaPublicacion> No publicado</ng-template>
+			</div>
+		</div>
+		<div class="row py-1">
+			<div
+				class="col-12 border-bottom"
+				style="overflow: hidden; position: relative; width: 100%"
+				[innerHtml]="Aviso.descripcion"
+			></div>
+		</div>
+	</ng-template>
+</p-dialog>

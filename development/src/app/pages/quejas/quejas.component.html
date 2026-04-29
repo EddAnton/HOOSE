@@ -1,0 +1,826 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptQuejas
+		[responsive]="true"
+		[value]="Quejas"
+		[columns]="QuejasCols"
+		[rowHover]="true"
+		[globalFilterFields]="QuejasFilter"
+		[showCurrentPageReport]="true"
+		[paginator]="Quejas.length > 0"
+		[rows]="50"
+		dataKey="id_queja"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						pButton
+						*ngIf="permitirAgregar"
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar queja"
+						tooltipPosition="right"
+						(click)="onQuejaEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptQuejas.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptQuejas)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Queja>
+			<tr>
+				<td><span class="p-column-title">Título</span>{{ Queja.titulo }}</td>
+				<td>
+					<span class="p-column-title">Fecha</span>{{ Queja.fecha | date : "MMMM dd, yyyy 'a las' h:mm a" | uppercase }}
+				</td>
+				<td><span class="p-column-title">Registró</span>{{ Queja.usuario_registro }}</td>
+				<td>
+					<span class="p-column-title">Asignada a</span>
+					<span [ngStyle]="{ cursor: permitirEditar && Queja.id_estatus_queja != 4 ? 'pointer' : 'context-menu' }">
+						<p-tag
+							severity="{{ !Queja.id_usuario_asignado ? 'danger' : 'success' }}"
+							value="{{ !Queja.id_usuario_asignado ? 'SIN ASIGNAR' : Queja.usuario_asignado }}"
+							pTooltip="Asignar colaborador que atenderá la queja"
+							tooltipPosition="left"
+							tooltipDisabled="{{ Queja.id_estatus_queja == 4 }}"
+							(click)="permitirEditar && Queja.id_estatus_queja != 4 && onQuejaAsignarColaboradorEditar(Queja)"
+						></p-tag>
+					</span>
+				</td>
+				<td>
+					<span class="p-column-title">Estatus</span>
+					<span [ngStyle]="{ cursor: permitirEditar && Queja.id_estatus_queja != 4 ? 'pointer' : 'context-menu' }">
+						<p-tag
+							severity="{{
+								Queja.id_estatus_queja == 1 ? 'danger' : Queja.id_estatus_queja == 4 ? 'success' : 'warning'
+							}}"
+							value="{{ Queja.estatus_queja }}"
+							pTooltip="Actualizar estatus de la queja"
+							tooltipPosition="left"
+							tooltipDisabled="{{ Queja.id_estatus_queja == 4 }}"
+							(click)="permitirEditar && Queja.id_estatus_queja != 4 && onQuejaActualizarEstatusEditar(Queja)"
+						></p-tag>
+					</span>
+				</td>
+				<td class="text-end">
+					<!-- Botón Editar -->
+					<button
+						pButton
+						*ngIf="
+							Queja.estatus == 1 &&
+							Queja.id_estatus_queja != 4 &&
+							(permitirEditar || Queja.id_usuario_registro == idUsuario)
+						"
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar queja"
+						tooltipPosition="left"
+						(click)="onQuejaEditar(Queja.id_queja)"
+					></button>
+					<!-- Botón Seguimiento -->
+					<button
+						pButton
+						*ngIf="
+							Queja.estatus == 1 &&
+							Queja.id_estatus_queja != 4 &&
+							(permitirEditar || Queja.id_usuario_registro == idUsuario)
+						"
+						type="button"
+						icon="bx bx-timer bx-sm"
+						class="p-button-rounded p-button-text me-1"
+						pTooltip="Seguimiento de la queja"
+						tooltipPosition="left"
+						(click)="onMostrarQuejaSeguimiento(Queja.id_queja)"
+					></button>
+					<!-- Botón Detalles -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-eye"
+						class="p-button-rounded p-button-text p-button-warning me-1"
+						pTooltip="Detalles de la queja"
+						tooltipPosition="left"
+						(click)="onQuejaDetalle(Queja.id_queja)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						pButton
+						*ngIf="Queja.estatus == 1 && permitirEditar"
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar queja"
+						tooltipPosition="left"
+						(click)="onQuejaEliminar(Queja.id_queja)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td [attr.colspan]="QuejasCols.length">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	[(visible)]="mostrarDialogoEdicionQueja"
+	[breakpoints]="{ '991px': '84vw', '640px': '96vw' }"
+	[style]="{ width: '72vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="{{ Queja?.id_queja == 0 ? 'Agregar' : 'Editar' }} Queja"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmQueja" class="mt-1" [formGroup]="frmQueja" autocomplete="off">
+			<div class="row py-1">
+				<!-- Título -->
+				<div class="col-12">
+					<label for="txtTitulo">Título</label>
+					<input
+						type="text"
+						pInputText
+						id="txtTitulo"
+						formControlName="titulo"
+						class="uppercase"
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+			<!-- Descripción -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtDescripcion">Descripción</label>
+					<textarea
+						pInputTextarea
+						id="txtDescripcion"
+						formControlName="descripcion"
+						class="uppercase"
+						rows="3"
+						maxlength="1000"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+
+			<!-- Evidencia fotográfica -->
+			<div *ngIf="Queja.id_queja > 0 && Queja.archivos.length > 0" class="title-line mt-3 mb-1">
+				Evidencia fotográfica
+			</div>
+
+			<!-- Carousel -->
+			<div *ngIf="Queja.id_queja > 0 && Queja.archivos.length > 0" class="row py-1">
+				<div class="archivos-container col-12 text-center">
+					<p-carousel
+						[value]="Queja.archivos"
+						[numVisible]="4"
+						[numScroll]="4"
+						[circular]="false"
+						[responsiveOptions]="responsiveOptions"
+						[showIndicators]="false"
+						styleClass="h-100"
+					>
+						<ng-template let-archivo pTemplate="item">
+							<div class="archivo-item">
+								<div class="archivo-item-content">
+									<div class="archivo-imagen w-75 pb-2">
+										<img
+											[src]="archivo.archivo"
+											style="cursor: pointer"
+											(click)="onMostrarArchivoQueja(archivo.archivo)"
+										/>
+									</div>
+									<div *ngIf="Queja.id_queja > 0" class="archivo-item-buttons align-self-center">
+										<!-- Botón Eliminar -->
+										<button
+											pButton
+											*ngIf="permitirEditar"
+											type="button"
+											icon="pi pi-trash"
+											class="p-button-rounded p-button-danger me-1"
+											pTooltip="Eliminar evidencia"
+											tooltipPosition="left"
+											(click)="onArchivoEliminar(archivo.id_queja_archivo)"
+										></button>
+									</div>
+								</div>
+							</div>
+						</ng-template>
+					</p-carousel>
+				</div>
+			</div>
+
+			<!-- Agregar archivos de evidencia -->
+			<div class="title-line mt-3 mb-1">Agregar evidencia fotográfica</div>
+			<div class="row py-1">
+				<div class="col-12 text-center">
+					<p-fileUpload
+						#txtEvidenciaArchivos
+						multiple="multiple"
+						accept=".png, .jpg, .jpeg"
+						[showUploadButton]="false"
+					></p-fileUpload>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmQueja.valid"
+			(click)="onQuejaGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onQuejaCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo asignar colaborador -->
+<p-dialog
+	[(visible)]="mostrarDialogoQuejaAsignarColaborador"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Asignar colaborador que atenderá la queja"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmQuejaAsignarColaborador" class="mt-1" [formGroup]="frmQuejaAsignarColaborador" autocomplete="off">
+			<div class="row py-1">
+				<!-- Colaborador a asignar -->
+				<div class="col-12 form-label-group">
+					<label for="cmbColaborador">Colaborador</label>
+					<select
+						#cmbColaborador
+						id="cmbColaborador"
+						formControlName="id_usuario_asignado"
+						class="form-select"
+						autofocus
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option
+							*ngFor="let colaborador of ColaboradoresDisponiblesAsignar"
+							[value]="colaborador.id_usuario_asignado"
+						>
+							{{ colaborador.nombre }}
+						</option>
+					</select>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmQuejaAsignarColaborador.valid"
+			(click)="onQuejaAsignarColaboradorGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onQuejaAsignarColaboradorCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo actualizar estatus -->
+<p-dialog
+	[(visible)]="mostrarDialogoQuejaActualizarEstatus"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Actualizar estatus de la queja"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmQuejaActualizarEstatus" class="mt-1" [formGroup]="frmQuejaActualizarEstatus" autocomplete="off">
+			<div class="row py-1">
+				<!-- Estatus de la queja -->
+				<div class="col-12 form-label-group">
+					<label for="cmbEstatusQueja">Estatus</label>
+					<select
+						#cmbEstatusQueja
+						id="cmbEstatusQueja"
+						formControlName="id_estatus_queja"
+						class="form-select"
+						(change)="onEstatusQuejaSeleccionado($event.target.value)"
+						autofocus
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let estatus of EstatusQuejas" [value]="estatus.id_estatus_queja">
+							{{ estatus.estatus_queja }}
+						</option>
+					</select>
+				</div>
+			</div>
+			<!-- Solución -->
+			<div *ngIf="EstatusQuejaSeleccionado.debe_especificar_solucion == 1" class="row py-1">
+				<div class="col-12">
+					<label for="txtSolucion">Solución</label>
+					<textarea
+						pInputTextarea
+						id="txtSolucion"
+						formControlName="solucion"
+						class="uppercase"
+						rows="3"
+						maxlength="500"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmQuejaActualizarEstatus.valid"
+			(click)="onQuejaActualizarEstatusGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onQuejaActualizarEstatusCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles de la queja -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoDetalleQueja"
+	contentStyleClass="pb-1"
+	position="top"
+	dismissableMask="true"
+	modal="true"
+>
+	<ng-template pTemplate="header">Detalles de la Queja - {{ Queja.estatus_queja }} </ng-template>
+	<ng-template pTemplate="content">
+		<p-tabView styleClass="pt-2 p-0">
+			<!-- Detalle -->
+			<p-tabPanel header="Detalle">
+				<div class="row pt-2">
+					<div class="col-12">
+						<p class="m-0"><b>De:</b> {{ Queja.usuario_registro }}</p>
+					</div>
+				</div>
+				<div class="row pt-1">
+					<div class="col-12">
+						<p class="m-0"><b>Titulo:</b> {{ Queja.titulo }}</p>
+					</div>
+				</div>
+				<div class="row pt-1">
+					<div class="col-12">
+						<p class="m-0"><b>Fecha:</b> {{ Queja.fecha | date : "MMMM dd, yyyy 'a las' h:mm a" | uppercase }}</p>
+					</div>
+				</div>
+				<div class="row pt-1 pb-2">
+					<div class="col-12">
+						<p class="m-0"><b>Descripción:</b> {{ Queja.descripcion }}</p>
+					</div>
+				</div>
+				<!-- <div *ngIf="Queja.solucion" class="row pt-1">
+					<div class="col-12">
+						<div class="title-line my-2">Solución</div>
+					</div>
+					<div class="col-12">
+						<p class="m-0"><b>Solución:</b> {{ Queja.solucion }}</p>
+					</div>
+				</div> -->
+				<!-- Evidencia fotográfica -->
+				<div *ngIf="Queja.id_queja > 0 && Queja.archivos.length > 0" class="title-line my-2">Evidencia fotográfica</div>
+				<!-- Carousel -->
+				<div *ngIf="Queja.id_queja > 0 && Queja.archivos.length > 0" class="row py-1">
+					<div class="archivos-container col-12 text-center">
+						<p-carousel
+							[value]="Queja.archivos"
+							[numVisible]="4"
+							[numScroll]="4"
+							[circular]="false"
+							[responsiveOptions]="responsiveOptions"
+							[showIndicators]="false"
+							styleClass="h-100"
+						>
+							<ng-template let-archivo pTemplate="item">
+								<div class="archivo-item">
+									<div class="archivo-item-content">
+										<div class="archivo-imagen w-75 pb-2">
+											<img
+												[src]="archivo.archivo"
+												style="cursor: pointer"
+												(click)="onMostrarArchivoQueja(archivo.archivo)"
+											/>
+										</div>
+									</div>
+								</div>
+							</ng-template>
+						</p-carousel>
+					</div>
+				</div>
+			</p-tabPanel>
+			<!-- Seguimiento -->
+			<p-tabPanel header="Segumiento">
+				<div class="card shadow-sm m-2">
+					<p-table
+						#ptSeguimiento
+						[responsive]="true"
+						[value]="Queja.seguimiento"
+						[columns]="QuejaSeguimientoDetalleCols"
+						[rowHover]="Queja.seguimiento.length > 0"
+						[showCurrentPageReport]="true"
+						[paginator]="Queja.seguimiento.length > 0"
+						[rows]="10"
+						dataKey="id_queja_seguimiento"
+						styleClass="p-datatable-striped"
+						currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+					>
+						<!-- <ng-template pTemplate="caption">
+					<div class="d-flex align-items-center p-1">
+						<div class="me-auto">
+							<button
+								pButton
+								*ngIf="permitirAgregar || QuejaSeguimiento.id_usuario_asignado == idUsuario"
+								type="button"
+								icon="pi pi-plus"
+								class="p-button-rounded p-button-raised p-button-success ms-1"
+								pTooltip="Agregar seguimiento"
+								tooltipPosition="right"
+								(click)="onSeguimientoEditar()"
+							></button>
+						</div>
+					</div>
+				</ng-template> -->
+						<ng-template pTemplate="header" let-columns>
+							<tr>
+								<th
+									*ngFor="let col of columns"
+									class="text-center"
+									[ngStyle]="{
+										width: col.width ? col.width : 'inherit'
+									}"
+								>
+									{{ col.header ? col.header : '&nbsp;' }}
+								</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-Seguimiento>
+							<tr>
+								<td>
+									<span class="p-column-title">Fecha</span>{{ Seguimiento.fecha | date : 'MMMM dd, yyyy' | uppercase
+									}}<br />
+									{{ Seguimiento.fecha | date : 'h:mm a' | uppercase }}
+								</td>
+								<td><span class="p-column-title">Seguimiento</span>{{ Seguimiento.seguimiento }}</td>
+								<td><span class="p-column-title">Registró</span>{{ Seguimiento.usuario_registro }}</td>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="emptymessage"
+							><tr class="no-records">
+								<td [attr.colspan]="QuejaSeguimientoDetalleCols.length">Sin seguimiento registrado.</td>
+							</tr></ng-template
+						>
+					</p-table>
+				</div>
+			</p-tabPanel>
+			<!-- Estatus -->
+			<!-- <p-tabPanel header="Estatus">
+				<div class="pb-2">
+					<div class="row pt-2">
+						<div class="col-12">
+							<p class="m-0">
+								<b>Asignada a:</b> {{ Queja.usuario_asignado ? Queja.usuario_asignado : 'SIN ASIGNAR' }}
+							</p>
+						</div>
+					</div>
+					<div *ngIf="Queja.solucion" class="row pt-1">
+						<div class="col-12">
+							<p class="m-0"><b>Solución:</b> {{ Queja.solucion }}</p>
+						</div>
+					</div>
+				</div>
+			</p-tabPanel> -->
+		</p-tabView>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Cerrar -->
+		<button
+			pButton
+			type="button"
+			label="Cerrar"
+			icon="bi bi-box-arrow-right"
+			class="p-button-raised p-button-danger ml-2"
+			pTooltip="Cerrar la ventana"
+			tooltipPosition="top"
+			(click)="mostrarDialogoDetalleQueja = false"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Imagen -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoArchivoQueja"
+	[contentStyle]="{ display: 'flex' }"
+	modal="true"
+	header="Archivo queja"
+	baseZIndex="99"
+>
+	<ng-template pTemplate="content">
+		<div class="imagenPreviewContainer imagenPreview">
+			<img [src]="srcArchivoQueja" />
+		</div>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Seguimiento de la queja -->
+<p-dialog
+	[(visible)]="mostrarDialogoQuejaSeguimiento"
+	[breakpoints]="{ '991px': '84vw', '640px': '96vw' }"
+	[style]="{ width: '72vw' }"
+	[modal]="true"
+	[closable]="true"
+	position="top"
+	header="Seguimiento de la Queja"
+	styleClass="p-fluid"
+	contentStyleClass="px-4 py-2"
+>
+	<ng-template pTemplate="content">
+		<div class="card shadow-sm m-2">
+			<p-table
+				#ptSeguimiento
+				[responsive]="true"
+				[value]="QuejaSeguimiento"
+				[columns]="QuejaSeguimientoCols"
+				[rowHover]="QuejaSeguimiento.length > 0"
+				[showCurrentPageReport]="true"
+				[paginator]="QuejaSeguimiento.length > 0"
+				[rows]="10"
+				dataKey="id_queja_seguimiento"
+				styleClass="p-datatable-striped"
+				currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+			>
+				<ng-template pTemplate="caption">
+					<div class="d-flex align-items-center p-1">
+						<div class="me-auto">
+							<!-- Botón Nuevo -->
+							<button
+								pButton
+								*ngIf="permitirAgregar || QuejaResumen.id_usuario_asignado == idUsuario"
+								type="button"
+								icon="pi pi-plus"
+								class="p-button-rounded p-button-raised p-button-success ms-1"
+								pTooltip="Agregar seguimiento"
+								tooltipPosition="right"
+								(click)="onSeguimientoEditar()"
+							></button>
+						</div>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header" let-columns>
+					<tr>
+						<th
+							*ngFor="let col of columns"
+							class="text-center"
+							[ngStyle]="{
+								width: col.width ? col.width : 'inherit'
+							}"
+						>
+							{{ col.header ? col.header : '&nbsp;' }}
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-Seguimiento>
+					<tr>
+						<td>
+							<span class="p-column-title">Fecha</span>{{ Seguimiento.fecha | date : 'MMMM dd, yyyy' | uppercase
+							}}<br />
+							{{ Seguimiento.fecha | date : 'h:mm a' | uppercase }}
+						</td>
+						<td><span class="p-column-title">Seguimiento</span>{{ Seguimiento.seguimiento }}</td>
+						<td><span class="p-column-title">Registró</span>{{ Seguimiento.usuario_registro }}</td>
+						<td class="text-end">
+							<!-- Botón Editar -->
+							<button
+								pButton
+								*ngIf="Seguimiento.estatus == 1 && Seguimiento.bloqueado != 1 && permitirEditar"
+								type="button"
+								icon="pi pi-pencil"
+								class="p-button-rounded p-button-text p-button-success me-1"
+								pTooltip="Editar seguimiento"
+								tooltipPosition="left"
+								(click)="onSeguimientoEditar(Seguimiento)"
+							></button>
+							<!-- Botón Eliminar -->
+							<button
+								pButton
+								*ngIf="Seguimiento.estatus == 1 && Seguimiento.bloqueado != 1 && permitirEditar"
+								type="button"
+								icon="pi pi-trash"
+								class="p-button-rounded p-button-text p-button-danger me-1"
+								pTooltip="Eliminar seguimiento"
+								tooltipPosition="left"
+								(click)="onSeguimientoEliminar(Seguimiento.id_queja_seguimiento)"
+							></button>
+						</td>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="emptymessage"
+					><tr class="no-records">
+						<td [attr.colspan]="QuejaSeguimientoCols.length">Sin seguimiento registrado.</td>
+					</tr></ng-template
+				>
+			</p-table>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Cerrar -->
+		<button
+			pButton
+			type="button"
+			label="Cerrar"
+			icon="bi bi-box-arrow-right"
+			class="p-button-raised p-button-danger ml-2"
+			pTooltip="Cerrar la ventana"
+			tooltipPosition="top"
+			(click)="mostrarDialogoQuejaSeguimiento = false"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo de inserción y edición del seguimiento -->
+<p-dialog
+	#dlgSeguimiento
+	[(visible)]="mostrarDialogoEdicionSeguimiento"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	position="top"
+	header="{{ Seguimiento?.id_queja_seguimiento == 0 ? 'Agregar' : 'Editar' }} Seguimiento"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmSeguimiento" class="mt-1" [formGroup]="frmSeguimiento" autocomplete="off">
+			<div class="row py-1">
+				<!-- Fecha -->
+				<div class="col-12 col-md-3">
+					<label for="txtFecha">Fecha</label>
+					<p-calendar
+						inputId="txtFecha"
+						formControlName="fecha"
+						dateFormat="dd-MM-yy"
+						inputStyleClass="uppercase"
+						[showTime]="true"
+						[appendTo]="dlgSeguimiento"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[minDate]="fechaRegistroLimite"
+					></p-calendar>
+				</div>
+			</div>
+			<!-- Seguimiento -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtSeguimiento">Seguimiento</label>
+					<textarea
+						pInputTextarea
+						id="txtSeguimiento"
+						formControlName="seguimiento"
+						class="uppercase"
+						rows="3"
+						maxlength="1000"
+						(focus)="hlpApp.selectAllContent($event)"
+						autofocus
+					></textarea>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmSeguimiento.valid"
+			(click)="onSeguimientoGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onSeguimientoCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>

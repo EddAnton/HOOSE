@@ -1,0 +1,18 @@
+<div class="main-container">
+	<div class="sidebar-section">
+		<app-sidebar></app-sidebar>
+	</div>
+
+	<!-- <div class="header-section"></div> -->
+	<div class="content-container">
+		<!-- <div class="navbar-section">
+			<app-navbar></app-navbar>
+		</div> -->
+		<app-navbar></app-navbar>
+		<div *ngIf="componenteTitulo" class="text-center display-6">{{ componenteTitulo }}</div>
+		<div class="router-section">
+			<router-outlet></router-outlet>
+		</div>
+		<div class="footer-section"></div>
+	</div>
+</div>

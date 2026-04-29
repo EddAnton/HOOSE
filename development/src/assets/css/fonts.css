@@ -1,0 +1,16 @@
+@font-face {
+	font-family: GoogleSans;
+	src: url('../fonts/google_sans/Google-Sans.woff2');
+}
+@font-face {
+	font-family: EncodeSansCondensed;
+	src: url('../fonts/encoded_sans_condensed/EncodeSansCondensed-Regular.ttf');
+}
+@font-face {
+	font-family: MerriweatherSans;
+	src: url('../fonts/merriweather_sans/MerriweatherSans-Regular.ttf');
+}
+@font-face {
+	font-family: OldStamper;
+	src: url('../fonts/old_stamper/old_stamper.ttf');
+}

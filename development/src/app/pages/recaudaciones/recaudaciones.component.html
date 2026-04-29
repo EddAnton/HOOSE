@@ -1,0 +1,790 @@
+<div class="card shadow-sm">
+	<p-table
+		#ptRecaudaciones
+		[responsive]="true"
+		[value]="Recaudaciones"
+		[columns]="RecaudacionesCols"
+		[globalFilterFields]="RecaudacionesFilter"
+		[rowHover]="true"
+		[showCurrentPageReport]="true"
+		[paginator]="Recaudaciones.length > 0"
+		[rows]="50"
+		dataKey="id_recuadacion"
+		styleClass="p-datatable-striped"
+		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+		(onFilter)="onFilter($event)"
+	>
+		<ng-template pTemplate="caption">
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						*ngIf="permitirAgregarEditar"
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar recaudación"
+						tooltipPosition="right"
+						(click)="onRecaudacionEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptRecaudaciones.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="onFilterReset(ptRecaudaciones)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th
+					*ngFor="let col of columns"
+					class="text-center"
+					[ngStyle]="{
+						width: col.width ? col.width : 'inherit'
+					}"
+				>
+					{{ col.header ? col.header : '&nbsp;' }}
+				</th>
+			</tr>
+			<tr *ngIf="Recaudaciones.length > 0">
+				<th colspan="8" class="text-end">$&nbsp;{{ FilaTotales.total | number : '1.0-0' }}</th>
+				<th colspan="2">&nbsp;</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-Recaudacion>
+			<tr>
+				<td class="text-md-end"><span class="p-column-title">Folio</span>{{ Recaudacion.id_recaudacion }}</td>
+				<td><span class="p-column-title">Edificio</span>{{ Recaudacion.edificio }}</td>
+				<td><span class="p-column-title">Unidad</span>{{ Recaudacion.unidad }}</td>
+				<td><span class="p-column-title">¿Quién paga?</span>{{ Recaudacion.perfil_usuario_paga }}</td>
+				<td><span class="p-column-title">Usuario paga</span>{{ Recaudacion.usuario_paga }}</td>
+				<td class="text-md-end"><span class="p-column-title">Año</span>{{ Recaudacion.anio }}</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Mes</span
+					>{{ Recaudacion.anio.toString() + '/' + Recaudacion.mes.toString() + '/01' | date : 'MMMM' | uppercase }}
+				</td>
+				<td class="text-md-end"><span class="p-column-title">Total</span>{{ Recaudacion.total | number : '1.2-2' }}</td>
+				<td class="text-md-center">
+					<span class="p-column-title">Estatus</span>
+					<span
+						[ngStyle]="{
+							cursor: permitirAgregarEditar && Recaudacion.id_estatus_recaudacion == 1 ? 'pointer' : 'context-menu'
+						}"
+					>
+						<p-tag
+							severity="{{ Recaudacion.id_estatus_recaudacion == 1 ? 'danger' : 'success' }}"
+							value="{{ Recaudacion.estatus_recaudacion }}"
+							pTooltip="{{ Recaudacion.id_estatus_recaudacion == 1 ? 'Registrar pago' : '' }}"
+							tooltipPosition="left"
+							tooltipDisabled="{{ !permitirAgregarEditar }}"
+							(click)="
+								permitirAgregarEditar &&
+									Recaudacion.id_estatus_recaudacion == 1 &&
+									onRecaudacionRegistrarPago(Recaudacion.id_recaudacion)
+							"
+						></p-tag>
+					</span>
+				</td>
+				<!-- *ngIf="Recaudacion.id_estatus_recaudacion == 1" -->
+				<td class="text-end">
+					<!-- Botón Recibo de pago -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-file-pdf"
+						class="p-button-rounded p-button-text p-button-primary me-1"
+						pTooltip="Recibo de pago de la recaudación"
+						tooltipPosition="left"
+						(click)="onRecaudacionReciboPago(Recaudacion.id_recaudacion)"
+					></button>
+					<!-- Botón Editar -->
+					<button
+						*ngIf="permitirAgregarEditar && Recaudacion.id_estatus_recaudacion == 1"
+						pButton
+						type="button"
+						icon="pi pi-pencil"
+						class="p-button-rounded p-button-text p-button-success me-1"
+						pTooltip="Editar recaudación"
+						tooltipPosition="left"
+						(click)="onRecaudacionEditar(Recaudacion.id_recaudacion)"
+					></button>
+					<!-- Botón Eliminar -->
+					<button
+						*ngIf="permitirAgregarEditar && Recaudacion.estatus == 1"
+						pButton
+						type="button"
+						icon="pi pi-trash"
+						class="p-button-rounded p-button-text p-button-danger me-1"
+						pTooltip="Eliminar recaudación"
+						tooltipPosition="left"
+						(click)="onRecaudacionEliminar(Recaudacion)"
+					></button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage"
+			><tr class="no-records">
+				<td colspan="3">Sin registros.</td>
+			</tr></ng-template
+		>
+	</p-table>
+</div>
+
+<!-- Diálogo de inserción y edición -->
+<p-dialog
+	#dlgRecaudacion
+	[(visible)]="mostrarDialogoEdicionRecaudacion"
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[modal]="true"
+	[closable]="false"
+	header="Detalles de la Recaudación {{ Recaudacion && Recaudacion.id_recaudacion == 0 ? ' Nueva' : '' }}"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmRecaudacion" class="mt-1" [formGroup]="frmRecaudacion" autocomplete="off">
+			<div class="row py-1">
+				<!-- Edificio -->
+				<div class="col-12 col-md-6 form-label-group">
+					<label for="cmdEdificio">Edificio</label>
+					<select
+						#cmdEdificio
+						id="cmdEdificio"
+						formControlName="id_edificio"
+						class="form-select"
+						(change)="onEdificioSeleccionado($event.target.value)"
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let edificio of Edificios" [value]="edificio.id_edificio">
+							{{ edificio.edificio }}
+						</option>
+					</select>
+				</div>
+				<!-- Unidad -->
+				<div class="col-12 col-md-6 form-label-group">
+					<label for="cmdUnidad">Unidad</label>
+					<select
+						#cmdUnidad
+						id="cmdUnidad"
+						formControlName="id_unidad"
+						class="form-select"
+						(change)="onUnidadSeleccionada($event.target.value)"
+					>
+						<option [value]="0" selected>Selecciona una opción...</option>
+						<option *ngFor="let unidad of UnidadesEdificio" [value]="unidad.id_unidad">
+							{{ unidad.unidad }}
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Perfil usuario paga -->
+				<!-- <div class="col-12 col-md-3">
+					<label for="txtPerfilUsuarioPaga">¿Quién paga?</label>
+					<input
+						type="text"
+						pInputText
+						id="txtPerfilUsuarioPaga"
+						formControlName="perfil_usuario_paga"
+						class="uppercase"
+					/>
+				</div> -->
+				<!-- Usuario paga -->
+				<!-- <div class="col-12 col-md-4">
+					<label for="txtUsuarioPaga">&nbsp;</label>
+					<input type="text" pInputText id="txtUsuarioPaga" formControlName="usuario_paga" class="uppercase" />
+				</div> -->
+				<div class="col-12 col-md-7">
+					<label for="txtUsuarioPaga">¿Quién paga?</label>
+					<input type="text" pInputText id="txtUsuarioPaga" formControlName="usuario_paga" class="uppercase" />
+				</div>
+				<!-- Renta -->
+				<div class="col-12 col-md-2">
+					<label for="txtRenta">Renta</label>
+					<p-inputNumber
+						inputId="txtRenta"
+						formControlName="renta"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Año y Mes -->
+				<div class="col-12 col-md-3">
+					<label for="txAnioMes">Año y Mes</label>
+					<p-calendar
+						inputId="txAnioMes"
+						formControlName="anio_mes"
+						view="month"
+						dateFormat="MM/yy"
+						[yearNavigator]="true"
+						yearRange="{{ appData.appLaunchYear }}:{{ fechaPagoLimite.getFullYear() + 1 }}"
+						[appendTo]="dlgRecaudacion"
+						[inputStyle]="{ 'text-align': 'right' }"
+						inputStyleClass="uppercase"
+						(onSelect)="onAnioMesSeleccionado($event)"
+					></p-calendar>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Agua -->
+				<div class="col-12 col-md-4">
+					<label for="txtAgua">Agua</label>
+					<p-inputNumber
+						inputId="txtAgua"
+						formControlName="agua"
+						mode="decimal"
+						locale="es-MX"
+						allowEmpty="false"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+						(onBlur)="onCalcularTotal()"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Energía Eléctrica -->
+				<div class="col-12 col-md-4">
+					<label for="txtEnergiaElectrica">Energía eléctrica</label>
+					<p-inputNumber
+						inputId="txtEnergiaElectrica"
+						formControlName="energia_electrica"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+						(onBlur)="onCalcularTotal()"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Gas -->
+				<div class="col-12 col-md-4">
+					<label for="txtGas">Gas</label>
+					<p-inputNumber
+						inputId="txtGas"
+						formControlName="gas"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+						(onBlur)="onCalcularTotal()"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Seguridad -->
+				<div class="col-12 col-md-4">
+					<label for="txtSeguridad">Seguridad</label>
+					<p-inputNumber
+						inputId="txtSeguridad"
+						formControlName="seguridad"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+						(onBlur)="onCalcularTotal()"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Servicios Públicos -->
+				<div class="col-12 col-md-4">
+					<label for="txtServiciosPublicos">Servicios públicos</label>
+					<p-inputNumber
+						inputId="txtServiciosPublicos"
+						formControlName="servicios_publicos"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+						(onBlur)="onCalcularTotal()"
+					>
+					</p-inputNumber>
+				</div>
+				<!-- Otros Servicios -->
+				<div class="col-12 col-md-4">
+					<label for="txtOtrosServicios">Otros servicios</label>
+					<p-inputNumber
+						inputId="txtOtrosServicios"
+						formControlName="otros_servicios"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+						(onFocus)="hlpApp.selectAllContent($event)"
+						(onBlur)="onCalcularTotal()"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Fecha límite pago -->
+				<div class="col-12 col-md-4">
+					<label for="txtFechaLimitePago">Fecha límite de pago</label>
+					<p-calendar
+						inputId="txtFechaLimitePago"
+						formControlName="fecha_limite_pago"
+						dateFormat="dd-MM-yy"
+						inputStyleClass="uppercase"
+						[appendTo]="ptRecaudaciones"
+						[inputStyle]="{ 'text-align': 'right' }"
+					></p-calendar>
+				</div>
+				<!-- Total -->
+				<div class="col-12 col-md-4 offset-md-4">
+					<label for="txtTotal">Total</label>
+					<p-inputNumber
+						inputId="txtTotal"
+						formControlName="total"
+						mode="decimal"
+						locale="es-MX"
+						[minFractionDigits]="2"
+						[maxFractionDigits]="2"
+						[step]="0"
+						[inputStyle]="{ 'text-align': 'right' }"
+					>
+					</p-inputNumber>
+				</div>
+			</div>
+
+			<div class="row py-1">
+				<!-- Estatus recaudación -->
+				<div class="col-12 col-md-6 col-xl-3">
+					<label for="cmdEstatusRecaudacion">Estatus</label>
+					<select
+						#cmdEstatusRecaudacion
+						id="cmdEstatusRecaudacion"
+						formControlName="id_estatus_recaudacion"
+						class="form-select"
+						(change)="onEstatusRecaudacionSeleccionado($event.target.value)"
+					>
+						<option
+							*ngFor="let estatusRecaudacion of EstatusRecaudaciones"
+							[value]="estatusRecaudacion.id_estatus_recaudacion"
+						>
+							{{ estatusRecaudacion.estatus_recaudacion }}
+						</option>
+					</select>
+				</div>
+				<!-- Fecha de pago -->
+				<div class="col-12 col-md-6 col-xl-3">
+					<label for="txtFechaPago">Fecha pago</label>
+					<p-calendar
+						inputId="txtFechaPago"
+						formControlName="fecha_pago"
+						dateFormat="dd-MM-yy"
+						inputStyleClass="uppercase"
+						[appendTo]="dlgRecaudacion"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[maxDate]="fechaPagoLimite"
+					></p-calendar>
+				</div>
+				<!-- Forma pago -->
+				<div class="col-12 col-md-6 col-xl-3">
+					<label for="cmbFormaPago">Forma pago</label>
+					<select
+						#cmbFormaPago
+						id="cmbFormaPago"
+						formControlName="id_forma_pago"
+						class="form-select"
+						(change)="onFormaPagoSeleccionado($event.target.value)"
+					>
+						<option *ngFor="let formaPago of FormasPago" [value]="formaPago.id_forma_pago">
+							{{ formaPago.forma_pago }}
+						</option>
+					</select>
+				</div>
+				<!-- Número de referencia -->
+				<div class="col-12 col-md-6 col-xl-3">
+					<label for="txtNumeroReferencia">Número referencia</label>
+					<input
+						type="text"
+						pInputText
+						id="txtNumeroReferencia"
+						formControlName="numero_referencia"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+
+			<!-- Notas -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label for="txtNotas">Notas</label>
+					<!-- <textarea
+						pInputTextarea
+						id="txtNotas"
+						formControlName="notas"
+						rows="2"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					></textarea> -->
+					<input
+						type="text"
+						pInputText
+						id="txtNotas"
+						formControlName="notas"
+						class="uppercase"
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Guardar -->
+		<button
+			pButton
+			type="button"
+			label="Guardar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Almacenar la información"
+			tooltipPosition="top"
+			[disabled]="!frmRecaudacion.valid"
+			(click)="onRecaudacionEditarGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onRecaudacionEditarCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo registrar pago -->
+<p-dialog
+	#dlgRecaudacionRegistrarPago
+	[(visible)]="mostrarDialogoRegistrarPagoRecaudacion"
+	[style]="{ width: '350px' }"
+	[modal]="true"
+	[closable]="false"
+	header="Registrar pago"
+	styleClass="p-fluid"
+>
+	<ng-template pTemplate="content">
+		<form id="frmRecaudacionRegistrarPago" class="mt-1" [formGroup]="frmRecaudacionRegistrarPago" autocomplete="off">
+			<div class="row py-1">
+				<!-- Fecha pago -->
+				<div class="col-12">
+					<label for="txtFechaPago">Fecha pago</label>
+					<p-calendar
+						inputId="txtFechaPago"
+						formControlName="fecha_pago"
+						dateFormat="dd-MM-yy"
+						inputStyleClass="uppercase"
+						[appendTo]="ptRecaudaciones"
+						[inputStyle]="{ 'text-align': 'right' }"
+						[maxDate]="fechaPagoLimite"
+					></p-calendar>
+				</div>
+				<!-- Forma pago -->
+				<div class="col-12">
+					<label for="cmbFormaPago">Forma pago</label>
+					<select
+						#cmbFormaPago
+						id="cmbFormaPago"
+						formControlName="id_forma_pago"
+						class="form-select"
+						(change)="onFormaPagoSeleccionado($event.target.value)"
+						autofocus
+					>
+						<option *ngFor="let formaPago of FormasPago" [value]="formaPago.id_forma_pago">
+							{{ formaPago.forma_pago }}
+						</option>
+					</select>
+				</div>
+				<!-- Número de referencia -->
+				<div class="col-12">
+					<label for="txtNumeroReferencia">Número referencia</label>
+					<input
+						type="text"
+						pInputText
+						id="txtNumeroReferencia"
+						formControlName="numero_referencia"
+						autofocus
+						(focus)="hlpApp.selectAllContent($event)"
+					/>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<!-- Botón Confirmar -->
+		<button
+			pButton
+			type="button"
+			label="Confirmar"
+			icon="pi pi-save"
+			class="p-button-raised p-button-info me-sm-1"
+			pTooltip="Registrar el pago"
+			tooltipPosition="top"
+			[disabled]="!frmRecaudacionRegistrarPago.valid"
+			(click)="onRecaudacionRegistrarPagoGuardar()"
+		></button>
+		<!-- Botón Cancelar -->
+		<button
+			pButton
+			type="button"
+			label="Cancelar"
+			icon="pi pi-times"
+			class="p-button-raised p-button-warning ml-2"
+			pTooltip="Cancelar el proceso"
+			tooltipPosition="top"
+			(click)="onRecaudacionRegistrarPagoCancelar()"
+		></button>
+	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Recibo de pago -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '50vw' }"
+	[(visible)]="mostrarDialogoReciboPagoRecaudacion"
+	modal="true"
+	dismissableMask="true"
+	header="Recibo de la Recaudación"
+>
+	<ng-template pTemplate="content">
+		<div class="d-print-none" style="position: absolute; top: 70px; right: 50px">
+			<div class="row">
+				<div class="col-auto pt-2 ms-auto no-print">
+					<button
+						pButton
+						type="button"
+						icon="pi pi-print"
+						class="p-button-raised p-button-rounded p-button-primary"
+						pTooltip="Imprimir"
+						tooltipPosition="left"
+						(click)="hlpApp.imprimirElemento('recibo-pago')"
+					></button>
+				</div>
+			</div>
+		</div>
+		<div id="recibo-pago" class="container pt-4">
+			<!-- Encabezado -->
+			<div class="row pt-4">
+				<!-- Impresión -->
+				<div class="col-12 text-center d-none d-print-block">
+					<p class="pb-3">RECIBO RECAUDACIÓN</p>
+				</div>
+				<!-- Pantalla -->
+				<div class="col-12 col-sm-7 text-center text-md-start d-print-none">
+					<p class="display-6 m-0">{{ Recaudacion.condominio }}</p>
+				</div>
+				<!-- Impresión -->
+				<div class="col-7 text-start d-none d-print-block">
+					<p class="display-6 m-0">{{ Recaudacion.condominio }}</p>
+				</div>
+				<!-- Pantalla -->
+				<div class="col-12 col-sm-5 pt-2 pt-sm-0 text-center text-sm-end d-print-none">
+					<p class="m-0"><b>Recibo:</b> {{ Recaudacion.id_recaudacion }}</p>
+					<p class="m-0"><b>Fecha registro:</b> {{ Recaudacion.fecha_registro }}</p>
+					<p class="m-0">
+						<b>Mes pago:</b>
+						{{
+							Recaudacion.anio.toString() + '/' + Recaudacion.mes.toString() + '/01' | date : 'MMMM, YYYY' | uppercase
+						}}
+					</p>
+					<p class="m-0">
+						<b>Fecha pago:</b> {{ Recaudacion.fecha_pago ? Recaudacion.fecha_pago : Recaudacion.estatus_recaudacion }}
+					</p>
+					<p class="m-0">
+						<b>Forma pago:</b> {{ Recaudacion.forma_pago ? Recaudacion.forma_pago : Recaudacion.estatus_recaudacion }}
+					</p>
+					<p *ngIf="Recaudacion.numero_referencia" class="m-0">
+						<b>Referencia:</b>
+						{{ Recaudacion.numero_referencia ? Recaudacion.numero_referencia : Recaudacion.estatus_recaudacion }}
+					</p>
+				</div>
+				<!-- Impresión -->
+				<div class="col-5 pt-0 text-end d-none d-print-block">
+					<p class="m-0"><b>Recibo:</b> {{ Recaudacion.id_recaudacion }}</p>
+					<p class="m-0"><b>Fecha registro:</b> {{ Recaudacion.fecha_registro }}</p>
+					<p class="m-0">
+						<b>Mes pago:</b>
+						{{
+							Recaudacion.anio.toString() + '/' + Recaudacion.mes.toString() + '/01' | date : 'MMMM, YYYY' | uppercase
+						}}
+					</p>
+					<p class="m-0">
+						<b>Fecha pago:</b> {{ Recaudacion.fecha_pago ? Recaudacion.fecha_pago : Recaudacion.estatus_recaudacion }}
+					</p>
+					<p class="m-0">
+						<b>Forma pago:</b> {{ Recaudacion.forma_pago ? Recaudacion.forma_pago : Recaudacion.estatus_recaudacion }}
+					</p>
+					<p *ngIf="Recaudacion.numero_referencia" class="m-0">
+						<b>Referencia:</b>
+						{{ Recaudacion.numero_referencia ? Recaudacion.numero_referencia : Recaudacion.estatus_recaudacion }}
+					</p>
+				</div>
+			</div>
+
+			<!-- Datos de Destinatario y de Unidad -->
+			<div class="row pt-3">
+				<!-- Pantalla -->
+				<div class="col-12 col-sm-6 text-center text-sm-start d-print-none">
+					<p class="carriage-return m-0">{{ Recaudacion.domicilio }}</p>
+					<p *ngIf="Recaudacion.telefono" class="m-0">Teléfono: {{ Recaudacion.telefono | phoneFormat }}</p>
+					<p *ngIf="Recaudacion.email" class="m-0">Email: {{ Recaudacion.email }}</p>
+				</div>
+				<!-- Impresión -->
+				<div class="col-6 text-start d-none d-print-block">
+					<p class="carriage-return m-0">{{ Recaudacion.domicilio }}</p>
+					<p *ngIf="Recaudacion.telefono" class="m-0">Teléfono: {{ Recaudacion.telefono | phoneFormat }}</p>
+					<p *ngIf="Recaudacion.email" class="m-0">Email: {{ Recaudacion.email }}</p>
+				</div>
+				<!-- Pantalla -->
+				<div class="col-12 col-sm-6 pt-3 pt-sm-0 text-center text-sm-end d-print-none">
+					<p class="m-0">{{ Recaudacion.destinatario_nombre }}</p>
+					<p class="m-0">Edificio: {{ Recaudacion.edificio }}</p>
+					<p class="m-0">Unidad: {{ Recaudacion.unidad }}</p>
+					<p *ngIf="Recaudacion.destinatario_telefono" class="m-0">
+						{{ Recaudacion.destinatario_telefono | phoneFormat }}
+					</p>
+					<p *ngIf="Recaudacion.destinatario_email" class="m-0">Email: {{ Recaudacion.destinatario_email }}</p>
+				</div>
+				<!-- Impresión -->
+				<div class="col-6 pt-0 text-end d-none d-print-block">
+					<p class="m-0">{{ Recaudacion.destinatario_nombre }}</p>
+					<p class="m-0">Edificio: {{ Recaudacion.edificio }}</p>
+					<p class="m-0">Unidad: {{ Recaudacion.unidad }}</p>
+					<p *ngIf="Recaudacion.destinatario_telefono" class="m-0">
+						{{ Recaudacion.destinatario_telefono | phoneFormat }}
+					</p>
+					<p *ngIf="Recaudacion.destinatario_email" class="m-0">Email: {{ Recaudacion.destinatario_email }}</p>
+				</div>
+			</div>
+
+			<!-- <div class="row pt-3">
+				<div class="col-6 py-1 text-white bg-secondary border-bottom"><b>Forma de pago</b></div>
+				<div class="col-6 py-1 text-end text-white bg-secondary border-bottom">
+					<b>{{ Recaudacion.forma_pago ? Recaudacion.forma_pago : Recaudacion.estatus_recaudacion }}</b>
+				</div>
+			</div>
+			<div *ngIf="Recaudacion.numero_referencia" class="row pt-0">
+				<div class="col py-0 text-end">
+					Referencia: <b>{{ Recaudacion.numero_referencia }}</b>
+				</div>
+			</div> -->
+			<div class="row pt-4">
+				<div class="col-6 py-1 text-white bg-secondary border-bottom"><b>Concepto</b></div>
+				<div class="col-6 py-1 text-end text-white bg-secondary border-bottom"><b>Importe</b></div>
+			</div>
+
+			<div class="row">
+				<div class="col-6 pe-0">
+					<p class="m-0 ps-3 py-1 border-bottom">Renta</p>
+					<p class="m-0 ps-3 py-1 border-bottom">Agua</p>
+					<p class="m-0 ps-3 py-1 border-bottom">Energía eléctrica</p>
+					<p class="m-0 ps-3 py-1 border-bottom">Gas</p>
+					<p class="m-0 ps-3 py-1 border-bottom">Seguridad</p>
+					<p class="m-0 ps-3 py-1 border-bottom">Servicios públicos</p>
+					<p class="m-0 ps-3 py-1 border-bottom">Otros servicios</p>
+				</div>
+				<div class="col-6 text-end ps-0">
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.renta | number : '1.2-2' }}</p>
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.agua | number : '1.2-2' }}</p>
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.energia_electrica | number : '1.2-2' }}</p>
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.gas | number : '1.2-2' }}</p>
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.seguridad | number : '1.2-2' }}</p>
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.servicios_publicos | number : '1.2-2' }}</p>
+					<p class="m-0 pe-2 py-1 border-bottom">{{ Recaudacion.otros_servicios | number : '1.2-2' }}</p>
+				</div>
+			</div>
+
+			<div class="row pt-2 pb-4">
+				<div class="col-8 col-md-7 text-center sello">
+					<div *ngIf="Recaudacion.id_estatus_recaudacion == 1" class="pendiente-pago">Pendiente pago</div>
+					<div *ngIf="Recaudacion.id_estatus_recaudacion == 3" class="pagado">Pagado</div>
+				</div>
+				<div class="col-4 col-md-5">
+					<div class="row h-100">
+						<div class="col-12 text-end display-6 fw-bold" style="height: 100px">
+							Total: {{ Recaudacion.total | number : '1.2-2' }}
+						</div>
+						<div class="col-12 text-center border-top">Firma</div>
+					</div>
+				</div>
+			</div>
+
+			<div *ngIf="Recaudacion.notas" class="row mt-4 py-4">
+				<!-- <div class="col-12 border-bottom"></div> -->
+				<!-- <div class="col-2 col-md-1">
+					<b>Notas:</b>
+				</div>
+				<div class="col">
+					{{ Recaudacion.notas }}
+				</div> -->
+				<div class="col-12 d-flex align-items-start mt-2 pt-1 border-top">
+					<div class=""><b>Notas:</b></div>
+					<div class="flex-grow-1 ps-1">{{ Recaudacion.notas }}</div>
+				</div>
+			</div>
+		</div>
+	</ng-template>
+</p-dialog>
