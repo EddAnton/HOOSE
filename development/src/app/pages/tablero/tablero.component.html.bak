@@ -1,0 +1,31 @@
+<div
+  class="text-bg-secondary border rounded sticky-top p-3 text-end shadow d-flex justify-content-end align-items-center">
+  <div class="align-self-center">
+    <label for="txtFechaInicial" class="pe-1">Del</label>
+    <p-calendar inputId="txtFechaInicial" [(ngModel)]="fechaInicial" view="month" dateFormat="MM/yy"
+      [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
+      [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+    <!-- </div>
+  <div class="align-self-center"> -->
+    <label for="txtFechaInicial" class="px-1">al</label>
+    <p-calendar inputId="txtFechaFinal" [(ngModel)]="fechaFinal" view="month" dateFormat="MM/yy" [yearNavigator]="true"
+      yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
+      [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+    <!-- </div>
+  <div class="align-self-center"> -->
+    <!-- <div class="ps-2"> -->
+    <!-- Botón Consultar -->
+    <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-text text-light ms-2"
+      pTooltip="Consultar" tooltipPosition="left" (click)="onActualizarInformacion()"></button>
+    <!-- </div> -->
+  </div>
+</div>
+<div class="dashboard d-flex flex-column justify-content-center">
+  <div class="cards d-flex flex-wrap justify-content-center">
+    <app-dashboard-card *ngFor="let card of data?.cards" [urlLogo]="card.urlLogo" [titleMessage]="card.title"
+      [subtitleMessage]="card.subtitle" [contentMessage]="card.content" [footerPath]="card.path"></app-dashboard-card>
+  </div>
+  <div class="charts d-flex flex-wrap justify-content-center">
+    <app-dashboard-chart *ngFor="let chart of charts" [data]="chart"></app-dashboard-chart>
+  </div>
+</div>
