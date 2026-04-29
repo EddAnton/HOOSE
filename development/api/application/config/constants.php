@@ -122,3 +122,10 @@ defined('PATH_ARCHIVOS_FONDOS_MONETARIOS') or define('PATH_ARCHIVOS_FONDOS_MONET
 defined('PATH_ARCHIVOS_PROYECTOS') or define('PATH_ARCHIVOS_PROYECTOS', 'uploads/proyectos');
 defined('PATH_ARCHIVOS_QUEJAS') or define('PATH_ARCHIVOS_QUEJAS', 'uploads/quejas');
 // defined('PLANTILLAS_PATH') or define('PLANTILLAS_PATH', 'documentos/plantillas/');
+
+defined('PRUEBAS_ID_USUARIO') or define('PRUEBAS_ID_USUARIO', 1);
+defined('VALIDATE_TOKEN') or define('VALIDATE_TOKEN', false);
+
+defined('PRUEBAS_ID_PERFIL_USUARIO') or define('PRUEBAS_ID_PERFIL_USUARIO', 1);
+
+defined('PRUEBAS_ID_CONDOMINIO_USUARIO') or define('PRUEBAS_ID_CONDOMINIO_USUARIO', 1);

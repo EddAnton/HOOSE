@@ -1,4 +1,4 @@
-const urlBackend = 'http://localhost:5001/';
+const urlBackend = 'http://localhost/api/';
 // const APIKey = '2d4c640a-13ed-44fc-9fe3-964fc0b2757f';
 const APIKey = 'b7a142358f5590b2a887caad198d1c2';
 // APIKey app.hoose.mx

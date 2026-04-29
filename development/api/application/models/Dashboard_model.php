@@ -120,7 +120,7 @@ class Dashboard_model extends CI_Model
     foreach ($legends as $legend) {
       $item = [];
       for ($i = 0; $i < $totalDatasets; $i++) {
-        $dataset[$i] = array_values(array_filter($datasets[$i], function ($d) use ($legend) {
+        $dataset[$i] = array_values(array_filter((array)$datasets[$i], function ($d) use ($legend) {
           return ($d['legend'] == $legend);
         }));
 
