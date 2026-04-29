@@ -1,4 +1,411 @@
-.dashboard {
-  margin-top: 20px;
-  user-select: none;
+/* =============================================
+   HOOSE — Tablero Ejecutivo
+   Tema oscuro, estilo ejecutivo premium
+   ============================================= */
+
+/* ---- Variables ---- */
+:host {
+  --hoose-bg: #111318;
+  --hoose-card-bg: #1a1d24;
+  --hoose-card-bg-hover: #21242d;
+  --hoose-border: rgba(255, 255, 255, 0.07);
+  --hoose-pink: #e91e8c;
+  --hoose-green: #1BC99A;
+  --hoose-blue: #3B82F6;
+  --hoose-amber: #F59E0B;
+  --hoose-text-primary: #f0f0f0;
+  --hoose-text-secondary: #8a8f9e;
+  --hoose-text-muted: #555a6a;
+  --hoose-radius: 14px;
+  --hoose-radius-sm: 8px;
+  --hoose-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Topbar ---- */
+.hoose-topbar {
+  background: #181b22;
+  border-bottom: 1px solid var(--hoose-border);
+  min-height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--hoose-text-primary);
+  letter-spacing: 0.01em;
+}
+
+.date-label {
+  color: var(--hoose-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+:host ::ng-deep .hoose-cal-input {
+  background: #24282f !important;
+  border: 1px solid var(--hoose-border) !important;
+  border-radius: var(--hoose-radius-sm) !important;
+  color: var(--hoose-text-primary) !important;
+  font-size: 0.85rem;
+  padding: 6px 10px !important;
+  height: 36px !important;
+}
+
+.hoose-search-btn {
+  background: var(--hoose-pink) !important;
+  border: none !important;
+  width: 36px !important;
+  height: 36px !important;
+  color: #fff !important;
+}
+
+.hoose-search-btn:hover {
+  background: #c2177a !important;
+}
+
+/* ---- Dashboard container ---- */
+.hoose-dashboard {
+  background: var(--hoose-bg);
+  min-height: calc(100vh - 60px);
+  padding-top: 20px;
+}
+
+/* ---- Loading ---- */
+.hoose-loading {
+  background: var(--hoose-bg);
+  min-height: calc(100vh - 60px);
+  color: var(--hoose-text-secondary);
+}
+
+/* =============================================
+   KPI Cards — fila superior
+   ============================================= */
+.hoose-kpi-card {
+  background: var(--hoose-card-bg);
+  border: 1px solid var(--hoose-border);
+  border-radius: var(--hoose-radius);
+  padding: 20px 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  min-height: 110px;
+}
+
+.hoose-kpi-card.clickable {
+  cursor: pointer;
+}
+
+.hoose-kpi-card.clickable:hover {
+  background: var(--hoose-card-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--hoose-shadow);
+}
+
+.kpi-icon-wrap {
+  background: rgba(233, 30, 140, 0.12);
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon-wrap .pi {
+  font-size: 1.2rem;
+  color: var(--hoose-pink);
+}
+
+.kpi-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.kpi-label {
+  font-size: 0.78rem;
+  color: var(--hoose-text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--hoose-text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kpi-content {
+  font-size: 0.75rem;
+  color: var(--hoose-green);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* =============================================
+   Mini Cards — filas secundarias
+   ============================================= */
+.hoose-mini-card {
+  background: var(--hoose-card-bg);
+  border: 1px solid var(--hoose-border);
+  border-radius: var(--hoose-radius-sm);
+  padding: 14px 16px;
+  height: 100%;
+  min-height: 80px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.hoose-mini-card.clickable {
+  cursor: pointer;
+}
+
+.hoose-mini-card.clickable:hover {
+  background: var(--hoose-card-bg-hover);
+  transform: translateY(-1px);
+}
+
+.mini-card-subtitle {
+  font-size: 0.72rem;
+  color: var(--hoose-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.mini-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--hoose-text-primary);
+  line-height: 1.2;
+}
+
+.mini-card-content {
+  font-size: 0.72rem;
+  color: var(--hoose-text-secondary);
+  margin-top: 2px;
+}
+
+/* =============================================
+   Chart Cards
+   ============================================= */
+.hoose-chart-card {
+  background: var(--hoose-card-bg);
+  border: 1px solid var(--hoose-border);
+  border-radius: var(--hoose-radius);
+  padding: 20px 22px;
+}
+
+.chart-card-header {
+  border-bottom: 1px solid var(--hoose-border);
+  padding-bottom: 12px;
+  margin-bottom: 16px !important;
+}
+
+.chart-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--hoose-text-primary);
+}
+
+.chart-icon {
+  color: var(--hoose-pink);
+  font-size: 1rem;
+}
+
+.chart-wrap {
+  width: 100%;
+}
+
+.legend-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: var(--hoose-text-secondary);
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+}
+
+.legend-dot::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.no-data-msg {
+  color: var(--hoose-text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 30px 0;
+}
+
+/* =============================================
+   Sección Cobranza
+   ============================================= */
+.cobranza-morosidad {
+  margin-bottom: 12px;
+}
+
+.morosidad-label {
+  font-size: 0.75rem;
+  color: var(--hoose-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.morosidad-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--hoose-pink);
+  line-height: 1.1;
+}
+
+.cobranza-bars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 14px;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cob-bar {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.cob-bar.recaudado {
+  background: var(--hoose-green);
+  flex: 1;
+}
+
+.cob-bar.pendiente {
+  background: var(--hoose-pink);
+  flex-shrink: 0;
+  min-width: 10px;
+  max-width: 50%;
+}
+
+.cobranza-amounts {}
+
+.cob-amount-label {
+  font-size: 0.72rem;
+  color: var(--hoose-text-secondary);
+  margin-bottom: 2px;
+}
+
+.cob-amount {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.cob-amount.green {
+  color: var(--hoose-green);
+}
+
+.cob-amount.red {
+  color: var(--hoose-pink);
+}
+
+/* =============================================
+   Tareas / Notificaciones
+   ============================================= */
+.tareas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tarea-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--hoose-radius-sm);
+  border: 1px solid var(--hoose-border);
+  transition: background 0.15s;
+}
+
+.tarea-item:hover {
+  background: rgba(233, 30, 140, 0.05);
+  border-color: rgba(233, 30, 140, 0.2);
+}
+
+.tarea-check {
+  color: var(--hoose-text-muted);
+  font-size: 0.85rem;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.tarea-text {
+  font-size: 0.82rem;
+  color: var(--hoose-text-secondary);
+  line-height: 1.4;
+}
+
+/* =============================================
+   Gastos total label
+   ============================================= */
+.gastos-total {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hoose-text-primary);
+}
+
+/* =============================================
+   PrimeNG overrides — tema oscuro
+   ============================================= */
+:host ::ng-deep .p-chart canvas {
+  border-radius: var(--hoose-radius-sm);
+}
+
+:host ::ng-deep .p-calendar .p-inputtext {
+  background: #24282f !important;
+  border-color: var(--hoose-border) !important;
+  color: var(--hoose-text-primary) !important;
+}
+
+:host ::ng-deep .p-datepicker {
+  background: #1a1d24 !important;
+  border-color: var(--hoose-border) !important;
+  color: var(--hoose-text-primary) !important;
+}
+
+/* =============================================
+   Responsive adjustments
+   ============================================= */
+@media (max-width: 768px) {
+  .hoose-topbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .kpi-value {
+    font-size: 1.15rem;
+  }
+
+  .morosidad-value {
+    font-size: 1.5rem;
+  }
+
+  .hoose-dashboard {
+    padding-top: 12px;
+  }
 }
