@@ -28,6 +28,7 @@ import { FondosMonetariosComponent } from '../pages/fondos-monetarios/fondos-mon
 import { ProyectosComponent } from '../pages/proyectos/proyectos.component';
 import { ReservarAreasComunesComponent } from '../pages/reservar-areas-comunes/reservar-areas-comunes.component';
 import { QuejasComponent } from '../pages/quejas/quejas.component';
+import { TareasComponent } from '../pages/tareas/tareas.component';
 import { NotificacionesComponent } from '../pages/notificaciones/notificaciones.component';
 
 const routes: Routes = [
@@ -182,6 +183,12 @@ const routes: Routes = [
 		path: 'notificaciones',
 		component: NotificacionesComponent,
 		canActivate: [AppAuthGuard],
+	},
+	{
+		path: 'tareas',
+		component: TareasComponent,
+		canActivate: [AppAuthGuard],
+		data: { perfilesUsuarioPermitidos: [1, 2, 3] },
 	},
 	{
 		path: 'quejas',

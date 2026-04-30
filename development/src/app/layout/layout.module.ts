@@ -79,6 +79,7 @@ import { ProyectosComponent } from '../pages/proyectos/proyectos.component';
 import { ReservarAreasComunesComponent } from '../pages/reservar-areas-comunes/reservar-areas-comunes.component';
 import { CatalogoAreasComunesComponent } from '../pages/catalogos/catalogo-areas-comunes/catalogo-areas-comunes.component';
 import { QuejasComponent } from '../pages/quejas/quejas.component';
+import { TareasComponent } from '../pages/tareas/tareas.component';
 import { NotificacionesComponent } from '../pages/notificaciones/notificaciones.component';
 import { DashboardChartComponent } from '../components/shared/dashboard/dashboard-chart/dashboard-chart.component';
 import { ComitesComponent } from '../pages/comites/comites.component';
@@ -144,6 +145,7 @@ import { ComitesComponent } from '../pages/comites/comites.component';
     ReservarAreasComunesComponent,
     CatalogoAreasComunesComponent,
     QuejasComponent,
+    TareasComponent,
     NotificacionesComponent,
     DashboardChartComponent,
     ComitesComponent,
