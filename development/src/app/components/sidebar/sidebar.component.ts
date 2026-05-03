@@ -155,6 +155,14 @@ export class SidebarComponent implements OnInit {
       { path: '/proyectos', title: 'Proyectos', visiblePerfilUsuario: [], visible: true, icon: 'bx bxs-hard-hat' },
       { path: '|', title: '', visiblePerfilUsuario: [], visible: true },
       {
+        path: '/tareas',
+        title: 'Tareas',
+        visiblePerfilUsuario: [1, 2, 3],
+        visible: true,
+        icon: 'bx bx-task',
+      },
+      { path: '|', title: '', visiblePerfilUsuario: [], visible: true },
+      {
         path: '/tablero-avisos',
         title: 'Tablero avisos',
         visiblePerfilUsuario: [],

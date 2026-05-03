@@ -7,13 +7,15 @@ import { PhoneFormatPipe } from '../pipes/phone-format.pipe';
 // import { FormsValidator } from "../validators/forms.validator";
 
 import { TableModule } from 'primeng/table';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileUploadModule } from 'primeng/fileupload';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
 import { EditorModule } from 'primeng/editor';
 import { PickListModule } from 'primeng/picklist';
@@ -91,6 +93,10 @@ import { ComitesComponent } from '../pages/comites/comites.component';
     ReactiveFormsModule,
     NgbModule,
     TableModule,
+    SelectButtonModule,
+    DropdownModule,
+    InputNumberModule,
+    InputTextareaModule,
     ButtonModule,
     TooltipModule,
     DialogModule,

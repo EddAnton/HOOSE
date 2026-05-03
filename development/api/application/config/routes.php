@@ -360,3 +360,18 @@ $route['cloud/archivo/alternar-estatus/(:num)']['post'] = 'Cloud/alternar_estatu
 $route['proposito-general/login-imagenes']['get'] = 'Proposito_General/login_imagenes';
 $route['proposito-general/condominio-default']['get'] = 'Proposito_General/condominio_default';
 $route['proposito-general/respaldar-db']['post'] = 'Proposito_General/respaldar_db';
+
+/**
+ * Tareas
+ */
+$route['tareas']['get'] = 'Tareas/listar';
+$route['tareas/(:num)']['get'] = 'Tareas/listar';
+$route['tareas/insertar']['post'] = 'Tareas/insertar';
+$route['tareas/actualizar/(:num)']['post'] = 'Tareas/actualizar';
+$route['tareas/cambiar-estatus/(:num)']['post'] = 'Tareas/cambiar_estatus';
+$route['tareas/eliminar/(:num)']['post'] = 'Tareas/eliminar';
+
+/**
+ * Tareas - usuarios asignables
+ */
+$route['tareas/usuarios-asignables']['get'] = 'Tareas/usuarios_asignables';

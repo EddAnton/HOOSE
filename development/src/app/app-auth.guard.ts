@@ -8,7 +8,7 @@ import { SesionUsuarioService } from './services/sesion-usuario.service';
 	providedIn: 'root',
 })
 export class AppAuthGuard implements CanActivate {
-	routesNotToValidate: string[] = ['', 'tablero', 'catalogos', 'condominios', 'tipos-miembros'];
+	routesNotToValidate: string[] = ['', 'tablero', 'catalogos', 'condominios', 'tipos-miembros', 'tareas'];
 
 	constructor(private router: Router, private sesionUsuarioService: SesionUsuarioService) {}
 

@@ -1,0 +1,174 @@
+<div class="tareas-header d-flex align-items-center justify-content-between px-4 py-3">
+  <h5 class="mb-0 tareas-title">Tareas y Notificaciones</h5>
+  <div class="d-flex align-items-center gap-3">
+    <p-selectButton
+      [options]="[{label:'Todas',value:0},{label:'Pendiente',value:1},{label:'En proceso',value:2},{label:'Completada',value:3}]"
+      [(ngModel)]="filtroEstatus" (onChange)="aplicarFiltros()">
+    </p-selectButton>
+    <button *ngIf="permitirAgregar" pButton pRipple type="button"
+      icon="pi pi-plus" label="Nueva tarea"
+      class="tareas-btn-nueva" (click)="onNuevaTarea()">
+    </button>
+  </div>
+</div>
+
+<div class="tareas-container px-3 py-3">
+  <div *ngIf="TareasFiltradas.length === 0" class="tareas-empty">
+    <i class="pi pi-check-circle"></i>
+    <p>No hay tareas para mostrar</p>
+  </div>
+
+  <div class="tareas-grid">
+    <div class="tarea-card" *ngFor="let tarea of TareasFiltradas"
+         [class.completada]="tarea.fk_id_estatus === 3">
+
+      <div class="tarea-card-header">
+        <span class="tarea-prioridad" [ngClass]="getPrioridadClass(tarea.prioridad)">
+          <i class="pi pi-flag"></i> {{ tarea.prioridad_label }}
+        </span>
+        <span class="tarea-estatus" [ngClass]="getEstatusClass(tarea.fk_id_estatus)">
+          {{ tarea.estatus_label }}
+        </span>
+      </div>
+
+      <div class="tarea-titulo" [class.tachado]="tarea.fk_id_estatus === 3">
+        {{ tarea.titulo }}
+      </div>
+
+      <div class="tarea-descripcion" *ngIf="tarea.descripcion">
+        {{ tarea.descripcion }}
+      </div>
+
+      <div class="tarea-modulo" *ngIf="tarea.modulo_vinculado">
+        <i class="pi pi-link"></i>
+        <a [routerLink]="getModuloRuta(tarea)">{{ getModuloLabel(tarea.modulo_vinculado) }}</a>
+      </div>
+
+      <div class="tarea-meta">
+        <div class="tarea-meta-item">
+          <i class="pi pi-user"></i>
+          <span>{{ tarea.responsable_nombre }}</span>
+        </div>
+        <div class="tarea-meta-item" *ngIf="tarea.fecha_limite">
+          <i class="pi pi-calendar"></i>
+          <span [class.text-danger]="tarea.fk_id_estatus !== 3 && tarea.fecha_limite < hoy">
+            {{ tarea.fecha_limite | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+        <div class="tarea-meta-item" *ngIf="tarea.recordatorio_tiempo">
+          <i class="pi pi-bell" style="color:#F59E0B"></i>
+          <span>{{ getRecordatorioLabel(tarea.recordatorio_tiempo) }}</span>
+        </div>
+        <div class="tarea-meta-item">
+          <i class="pi pi-user-edit"></i>
+          <span>{{ tarea.creador_nombre }}</span>
+        </div>
+      </div>
+
+      <div class="tarea-acciones">
+        <button *ngIf="tarea.fk_id_estatus === 1" pButton pRipple type="button"
+          icon="pi pi-play" pTooltip="Iniciar" tooltipPosition="top"
+          class="p-button-rounded p-button-text btn-accion iniciar"
+          (click)="onCambiarEstatus(tarea, 2)">
+        </button>
+        <button *ngIf="tarea.fk_id_estatus === 2" pButton pRipple type="button"
+          icon="pi pi-check" pTooltip="Completar" tooltipPosition="top"
+          class="p-button-rounded p-button-text btn-accion completar"
+          (click)="onCambiarEstatus(tarea, 3)">
+        </button>
+        <button *ngIf="tarea.fk_id_estatus === 3" pButton pRipple type="button"
+          icon="pi pi-replay" pTooltip="Reabrir" tooltipPosition="top"
+          class="p-button-rounded p-button-text btn-accion reabrir"
+          (click)="onCambiarEstatus(tarea, 1)">
+        </button>
+        <button *ngIf="permitirAgregar" pButton pRipple type="button"
+          icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top"
+          class="p-button-rounded p-button-text btn-accion editar"
+          (click)="onEditarTarea(tarea)">
+        </button>
+        <button *ngIf="permitirAgregar" pButton pRipple type="button"
+          icon="pi pi-trash" pTooltip="Eliminar" tooltipPosition="top"
+          class="p-button-rounded p-button-text btn-accion eliminar"
+          (click)="onEliminarTarea(tarea.id_tarea)">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(visible)]="mostrarDialogo" [modal]="true" [draggable]="false"
+  [style]="{ width: '580px' }"
+  [header]="tareaEditando?.id_tarea > 0 ? 'Editar tarea' : 'Nueva tarea'"
+  styleClass="tareas-dialogo">
+  <form [formGroup]="frmTarea" *ngIf="frmTarea">
+    <div class="row g-3">
+
+      <div class="col-12">
+        <label class="frm-label">Título <span class="text-danger">*</span></label>
+        <input pInputText formControlName="titulo" class="w-100" placeholder="Título de la tarea"/>
+        <small class="text-danger" *ngIf="frmTarea.get('titulo').invalid && frmTarea.get('titulo').touched">
+          El título es requerido.
+        </small>
+      </div>
+
+      <div class="col-12">
+        <label class="frm-label">Descripción</label>
+        <textarea pInputTextarea formControlName="descripcion" class="w-100" rows="3"
+          placeholder="Descripción detallada (opcional)"></textarea>
+      </div>
+
+      <div class="col-6">
+        <label class="frm-label">Prioridad <span class="text-danger">*</span></label>
+        <p-dropdown formControlName="prioridad" [options]="prioridades"
+          placeholder="Selecciona" styleClass="w-100">
+        </p-dropdown>
+      </div>
+
+      <div class="col-6">
+        <label class="frm-label">Fecha límite</label>
+        <p-calendar formControlName="fecha_limite" dateFormat="dd/mm/yy"
+          [showIcon]="true" styleClass="w-100" placeholder="Sin fecha límite">
+        </p-calendar>
+      </div>
+
+      <div class="col-12">
+        <label class="frm-label">Responsable <span class="text-danger">*</span></label>
+        <p-dropdown formControlName="fk_id_usuario_responsable"
+          [options]="UsuariosAsignables"
+          placeholder="Selecciona un responsable"
+          [filter]="true" filterPlaceholder="Buscar..."
+          styleClass="w-100">
+        </p-dropdown>
+      </div>
+
+      <div class="col-12">
+        <label class="frm-label"><i class="pi pi-bell me-1"></i>Recordatorio</label>
+        <p-dropdown formControlName="recordatorio_tiempo"
+          [options]="recordatorioOpciones"
+          placeholder="Sin recordatorio"
+          styleClass="w-100"
+          (onChange)="onRecordatorioChange()">
+        </p-dropdown>
+        <small class="text-muted" *ngIf="frmTarea.get('recordatorio_tiempo').value">
+          Recibirás una notificación {{ getRecordatorioLabel(frmTarea.get('recordatorio_tiempo').value) }} de la fecha límite.
+        </small>
+      </div>
+
+      <div class="col-12">
+        <label class="frm-label">Módulo vinculado <small class="text-muted">(opcional — vincula esta tarea a un módulo del sistema)</small></label>
+        <p-dropdown formControlName="modulo_vinculado" [options]="modulosVinculados"
+          placeholder="Sin vínculo" styleClass="w-100">
+        </p-dropdown>
+      </div>
+
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple type="button" icon="pi pi-times" label="Cancelar"
+      class="p-button-text p-button-secondary" (click)="onCancelar()">
+    </button>
+    <button pButton pRipple type="button" icon="pi pi-check" label="Guardar"
+      class="tareas-btn-guardar" (click)="onGuardarTarea()">
+    </button>
+  </ng-template>
+</p-dialog>
