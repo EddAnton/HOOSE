@@ -616,7 +616,7 @@ class Dashboard_model extends CI_Model
           'Condóminos' subtitle,
           FORMAT(IFNULL(COUNT(*), 0), 0) title,
           NULL content,
-          '/catalogos/condominios' path
+          '/catalogos/condominos' path
         FROM usuarios e
         WHERE e.estatus = 1
           AND e.fk_id_perfil_usuario = 5" .
@@ -679,7 +679,7 @@ class Dashboard_model extends CI_Model
           'Áreas comunes' subtitle,
           FORMAT(IFNULL(COUNT(*), 0), 0) title,
           NULL content,
-          '/areas-comunes' path
+          '/catalogos/areas-comunes' path
         FROM areas_comunes e
         WHERE e.estatus = 1 " .
         $this->whereIdCondominio;

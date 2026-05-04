@@ -87,7 +87,12 @@ export class TareasComponent implements OnInit {
     this.Tareas = [];
     this.tareasService.Listar().toPromise()
       .then((r: any) => {
-        this.Tareas = r.data || [];
+        this.Tareas = (r.data || []).map(t => ({
+          ...t,
+          fk_id_estatus: parseInt(t.fk_id_estatus),
+          prioridad: parseInt(t.prioridad),
+          recordatorio_tiempo: t.recordatorio_tiempo ? parseInt(t.recordatorio_tiempo) : null,
+        }));
         this.aplicarFiltros();
       })
       .catch(async (e) => await hlpSwal.Error(e))

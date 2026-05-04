@@ -248,8 +248,8 @@ function LegendAddValues(graph: any, dataType: string = '') {
 }
 
 export function GenerateGraph(data, calculateTotal: Boolean = true) {
-  if (!data?._type || !data?.datasets)
-    return;
+  if (!data?._type || !data?.datasets || data._type === null)
+    return null;
 
   let graph = InitGraphObject();
   graph.title = data?._title || null;

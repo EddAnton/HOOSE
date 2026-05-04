@@ -38,6 +38,9 @@ class Tareas_model extends CI_Model
       t.fk_id_estatus,
       CASE t.fk_id_estatus WHEN 1 THEN 'Pendiente' WHEN 2 THEN 'En proceso' ELSE 'Completada' END AS estatus_label,
       t.fecha_completada,
+      t.recordatorio_activo,
+      t.recordatorio_tiempo,
+      t.recordatorio_enviado,
       t.modulo_vinculado,
       t.id_registro_vinculado,
       t.created_at,
@@ -80,6 +83,8 @@ class Tareas_model extends CI_Model
       'fk_id_usuario_creador'     => $idUsuario,
       'fk_id_usuario_responsable' => $data['fk_id_usuario_responsable'],
       'fk_id_condominio'          => $idCondominio,
+      'recordatorio_activo'       => $data['recordatorio_activo'] ?? 0,
+      'recordatorio_tiempo'       => !empty($data['recordatorio_tiempo']) ? $data['recordatorio_tiempo'] : null,
       'modulo_vinculado'          => $data['modulo_vinculado'] ?? null,
       'id_registro_vinculado'     => $data['id_registro_vinculado'] ?? null,
       'fk_id_estatus'             => 1,
@@ -98,6 +103,8 @@ class Tareas_model extends CI_Model
     if (isset($data['fecha_limite']))               $update['fecha_limite']              = $data['fecha_limite'];
     if (!empty($data['prioridad']))                 $update['prioridad']                 = $data['prioridad'];
     if (!empty($data['fk_id_usuario_responsable'])) $update['fk_id_usuario_responsable'] = $data['fk_id_usuario_responsable'];
+    if (isset($data['recordatorio_activo']))        $update['recordatorio_activo']       = $data['recordatorio_activo'];
+    if (isset($data['recordatorio_tiempo']))        $update['recordatorio_tiempo']       = !empty($data['recordatorio_tiempo']) ? $data['recordatorio_tiempo'] : null;
     if (isset($data['modulo_vinculado']))           $update['modulo_vinculado']          = $data['modulo_vinculado'];
     if (isset($data['id_registro_vinculado']))      $update['id_registro_vinculado']     = $data['id_registro_vinculado'];
     if (empty($update)) throw new Exception('No hay datos para actualizar.');
