@@ -1,0 +1,245 @@
+:host {
+  --cm-bg: #111318;
+  --cm-card: #1a1d24;
+  --cm-card2: #21242d;
+  --cm-border: rgba(255,255,255,0.07);
+  --cm-pink: #e91e8c;
+  --cm-green: #1BC99A;
+  --cm-blue: #3B82F6;
+  --cm-red: #EF4444;
+  --cm-text: #f0f0f0;
+  --cm-muted: #8a8f9e;
+  --cm-dim: #555a6a;
+  --cm-radius: 12px;
+  --cm-radius-sm: 8px;
+}
+
+.cm-wrapper { background: var(--cm-bg); min-height: 100vh; position: relative; }
+
+.cm-totales { isolation: isolate; }
+
+/* Header */
+.cm-header {
+  background: #181b22;
+  border-bottom: 1px solid var(--cm-border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.cm-header-title { font-size: 1rem; font-weight: 600; color: var(--cm-text); }
+.cm-header-actions { display: flex; gap: 8px; }
+
+/* KPIs */
+.cm-totales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  padding: 16px 20px 8px;
+}
+.cm-kpi {
+  background: var(--cm-card);
+  border: 1px solid var(--cm-border);
+  border-radius: var(--cm-radius);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.cm-kpi-label { font-size: 0.7rem; color: var(--cm-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.cm-kpi-value { font-size: 1.15rem; font-weight: 700; color: var(--cm-text); }
+.cm-kpi-value.kpi-pagado { color: var(--cm-green); }
+.cm-kpi-value.saldo  { color: var(--cm-red); }
+.cm-kpi-value.total  { color: var(--cm-blue); }
+
+/* Filtros */
+.cm-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+.cm-filtro-group { display: flex; flex-direction: column; gap: 4px; }
+.cm-filtro-label { font-size: 0.72rem; color: var(--cm-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+:host ::ng-deep .cm-filtro-select .p-dropdown {
+  background: var(--cm-card) !important;
+  border: 1px solid var(--cm-border) !important;
+  border-radius: var(--cm-radius-sm) !important;
+  height: 36px !important;
+  min-width: 130px !important;
+}
+:host ::ng-deep .cm-filtro-select .p-dropdown .p-dropdown-label {
+  color: var(--cm-text) !important;
+  font-size: 0.82rem !important;
+  padding: 6px 10px !important;
+}
+:host ::ng-deep .cm-filtro-select .p-dropdown-panel {
+  background: var(--cm-card) !important;
+  border: 1px solid var(--cm-border) !important;
+}
+:host ::ng-deep .cm-filtro-select .p-dropdown-item {
+  color: var(--cm-text) !important;
+  font-size: 0.82rem !important;
+}
+:host ::ng-deep .cm-filtro-select .p-dropdown-item:hover {
+  background: rgba(233,30,140,0.1) !important;
+}
+
+.cm-btn-limpiar { font-size: 0.8rem !important; height: 36px !important; }
+
+.cm-search-wrap { position: relative; flex: 1; min-width: 200px; }
+.cm-search-wrap .pi-search { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--cm-muted); font-size: 0.82rem; }
+.cm-search-input {
+  width: 100%;
+  background: var(--cm-card) !important;
+  border: 1px solid var(--cm-border) !important;
+  border-radius: var(--cm-radius-sm) !important;
+  color: var(--cm-text) !important;
+  padding: 7px 10px 7px 30px !important;
+  font-size: 0.82rem !important;
+  height: 36px !important;
+}
+.cm-search-input:focus { border-color: var(--cm-pink) !important; outline: none !important; }
+.cm-search-input::placeholder { color: var(--cm-dim) !important; }
+
+/* Tabla */
+.cm-table-wrap { padding: 0 20px 20px; overflow-x: auto; max-width: 100%; }
+
+:host ::ng-deep .cm-table .p-datatable-wrapper { overflow-x: auto !important; }
+
+:host ::ng-deep .cm-table .p-datatable-wrapper { overflow-x: auto !important; }
+:host ::ng-deep .cm-table table { min-width: 900px; table-layout: auto; border-collapse: separate; border-spacing: 0; }
+:host ::ng-deep .cm-table .p-datatable-thead > tr > th {
+  background: #181b22 !important;
+  color: var(--cm-muted) !important;
+  border-bottom: 2px solid var(--cm-border) !important;
+  border-right: none !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 10px 10px !important;
+  white-space: nowrap !important;
+}
+:host ::ng-deep .cm-table .p-datatable-tbody > tr {
+  background: var(--cm-card) !important;
+  border-bottom: 1px solid var(--cm-border) !important;
+  transition: background 0.15s !important;
+}
+:host ::ng-deep .cm-table .p-datatable-tbody > tr:hover { background: var(--cm-card2) !important; }
+:host ::ng-deep .cm-table .p-datatable-tbody > tr > td {
+  color: var(--cm-text) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--cm-border) !important;
+  padding: 9px 10px !important;
+  font-size: 0.82rem !important;
+}
+:host ::ng-deep .cm-table .p-paginator {
+  background: #181b22 !important;
+  border-top: 1px solid var(--cm-border) !important;
+  color: var(--cm-muted) !important;
+  font-size: 0.78rem !important;
+  padding: 8px 16px !important;
+  border-radius: 0 0 var(--cm-radius) var(--cm-radius) !important;
+}
+:host ::ng-deep .cm-table .p-paginator .p-paginator-page.p-highlight {
+  background: var(--cm-pink) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
+
+/* Columnas con ancho apropiado y text truncation */
+:host ::ng-deep .cm-table .col-folio { width: 55px; text-align: center; }
+:host ::ng-deep .cm-table .col-edificio { min-width: 140px; max-width: 180px; }
+:host ::ng-deep .cm-table .col-unidad { min-width: 80px; max-width: 100px; }
+:host ::ng-deep .cm-table .col-quien { min-width: 100px; max-width: 130px; }
+:host ::ng-deep .cm-table .col-usuario { min-width: 140px; max-width: 180px; }
+:host ::ng-deep .cm-table .col-anio { width: 55px; }
+:host ::ng-deep .cm-table .col-mes { width: 80px; }
+:host ::ng-deep .cm-table .col-monto { width: 100px; }
+:host ::ng-deep .cm-table .col-estatus { width: 140px; }
+:host ::ng-deep .cm-table .col-acciones { width: 100px; }
+
+/* Texto en celdas que puede ser largo */
+.cell-text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* Folio badge */
+.folio-badge {
+  background: rgba(233,30,140,0.12);
+  color: var(--cm-pink);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Badges estatus */
+:host ::ng-deep .p-tag.p-tag-danger {
+  background: rgba(239,68,68,0.15) !important;
+  color: #EF4444 !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 20px !important;
+  white-space: nowrap !important;
+}
+:host ::ng-deep .p-tag.p-tag-warning {
+  background: rgba(245,158,11,0.15) !important;
+  color: #F59E0B !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 20px !important;
+  white-space: nowrap !important;
+}
+:host ::ng-deep .p-tag.p-tag-success {
+  background: rgba(27,201,154,0.15) !important;
+  color: #1BC99A !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 20px !important;
+  white-space: nowrap !important;
+}
+
+.cm-btn { width: 28px !important; height: 28px !important; }
+
+/* Diálogo oscuro */
+:host ::ng-deep .cm-dialog .p-dialog { background: var(--cm-card) !important; border: 1px solid var(--cm-border) !important; border-radius: var(--cm-radius) !important; }
+:host ::ng-deep .cm-dialog .p-dialog-header { background: #181b22 !important; color: var(--cm-text) !important; border-bottom: 1px solid var(--cm-border) !important; padding: 14px 20px !important; }
+:host ::ng-deep .cm-dialog .p-dialog-content { background: var(--cm-card) !important; color: var(--cm-text) !important; padding: 20px !important; }
+:host ::ng-deep .cm-dialog .p-dialog-footer { background: #181b22 !important; border-top: 1px solid var(--cm-border) !important; padding: 12px 20px !important; }
+:host ::ng-deep .cm-dialog label { font-size: 0.78rem !important; color: var(--cm-muted) !important; margin-bottom: 4px !important; display: block !important; }
+:host ::ng-deep .cm-dialog .p-inputtext,
+:host ::ng-deep .cm-dialog .form-select,
+:host ::ng-deep .cm-dialog .p-inputnumber-input {
+  background: #24282f !important;
+  border: 1px solid var(--cm-border) !important;
+  color: var(--cm-text) !important;
+  border-radius: var(--cm-radius-sm) !important;
+  font-size: 0.85rem !important;
+}
+:host ::ng-deep .cm-dialog .title-line {
+  color: var(--cm-pink) !important;
+  border-bottom: 1px solid var(--cm-border) !important;
+  padding-bottom: 6px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 4px !important;
+}

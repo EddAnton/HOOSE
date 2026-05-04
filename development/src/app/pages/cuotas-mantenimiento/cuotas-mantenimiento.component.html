@@ -1,1080 +1,618 @@
-<div class="card shadow-sm">
-	<p-table
-		#ptCuotasMantenimiento
-		[responsive]="true"
-		[value]="CuotasMantenimiento"
-		[columns]="CuotasMantenimientoCols"
-		[globalFilterFields]="CuotasMantenimientoFilter"
-		[rowHover]="true"
-		[showCurrentPageReport]="true"
-		[paginator]="CuotasMantenimiento.length > 0"
-		[rows]="50"
-		dataKey="id_couota_mantenimiento"
-		styleClass="p-datatable-striped"
-		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-		(onFilter)="onFilter($event)"
-	>
-		<ng-template pTemplate="caption">
-			<div class="d-flex align-items-center p-1">
-				<div class="me-auto">
-					<!-- Botón Nuevo -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="pi pi-plus"
-						class="p-button-rounded p-button-raised p-button-success ms-1"
-						pTooltip="Agregar cuota de mantenimiento"
-						tooltipPosition="right"
-						(click)="onCuotaMantenimientoEditar()"
-					></button>
-					<!-- Botón Nuevo -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="bx bx-layer-plus"
-						class="p-button-rounded p-button-raised p-button-primary ms-1"
-						pTooltip="Agregar masivamente cuotas de mantenimiento"
-						tooltipPosition="right"
-						(click)="onCuotasMantenimientoMasivas()"
-					></button>
-				</div>
-				<!-- Opciones Filtrado -->
-				<div class="ms-auto">
-					<!-- Botón Actualizar -->
-					<button
-						*ngIf="isDevelopment"
-						pButton
-						type="button"
-						icon="pi pi-refresh"
-						class="p-button-rounded p-button-text p-button-secondary me-2"
-						pTooltip="Actualizar información"
-						tooltipPosition="right"
-						(click)="onActualizarInformacion()"
-					></button>
-					<span class="p-input-icon-left">
-						<i class="pi pi-search"></i>
-						<input
-							type="text"
-							id="txtGlobalFilter"
-							class="form-control ms-1 ps-4"
-							(input)="ptCuotasMantenimiento.filterGlobal($event.target.value, 'contains')"
-							placeholder="Filtrar"
-						/>
-					</span>
-				</div>
-				<div>
-					<button
-						pButton
-						pRipple
-						type="button"
-						id="btnLimpiarFiltro"
-						icon="pi pi-times"
-						class="p-button-rounded p-button-text p-button-danger ms-3"
-						pTooltip="Limpiar filtro"
-						tooltipPosition="left"
-						(click)="onFilterReset(ptCuotasMantenimiento)"
-					></button>
-				</div>
-			</div>
-		</ng-template>
-		<ng-template pTemplate="header" let-columns>
-			<tr>
-				<th
-					*ngFor="let col of columns"
-					class="text-center"
-					[ngStyle]="{
-						width: col.width ? col.width : 'unset'
-					}"
-				>
-					{{ col.header ? col.header : '&nbsp;' }}
-				</th>
-			</tr>
-			<tr *ngIf="CuotasMantenimiento.length > 0">
-				<th colspan="8" class="fw-bold text-end">$&nbsp;{{ FilaTotales.pagado | number : '1.0-0' }}</th>
-				<th class="fw-bold text-end">$&nbsp;{{ FilaTotales.saldo | number : '1.0-0' }}</th>
-				<th class="fw-bold text-end">$&nbsp;{{ FilaTotales.total | number : '1.0-0' }}</th>
-				<th colspan="2">&nbsp;</th>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-CuotaMantenimiento>
-			<tr>
-				<td class="text-md-end">
-					<span class="p-column-title">Folio</span>{{ CuotaMantenimiento.id_cuota_mantenimiento }}
-				</td>
-				<td><span class="p-column-title">Edificio</span>{{ CuotaMantenimiento.edificio }}</td>
-				<td><span class="p-column-title">Unidad</span>{{ CuotaMantenimiento.unidad }}</td>
-				<td><span class="p-column-title">¿Quién paga?</span>{{ CuotaMantenimiento.perfil_usuario_paga }}</td>
-				<td><span class="p-column-title">Usuario paga</span>{{ CuotaMantenimiento.usuario_paga }}</td>
-				<td class="text-md-end"><span class="p-column-title">Año</span>{{ CuotaMantenimiento.anio }}</td>
-				<td class="text-md-center">
-					<span class="p-column-title">Mes</span
-					>{{
-						CuotaMantenimiento.anio.toString() + '/' + CuotaMantenimiento.mes.toString() + '/01'
-							| date : 'MMMM'
-							| uppercase
-					}}
-				</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Pagado</span>{{ CuotaMantenimiento.pagado | number : '1.2-2' }}
-				</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Saldo</span>{{ CuotaMantenimiento.saldo | number : '1.2-2' }}
-				</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Total</span>{{ CuotaMantenimiento.total | number : '1.2-2' }}
-				</td>
-				<td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
-					<span
-						[ngStyle]="{
-							cursor:
-								permitirAgregarEditar && CuotaMantenimiento.id_estatus_recaudacion != 3 ? 'pointer' : 'context-menu'
-						}"
-					>
-						<p-tag
-							severity="{{
-								CuotaMantenimiento.id_estatus_recaudacion != 3
-									? CuotaMantenimiento.id_estatus_recaudacion == 1
-										? 'danger'
-										: 'warning'
-									: 'success'
-							}}"
-							value="{{ CuotaMantenimiento.estatus_recaudacion }}"
-							pTooltip="{{ CuotaMantenimiento.id_estatus_recaudacion != 3 ? 'Registrar pago' : '' }}"
-							tooltipPosition="left"
-							tooltipDisabled="{{ !permitirAgregarEditar }}"
-							(click)="
-								CuotaMantenimiento.id_estatus_recaudacion != 3 &&
-									onCuotaMantenimientoRegistrarPago(CuotaMantenimiento.id_cuota_mantenimiento)
-							"
-						></p-tag>
-					</span>
-				</td>
-				<td class="text-end">
-					<!-- Botón Recibo de pago -->
-					<button
-						pButton
-						type="button"
-						icon="pi pi-file-pdf"
-						class="p-button-rounded p-button-text p-button-primary me-1"
-						pTooltip="Recibo de pago de la cuota de mantenimiento"
-						tooltipPosition="left"
-						(click)="onCuotaMantenimientoReciboPago(CuotaMantenimiento.id_cuota_mantenimiento)"
-					></button>
-					<!-- Botón Editar -->
-					<button
-						*ngIf="permitirAgregarEditar && CuotaMantenimiento.id_estatus_recaudacion == 1"
-						pButton
-						type="button"
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text p-button-success me-1"
-						pTooltip="Editar cuota de mantenimiento"
-						tooltipPosition="left"
-						(click)="onCuotaMantenimientoEditar(CuotaMantenimiento.id_cuota_mantenimiento)"
-					></button>
-					<!-- Botón Eliminar -->
-					<button
-						*ngIf="permitirAgregarEditar && CuotaMantenimiento.estatus != 2"
-						pButton
-						type="button"
-						icon="pi pi-trash"
-						class="p-button-rounded p-button-text p-button-danger me-1"
-						pTooltip="Eliminar cuota de mantenimiento"
-						tooltipPosition="left"
-						(click)="onCuotaMantenimientoEliminar(CuotaMantenimiento)"
-					></button>
-				</td>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="emptymessage"
-			><tr class="no-records">
-				<td colspan="3">Sin registros.</td>
-			</tr></ng-template
-		>
-	</p-table>
+<div class="cm-wrapper">
+
+  <!-- HEADER -->
+  <div class="cm-header">
+    <span class="cm-header-title">
+      <i class="pi pi-file-edit me-2" style="color:#e91e8c"></i>Cuotas de Mantenimiento
+    </span>
+    <div class="cm-header-actions">
+      <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus"
+        class="p-button-rounded p-button-raised p-button-success"
+        pTooltip="Agregar cuota" tooltipPosition="left"
+        (click)="onCuotaMantenimientoEditar()">
+      </button>
+      <button *ngIf="permitirAgregarEditar" pButton type="button" icon="bx bx-layer-plus"
+        class="p-button-rounded p-button-raised p-button-primary"
+        pTooltip="Agregar masivamente" tooltipPosition="left"
+        (click)="onCuotasMantenimientoMasivas()">
+      </button>
+    </div>
+  </div>
+
+
+  <!-- FILTROS -->
+  <div class="cm-filtros">
+    <div class="cm-filtro-group">
+      <label class="cm-filtro-label">Año</label>
+      <p-dropdown [options]="aniosDisponibles" [(ngModel)]="filtroAnio"
+        placeholder="Todos" [showClear]="true"
+        (onChange)="aplicarFiltros()" styleClass="cm-filtro-select">
+      </p-dropdown>
+    </div>
+    <div class="cm-filtro-group">
+      <label class="cm-filtro-label">Mes</label>
+      <p-dropdown [options]="mesesDisponibles" [(ngModel)]="filtroMes"
+        placeholder="Todos" [showClear]="true"
+        (onChange)="aplicarFiltros()" styleClass="cm-filtro-select">
+      </p-dropdown>
+    </div>
+    <div class="cm-filtro-group">
+      <label class="cm-filtro-label">Estatus</label>
+      <p-dropdown [options]="estatusDisponibles" [(ngModel)]="filtroEstatus"
+        placeholder="Todos" [showClear]="true"
+        (onChange)="aplicarFiltros()" styleClass="cm-filtro-select">
+      </p-dropdown>
+    </div>
+    <div class="cm-filtro-group" style="justify-content:flex-end">
+      <button pButton type="button" icon="pi pi-filter-slash" label="Limpiar"
+        class="p-button-text p-button-secondary cm-btn-limpiar"
+        (click)="limpiarFiltros()">
+      </button>
+    </div>
+    <div class="cm-search-wrap">
+      <i class="pi pi-search"></i>
+      <input type="text" class="cm-search-input"
+        (input)="ptCuotasMantenimiento.filterGlobal($event.target.value, 'contains')"
+        placeholder="Buscar..."/>
+    </div>
+    <button pButton pRipple type="button" icon="pi pi-times"
+      class="p-button-rounded p-button-text p-button-danger"
+      pTooltip="Limpiar búsqueda" tooltipPosition="left"
+      (click)="onFilterReset(ptCuotasMantenimiento)">
+    </button>
+    <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
+      class="p-button-rounded p-button-text p-button-secondary"
+      pTooltip="Actualizar" tooltipPosition="left"
+      (click)="onActualizarInformacion()">
+    </button>
+  </div>
+
+  <!-- KPIs DE TOTALES -->
+  <div class="cm-totales">
+    <div class="cm-kpi">
+      <span class="cm-kpi-label">Registros</span>
+      <span class="cm-kpi-value">{{ CuotasMantenimientoFiltradas.length | number }}</span>
+    </div>
+    <div class="cm-kpi">
+      <span class="cm-kpi-label">Total Pagado</span>
+      <span class="cm-kpi-value kpi-pagado">$ {{ FilaTotales?.pagado | number:'1.2-2' }}</span>
+    </div>
+    <div class="cm-kpi">
+      <span class="cm-kpi-label">Saldo Pendiente</span>
+      <span class="cm-kpi-value saldo">$ {{ FilaTotales?.saldo | number:'1.2-2' }}</span>
+    </div>
+    <div class="cm-kpi">
+      <span class="cm-kpi-label">Total General</span>
+      <span class="cm-kpi-value total">$ {{ FilaTotales?.total | number:'1.2-2' }}</span>
+    </div>
+    <div class="cm-kpi">
+      <span class="cm-kpi-label">Morosidad</span>
+      <span class="cm-kpi-value" [style.color]="FilaTotales?.total > 0 ? '#EF4444' : '#1BC99A'">
+        {{ FilaTotales?.total > 0 ? ((FilaTotales.saldo / FilaTotales.total) * 100 | number:'1.2-2') : '0.00' }}%
+      </span>
+    </div>
+  </div>
+
+  <!-- TABLA CON SCROLL LATERAL -->
+  <div class="cm-table-wrap">
+    <p-table
+      #ptCuotasMantenimiento
+      styleClass="cm-table"
+      [value]="CuotasMantenimientoFiltradas"
+      [columns]="CuotasMantenimientoCols"
+      [globalFilterFields]="CuotasMantenimientoFilter"
+      [rowHover]="true"
+      [paginator]="CuotasMantenimientoFiltradas.length > 0"
+      [rows]="50"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first}-{last} de {totalRecords} registros"
+      dataKey="id_cuota_mantenimiento"
+      (onFilter)="onFilter($event)">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-folio text-center">#</th>
+          <th class="col-edificio">Edificio</th>
+          <th class="col-unidad">Unidad</th>
+          <th class="col-quien">¿Quién paga?</th>
+          <th class="col-usuario">Usuario</th>
+          <th class="col-anio text-center">Año</th>
+          <th class="col-mes text-center">Mes</th>
+          <th class="col-monto text-end">Pagado</th>
+          <th class="col-monto text-end">Saldo</th>
+          <th class="col-monto text-end">Total</th>
+          <th class="col-estatus text-center">Estatus</th>
+          <th class="col-acciones text-center">Acciones</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-cm>
+        <tr>
+          <td class="col-folio text-center">
+            <span class="folio-badge">{{ cm.id_cuota_mantenimiento }}</span>
+          </td>
+          <td class="col-edificio">
+            <span class="cell-text" [pTooltip]="cm.edificio" tooltipPosition="top">{{ cm.edificio }}</span>
+          </td>
+          <td class="col-unidad">
+            <span class="cell-text">{{ cm.unidad }}</span>
+          </td>
+          <td class="col-quien">
+            <span class="cell-text">{{ cm.perfil_usuario_paga }}</span>
+          </td>
+          <td class="col-usuario">
+            <span class="cell-text" [pTooltip]="cm.usuario_paga" tooltipPosition="top">{{ cm.usuario_paga }}</span>
+          </td>
+          <td class="col-anio text-center">{{ cm.anio }}</td>
+          <td class="col-mes text-center">
+            {{ cm.anio + '/' + cm.mes + '/01' | date:'MMM' | uppercase }}
+          </td>
+          <td class="col-monto text-end" style="color:#1BC99A">
+            {{ cm.pagado | number:'1.2-2' }}
+          </td>
+          <td class="col-monto text-end" [style.color]="cm.saldo > 0 ? '#EF4444' : '#1BC99A'">
+            {{ cm.saldo | number:'1.2-2' }}
+          </td>
+          <td class="col-monto text-end" style="color:#3B82F6;font-weight:600">
+            {{ cm.total | number:'1.2-2' }}
+          </td>
+          <td class="col-estatus text-center">
+            <span [ngStyle]="{ cursor: permitirAgregarEditar && cm.id_estatus_recaudacion != 3 ? 'pointer' : 'default' }">
+              <p-tag
+                severity="{{ cm.id_estatus_recaudacion == 1 ? 'danger' : cm.id_estatus_recaudacion == 2 ? 'warning' : 'success' }}"
+                value="{{ cm.estatus_recaudacion }}"
+                pTooltip="{{ cm.id_estatus_recaudacion != 3 && permitirAgregarEditar ? 'Registrar pago' : '' }}"
+                tooltipPosition="left"
+                (click)="cm.id_estatus_recaudacion != 3 && onCuotaMantenimientoRegistrarPago(cm.id_cuota_mantenimiento)">
+              </p-tag>
+            </span>
+          </td>
+          <td class="col-acciones text-center" style="white-space:nowrap">
+            <button pButton type="button" icon="pi pi-file-pdf"
+              class="p-button-rounded p-button-text p-button-primary cm-btn"
+              pTooltip="Recibo" tooltipPosition="left"
+              (click)="onCuotaMantenimientoReciboPago(cm.id_cuota_mantenimiento)">
+            </button>
+            <button *ngIf="permitirAgregarEditar && cm.id_estatus_recaudacion == 1"
+              pButton type="button" icon="pi pi-pencil"
+              class="p-button-rounded p-button-text p-button-success cm-btn"
+              pTooltip="Editar" tooltipPosition="left"
+              (click)="onCuotaMantenimientoEditar(cm.id_cuota_mantenimiento)">
+            </button>
+            <button *ngIf="permitirAgregarEditar && cm.estatus != 2"
+              pButton type="button" icon="pi pi-trash"
+              class="p-button-rounded p-button-text p-button-danger cm-btn"
+              pTooltip="Eliminar" tooltipPosition="left"
+              (click)="onCuotaMantenimientoEliminar(cm)">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="12" class="text-center py-4" style="color:#555a6a">
+            Sin registros para mostrar.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
 </div>
 
-<!-- Diálogo de inserción y edición -->
-<p-dialog
-	#dlgCuotaMantenimiento
-	[(visible)]="mostrarDialogoEdicionCuotaMantenimiento"
-	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
-	[style]="{ width: '60vw' }"
-	[modal]="true"
-	[closable]="false"
-	header="Detalles de la Cuota de mantenimiento {{
-		CuotaMantenimiento && CuotaMantenimiento.id_cuota_mantenimiento == 0 ? ' Nueva' : ''
-	}}"
-	styleClass="p-fluid"
->
-	<ng-template pTemplate="content">
-		<form id="frmCuotaMantenimiento" class="mt-1" [formGroup]="frmCuotaMantenimiento" autocomplete="off">
-			<div class="row py-1">
-				<!-- Edificio -->
-				<div class="col-12 col-md-6 form-label-group">
-					<label for="cmdEdificio">Edificio</label>
-					<select
-						#cmdEdificio
-						id="cmdEdificio"
-						formControlName="id_edificio"
-						class="form-select"
-						(change)="onEdificioSeleccionado($event.target.value)"
-					>
-						<option [value]="0" selected>Selecciona una opción...</option>
-						<option *ngFor="let edificio of Edificios" [value]="edificio.id_edificio">
-							{{ edificio.edificio }}
-						</option>
-					</select>
-				</div>
-				<!-- Unidad -->
-				<div class="col-12 col-md-6 form-label-group">
-					<label for="cmdUnidad">Unidad</label>
-					<select
-						#cmdUnidad
-						id="cmdUnidad"
-						formControlName="id_unidad"
-						class="form-select"
-						(change)="onUnidadSeleccionada($event.target.value)"
-					>
-						<option [value]="0" selected>Selecciona una opción...</option>
-						<option *ngFor="let unidad of UnidadesEdificio" [value]="unidad.id_unidad">
-							{{ unidad.unidad }}
-						</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Quién paga -->
-				<div class="col-12 col-md-6">
-					<label for="txtUsuarioPaga">¿Quién paga?</label>
-					<input type="text" pInputText id="txtUsuarioPaga" formControlName="usuario_paga" class="uppercase" />
-				</div>
-				<!-- Año y Mes -->
-				<div class="col-12 col-md-3">
-					<label for="txAnioMes">Año y Mes</label>
-					<p-calendar
-						inputId="txAnioMes"
-						formControlName="anio_mes"
-						view="month"
-						dateFormat="MM/yy"
-						[yearNavigator]="true"
-						yearRange="{{ appData.appLaunchYear }}:{{ fechaPagoLimite.getFullYear() + 1 }}"
-						[appendTo]="dlgCuotaMantenimiento"
-						[inputStyle]="{ 'text-align': 'right' }"
-						inputStyleClass="uppercase"
-						(onSelect)="onAnioMesSeleccionado($event)"
-					></p-calendar>
-				</div>
-				<!-- Fecha límite pago -->
-				<div class="col-12 col-md-3">
-					<label for="txtFechaLimitePago">Fecha límite de pago</label>
-					<p-calendar
-						inputId="txtFechaLimitePago"
-						formControlName="fecha_limite_pago"
-						dateFormat="dd-MM-yy"
-						inputStyleClass="uppercase"
-						[appendTo]="ptCuotasMantenimiento"
-						[inputStyle]="{ 'text-align': 'right' }"
-					></p-calendar>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Ordinaria -->
-				<div class="col-12 col-md-4">
-					<label for="txtOrdinaria">Ordinaria</label>
-					<p-inputNumber
-						inputId="txtOrdinaria"
-						formControlName="ordinaria"
-						mode="decimal"
-						locale="es-MX"
-						allowEmpty="false"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-						(onFocus)="hlpApp.selectAllContent($event)"
-						(onBlur)="onCalcularTotalSaldo()"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Extraordinaria -->
-				<div class="col-12 col-md-4">
-					<label for="txtExtraordinaria">Extraordinaria</label>
-					<p-inputNumber
-						inputId="txtExtraordinaria"
-						formControlName="extraordinaria"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-						(onFocus)="hlpApp.selectAllContent($event)"
-						(onBlur)="onCalcularTotalSaldo()"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Otros servicios -->
-				<div class="col-12 col-md-4">
-					<label for="txtOtrosServicios">Otros servicios</label>
-					<p-inputNumber
-						inputId="txtOtrosServicios"
-						formControlName="otros_servicios"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-						(onFocus)="hlpApp.selectAllContent($event)"
-						(onBlur)="onCalcularTotalSaldo()"
-					>
-					</p-inputNumber>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Descuento Pronto Pago -->
-				<div class="col-12 col-md-4">
-					<label for="txtDescuentoProntoPago">Descuento pronto pago</label>
-					<p-inputNumber
-						inputId="txtDescuentoProntoPago"
-						formControlName="descuento_pronto_pago"
-						mode="decimal"
-						locale="es-MX"
-						allowEmpty="false"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-						(onFocus)="hlpApp.selectAllContent($event)"
-						(onBlur)="onCalcularTotalSaldo()"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Total -->
-				<div class="col-12 col-md-4">
-					<label for="txtTotal">Total</label>
-					<p-inputNumber
-						inputId="txtTotal"
-						formControlName="total"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Saldo -->
-				<div class="col-12 col-md-4">
-					<label for="txtSaldo">Saldo</label>
-					<p-inputNumber
-						inputId="txtSaldo"
-						formControlName="saldo"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-					>
-					</p-inputNumber>
-				</div>
-			</div>
-
-			<!-- Notas -->
-			<div class="row py-1">
-				<div class="col-12">
-					<label for="txtNotas">Notas</label>
-					<input
-						type="text"
-						pInputText
-						id="txtNotas"
-						formControlName="notas"
-						class="uppercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
-				</div>
-			</div>
-
-			<div class="h5 title-line my-2">Pago</div>
-			<div class="row py-1">
-				<!-- Importe del pago -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="txtImporte">Importe</label>
-					<p-inputNumber
-						inputId="txtImporte"
-						formControlName="importe"
-						mode="decimal"
-						locale="es-MX"
-						allowEmpty="false"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-						(onFocus)="hlpApp.selectAllContent($event)"
-						(onBlur)="onValidarImporte()"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Fecha de pago -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="txtFechaPago">Fecha pago</label>
-					<p-calendar
-						inputId="txtFechaPago"
-						formControlName="fecha_pago"
-						dateFormat="dd-MM-yy"
-						inputStyleClass="uppercase"
-						[appendTo]="dlgCuotaMantenimiento"
-						[inputStyle]="{ 'text-align': 'right' }"
-						[maxDate]="fechaPagoLimite"
-					></p-calendar>
-				</div>
-				<!-- Forma pago -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="cmbFormaPago">Forma pago</label>
-					<select
-						#cmbFormaPago
-						id="cmbFormaPago"
-						formControlName="id_forma_pago"
-						class="form-select"
-						(change)="onFormaPagoSeleccionado($event.target.value)"
-					>
-						<option *ngFor="let formaPago of FormasPago" [value]="formaPago.id_forma_pago">
-							{{ formaPago.forma_pago }}
-						</option>
-					</select>
-				</div>
-				<!-- Número de referencia -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="txtNumeroReferencia">Número referencia</label>
-					<input
-						type="text"
-						pInputText
-						id="txtNumeroReferencia"
-						formControlName="numero_referencia"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Fondo monetario -->
-				<div class="col-12 form-label-group">
-					<label for="cmbFondoMonetario">Fondo monetario</label>
-					<select #cmbFondoMonetario id="cmbFondoMonetario" formControlName="id_fondo_monetario" class="form-select">
-						<option [value]="0" selected>Selecciona una opción...</option>
-						<option *ngFor="let fondo of FondosMonetarios" [value]="fondo.id_fondo_monetario">
-							{{ fondo.tipo_fondo }} - {{ fondo.fondo_monetario }}
-						</option>
-					</select>
-				</div>
-			</div>
-		</form>
-	</ng-template>
-	<ng-template pTemplate="footer">
-		<!-- Botón Guardar -->
-		<button
-			pButton
-			type="button"
-			label="Guardar"
-			icon="pi pi-save"
-			class="p-button-raised p-button-info me-sm-1"
-			pTooltip="Almacenar la información"
-			tooltipPosition="top"
-			[disabled]="!frmCuotaMantenimiento.valid"
-			(click)="onCuotaMantenimientoEditarGuardar()"
-		></button>
-		<!-- Botón Cancelar -->
-		<button
-			pButton
-			type="button"
-			label="Cancelar"
-			icon="pi pi-times"
-			class="p-button-raised p-button-warning ml-2"
-			pTooltip="Cancelar el proceso"
-			tooltipPosition="top"
-			(click)="onCuotaMantenimientoEditarCancelar()"
-		></button>
-	</ng-template>
+<!-- DIÁLOGOS (sin cambios funcionales) -->
+<p-dialog #dlgCuotaMantenimiento
+  [(visible)]="mostrarDialogoEdicionCuotaMantenimiento"
+  [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
+  [style]="{ width: '60vw' }"
+  [modal]="true" [closable]="false"
+  styleClass="cm-dialog"
+  header="Cuota de Mantenimiento {{ CuotaMantenimiento?.id_cuota_mantenimiento == 0 ? '— Nueva' : '' }}">
+  <ng-template pTemplate="content">
+    <form [formGroup]="frmCuotaMantenimiento" autocomplete="off">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label>Edificio</label>
+          <select formControlName="id_edificio" class="form-select"
+            (change)="onEdificioSeleccionado($event.target.value)">
+            <option [value]="0">Selecciona...</option>
+            <option *ngFor="let e of Edificios" [value]="e.id_edificio">{{ e.edificio }}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label>Unidad</label>
+          <select formControlName="id_unidad" class="form-select"
+            (change)="onUnidadSeleccionada($event.target.value)">
+            <option [value]="0">Selecciona...</option>
+            <option *ngFor="let u of UnidadesEdificio" [value]="u.id_unidad">{{ u.unidad }}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label>¿Quién paga?</label>
+          <input type="text" pInputText formControlName="usuario_paga" class="uppercase w-100"/>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Año y Mes</label>
+          <p-calendar formControlName="anio_mes" view="month" dateFormat="MM/yy"
+            [yearNavigator]="true"
+            yearRange="{{ appData.appLaunchYear }}:{{ fechaPagoLimite.getFullYear() + 1 }}"
+            [appendTo]="dlgCuotaMantenimiento"
+            [inputStyle]="{'text-align':'right'}" inputStyleClass="uppercase"
+            (onSelect)="onAnioMesSeleccionado($event)" styleClass="w-100">
+          </p-calendar>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Fecha límite pago</label>
+          <p-calendar formControlName="fecha_limite_pago" dateFormat="dd-MM-yy"
+            inputStyleClass="uppercase" [appendTo]="ptCuotasMantenimiento"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-calendar>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Ordinaria</label>
+          <p-inputNumber formControlName="ordinaria" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100"
+            (onFocus)="hlpApp.selectAllContent($event)" (onBlur)="onCalcularTotalSaldo()">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Extraordinaria</label>
+          <p-inputNumber formControlName="extraordinaria" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100"
+            (onFocus)="hlpApp.selectAllContent($event)" (onBlur)="onCalcularTotalSaldo()">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Otros servicios</label>
+          <p-inputNumber formControlName="otros_servicios" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100"
+            (onFocus)="hlpApp.selectAllContent($event)" (onBlur)="onCalcularTotalSaldo()">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Descuento pronto pago</label>
+          <p-inputNumber formControlName="descuento_pronto_pago" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100"
+            (onFocus)="hlpApp.selectAllContent($event)" (onBlur)="onCalcularTotalSaldo()">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Total</label>
+          <p-inputNumber formControlName="total" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Saldo</label>
+          <p-inputNumber formControlName="saldo" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-inputNumber>
+        </div>
+        <div class="col-12">
+          <label>Notas</label>
+          <input type="text" pInputText formControlName="notas" class="uppercase w-100"
+            (focus)="hlpApp.selectAllContent($event)"/>
+        </div>
+        <div class="col-12"><div class="title-line">Pago</div></div>
+        <div class="col-12 col-md-3">
+          <label>Importe</label>
+          <p-inputNumber formControlName="importe" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100"
+            (onFocus)="hlpApp.selectAllContent($event)" (onBlur)="onValidarImporte()">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Fecha pago</label>
+          <p-calendar formControlName="fecha_pago" dateFormat="dd-MM-yy"
+            inputStyleClass="uppercase" [appendTo]="dlgCuotaMantenimiento"
+            [inputStyle]="{'text-align':'right'}" [maxDate]="fechaPagoLimite" styleClass="w-100">
+          </p-calendar>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Forma pago</label>
+          <select formControlName="id_forma_pago" class="form-select"
+            (change)="onFormaPagoSeleccionado($event.target.value)">
+            <option *ngFor="let f of FormasPago" [value]="f.id_forma_pago">{{ f.forma_pago }}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Número referencia</label>
+          <input type="text" pInputText formControlName="numero_referencia" class="w-100"
+            (focus)="hlpApp.selectAllContent($event)"/>
+        </div>
+        <div class="col-12">
+          <label>Fondo monetario</label>
+          <select formControlName="id_fondo_monetario" class="form-select">
+            <option [value]="0">Selecciona...</option>
+            <option *ngFor="let f of FondosMonetarios" [value]="f.id_fondo_monetario">
+              {{ f.tipo_fondo }} — {{ f.fondo_monetario }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Guardar" icon="pi pi-save"
+      class="p-button-raised p-button-info"
+      [disabled]="!frmCuotaMantenimiento.valid"
+      (click)="onCuotaMantenimientoEditarGuardar()">
+    </button>
+    <button pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-raised p-button-warning ms-2"
+      (click)="onCuotaMantenimientoEditarCancelar()">
+    </button>
+  </ng-template>
 </p-dialog>
 
-<!-- Diálogo de generación masiva cuotas de mantenimiento -->
-<p-dialog
-	#dlgCuotaMantenimientoMasiva
-	[(visible)]="mostrarDialogoCuotaMantenimientoMasiva"
-	[modal]="true"
-	header="Generación masiva"
-	contentStyleClass="py-1"
->
-	<ng-template pTemplate="content">
-		<form id="frmCuotaMantenimientoMasiva" class="mt-1" [formGroup]="frmCuotaMantenimientoMasiva" autocomplete="off">
-			<div class="row py-1">
-				<!-- Año y Mes -->
-				<div class="col-12">
-					<label for="txAnioMes">Año y Mes:&nbsp;</label>
-					<p-calendar
-						inputId="txAnioMesMasiva"
-						formControlName="anio_mes"
-						view="month"
-						dateFormat="MM/yy"
-						[yearNavigator]="true"
-						yearRange="{{ appData.appLaunchYear }}:{{ fechaPagoLimite.getFullYear() + 1 }}"
-						[appendTo]="dlgCuotaMantenimientoMasiva"
-						[inputStyle]="{ 'text-align': 'right' }"
-						inputStyleClass="uppercase"
-						(onSelect)="onAnioMesSeleccionadoMasiva($event)"
-					></p-calendar>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Total a generar -->
-				<div class="col-12 text-end">
-					Total a generar: <b>{{ totalGeneracionMasiva == undefined ? 'PENDIENTE' : totalGeneracionMasiva }}</b>
-				</div>
-			</div>
-		</form>
-	</ng-template>
-	<ng-template pTemplate="footer">
-		<!-- Botón Guardar -->
-		<button
-			pButton
-			type="button"
-			label="Guardar"
-			icon="pi pi-save"
-			class="p-button-raised p-button-info me-sm-1"
-			pTooltip="Generar cuotas de mantenimiento"
-			tooltipPosition="top"
-			[disabled]="totalGeneracionMasiva == undefined || totalGeneracionMasiva < 1"
-			(click)="onCuotaMantenimientoMasivasGenerar()"
-		></button>
-		<!-- Botón Cancelar -->
-		<button
-			pButton
-			type="button"
-			label="Regresar"
-			icon="bi bi-box-arrow-right"
-			class="p-button-raised p-button-danger ml-2"
-			pTooltip="Regresar"
-			tooltipPosition="top"
-			(click)="onCuotaMantenimientoMasivasCancelar()"
-		></button>
-	</ng-template>
+<p-dialog #dlgCuotaMantenimientoMasiva
+  [(visible)]="mostrarDialogoCuotaMantenimientoMasiva"
+  [modal]="true" styleClass="cm-dialog" header="Generación masiva de cuotas">
+  <ng-template pTemplate="content">
+    <form [formGroup]="frmCuotaMantenimientoMasiva" autocomplete="off">
+      <div class="row g-3">
+        <div class="col-12">
+          <label>Año y Mes</label>
+          <p-calendar formControlName="anio_mes" view="month" dateFormat="MM/yy"
+            [yearNavigator]="true"
+            yearRange="{{ appData.appLaunchYear }}:{{ fechaPagoLimite.getFullYear() + 1 }}"
+            [appendTo]="dlgCuotaMantenimientoMasiva"
+            [inputStyle]="{'text-align':'right'}" inputStyleClass="uppercase"
+            (onSelect)="onAnioMesSeleccionadoMasiva($event)" styleClass="w-100">
+          </p-calendar>
+        </div>
+        <div class="col-12 text-end" style="color:#f0f0f0">
+          Total a generar: <strong style="color:#e91e8c">
+            {{ totalGeneracionMasiva == undefined ? 'PENDIENTE' : totalGeneracionMasiva }}
+          </strong>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Generar" icon="pi pi-save"
+      class="p-button-raised p-button-info"
+      [disabled]="totalGeneracionMasiva == undefined || totalGeneracionMasiva < 1"
+      (click)="onCuotaMantenimientoMasivasGenerar()">
+    </button>
+    <button pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-raised p-button-danger ms-2"
+      (click)="onCuotaMantenimientoMasivasCancelar()">
+    </button>
+  </ng-template>
 </p-dialog>
 
-<!-- Diálogo registrar pago -->
-<p-dialog
-	#dlgCuotaMantenimientoRegistrarPago
-	[(visible)]="mostrarDialogoRegistrarPagoCuotaMantenimiento"
-	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
-	[style]="{ width: '60vw' }"
-	[modal]="true"
-	[closable]="false"
-	position="top"
-	header="Registrar pago"
-	styleClass="p-fluid"
->
-	<ng-template pTemplate="content">
-		<form
-			id="frmCuotaMantenimientoRegistrarPago"
-			class="mt-1"
-			[formGroup]="frmCuotaMantenimientoRegistrarPago"
-			autocomplete="off"
-		>
-			<!-- Notas -->
-			<div class="row py-1">
-				<div class="col-12">
-					<label for="txtNotas">Notas</label>
-					<input type="text" pInputText id="txtNotas" formControlName="notas" class="uppercase" />
-				</div>
-			</div>
-			<div class="row py-1">
-				<!-- Total -->
-				<div class="col-12 col-md-4">
-					<label for="txtTotal">Total</label>
-					<p-inputNumber
-						inputId="txtTotal"
-						formControlName="total"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Pagado -->
-				<div class="col-12 col-md-4">
-					<label for="txtPagado">Pagado</label>
-					<p-inputNumber
-						inputId="txtPagado"
-						formControlName="pagado"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Saldo -->
-				<div class="col-12 col-md-4">
-					<label for="txtSaldo">Saldo</label>
-					<p-inputNumber
-						inputId="txtSaldo"
-						formControlName="saldo"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-					>
-					</p-inputNumber>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Saldo nuevo -->
-				<div class="col-12 col-md-4 offset-md-8">
-					<label for="txtSaldoNuevo">Saldo nuevo</label>
-					<p-inputNumber
-						inputId="txtSaldoNuevo"
-						formControlName="saldo_nuevo"
-						mode="decimal"
-						locale="es-MX"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-					>
-					</p-inputNumber>
-				</div>
-			</div>
-
-			<div class="h5 title-line py-2">Pago</div>
-
-			<div class="row py-1">
-				<!-- Importe -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="txtImporte">Importe</label>
-					<p-inputNumber
-						inputId="txtImporte"
-						formControlName="importe"
-						mode="decimal"
-						locale="es-MX"
-						allowEmpty="false"
-						[minFractionDigits]="2"
-						[maxFractionDigits]="2"
-						[step]="0"
-						[inputStyle]="{ 'text-align': 'right' }"
-						(onFocus)="hlpApp.selectAllContent($event)"
-						(onBlur)="onValidarImportePago()"
-						autofocus
-					>
-					</p-inputNumber>
-				</div>
-				<!-- Fecha pago -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="txtFechaPago">Fecha pago</label>
-					<p-calendar
-						inputId="txtFechaPago"
-						formControlName="fecha_pago"
-						dateFormat="dd-MM-yy"
-						inputStyleClass="uppercase"
-						[appendTo]="ptCuotasMantenimiento"
-						[inputStyle]="{ 'text-align': 'right' }"
-						[maxDate]="fechaPagoLimite"
-					></p-calendar>
-				</div>
-				<!-- Forma pago -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="cmbFormaPago">Forma pago</label>
-					<select
-						#cmbFormaPago
-						id="cmbFormaPago"
-						formControlName="id_forma_pago"
-						class="form-select"
-						(change)="onFormaPagoSeleccionado($event.target.value)"
-					>
-						<option *ngFor="let formaPago of FormasPago" [value]="formaPago.id_forma_pago">
-							{{ formaPago.forma_pago }}
-						</option>
-					</select>
-				</div>
-				<!-- Número de referencia -->
-				<div class="col-12 col-md-6 col-xl-3">
-					<label for="txtNumeroReferencia">Número referencia</label>
-					<input
-						type="text"
-						pInputText
-						id="txtNumeroReferencia"
-						formControlName="numero_referencia"
-						autofocus
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
-				</div>
-			</div>
-			<div class="row py-1">
-				<!-- Fondo monetario -->
-				<div class="col-12 form-label-group">
-					<label for="cmbFondoMonetario">Fondo monetario</label>
-					<select #cmbFondoMonetario id="cmbFondoMonetario" formControlName="id_fondo_monetario" class="form-select">
-						<option [value]="0" selected>Selecciona una opción...</option>
-						<option *ngFor="let fondo of FondosMonetarios" [value]="fondo.id_fondo_monetario">
-							{{ fondo.tipo_fondo }} - {{ fondo.fondo_monetario }}
-						</option>
-					</select>
-				</div>
-			</div>
-		</form>
-
-		<div class="h5 title-line py-3">Pagos registrados</div>
-		<div class="card shadow-sm">
-			<p-table
-				#ptCuotaMantenimientoPagos
-				responsive="true"
-				[value]="CuotaMantenimiento.pagos"
-				[columns]="CuotaMantenimientoPagosCols"
-				[rowHover]="true"
-				[responsive]="true"
-				styleClass="p-datatable-striped"
-			>
-				<ng-template pTemplate="header" let-columns>
-					<tr>
-						<th
-							*ngFor="let col of columns"
-							class="text-center"
-							[ngStyle]="{
-								width: col.width,
-								'min-width': col.minWidth ? col.minWidth : 'inherit'
-							}"
-						>
-							{{ col.header ? col.header : '&nbsp;' }}
-						</th>
-					</tr>
-				</ng-template>
-				<ng-template pTemplate="body" let-Pago>
-					<tr>
-						<td class="text-end">{{ Pago.fecha_pago | date : 'MMMM dd, yyyy' | uppercase }}</td>
-						<td class="text-end">
-							{{ Pago.importe | number : '1.2-2' }}
-						</td>
-						<td>{{ Pago.forma_pago }}</td>
-						<td>{{ Pago.numero_referencia }}</td>
-						<td>{{ Pago.fondo_monetario }}</td>
-
-						<td class="text-end">
-							<!-- Botón Eliminar -->
-							<button
-								*ngIf="permitirAgregarEditar"
-								pButton
-								type="button"
-								icon="pi pi-trash"
-								class="p-button-rounded p-button-text p-button-danger me-1"
-								pTooltip="Eliminar pago"
-								tooltipPosition="left"
-								(click)="onCuotaMantenimientoPagoEliminar(Pago, CuotaMantenimiento)"
-							></button>
-						</td>
-					</tr>
-				</ng-template>
-				<ng-template pTemplate="emptymessage"
-					><tr class="no-records">
-						<td colspan="3">Sin registros.</td>
-					</tr></ng-template
-				>
-			</p-table>
-		</div>
-	</ng-template>
-	<ng-template pTemplate="footer">
-		<!-- Botón Confirmar -->
-		<button
-			pButton
-			type="button"
-			label="Confirmar"
-			icon="pi pi-save"
-			class="p-button-raised p-button-info me-sm-1"
-			pTooltip="Registrar el pago"
-			tooltipPosition="top"
-			[disabled]="!frmCuotaMantenimientoRegistrarPago.valid"
-			(click)="onCuotaMantenimientoRegistrarPagoGuardar()"
-		></button>
-		<!-- Botón Cancelar -->
-		<button
-			pButton
-			type="button"
-			label="Cancelar"
-			icon="pi pi-times"
-			class="p-button-raised p-button-warning ml-2"
-			pTooltip="Cancelar el proceso"
-			tooltipPosition="top"
-			(click)="onCuotaMantenimientoRegistrarPagoCancelar()"
-		></button>
-	</ng-template>
+<p-dialog #dlgCuotaMantenimientoRegistrarPago
+  [(visible)]="mostrarDialogoRegistrarPagoCuotaMantenimiento"
+  [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
+  [style]="{ width: '60vw' }"
+  [modal]="true" [closable]="false" position="top"
+  styleClass="cm-dialog" header="Registrar pago">
+  <ng-template pTemplate="content">
+    <form [formGroup]="frmCuotaMantenimientoRegistrarPago" autocomplete="off">
+      <div class="row g-3">
+        <div class="col-12">
+          <label>Notas</label>
+          <input type="text" pInputText formControlName="notas" class="uppercase w-100"/>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Total</label>
+          <p-inputNumber formControlName="total" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Pagado</label>
+          <p-inputNumber formControlName="pagado" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4">
+          <label>Saldo</label>
+          <p-inputNumber formControlName="saldo" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-4 offset-md-8">
+          <label>Saldo nuevo</label>
+          <p-inputNumber formControlName="saldo_nuevo" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2"
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100">
+          </p-inputNumber>
+        </div>
+        <div class="col-12"><div class="title-line">Nuevo Pago</div></div>
+        <div class="col-12 col-md-3">
+          <label>Importe</label>
+          <p-inputNumber formControlName="importe" mode="decimal" locale="es-MX"
+            [minFractionDigits]="2" [maxFractionDigits]="2" autofocus
+            [inputStyle]="{'text-align':'right'}" styleClass="w-100"
+            (onFocus)="hlpApp.selectAllContent($event)" (onBlur)="onValidarImportePago()">
+          </p-inputNumber>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Fecha pago</label>
+          <p-calendar formControlName="fecha_pago" dateFormat="dd-MM-yy"
+            inputStyleClass="uppercase" [appendTo]="ptCuotasMantenimiento"
+            [inputStyle]="{'text-align':'right'}" [maxDate]="fechaPagoLimite" styleClass="w-100">
+          </p-calendar>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Forma pago</label>
+          <select formControlName="id_forma_pago" class="form-select"
+            (change)="onFormaPagoSeleccionado($event.target.value)">
+            <option *ngFor="let f of FormasPago" [value]="f.id_forma_pago">{{ f.forma_pago }}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <label>Número referencia</label>
+          <input type="text" pInputText formControlName="numero_referencia" class="w-100"
+            (focus)="hlpApp.selectAllContent($event)"/>
+        </div>
+        <div class="col-12">
+          <label>Fondo monetario</label>
+          <select formControlName="id_fondo_monetario" class="form-select">
+            <option [value]="0">Selecciona...</option>
+            <option *ngFor="let f of FondosMonetarios" [value]="f.id_fondo_monetario">
+              {{ f.tipo_fondo }} — {{ f.fondo_monetario }}
+            </option>
+          </select>
+        </div>
+        <div class="col-12"><div class="title-line">Pagos registrados</div></div>
+        <div class="col-12">
+          <p-table [value]="CuotaMantenimiento.pagos" styleClass="cm-table" [rowHover]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Fecha</th>
+                <th class="text-end">Importe</th>
+                <th>Forma pago</th>
+                <th>Referencia</th>
+                <th>Fondo</th>
+                <th style="width:50px"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-pago>
+              <tr>
+                <td>{{ pago.fecha_pago | date:'dd/MM/yyyy' | uppercase }}</td>
+                <td class="text-end" style="color:#1BC99A;font-weight:600">{{ pago.importe | number:'1.2-2' }}</td>
+                <td>{{ pago.forma_pago }}</td>
+                <td>{{ pago.numero_referencia }}</td>
+                <td>{{ pago.fondo_monetario }}</td>
+                <td class="text-center">
+                  <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-trash"
+                    class="p-button-rounded p-button-text p-button-danger cm-btn"
+                    (click)="onCuotaMantenimientoPagoEliminar(pago, CuotaMantenimiento)">
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr><td colspan="6" class="text-center py-3" style="color:#555a6a">Sin pagos</td></tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Confirmar" icon="pi pi-save"
+      class="p-button-raised p-button-info"
+      [disabled]="!frmCuotaMantenimientoRegistrarPago.valid"
+      (click)="onCuotaMantenimientoRegistrarPagoGuardar()">
+    </button>
+    <button pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-raised p-button-warning ms-2"
+      (click)="onCuotaMantenimientoRegistrarPagoCancelar()">
+    </button>
+  </ng-template>
 </p-dialog>
 
-<!-- Diálogo Recibo de pago -->
-<p-dialog
-	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
-	[style]="{ width: '50vw' }"
-	[(visible)]="mostrarDialogoReciboPagoCuotaMantenimiento"
-	modal="true"
-	dismissableMask="true"
-	header="Recibo de la Cuota de Mantenimiento"
->
-	<ng-template pTemplate="content">
-		<div class="d-print-none" style="position: absolute; top: 70px; right: 50px">
-			<div class="row">
-				<div class="col-auto pt-2 ms-auto no-print">
-					<button
-						pButton
-						type="button"
-						icon="pi pi-print"
-						class="p-button-raised p-button-rounded p-button-primary"
-						pTooltip="Imprimir"
-						tooltipPosition="left"
-						(click)="hlpApp.imprimirElemento('recibo-pago')"
-					></button>
-				</div>
-			</div>
-		</div>
-		<div id="recibo-pago" class="container pt-4">
-			<!-- Encabezado -->
-			<div class="row pt-4">
-				<!-- Impresión -->
-				<div class="col-12 text-center d-none d-print-block">
-					<p class="pb-3">RECIBO CUOTA DE MANTENIMIENTO</p>
-				</div>
-				<!-- Pantalla -->
-				<div class="col-12 col-sm-7 text-center text-sm-start d-print-none">
-					<p class="display-6 m-0">{{ CuotaMantenimiento.condominio }}</p>
-				</div>
-				<!-- Impresión -->
-				<div class="col-7 d-none d-print-block">
-					<p class="display-6 m-0">{{ CuotaMantenimiento.condominio }}</p>
-				</div>
-				<!-- Pantalla -->
-				<div class="col-12 col-sm-5 pt-2 pt-sm-0 text-center text-sm-end d-print-none">
-					<p class="m-0"><b>Recibo:</b> {{ CuotaMantenimiento.id_cuota_mantenimiento }}</p>
-					<p class="m-0">
-						<b>Fecha registro:</b> {{ CuotaMantenimiento.fecha_registro | date : 'MMMM dd, yyyy' | uppercase }}
-					</p>
-
-					<p class="m-0">
-						<b>Mes pago:</b>
-						{{
-							CuotaMantenimiento.anio.toString() + '/' + CuotaMantenimiento.mes.toString() + '/01'
-								| date : 'MMMM, YYYY'
-								| uppercase
-						}}
-					</p>
-					<p class="m-0">
-						<b>Estatus:</b>
-						{{ CuotaMantenimiento.estatus_recaudacion }}
-						<!-- <b>Fecha pago:</b>
-						{{
-							CuotaMantenimiento.fecha_pago
-								? (CuotaMantenimiento.fecha_pago | date : 'MMMM dd, yyyy' | uppercase)
-								: CuotaMantenimiento.estatus_recaudacion
-						}} -->
-					</p>
-				</div>
-				<!-- Impresión -->
-				<div class="col-5 pt-0 text-end d-none d-print-block">
-					<p class="m-0"><b>Recibo:</b> {{ CuotaMantenimiento.id_cuota_mantenimiento }}</p>
-					<p class="m-0">
-						<b>Fecha registro:</b> {{ CuotaMantenimiento.fecha_registro | date : 'MMMM dd, yyyy' | uppercase }}
-					</p>
-
-					<p class="m-0">
-						<b>Mes pago:</b>
-						{{
-							CuotaMantenimiento.anio.toString() + '/' + CuotaMantenimiento.mes.toString() + '/01'
-								| date : 'MMMM, YYYY'
-								| uppercase
-						}}
-					</p>
-					<p class="m-0">
-						<b>Fecha pago:</b>
-						{{
-							CuotaMantenimiento.fecha_pago
-								? (CuotaMantenimiento.fecha_pago | date : 'MMMM dd, yyyy' | uppercase)
-								: CuotaMantenimiento.estatus_recaudacion
-						}}
-					</p>
-				</div>
-			</div>
-
-			<!-- Datos de Destinatario y de Unidad -->
-			<div class="row pt-3">
-				<!-- Pantalla -->
-				<div class="col-12 col-sm-6 text-center text-sm-start d-print-none">
-					<p class="carriage-return m-0">{{ CuotaMantenimiento.domicilio }}</p>
-					<p *ngIf="CuotaMantenimiento.telefono" class="m-0">
-						Teléfono: {{ CuotaMantenimiento.telefono | phoneFormat }}
-					</p>
-					<p *ngIf="CuotaMantenimiento.email" class="m-0">Email: {{ CuotaMantenimiento.email }}</p>
-				</div>
-				<!-- Impresión -->
-				<div class="col-6 text-start d-none d-print-block">
-					<p class="carriage-return m-0">{{ CuotaMantenimiento.domicilio }}</p>
-					<p *ngIf="CuotaMantenimiento.telefono" class="m-0">
-						Teléfono: {{ CuotaMantenimiento.telefono | phoneFormat }}
-					</p>
-					<p *ngIf="CuotaMantenimiento.email" class="m-0">Email: {{ CuotaMantenimiento.email }}</p>
-				</div>
-				<!-- Pantalla -->
-				<div class="col-12 col-sm-6 pt-3 pt-sm-0 text-center text-sm-end d-print-none">
-					<p class="m-0">{{ CuotaMantenimiento.destinatario_nombre }}</p>
-					<p class="m-0">Edificio: {{ CuotaMantenimiento.edificio }}</p>
-					<p class="m-0">Unidad: {{ CuotaMantenimiento.unidad }}</p>
-					<p *ngIf="CuotaMantenimiento.destinatario_telefono" class="m-0">
-						{{ CuotaMantenimiento.destinatario_telefono | phoneFormat }}
-					</p>
-					<p *ngIf="CuotaMantenimiento.destinatario_email" class="m-0">
-						Email: {{ CuotaMantenimiento.destinatario_email }}
-					</p>
-				</div>
-				<!-- Impresión -->
-				<div class="col-6 pt-0 text-end d-none d-print-block">
-					<p class="m-0">{{ CuotaMantenimiento.destinatario_nombre }}</p>
-					<p class="m-0">Edificio: {{ CuotaMantenimiento.edificio }}</p>
-					<p class="m-0">Unidad: {{ CuotaMantenimiento.unidad }}</p>
-					<p *ngIf="CuotaMantenimiento.destinatario_telefono" class="m-0">
-						{{ CuotaMantenimiento.destinatario_telefono | phoneFormat }}
-					</p>
-					<p *ngIf="CuotaMantenimiento.destinatario_email" class="m-0">
-						Email: {{ CuotaMantenimiento.destinatario_email }}
-					</p>
-				</div>
-			</div>
-
-			<!-- <div class="row pt-3">
-				<div class="col-6 py-1 text-white bg-secondary border-bottom"><b>Forma de pago</b></div>
-				<div class="col-6 py-1 text-end text-white bg-secondary border-bottom">
-					<b>{{
-						CuotaMantenimiento.forma_pago ? CuotaMantenimiento.forma_pago : CuotaMantenimiento.estatus_recaudacion
-					}}</b>
-				</div>
-			</div> -->
-			<div class="row pt-3">
-				<div class="col-12 d-flex text-white bg-secondary border-bottom py-1">
-					<div class="flex-fill">
-						<b>Pagos registrados: {{ CuotaMantenimiento.pagos.length }}</b>
-					</div>
-					<div class="rounded px-2">
-						<!-- <b>{{ CuotaMantenimiento.estatus_recaudacion }}</b> -->
-						<p-tag
-							severity="{{
-								CuotaMantenimiento.id_estatus_recaudacion != 3
-									? CuotaMantenimiento.id_estatus_recaudacion == 1
-										? 'danger'
-										: 'warning'
-									: 'success'
-							}}"
-							value="{{ CuotaMantenimiento.estatus_recaudacion }}"
-						></p-tag>
-					</div>
-				</div>
-				<div *ngIf="CuotaMantenimiento.pagos.length > 0" class="col-12">
-					<table class="table table-striped table-hover">
-						<thead>
-							<tr>
-								<th class="text-center py-0">#</th>
-								<th class="text-center py-0">Fecha</th>
-								<th class="text-center py-0">Forma pago</th>
-								<th class="text-center py-0">Referencia</th>
-								<th class="text-center py-0">Importe</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr *ngFor="let pago of CuotaMantenimiento.pagos; let i = index" class="h-auto">
-								<td class="text-center py-0">{{ i + 1 }}</td>
-								<td class="text-center py-0">{{ pago.fecha_pago | date : 'MMMM dd, yyyy' | uppercase }}</td>
-								<td class="text-center py-0">{{ pago.forma_pago }}</td>
-								<td class="text-center py-0">{{ pago.numero_referencia }}</td>
-								<td class="text-center py-0">{{ pago.importe | number : '1.2-2' }}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<!-- <div class="col-6 py-1 text-white bg-secondary border-bottom"><b>Pagos</b></div>
-				<div class="col-6 py-1 text-end text-white bg-secondary border-bottom">
-					<b>{{
-						CuotaMantenimiento.forma_pago ? CuotaMantenimiento.forma_pago : CuotaMantenimiento.estatus_recaudacion
-					}}</b>
-				</div> -->
-			</div>
-			<div *ngIf="CuotaMantenimiento.numero_referencia" class="row pt-0">
-				<div class="col py-0 text-end">
-					Referencia: <b>{{ CuotaMantenimiento.numero_referencia }}</b>
-				</div>
-			</div>
-			<div class="row pt-4">
-				<div class="col-6 py-1 text-white bg-secondary border-bottom"><b>Concepto</b></div>
-				<div class="col-6 py-1 text-end text-white bg-secondary border-bottom"><b>Importe</b></div>
-			</div>
-
-			<div class="row">
-				<div class="col-6 pe-0">
-					<p class="m-0 ps-3 py-1 border-bottom">Ordinaria</p>
-					<p class="m-0 ps-3 py-1 border-bottom">Extraordinaria</p>
-					<p class="m-0 ps-3 py-1 border-bottom">Otros servicios</p>
-					<p class="m-0 ps-3 py-1 border-bottom">Descuento pronto pago</p>
-				</div>
-				<div class="col-6 text-end ps-0">
-					<p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.ordinaria | number : '1.2-2' }}</p>
-					<p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.extraordinaria | number : '1.2-2' }}</p>
-					<p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.otros_servicios | number : '1.2-2' }}</p>
-					<p
-						class="m-0 pe-2 py-1 border-bottom"
-						[ngClass]="{ 'text-danger': CuotaMantenimiento.descuento_pronto_pago > 0 }"
-					>
-						{{ CuotaMantenimiento.descuento_pronto_pago > 0 ? '-' : '' }}
-						{{ CuotaMantenimiento.descuento_pronto_pago | number : '1.2-2' }}
-					</p>
-				</div>
-			</div>
-
-			<div class="row align-items-center pt-2 pb-4">
-				<div class="col-7 col-md-6 text-center sello">
-					<div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 1" class="pendiente-pago">Pago pendiente</div>
-					<div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 2" class="saldo-pendiente">Saldo pendiente</div>
-					<div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 3" class="pagado">Pagado</div>
-				</div>
-				<div class="col-5 col-md-6">
-					<div class="row h-100">
-						<div class="col-12 text-end fs-1 fw-bold">
-							Total: {{ CuotaMantenimiento.total | number : '1.2-2' }}
-							<div *ngIf="CuotaMantenimiento.saldo != 0" class="fs-2 fw-bold">
-								Pagado: {{ CuotaMantenimiento.pagado | number : '1.2-2' }} <br />Saldo:
-								<span class="text-danger fs-2 fw-bold">{{ CuotaMantenimiento.saldo | number : '1.2-2' }}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- <div class="col-5 col-md-5 offset-8 offset-md-7 text-center border-top mt-4">Firma</div> -->
-			</div>
-			<div class="row pt-4 mt-4">
-				<div class="col-4 offset-4 text-center border-top mt-4">Firma</div>
-			</div>
-
-			<div *ngIf="CuotaMantenimiento.notas" class="row mt-4 py-4">
-				<div class="col-12 d-flex align-items-start mt-2 pt-1 border-top">
-					<div class=""><b>Notas:</b></div>
-					<div class="flex-grow-1 ps-1">{{ CuotaMantenimiento.notas }}</div>
-				</div>
-			</div>
-		</div>
-	</ng-template>
+<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+  [style]="{ width: '50vw' }"
+  [(visible)]="mostrarDialogoReciboPagoCuotaMantenimiento"
+  modal="true" dismissableMask="true"
+  header="Recibo de la Cuota de Mantenimiento">
+  <ng-template pTemplate="content">
+    <div class="d-print-none" style="position:absolute;top:70px;right:50px">
+      <button pButton type="button" icon="pi pi-print"
+        class="p-button-raised p-button-rounded p-button-primary"
+        (click)="hlpApp.imprimirElemento('recibo-pago')">
+      </button>
+    </div>
+    <div id="recibo-pago" class="container pt-4">
+      <div class="row pt-4">
+        <div class="col-12 col-sm-7"><p class="display-6 m-0">{{ CuotaMantenimiento.condominio }}</p></div>
+        <div class="col-12 col-sm-5 text-sm-end">
+          <p class="m-0"><b>Recibo:</b> {{ CuotaMantenimiento.id_cuota_mantenimiento }}</p>
+          <p class="m-0"><b>Fecha:</b> {{ CuotaMantenimiento.fecha_registro | date:'dd/MM/yyyy' | uppercase }}</p>
+          <p class="m-0"><b>Mes:</b> {{ CuotaMantenimiento.anio + '/' + CuotaMantenimiento.mes + '/01' | date:'MMMM, YYYY' | uppercase }}</p>
+          <p class="m-0"><b>Estatus:</b> {{ CuotaMantenimiento.estatus_recaudacion }}</p>
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div class="col-12 col-sm-6">
+          <p class="m-0">{{ CuotaMantenimiento.domicilio }}</p>
+          <p *ngIf="CuotaMantenimiento.telefono" class="m-0">Tel: {{ CuotaMantenimiento.telefono | phoneFormat }}</p>
+          <p *ngIf="CuotaMantenimiento.email" class="m-0">Email: {{ CuotaMantenimiento.email }}</p>
+        </div>
+        <div class="col-12 col-sm-6 text-sm-end">
+          <p class="m-0">{{ CuotaMantenimiento.destinatario_nombre }}</p>
+          <p class="m-0">Edificio: {{ CuotaMantenimiento.edificio }}</p>
+          <p class="m-0">Unidad: {{ CuotaMantenimiento.unidad }}</p>
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div class="col-12 d-flex text-white bg-secondary py-1">
+          <div class="flex-fill"><b>Pagos: {{ CuotaMantenimiento.pagos.length }}</b></div>
+          <p-tag severity="{{ CuotaMantenimiento.id_estatus_recaudacion == 1 ? 'danger' : CuotaMantenimiento.id_estatus_recaudacion == 2 ? 'warning' : 'success' }}"
+            value="{{ CuotaMantenimiento.estatus_recaudacion }}">
+          </p-tag>
+        </div>
+        <div *ngIf="CuotaMantenimiento.pagos.length > 0" class="col-12">
+          <table class="table table-striped">
+            <thead><tr>
+              <th class="py-0">#</th><th class="py-0">Fecha</th>
+              <th class="py-0">Forma pago</th><th class="py-0">Referencia</th><th class="py-0">Importe</th>
+            </tr></thead>
+            <tbody>
+              <tr *ngFor="let pago of CuotaMantenimiento.pagos; let i = index">
+                <td class="py-0">{{ i+1 }}</td>
+                <td class="py-0">{{ pago.fecha_pago | date:'dd/MM/yyyy' | uppercase }}</td>
+                <td class="py-0">{{ pago.forma_pago }}</td>
+                <td class="py-0">{{ pago.numero_referencia }}</td>
+                <td class="py-0 text-end">{{ pago.importe | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div class="col-6 py-1 text-white bg-secondary"><b>Concepto</b></div>
+        <div class="col-6 py-1 text-end text-white bg-secondary"><b>Importe</b></div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <p class="m-0 ps-3 py-1 border-bottom">Ordinaria</p>
+          <p class="m-0 ps-3 py-1 border-bottom">Extraordinaria</p>
+          <p class="m-0 ps-3 py-1 border-bottom">Otros servicios</p>
+          <p class="m-0 ps-3 py-1 border-bottom">Descuento pronto pago</p>
+        </div>
+        <div class="col-6 text-end">
+          <p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.ordinaria | number:'1.2-2' }}</p>
+          <p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.extraordinaria | number:'1.2-2' }}</p>
+          <p class="m-0 pe-2 py-1 border-bottom">{{ CuotaMantenimiento.otros_servicios | number:'1.2-2' }}</p>
+          <p class="m-0 pe-2 py-1 border-bottom" [ngClass]="{'text-danger': CuotaMantenimiento.descuento_pronto_pago > 0}">
+            {{ CuotaMantenimiento.descuento_pronto_pago > 0 ? '-' : '' }}{{ CuotaMantenimiento.descuento_pronto_pago | number:'1.2-2' }}
+          </p>
+        </div>
+      </div>
+      <div class="row align-items-center pt-2 pb-4">
+        <div class="col-7 text-center sello">
+          <div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 1" class="pendiente-pago">Pago pendiente</div>
+          <div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 2" class="saldo-pendiente">Saldo pendiente</div>
+          <div *ngIf="CuotaMantenimiento.id_estatus_recaudacion == 3" class="pagado">Pagado</div>
+        </div>
+        <div class="col-5 text-end fs-1 fw-bold">
+          Total: {{ CuotaMantenimiento.total | number:'1.2-2' }}
+          <div *ngIf="CuotaMantenimiento.saldo != 0" class="fs-2 fw-bold">
+            Pagado: {{ CuotaMantenimiento.pagado | number:'1.2-2' }}<br/>
+            Saldo: <span class="text-danger">{{ CuotaMantenimiento.saldo | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row pt-4 mt-4">
+        <div class="col-4 offset-4 text-center border-top mt-4">Firma</div>
+      </div>
+    </div>
+  </ng-template>
 </p-dialog>

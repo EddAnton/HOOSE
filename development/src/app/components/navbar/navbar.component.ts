@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit {
 	appData = environment;
 	hlpApp = hlpApp;
 	private listTitles: any[];
-	private sidebarVisible: boolean = false;
+	public sidebarVisible: boolean = false;
 
 	location: Location;
 	isCollapsed = true;
@@ -71,7 +71,7 @@ export class NavbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.onResize();
+    if (window.innerWidth >= 991) { this.sidebarOpen(); } else { this.hideSidebar(); this.sidebarVisible = false; }
 		this.listTitles = mnuOpciones.filter((listTitle) => listTitle && listTitle.visible);
 		this.router.events.subscribe((event) => {
 			if (this.sidebarVisible) this.sidebarClose();
@@ -167,7 +167,7 @@ export class NavbarComponent implements OnInit {
 		this.btnToggleSidebar.nativeElement.classList.remove('bx-menu');
 		this.btnToggleSidebar.nativeElement.classList.remove('animate__fadeIn');
 		this.btnToggleSidebar.nativeElement.classList.add('bx-left-arrow-circle');
-		this.btnToggleSidebar.nativeElement.style.marginLeft = '240px';
+		this.btnToggleSidebar.nativeElement.style.marginLeft = '0';
 		setTimeout(() => {
 			this.btnToggleSidebar.nativeElement.style.display = 'block';
 			this.btnToggleSidebar.nativeElement.classList.add('animate__fadeInLeft');

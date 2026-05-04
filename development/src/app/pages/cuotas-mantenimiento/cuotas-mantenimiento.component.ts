@@ -96,6 +96,27 @@ export class CuotasMantenimientoComponent implements OnInit {
 	CuotasMantenimiento: CuotaMantenimientoResumenModel[] = [];
 	CuotasMantenimientoIDsFiltered: any[] = [];
 	FilaTotales: FilaTotalesModel;
+CuotasMantenimientoFiltradas: any[] = [];
+
+// Filtros
+filtroAnio: number = null;
+filtroMes: number = null;
+filtroEstatus: number = null;
+
+aniosDisponibles: any[] = [];
+mesesDisponibles: any[] = [
+  { label: 'Enero', value: 1 }, { label: 'Febrero', value: 2 },
+  { label: 'Marzo', value: 3 }, { label: 'Abril', value: 4 },
+  { label: 'Mayo', value: 5 }, { label: 'Junio', value: 6 },
+  { label: 'Julio', value: 7 }, { label: 'Agosto', value: 8 },
+  { label: 'Septiembre', value: 9 }, { label: 'Octubre', value: 10 },
+  { label: 'Noviembre', value: 11 }, { label: 'Diciembre', value: 12 },
+];
+estatusDisponibles: any[] = [
+  { label: 'Pendiente pago', value: 1 },
+  { label: 'Saldo pendiente', value: 2 },
+  { label: 'Pagado', value: 3 },
+];
 	CuotaMantenimiento: CuotaMantenimientoModel;
 	CuotaMantenimientoRegistrarPago: CuotaMantenimientoRegistrarPagoModel;
 	Unidades: UnidadParaRecaudacionesModel[] = [];
@@ -132,7 +153,23 @@ export class CuotasMantenimientoComponent implements OnInit {
 		this.onActualizarInformacion();
 	}
 
-	private OrdenarCuotasMantenimiento(recaudaciones: CuotaMantenimientoResumenModel[]) {
+	public aplicarFiltros() {
+    let filtradas = this.CuotasMantenimiento;
+    if (this.filtroAnio) filtradas = filtradas.filter(c => c.anio.toString() === this.filtroAnio.toString());
+    if (this.filtroMes) filtradas = filtradas.filter(c => Number(c.mes) === this.filtroMes);
+    if (this.filtroEstatus) filtradas = filtradas.filter(c => Number(c.id_estatus_recaudacion) === this.filtroEstatus);
+    this.CuotasMantenimientoFiltradas = filtradas;
+    this.onCalcularFilaTotales(this.CuotasMantenimientoFiltradas);
+  }
+
+  public limpiarFiltros() {
+    this.filtroAnio = null;
+    this.filtroMes = null;
+    this.filtroEstatus = null;
+    this.aplicarFiltros();
+  }
+
+  private OrdenarCuotasMantenimiento(recaudaciones: CuotaMantenimientoResumenModel[]) {
 		return recaudaciones.sort((a, b) =>
 			(Number(a.id_estatus_recaudacion) * -1).toString() +
 				(9999 - Number(a.anio)).toString() +
@@ -197,7 +234,10 @@ export class CuotasMantenimientoComponent implements OnInit {
 			.toPromise()
 			.then((r) => {
 				this.CuotasMantenimiento = this.OrdenarCuotasMantenimiento(r['cuotas_mantenimiento']);
-				this.onCalcularFilaTotales(this.CuotasMantenimiento);
+				const anios = [...new Set(this.CuotasMantenimiento.map((c:any) => c.anio.toString()))].sort((a:any,b:any) => Number(b)-Number(a));
+        this.aniosDisponibles = anios.map((a:any) => ({ label: a, value: a }));
+        this.CuotasMantenimientoFiltradas = [...this.CuotasMantenimiento];
+        this.onCalcularFilaTotales(this.CuotasMantenimientoFiltradas);
 			})
 			.catch(async (e) => {
 				await hlpSwal.Error(e);
