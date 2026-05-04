@@ -2,7 +2,7 @@
   <div class="container-fluid ps-2">
     <div class="navbar-toggle">
       <button type="button" class="navbar-toggler animate__faster" (click)="sidebarToggle()">
-        <i #btnToggleSidebar class="bx bx-menu bx-sm animate__animated"></i>
+        <i #btnToggleSidebar class="bx bx-sm" [ngClass]="sidebarVisible ? 'bx-left-arrow-circle' : 'bx-menu'"></i>
       </button>
     </div>
     <div class="navbar-toggler ms-auto">

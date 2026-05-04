@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environment';
 import { mnuOpciones } from '../sidebar/sidebar.component';
 import { CondominioResumenModel } from '../../models/condominio.model';
 import { CondominiosService } from '../../services/condominios.service';
+import { SidebarService } from '../../services/sidebar.service';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UsuarioCambiarContraseniaModel } from '../../models/usuario.model';
@@ -65,6 +66,7 @@ export class NavbarComponent implements OnInit {
 		private usuariosService: UsuariosService,
 		private condominiosService: CondominiosService,
 		private formBuilder: FormBuilder,
+    private sidebarService: SidebarService,
 	) {
 		this.location = location;
 		this.sidebarVisible = false;
@@ -141,12 +143,12 @@ export class NavbarComponent implements OnInit {
 	}
 
 	setIconsClosedSidebar() {
-		this.btnToggleSidebar.nativeElement.style.display = 'none';
+    // display manejado por CSS
 
 		this.btnToggleSidebar.nativeElement.classList.remove('bx-left-arrow-circle');
 		this.btnToggleSidebar.nativeElement.classList.remove('animate__fadeInLeft');
 		this.btnToggleSidebar.nativeElement.classList.add('bx-menu');
-		this.btnToggleSidebar.nativeElement.style.marginLeft = 'unset';
+    // marginLeft removido
 		setTimeout(() => {
 			this.btnToggleSidebar.nativeElement.style.display = 'block';
 			this.btnToggleSidebar.nativeElement.classList.add('animate__fadeIn');
@@ -162,24 +164,26 @@ export class NavbarComponent implements OnInit {
 	}
 
 	sidebarOpen() {
-		this.btnToggleSidebar.nativeElement.style.display = 'none';
+    // display manejado por CSS
 		this.showSidebar();
 		this.btnToggleSidebar.nativeElement.classList.remove('bx-menu');
 		this.btnToggleSidebar.nativeElement.classList.remove('animate__fadeIn');
 		this.btnToggleSidebar.nativeElement.classList.add('bx-left-arrow-circle');
-		this.btnToggleSidebar.nativeElement.style.marginLeft = '0';
+    // marginLeft removido
 		setTimeout(() => {
 			this.btnToggleSidebar.nativeElement.style.display = 'block';
 			this.btnToggleSidebar.nativeElement.classList.add('animate__fadeInLeft');
 		}, 200);
 
 		this.sidebarVisible = true;
+    this.sidebarService.setVisible(true);
 	}
 
 	sidebarClose() {
 		this.hideSidebar();
 		this.setIconsClosedSidebar();
 		this.sidebarVisible = false;
+    this.sidebarService.setVisible(false);
 	}
 
 	collapse() {
