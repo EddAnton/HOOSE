@@ -6,6 +6,7 @@ import * as hlpPrimerCharts from '../../helpers/prime-charts-helper';
 import { DashboardService } from '../../services/dashboard.service';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 import { TareasService } from '../../services/tareas.service';
+import { MetricasService } from '../../services/metricas.service';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,8 @@ export class TableroComponent implements OnInit {
   cardCobranza: any = null;
   tareasRecientes: any[] = [];
   totalTareasPendientes: number = 0;
+  metricas: any = null;
+  comparativo: string = 'mes_anterior';
 
   private iconMap: { [key: string]: string } = {
     'Ingresos': 'pi-chart-line',
@@ -55,12 +58,14 @@ export class TableroComponent implements OnInit {
     private sesionUsuarioService: SesionUsuarioService,
     private dashboardService: DashboardService,
     private tareasService: TareasService,
+    private metricasService: MetricasService,
   ) {}
 
   ngOnInit() {
     this.idCondominio = this.sesionUsuarioService.obtenerIDCondominioUsuario();
     this.onActualizarInformacion();
     this.cargarTareas();
+    this.cargarMetricas();
   }
 
   private generarGraphs() {
@@ -89,6 +94,12 @@ export class TableroComponent implements OnInit {
         pctPendiente: total > 0 ? (pendiente / total * 100).toFixed(0) : '0',
       };
     }
+  }
+
+  cargarMetricas() {
+    this.metricasService.Tablero(this.comparativo).toPromise()
+      .then((r: any) => { this.metricas = r.data; })
+      .catch(() => {});
   }
 
   private cargarTareas() {

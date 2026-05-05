@@ -192,4 +192,90 @@
     </div>
   </div>
 
+
+  <!-- MÉTRICAS: Ocupación, Quejas, Asambleas, Visitas -->
+  <div class="row g-3 mb-3" *ngIf="metricas">
+
+    <!-- Header con selector comparativo -->
+    <div class="col-12 d-flex align-items-center justify-content-between">
+      <span class="chart-card-title">Métricas del Condominio</span>
+      <div class="d-flex align-items-center gap-2">
+        <span style="font-size:0.75rem;color:#8a8f9e">vs:</span>
+        <button class="hoose-comp-btn" [class.active]="comparativo === 'mes_anterior'"
+          (click)="comparativo='mes_anterior'; cargarMetricas()">Mes anterior</button>
+        <button class="hoose-comp-btn" [class.active]="comparativo === 'anio_anterior'"
+          (click)="comparativo='anio_anterior'; cargarMetricas()">Año anterior</button>
+      </div>
+    </div>
+
+    <!-- Ocupación -->
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
+        <div class="metrica-header">
+          <i class="pi pi-home metrica-icon"></i>
+          <span class="metrica-title">Ocupación</span>
+          <span class="metrica-badge badge-gray">
+            <i class="pi pi-minus"></i> 0%
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.ocupacion.porcentaje }}%</div>
+        <div class="metrica-sub">{{ metricas.ocupacion.ocupadas }} / {{ metricas.ocupacion.total }} unidades ocupadas</div>
+      </div>
+    </div>
+
+    <!-- Quejas -->
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/quejas')" style="cursor:pointer">
+        <div class="metrica-header">
+          <i class="pi pi-exclamation-circle metrica-icon"></i>
+          <span class="metrica-title">Quejas</span>
+          <span class="metrica-badge" [ngClass]="metricas.quejas.tendencia==='up'?'badge-red':metricas.quejas.tendencia==='down'?'badge-green':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.quejas.tendencia==='up'?'pi-arrow-up':metricas.quejas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.quejas.porcentaje !== 0 ? metricas.quejas.porcentaje + '%' : 'Sin cambio' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.quejas.actual }}</div>
+        <div class="metrica-sub">
+          {{ metricas.quejas.sin_revisar }} pendientes ·
+          {{ metricas.quejas.en_proceso }} proceso ·
+          {{ metricas.quejas.atendidas }} atendidas
+        </div>
+      </div>
+    </div>
+
+    <!-- Asambleas -->
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/asambleas')" style="cursor:pointer">
+        <div class="metrica-header">
+          <i class="pi pi-users metrica-icon"></i>
+          <span class="metrica-title">Asambleas</span>
+          <span class="metrica-badge" [ngClass]="metricas.asambleas.tendencia==='up'?'badge-green':metricas.asambleas.tendencia==='down'?'badge-red':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.asambleas.tendencia==='up'?'pi-arrow-up':metricas.asambleas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.asambleas.diferencia !== 0 ? (metricas.asambleas.diferencia > 0 ? '+' : '') + metricas.asambleas.diferencia : 'Sin cambio' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.asambleas.actual }}</div>
+        <div class="metrica-sub">{{ metricas.asambleas.ordinarias }} ordinarias · {{ metricas.asambleas.extraordinarias }} extraordinarias</div>
+      </div>
+    </div>
+
+    <!-- Visitas -->
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/visitas')" style="cursor:pointer">
+        <div class="metrica-header">
+          <i class="pi pi-car metrica-icon"></i>
+          <span class="metrica-title">Visitas</span>
+          <span class="metrica-badge" [ngClass]="metricas.visitas.tendencia==='up'?'badge-green':metricas.visitas.tendencia==='down'?'badge-red':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.visitas.tendencia==='up'?'pi-arrow-up':metricas.visitas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : 'Sin cambio' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.visitas.actual }}</div>
+        <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs período anterior</div>
+      </div>
+    </div>
+
+  </div>
+
+
 </div>

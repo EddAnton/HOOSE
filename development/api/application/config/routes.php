@@ -375,3 +375,4 @@ $route['tareas/eliminar/(:num)']['post'] = 'Tareas/eliminar';
  * Tareas - usuarios asignables
  */
 $route['tareas/usuarios-asignables']['get'] = 'Tareas/usuarios_asignables';
+$route['metricas/tablero']['get'] = 'Metricas/tablero';

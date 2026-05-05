@@ -485,3 +485,65 @@
 .tareas-footer { text-align: center; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4px; }
 .tareas-footer a { font-size: 0.78rem; color: #e91e8c; text-decoration: none; }
 .tareas-footer a:hover { text-decoration: underline; }
+
+/* ---- Cards de Métricas ---- */
+.hoose-metrica-card {
+  background: var(--hoose-card, #1a1d24);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+.hoose-metrica-card:hover { border-color: rgba(233,30,140,0.3); }
+
+.metrica-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.metrica-icon { font-size: 1rem; color: #e91e8c; }
+.metrica-title { font-size: 0.75rem; font-weight: 600; color: #8a8f9e; text-transform: uppercase; letter-spacing: 0.04em; flex: 1; }
+
+.metrica-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.badge-green { background: rgba(27,201,154,0.15); color: #1BC99A; }
+.badge-red   { background: rgba(239,68,68,0.15);  color: #EF4444; }
+.badge-gray  { background: rgba(138,143,158,0.15); color: #8a8f9e; }
+
+.metrica-valor { display: flex; align-items: baseline; gap: 8px; }
+.metrica-num { font-size: 1.8rem; font-weight: 700; color: #f0f0f0; line-height: 1; }
+
+.metrica-detalle { font-size: 0.72rem; color: #555a6a; line-height: 1.4; }
+
+/* Botones comparativo */
+.hoose-comp-btn {
+  font-size: 0.72rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: #8a8f9e;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hoose-comp-btn:hover { border-color: #e91e8c; color: #e91e8c; }
+.hoose-comp-btn.active { background: rgba(233,30,140,0.15); border-color: #e91e8c; color: #e91e8c; font-weight: 600; }
+
+.metrica-sub {
+  font-size: 0.72rem;
+  color: #8a8f9e;
+  line-height: 1.4;
+  margin-top: 2px;
+}
