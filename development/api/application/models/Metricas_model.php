@@ -30,6 +30,8 @@ class Metricas_model extends CI_Model
       'quejas'     => $this->getQuejas($idCondominio, $inicioActual, $finActual, $inicioAnterior, $finAnterior),
       'asambleas'  => $this->getAsambleas($idCondominio, $anioActual, $anioAnterior),
       'visitas'    => $this->getVisitas($idCondominio, $inicioActual, $finActual, $inicioAnterior, $finAnterior),
+      'proyectos'  => $this->getProyectos($idCondominio, $inicioActual, $finActual, $inicioAnterior, $finAnterior),
+      'fondos'     => $this->getFondos($idCondominio),
     ];
   }
 
@@ -117,5 +119,24 @@ class Metricas_model extends CI_Model
 
     $row = $this->db->query($sql, [$inicioActual, $finActual, $inicioAnterior, $finAnterior, $idCondominio])->row_array();
     return $this->calcularComparativo(intval($row['actual']), intval($row['anterior']));
+  }
+  private function getProyectos($idCondominio, $inicioActual, $finActual, $inicioAnterior, $finAnterior)
+  {
+    $sql = "SELECT COUNT(*) total, SUM(CASE WHEN estatus=1 THEN 1 ELSE 0 END) en_curso, SUM(CASE WHEN estatus=2 THEN 1 ELSE 0 END) completados, SUM(presupuesto) inversion_total, SUM(CASE WHEN DATE(fecha_registro) BETWEEN ? AND ? THEN 1 ELSE 0 END) actual, SUM(CASE WHEN DATE(fecha_registro) BETWEEN ? AND ? THEN 1 ELSE 0 END) anterior FROM proyectos WHERE fk_id_condominio = ? AND estatus IN(1,2)";
+    $row = $this->db->query($sql, [$inicioActual, $finActual, $inicioAnterior, $finAnterior, $idCondominio])->row_array();
+    $comp = $this->calcularComparativo(intval($row['actual']), intval($row['anterior']));
+    $comp['total'] = intval($row['total']);
+    $comp['en_curso'] = intval($row['en_curso']);
+    $comp['completados'] = intval($row['completados']);
+    $comp['inversion_total'] = floatval($row['inversion_total']);
+    return $comp;
+  }
+
+  private function getFondos($idCondominio)
+  {
+    $sql = "SELECT fondo_monetario, banco, saldo FROM fondos_monetarios WHERE fk_id_condominio = ? AND estatus = 1 ORDER BY saldo DESC";
+    $fondos = $this->db->query($sql, [$idCondominio])->result_array();
+    $total = array_sum(array_column($fondos, 'saldo'));
+    return ['total' => floatval($total), 'fondos' => $fondos];
   }
 }

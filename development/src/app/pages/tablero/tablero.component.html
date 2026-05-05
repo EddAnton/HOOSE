@@ -1,84 +1,102 @@
-<div class="hoose-topbar d-flex align-items-center justify-content-between px-4 py-3">
-  <h5 class="topbar-title mb-0">Tablero Ejecutivo</h5>
-  <div class="d-flex align-items-center gap-3">
-    <div class="date-range-group d-flex align-items-center gap-2">
-      <span class="date-label">Del</span>
-      <p-calendar inputId="txtFechaInicial" [(ngModel)]="fechaInicial" view="month" dateFormat="MM/yy"
-        [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
-        [inputStyle]="{ 'text-align': 'center', 'width': '120px' }" inputStyleClass="hoose-cal-input uppercase">
-      </p-calendar>
-      <span class="date-label">al</span>
-      <p-calendar inputId="txtFechaFinal" [(ngModel)]="fechaFinal" view="month" dateFormat="MM/yy"
-        [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
-        [inputStyle]="{ 'text-align': 'center', 'width': '120px' }" inputStyleClass="hoose-cal-input uppercase">
-      </p-calendar>
-      <button pButton pRipple type="button" icon="pi pi-search"
-        class="p-button-rounded hoose-search-btn" pTooltip="Consultar" tooltipPosition="left"
-        (click)="onActualizarInformacion()">
-      </button>
+<!-- HEADER -->
+<div class="tb-header">
+  <span class="tb-header-title">
+    <i class="bx bxs-dashboard" style="color:#e91e8c"></i>
+    Tablero Ejecutivo
+  </span>
+  <div class="tb-header-controls">
+    <div class="tb-filtro-group">
+      <label class="tb-filtro-label">Período</label>
+      <div class="d-flex align-items-center gap-1">
+        <p-calendar inputId="txtFechaInicial" [(ngModel)]="fechaInicial" view="month" dateFormat="MM/yy"
+          [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
+          [inputStyle]="{ 'text-align': 'center', 'width': '95px' }" inputStyleClass="hoose-cal-input uppercase">
+        </p-calendar>
+        <span class="tb-filtro-label">—</span>
+        <p-calendar inputId="txtFechaFinal" [(ngModel)]="fechaFinal" view="month" dateFormat="MM/yy"
+          [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
+          [inputStyle]="{ 'text-align': 'center', 'width': '95px' }" inputStyleClass="hoose-cal-input uppercase">
+        </p-calendar>
+        <button pButton pRipple type="button" icon="pi pi-search"
+          class="p-button-rounded hoose-search-btn"
+          pTooltip="Consultar" tooltipPosition="left"
+          (click)="onActualizarInformacion()">
+        </button>
+      </div>
+    </div>
+    <div class="tb-filtro-group">
+      <label class="tb-filtro-label">Comparar vs</label>
+      <div class="d-flex gap-1">
+        <button class="hoose-comp-btn" [class.active]="comparativo === 'mes_anterior'"
+          (click)="comparativo='mes_anterior'; cargarMetricas()">Mes ant.</button>
+        <button class="hoose-comp-btn" [class.active]="comparativo === 'anio_anterior'"
+          (click)="comparativo='anio_anterior'; cargarMetricas()">Año ant.</button>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- LOADING -->
 <div *ngIf="!data && cargando" class="hoose-loading d-flex flex-column align-items-center justify-content-center py-5">
   <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #e91e8c;"></i>
-  <p class="mt-3 text-muted">Cargando información...</p>
+  <p class="mt-3" style="color:#8a8f9e">Cargando información...</p>
 </div>
 
-<div *ngIf="data" class="hoose-dashboard px-3 pb-4">
+<!-- DASHBOARD -->
+<div *ngIf="data" class="hoose-dashboard">
 
-  <div class="hoose-kpi-row row g-3 mb-3">
-    <div class="col-12 col-md-6 col-xl-3" *ngFor="let card of data?.cards | slice:0:4">
-      <div class="hoose-kpi-card" (click)="onNavegar(card.path)" [class.clickable]="card.path" style="cursor:pointer">
+  <!-- FILA 1: KPIs catálogo (4 cards) -->
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-3" *ngFor="let card of data?.cards | slice:0:4">
+      <div class="hoose-kpi-card" (click)="onNavegar(card.path)" [class.clickable]="card.path">
         <div class="kpi-icon-wrap">
           <i class="pi" [ngClass]="getCardIcon(card.subtitle)"></i>
         </div>
         <div class="kpi-body">
           <div class="kpi-label">{{ card.subtitle }}</div>
           <div class="kpi-value">{{ card.title }}</div>
-          <div *ngIf="card.content" class="kpi-content">{{ card.content }}</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row g-3 mb-3">
+  <!-- FILA 2: Gráfica + Cobranza -->
+  <div class="row g-2 mb-3">
     <div class="col-12 col-lg-7">
       <div class="hoose-chart-card h-100">
-        <div class="chart-card-header d-flex align-items-center gap-2 mb-3">
+        <div class="chart-card-header d-flex align-items-center gap-2">
           <i class="pi pi-chart-bar chart-icon"></i>
           <span class="chart-card-title">Histórico de Recaudación</span>
         </div>
         <div class="chart-wrap" *ngIf="charts[0]?.type; else sinGrafica">
-          <p-chart [type]="charts[0].type" [data]="charts[0]" [options]="charts[0].options" width="100%" height="260px"></p-chart>
+          <p-chart [type]="charts[0].type" [data]="charts[0]" [options]="charts[0].options" width="100%" height="240px"></p-chart>
         </div>
         <ng-template #sinGrafica>
           <div class="no-data-msg">Sin datos para el período seleccionado</div>
         </ng-template>
       </div>
     </div>
-
     <div class="col-12 col-lg-5">
       <div class="hoose-chart-card h-100" *ngIf="cardCobranza">
-        <div class="chart-card-header d-flex align-items-center gap-2 mb-3">
+        <div class="chart-card-header d-flex align-items-center gap-2">
           <i class="pi pi-credit-card chart-icon"></i>
           <span class="chart-card-title">Cobranza</span>
         </div>
-        <div class="cobranza-morosidad text-center mb-3">
+        <div class="cobranza-morosidad mb-2">
           <div class="morosidad-label">morosidad</div>
           <div class="morosidad-value">{{ cardCobranza.morosidad }}</div>
         </div>
-        <div class="cobranza-bars mb-3">
+        <div class="cobranza-bars mb-2">
           <div class="cob-bar recaudado"></div>
           <div class="cob-bar pendiente" [style.width]="cardCobranza.pctPendiente + '%'"></div>
         </div>
         <div class="d-flex justify-content-between cobranza-amounts">
           <div>
-            <div class="cob-amount-label">$ Recaudado</div>
+            <div class="cob-amount-label">Recaudado</div>
             <div class="cob-amount green">{{ cardCobranza.recaudado }}</div>
           </div>
           <div class="text-end">
-            <div class="cob-amount-label">$ Pendiente de cobro</div>
+            <div class="cob-amount-label">Pendiente</div>
             <div class="cob-amount red">{{ cardCobranza.pendiente }}</div>
           </div>
         </div>
@@ -86,7 +104,98 @@
     </div>
   </div>
 
-  <div class="row g-3 mb-3">
+  <!-- FILA 3: Métricas con comparativo -->
+  <div class="row g-2 mb-3" *ngIf="metricas">
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
+        <div class="metrica-header">
+          <div class="metrica-icon-wrap"><i class="pi pi-home metrica-icon"></i></div>
+          <span class="metrica-title">Ocupación</span>
+        </div>
+        <div class="metrica-num">{{ metricas.ocupacion.porcentaje }}%</div>
+        <div class="metrica-sub">{{ metricas.ocupacion.ocupadas }}/{{ metricas.ocupacion.total }} unidades</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/quejas')" style="cursor:pointer">
+        <div class="metrica-header">
+          <div class="metrica-icon-wrap"><i class="pi pi-exclamation-circle metrica-icon"></i></div>
+          <span class="metrica-title">Quejas</span>
+          <span class="metrica-badge" [ngClass]="metricas.quejas.tendencia==='up'?'badge-red':metricas.quejas.tendencia==='down'?'badge-green':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.quejas.tendencia==='up'?'pi-arrow-up':metricas.quejas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.quejas.diferencia !== 0 ? (metricas.quejas.diferencia > 0 ? '+' : '') + metricas.quejas.diferencia : '=' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.quejas.actual }}</div>
+        <div class="metrica-sub">{{ metricas.quejas.sin_revisar }} pend · {{ metricas.quejas.en_proceso }} proc · {{ metricas.quejas.atendidas }} ok</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/asambleas')" style="cursor:pointer">
+        <div class="metrica-header">
+          <div class="metrica-icon-wrap"><i class="pi pi-users metrica-icon"></i></div>
+          <span class="metrica-title">Asambleas</span>
+          <span class="metrica-badge" [ngClass]="metricas.asambleas.tendencia==='up'?'badge-green':metricas.asambleas.tendencia==='down'?'badge-red':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.asambleas.tendencia==='up'?'pi-arrow-up':metricas.asambleas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.asambleas.diferencia !== 0 ? (metricas.asambleas.diferencia > 0 ? '+' : '') + metricas.asambleas.diferencia : '=' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.asambleas.actual }}</div>
+        <div class="metrica-sub">{{ metricas.asambleas.ordinarias }} ord · {{ metricas.asambleas.extraordinarias }} ext</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/visitas')" style="cursor:pointer">
+        <div class="metrica-header">
+          <div class="metrica-icon-wrap"><i class="pi pi-car metrica-icon"></i></div>
+          <span class="metrica-title">Visitas</span>
+          <span class="metrica-badge" [ngClass]="metricas.visitas.tendencia==='up'?'badge-green':metricas.visitas.tendencia==='down'?'badge-red':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.visitas.tendencia==='up'?'pi-arrow-up':metricas.visitas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : '=' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.visitas.actual }}</div>
+        <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs anterior</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="hoose-metrica-card" (click)="onNavegar('/proyectos')" style="cursor:pointer">
+        <div class="metrica-header">
+          <div class="metrica-icon-wrap"><i class="pi pi-building metrica-icon"></i></div>
+          <span class="metrica-title">Proyectos</span>
+          <span class="metrica-badge" [ngClass]="metricas.proyectos.tendencia==='up'?'badge-green':metricas.proyectos.tendencia==='down'?'badge-red':'badge-gray'">
+            <i class="pi" [ngClass]="metricas.proyectos.tendencia==='up'?'pi-arrow-up':metricas.proyectos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+            {{ metricas.proyectos.diferencia !== 0 ? (metricas.proyectos.diferencia > 0 ? '+' : '') + metricas.proyectos.diferencia : '=' }}
+          </span>
+        </div>
+        <div class="metrica-num">{{ metricas.proyectos.en_curso }}</div>
+        <div class="metrica-sub">{{ metricas.proyectos.completados }} completados · ${{ metricas.proyectos.inversion_total | number:'1.0-0' }} inversión</div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="hoose-metrica-card" (click)="onNavegar('/fondos-monetarios')" style="cursor:pointer">
+        <div class="metrica-header">
+          <div class="metrica-icon-wrap"><i class="pi pi-wallet metrica-icon"></i></div>
+          <span class="metrica-title">Fondos Monetarios</span>
+        </div>
+        <div class="d-flex align-items-baseline gap-3">
+          <div class="metrica-num">${{ metricas.fondos.total | number:'1.2-2' }}</div>
+          <div class="metrica-sub">total disponible</div>
+        </div>
+        <div class="d-flex gap-3 mt-1 flex-wrap">
+          <div *ngFor="let f of metricas.fondos.fondos" class="fondo-item">
+            <span class="fondo-banco">{{ f.banco }}</span>
+            <span class="fondo-monto">${{ f.saldo | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILA 4: Mini cards catálogo secundario -->
+  <div class="row g-2 mb-3">
     <div class="col-6 col-md-4 col-xl-2" *ngFor="let card of data?.cards | slice:4">
       <div class="hoose-mini-card" (click)="onNavegar(card.path)" [class.clickable]="card.path" style="cursor:pointer">
         <div class="mini-card-subtitle">{{ card.subtitle }}</div>
@@ -96,75 +205,54 @@
     </div>
   </div>
 
-  <div class="row g-3 mb-3">
-
+  <!-- FILA 5: Tareas + Gastos Mantenimiento -->
+  <div class="row g-2 mb-3">
     <div class="col-12 col-lg-6">
       <div class="hoose-chart-card h-100">
-        <div class="chart-card-header d-flex align-items-center justify-content-between mb-3">
+        <div class="chart-card-header d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center gap-2">
             <i class="pi pi-list-check chart-icon"></i>
-            <span class="chart-card-title">Tareas y Notificaciones</span>
+            <span class="chart-card-title">Tareas</span>
           </div>
           <div class="d-flex align-items-center gap-2">
             <a routerLink="/tareas" class="chart-card-link">Ver todas →</a>
             <button pButton pRipple type="button" icon="pi pi-plus"
               class="p-button-rounded p-button-text p-button-sm"
-              style="width:28px;height:28px;color:#e91e8c"
-              pTooltip="Nueva tarea" tooltipPosition="left"
+              style="width:26px;height:26px;color:#e91e8c"
               (click)="onNavegar('/tareas')">
             </button>
           </div>
         </div>
-
         <div *ngIf="cargandoTareas" class="text-center py-3">
           <i class="pi pi-spin pi-spinner" style="color:#e91e8c"></i>
         </div>
-
-        <div class="tareas-list" *ngIf="!cargandoTareas">
-          <div class="tarea-item" *ngFor="let tarea of tareasRecientes"
-               [class.completada]="tarea.fk_id_estatus === 3">
-            <div class="tarea-item-left">
-              <button class="tarea-check-btn"
-                (click)="onCambiarEstatusTarea(tarea)"
-                [pTooltip]="tarea.fk_id_estatus === 3 ? 'Reabrir' : 'Completar'"
-                tooltipPosition="right">
+        <div class="tareas-list mt-2" *ngIf="!cargandoTareas">
+          <div class="tarea-item" *ngFor="let tarea of tareasRecientes" [class.completada]="tarea.fk_id_estatus === 3">
+            <div>
+              <button class="tarea-check-btn" (click)="onCambiarEstatusTarea(tarea)">
                 <i class="pi" [ngClass]="tarea.fk_id_estatus === 3 ? 'pi-check-circle' : 'pi-circle'"></i>
               </button>
             </div>
             <div class="tarea-item-body" (click)="onNavegar('/tareas')">
-              <span class="tarea-texto" [class.tachado]="tarea.fk_id_estatus === 3">
-                {{ tarea.titulo }}
-              </span>
+              <span class="tarea-texto" [class.tachado]="tarea.fk_id_estatus === 3">{{ tarea.titulo }}</span>
               <div class="tarea-item-meta">
-                <span class="tarea-prioridad-badge" [ngClass]="getPrioridadClass(tarea.prioridad)">
-                  {{ tarea.prioridad_label }}
-                </span>
-                <span *ngIf="tarea.fecha_limite" class="tarea-fecha"
-                  [class.vencida]="tarea.fk_id_estatus !== 3 && tarea.fecha_limite < hoy">
+                <span class="tarea-prioridad-badge" [ngClass]="getPrioridadClass(tarea.prioridad)">{{ tarea.prioridad_label }}</span>
+                <span *ngIf="tarea.fecha_limite" class="tarea-fecha" [class.vencida]="tarea.fk_id_estatus !== 3 && tarea.fecha_limite < hoy">
                   <i class="pi pi-calendar"></i> {{ tarea.fecha_limite | date:'dd/MM/yy' }}
                 </span>
-                <span class="tarea-responsable">
-                  <i class="pi pi-user"></i> {{ tarea.responsable_nombre }}
-                </span>
+                <span class="tarea-responsable"><i class="pi pi-user"></i> {{ tarea.responsable_nombre }}</span>
               </div>
             </div>
           </div>
-
           <div *ngIf="tareasRecientes.length === 0" class="no-data-msg">
-            <i class="pi pi-check-circle" style="font-size:1.5rem;color:#1BC99A"></i>
-            <p class="mt-2">¡Sin tareas pendientes!</p>
+            <i class="pi pi-check-circle" style="color:#1BC99A"></i><p class="mt-1">Sin tareas pendientes</p>
           </div>
-        </div>
-
-        <div class="tareas-footer" *ngIf="totalTareasPendientes > 5">
-          <a routerLink="/tareas">+ {{ totalTareasPendientes - 5 }} tareas más</a>
         </div>
       </div>
     </div>
-
     <div class="col-12 col-lg-6">
       <div class="hoose-chart-card h-100" *ngIf="charts[1]?.type">
-        <div class="chart-card-header d-flex align-items-center justify-content-between mb-3">
+        <div class="chart-card-header d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center gap-2">
             <i class="pi pi-wrench chart-icon"></i>
             <span class="chart-card-title">Gastos Mantenimiento</span>
@@ -178,10 +266,11 @@
     </div>
   </div>
 
-  <div class="row g-3" *ngIf="charts.length > 2">
+  <!-- FILA 6: Gráficas restantes -->
+  <div class="row g-2" *ngIf="charts.length > 2">
     <div class="col-12 col-md-6" *ngFor="let chart of charts | slice:2">
       <div class="hoose-chart-card" *ngIf="chart?.type">
-        <div class="chart-card-header d-flex align-items-center gap-2 mb-3">
+        <div class="chart-card-header d-flex align-items-center gap-2">
           <i class="pi pi-chart-line chart-icon"></i>
           <span class="chart-card-title">{{ chart.title }}</span>
         </div>
@@ -191,91 +280,5 @@
       </div>
     </div>
   </div>
-
-
-  <!-- MÉTRICAS: Ocupación, Quejas, Asambleas, Visitas -->
-  <div class="row g-3 mb-3" *ngIf="metricas">
-
-    <!-- Header con selector comparativo -->
-    <div class="col-12 d-flex align-items-center justify-content-between">
-      <span class="chart-card-title">Métricas del Condominio</span>
-      <div class="d-flex align-items-center gap-2">
-        <span style="font-size:0.75rem;color:#8a8f9e">vs:</span>
-        <button class="hoose-comp-btn" [class.active]="comparativo === 'mes_anterior'"
-          (click)="comparativo='mes_anterior'; cargarMetricas()">Mes anterior</button>
-        <button class="hoose-comp-btn" [class.active]="comparativo === 'anio_anterior'"
-          (click)="comparativo='anio_anterior'; cargarMetricas()">Año anterior</button>
-      </div>
-    </div>
-
-    <!-- Ocupación -->
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
-        <div class="metrica-header">
-          <i class="pi pi-home metrica-icon"></i>
-          <span class="metrica-title">Ocupación</span>
-          <span class="metrica-badge badge-gray">
-            <i class="pi pi-minus"></i> 0%
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.ocupacion.porcentaje }}%</div>
-        <div class="metrica-sub">{{ metricas.ocupacion.ocupadas }} / {{ metricas.ocupacion.total }} unidades ocupadas</div>
-      </div>
-    </div>
-
-    <!-- Quejas -->
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/quejas')" style="cursor:pointer">
-        <div class="metrica-header">
-          <i class="pi pi-exclamation-circle metrica-icon"></i>
-          <span class="metrica-title">Quejas</span>
-          <span class="metrica-badge" [ngClass]="metricas.quejas.tendencia==='up'?'badge-red':metricas.quejas.tendencia==='down'?'badge-green':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.quejas.tendencia==='up'?'pi-arrow-up':metricas.quejas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.quejas.porcentaje !== 0 ? metricas.quejas.porcentaje + '%' : 'Sin cambio' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.quejas.actual }}</div>
-        <div class="metrica-sub">
-          {{ metricas.quejas.sin_revisar }} pendientes ·
-          {{ metricas.quejas.en_proceso }} proceso ·
-          {{ metricas.quejas.atendidas }} atendidas
-        </div>
-      </div>
-    </div>
-
-    <!-- Asambleas -->
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/asambleas')" style="cursor:pointer">
-        <div class="metrica-header">
-          <i class="pi pi-users metrica-icon"></i>
-          <span class="metrica-title">Asambleas</span>
-          <span class="metrica-badge" [ngClass]="metricas.asambleas.tendencia==='up'?'badge-green':metricas.asambleas.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.asambleas.tendencia==='up'?'pi-arrow-up':metricas.asambleas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.asambleas.diferencia !== 0 ? (metricas.asambleas.diferencia > 0 ? '+' : '') + metricas.asambleas.diferencia : 'Sin cambio' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.asambleas.actual }}</div>
-        <div class="metrica-sub">{{ metricas.asambleas.ordinarias }} ordinarias · {{ metricas.asambleas.extraordinarias }} extraordinarias</div>
-      </div>
-    </div>
-
-    <!-- Visitas -->
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/visitas')" style="cursor:pointer">
-        <div class="metrica-header">
-          <i class="pi pi-car metrica-icon"></i>
-          <span class="metrica-title">Visitas</span>
-          <span class="metrica-badge" [ngClass]="metricas.visitas.tendencia==='up'?'badge-green':metricas.visitas.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.visitas.tendencia==='up'?'pi-arrow-up':metricas.visitas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : 'Sin cambio' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.visitas.actual }}</div>
-        <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs período anterior</div>
-      </div>
-    </div>
-
-  </div>
-
 
 </div>
