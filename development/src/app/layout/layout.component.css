@@ -59,8 +59,9 @@
 
 @media screen and (max-width: 991px) {
 	.sidebar-section {
-		position: absolute;
+		position: fixed;
 		z-index: 11;
+		height: 100%;
 	}
 	.sidebar-section .sidebar {
 		box-shadow: 10px 10px 15px 3px rgba(0, 0, 0, 0.2);
@@ -77,4 +78,41 @@
 	width: 0 !important;
 	min-width: 0 !important;
 	display: none !important;
+}
+
+/* Overlay móvil */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 10;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 991px) {
+  .sidebar-section[style*="display: block"] ~ .sidebar-overlay,
+  .sidebar-section[style*="display:block"] ~ .sidebar-overlay {
+    display: block;
+  }
+}
+
+/* Overlay para cerrar sidebar en móvil */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.sidebar-overlay.active {
+  display: block;
 }

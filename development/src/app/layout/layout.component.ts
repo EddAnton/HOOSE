@@ -38,15 +38,34 @@ export class LayoutComponent implements OnDestroy {
     Chart.defaults.global.defaultFontSize = 14;
     Chart.defaults.global.title.fontSize = 25;
     Chart.defaults.global.legend.position = 'top';
+    this.toggleOverlay(false);
     this.sidebarSub = this.sidebarService.visible$.subscribe(v => {
-      setTimeout(() => { this.sidebarOpen = (window.innerWidth < 992) && v; }, 50);
+      setTimeout(() => this.toggleOverlay(v), 100);
     });
+  }
+
+  toggleOverlay(visible: boolean) {
+    // Crear overlay en body si no existe
+    let overlay = document.getElementById('sidebar-overlay-global');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'sidebar-overlay-global';
+      overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:10;cursor:pointer;';
+      overlay.addEventListener('click', () => this.onCloseSidebar());
+      document.body.appendChild(overlay);
+    }
+    if (visible && window.innerWidth < 992) {
+      overlay.style.display = 'block';
+    } else {
+      overlay.style.display = 'none';
+    }
   }
 
   onCloseSidebar() {
     const sidebarSection = document.getElementsByClassName('sidebar-section')[0] as HTMLElement;
     sidebarSection.style.width = '0';
     sidebarSection.style.display = 'none';
+    this.toggleOverlay(false);
     this.sidebarService.setVisible(false);
   }
 

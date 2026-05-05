@@ -75,6 +75,7 @@ export class NavbarComponent implements OnInit {
 	ngOnInit() {
     if (window.innerWidth >= 991) { this.sidebarOpen(); } else { this.hideSidebar(); this.sidebarVisible = false; }
 		this.listTitles = mnuOpciones.filter((listTitle) => listTitle && listTitle.visible);
+    this.sidebarService.visible$.subscribe(v => { this.sidebarVisible = v; });
 		this.router.events.subscribe((event) => {
 			if (this.sidebarVisible) this.sidebarClose();
 		});
@@ -176,7 +177,7 @@ export class NavbarComponent implements OnInit {
 		}, 200);
 
 		this.sidebarVisible = true;
-    this.sidebarService.setVisible(true);
+    if (window.innerWidth < 992) { this.sidebarService.setVisible(true); }
 	}
 
 	sidebarClose() {
