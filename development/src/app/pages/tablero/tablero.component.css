@@ -269,3 +269,49 @@
 .fondo-item { display: flex; flex-direction: column; gap: 1px; }
 .fondo-banco { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
 .fondo-monto { font-size: 0.85rem; font-weight: 600; color: var(--green); }
+
+/* ---- Cat Cards (catálogo sin comparativo) ---- */
+.hoose-cat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s;
+  height: 100%;
+}
+.hoose-cat-card.clickable:hover { border-color: rgba(233,30,140,0.3); background: var(--card2); cursor: pointer; }
+.cat-icon-wrap { width: 34px; height: 34px; border-radius: 8px; background: rgba(233,30,140,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cat-icon-wrap .pi { font-size: 0.95rem; color: var(--pink); }
+.cat-body { flex: 1; min-width: 0; }
+.cat-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+.cat-value { font-size: 1.2rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+
+/* ---- Fin Cards (financieras con comparativo) ---- */
+.hoose-fin-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.2s;
+}
+.hoose-fin-card.clickable:hover { border-color: rgba(233,30,140,0.3); cursor: pointer; }
+.fin-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.fin-icon-wrap { width: 38px; height: 38px; border-radius: 10px; background: rgba(233,30,140,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fin-icon-wrap .pi { font-size: 1rem; color: var(--pink); }
+.fin-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; flex: 1; }
+.fin-badge { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+.fin-value { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; line-height: 1.2; }
+.fin-content { font-size: 0.7rem; color: var(--dim); }
+
+/* ---- Fondos ---- */
+.fondo-item { display: flex; flex-direction: column; gap: 1px; min-width: 80px; }
+.fondo-banco { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+.fondo-monto { font-size: 0.9rem; font-weight: 700; color: var(--green); }
+.fondo-nombre { font-size: 0.62rem; color: var(--dim); }

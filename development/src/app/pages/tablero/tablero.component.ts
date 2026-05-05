@@ -29,6 +29,8 @@ export class TableroComponent implements OnInit {
   totalTareasPendientes: number = 0;
   metricas: any = null;
   comparativo: string = 'mes_anterior';
+  catalogoCards: any[] = [];
+  finCards: any[] = [];
 
   private iconMap: { [key: string]: string } = {
     'Ingresos': 'pi-chart-line',
@@ -102,6 +104,19 @@ export class TableroComponent implements OnInit {
       .catch(() => {});
   }
 
+  private procesarCards() {
+    if (!this.data?.cards) return;
+    // Cards de catálogo — sin valores monetarios
+    const catalogoSubtitles = ['Condominios', 'Edificios / Pisos', 'Unidades', 'Propietarios', 'Condóminos', 'Áreas comunes', 'Avisos', 'Colaboradores'];
+    this.catalogoCards = this.data.cards.filter(c => catalogoSubtitles.some(s => c.subtitle === s));
+    // Cards financieras — tienen valores con $ y path conocido
+    const finPaths = ['/cuotas-mantenimiento', '/gastos-mantenimiento', '/nomina', '/fondos-monetarios', '/recaudaciones'];
+    this.finCards = this.data.cards.filter(c =>
+      c.title && c.title.startsWith('$') &&
+      (finPaths.includes(c.path) || ['Egresos', 'Saldo periodo', 'Ingresos'].includes(c.subtitle))
+    );
+  }
+
   private cargarTareas() {
     this.cargandoTareas = true;
     this.tareasService.Listar().toPromise()
@@ -138,6 +153,7 @@ export class TableroComponent implements OnInit {
         this.data = r['data'];
         this.generarGraphs();
         this.calcularCobranza();
+        this.procesarCards();
       })
       .catch(async (e) => await hlpSwal.Error(e))
       .finally(() => { this.cargando = false; hlpSwal.Cerrar(); });
