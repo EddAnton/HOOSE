@@ -65,7 +65,7 @@
       <div class="hoose-fin-card" (click)="onNavegar(f.path)" [class.clickable]="f.path">
         <div class="fin-header">
           <div class="fin-icon-wrap">
-            <i class="pi" [ngClass]="getCardIcon(f.subtitle)"></i>
+            <i class="pi" [ngClass]="getCardIcon(f.subtitle || f.label)"></i>
           </div>
           <span class="fin-label">{{ f.label || f.subtitle }}</span>
           <span *ngIf="f.badge" class="fin-badge" [ngClass]="f.badge.type">

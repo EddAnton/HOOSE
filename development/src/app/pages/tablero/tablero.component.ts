@@ -32,12 +32,7 @@ export class TableroComponent implements OnInit {
   catalogoCards: any[] = [];
   finCards: any[] = [];
 
-  private iconMap: { [key: string]: string } = {
-    'Ingresos': 'pi-chart-line',
-    'Egresos': 'pi-shopping-cart',
-    'Proyectos': 'pi-building',
-    'Fondos monetarios': 'pi-wallet',
-    'Fondos': 'pi-wallet',
+  iconMap: { [key: string]: string } = {
     'Condominios': 'pi-home',
     'Edificios': 'pi-building',
     'Unidades': 'pi-th-large',
@@ -45,13 +40,17 @@ export class TableroComponent implements OnInit {
     'Condóminos': 'pi-users',
     'Colaboradores': 'pi-id-card',
     'Áreas comunes': 'pi-star',
-    'Quejas': 'pi-exclamation-circle',
     'Avisos': 'pi-bell',
+    'Quejas': 'pi-exclamation-circle',
     'Visitas': 'pi-car',
+    'Proyectos': 'pi-chart-line',
+    'Recaudaciones': 'pi-home',
+    'Cuotas': 'pi-dollar',
+    'Gastos': 'pi-minus-circle',
     'Nómina': 'pi-money-bill',
-    'Gastos mantenimiento': 'pi-wrench',
-    'Cuotas mantenimiento': 'pi-file-edit',
-    'Saldo periodo': 'pi-arrow-right-arrow-left',
+    'Egresos': 'pi-shopping-cart',
+    'Saldo': 'pi-chart-bar',
+    'Fondos': 'pi-wallet',
     'Arrendamientos': 'pi-key',
   };
 
@@ -120,7 +119,6 @@ export class TableroComponent implements OnInit {
       { subtitle: 'Nómina',               content: 'Erogación', label: 'Nómina' },
       { subtitle: 'Egresos',              content: null,        label: 'Egresos' },
       { subtitle: 'Saldo periodo',        content: null,        label: 'Saldo del Período' },
-      { subtitle: 'Fondos monetarios',    content: 'Total',     label: 'Fondos Monetarios' },
     ];
     this.finCards = finDefs.map(def => {
       const found = cards.find(c =>
