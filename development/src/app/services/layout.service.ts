@@ -19,13 +19,17 @@ export class LayoutService {
     return this.http.get(`${environment.urlBackend}layout/tablero`, { headers: this.headers }).pipe(map(r => r));
   }
 
-  saveLayout(secciones: any[]) {
+  saveLayout(items: any[]) {
     const form = new FormData();
-    secciones.forEach((s, i) => {
-      form.append(`secciones[${i}][seccion]`, s.seccion);
-      form.append(`secciones[${i}][orden]`, s.orden.toString());
-      form.append(`secciones[${i}][visible]`, s.visible.toString());
-      form.append(`secciones[${i}][col_size]`, s.col_size || '12');
+    items.forEach((s, i) => {
+      form.append(`secciones[${i}][seccion]`, s.id || s.seccion || '');
+      form.append(`secciones[${i}][cols]`, (s.cols || 4).toString());
+      form.append(`secciones[${i}][rows]`, (s.rows || 3).toString());
+      form.append(`secciones[${i}][x]`, (s.x || 0).toString());
+      form.append(`secciones[${i}][y]`, (s.y || 0).toString());
+      form.append(`secciones[${i}][orden]`, i.toString());
+      form.append(`secciones[${i}][visible]`, '1');
+      form.append(`secciones[${i}][col_size]`, '12');
     });
     return this.http.post(`${environment.urlBackend}layout/tablero`, form, { headers: this.headers }).pipe(map(r => r));
   }
