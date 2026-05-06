@@ -315,3 +315,14 @@
 .fondo-banco { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 600; }
 .fondo-monto { font-size: 0.9rem; font-weight: 700; color: var(--green); }
 .fondo-nombre { font-size: 0.62rem; color: var(--dim); }
+
+.fin-comparativo { display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+.comp-pos { font-size: 0.82rem; font-weight: 700; color: var(--green); }
+.comp-neg { font-size: 0.82rem; font-weight: 700; color: var(--red); }
+.comp-label { font-size: 0.7rem; color: var(--dim); }
+.fin-desglose { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+.desglose-item { font-size: 0.72rem; color: var(--muted); }
+.desglose-item strong { color: var(--text); }
+.desglose-sep { color: var(--dim); }
+.text-success-custom { color: var(--green) !important; }
+.text-danger-custom { color: var(--red) !important; }

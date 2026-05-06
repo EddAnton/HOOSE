@@ -18,6 +18,7 @@ export class MetricasService {
   Tablero(comparativo: string = 'mes_anterior') {
     return this.http.get(
       `${environment.urlBackend}metricas/tablero?comparativo=${comparativo}`,
+
       { headers: this.headers }
     ).pipe(map(r => r));
   }

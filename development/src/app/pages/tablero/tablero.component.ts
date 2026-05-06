@@ -189,6 +189,12 @@ export class TableroComponent implements OnInit {
       }).catch(() => {});
   }
 
+  getCardTitle(subtitle: string): string {
+    if (!this.data?.cards) return '$0.00';
+    const card = this.data.cards.find(c => c.subtitle === subtitle);
+    return card?.title || '$0.00';
+  }
+
   getCardIcon(subtitle: string): string {
     if (!subtitle) return 'pi-info-circle';
     for (const key of Object.keys(this.iconMap)) {
