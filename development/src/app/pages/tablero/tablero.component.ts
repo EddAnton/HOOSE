@@ -106,15 +106,28 @@ export class TableroComponent implements OnInit {
 
   private procesarCards() {
     if (!this.data?.cards) return;
-    // Cards de catálogo — sin valores monetarios
-    const catalogoSubtitles = ['Condominios', 'Edificios / Pisos', 'Unidades', 'Propietarios', 'Condóminos', 'Áreas comunes', 'Avisos', 'Colaboradores'];
-    this.catalogoCards = this.data.cards.filter(c => catalogoSubtitles.some(s => c.subtitle === s));
-    // Cards financieras — tienen valores con $ y path conocido
-    const finPaths = ['/cuotas-mantenimiento', '/gastos-mantenimiento', '/nomina', '/fondos-monetarios', '/recaudaciones'];
-    this.finCards = this.data.cards.filter(c =>
-      c.title && c.title.startsWith('$') &&
-      (finPaths.includes(c.path) || ['Egresos', 'Saldo periodo', 'Ingresos'].includes(c.subtitle))
-    );
+    const cards = this.data.cards;
+
+    // Cards catálogo
+    const catalogoSubtitles = ['Condominios', 'Edificios / Pisos', 'Unidades', 'Propietarios', 'Condóminos', 'Colaboradores', 'Áreas comunes', 'Avisos'];
+    this.catalogoCards = catalogoSubtitles.map(s => cards.find(c => c.subtitle === s)).filter(c => c !== undefined);
+
+    // Cards financieras — orden y selección exacta
+    const finDefs = [
+      { subtitle: 'Recaudaciones',        content: null,        label: 'Recaudaciones' },
+      { subtitle: 'Cuotas mantenimiento', content: 'Orinarias', label: 'Cuotas Mantenimiento' },
+      { subtitle: 'Gastos mantenimiento', content: 'Erogación', label: 'Gastos Mantenimiento' },
+      { subtitle: 'Nómina',               content: 'Erogación', label: 'Nómina' },
+      { subtitle: 'Egresos',              content: null,        label: 'Egresos' },
+      { subtitle: 'Saldo periodo',        content: null,        label: 'Saldo del Período' },
+      { subtitle: 'Fondos monetarios',    content: 'Total',     label: 'Fondos Monetarios' },
+    ];
+    this.finCards = finDefs.map(def => {
+      const found = cards.find(c =>
+        c.subtitle === def.subtitle && (def.content === null || c.content === def.content)
+      );
+      return found ? { ...found, label: def.label } : { subtitle: def.label, label: def.label, title: '$0.00', content: null, path: null };
+    });
   }
 
   private cargarTareas() {

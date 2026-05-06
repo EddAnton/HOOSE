@@ -303,15 +303,12 @@ class Dashboard_model extends CI_Model
         $result['cards'][] = $this->cardQuejas();
         $result['cards'][] = $this->cardAvisos();
         $result['cards'][] = $this->cardVisitas();
+        $result['cards'][] = $this->cardRecaudaciones();
         $result['cards'][] = $this->cardCuotasMantenimientoOrdinarias();
-        $result['cards'][] = $this->cardCuotasMantenimientoExtraordinarias();
         $result['cards'][] = $this->cardOtrosIngresos();
-        $result['cards'][] = $this->cardTicketPromedioCuotasMantenimiento();
-        $result['cards'][] = $this->cardMorosidadCuotasMantenimiento();
         $result['cards'][] = $this->cardCuotasMantenimientoSaldo();
         $result['cards'][] = $cardGastosMantenimiento;
         $result['cards'][] = $cardNomina;
-        $result['cards'][] = $cardInversionProyectos;
         $result['cards'][] = $cardEgresos;
         $result['cards'][] = $cardSaldoPeriodo;
         $result['cards'][] = $this->cardFondosMonetariosTotal();
@@ -1412,7 +1409,27 @@ class Dashboard_model extends CI_Model
 
     return array_merge(['_title' => 'Quejas', '_type' => 'line', '_legends' => $legends, 'datasets' => $datasets]);
   }
-}
 
-/* End of file Dashboard_model.php */
-/* Location: ./application/models/Dashboard_model.php */
+  public function cardRecaudaciones()
+  {
+    try {
+      $sql =
+        "SELECT
+          'Recaudaciones' subtitle,
+          CONCAT('$', FORMAT(IFNULL(SUM(r.renta + r.agua + r.energia_electrica + r.gas + r.seguridad + r.servicios_publicos + r.otros_servicios), 0), 2)) title,
+          'Total' content,
+          '/recaudaciones' path
+        FROM recaudaciones r
+        JOIN unidades u ON u.id_unidad = r.fk_id_unidad AND u.estatus = 1
+        JOIN edificios e ON e.id_edificio = u.fk_id_edificio AND e.estatus = 1
+        WHERE r.estatus = 1
+          AND r.anio BETWEEN " . $this->rangoFechas[0] . " AND " . $this->rangoFechas[1] . "
+          AND r.mes BETWEEN " . $this->rangoFechas[2] . " AND " . $this->rangoFechas[3] .
+        $this->whereIdCondominio;
+      return $this->db->query($sql)->row_array();
+    } catch (Exception $e) {
+      throw new Exception(extraerErrorDesdeJSON($e->getMessage()));
+    }
+  }
+
+}

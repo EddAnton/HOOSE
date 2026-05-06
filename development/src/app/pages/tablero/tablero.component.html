@@ -67,13 +67,33 @@
           <div class="fin-icon-wrap">
             <i class="pi" [ngClass]="getCardIcon(f.subtitle)"></i>
           </div>
-          <span class="fin-label">{{ f.subtitle }}</span>
+          <span class="fin-label">{{ f.label || f.subtitle }}</span>
           <span *ngIf="f.badge" class="fin-badge" [ngClass]="f.badge.type">
             <i class="pi" [ngClass]="f.badge.icon"></i> {{ f.badge.text }}
           </span>
         </div>
         <div class="fin-value">{{ f.title }}</div>
         <div *ngIf="f.content" class="fin-content">{{ f.content }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILA 2b: Fondos Monetarios con desglose -->
+  <div class="row g-2 mb-3" *ngIf="metricas">
+    <div class="col-12">
+      <div class="hoose-fin-card" (click)="onNavegar('/fondos-monetarios')" style="cursor:pointer">
+        <div class="fin-header">
+          <div class="fin-icon-wrap"><i class="pi pi-wallet"></i></div>
+          <span class="fin-label">Fondos Monetarios</span>
+          <span class="fin-value ms-auto">${{ metricas.fondos.total | number:'1.2-2' }}</span>
+        </div>
+        <div class="d-flex gap-4 mt-2 flex-wrap">
+          <div *ngFor="let f of metricas.fondos.fondos" class="fondo-item">
+            <span class="fondo-banco">{{ f.banco }}</span>
+            <span class="fondo-monto">${{ f.saldo | number:'1.0-0' }}</span>
+            <span class="fondo-nombre">{{ f.fondo_monetario }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -190,22 +210,7 @@
         <div class="metrica-sub">{{ metricas.proyectos.completados }} completados · ${{ metricas.proyectos.inversion_total | number:'1.0-0' }} inversión</div>
       </div>
     </div>
-    <div class="col-12 col-md-9">
-      <div class="hoose-metrica-card" (click)="onNavegar('/fondos-monetarios')" style="cursor:pointer">
-        <div class="metrica-header">
-          <div class="metrica-icon-wrap"><i class="pi pi-wallet metrica-icon"></i></div>
-          <span class="metrica-title">Fondos Monetarios</span>
-          <span class="metrica-num ms-2">${{ metricas.fondos.total | number:'1.2-2' }}</span>
-        </div>
-        <div class="d-flex gap-4 mt-2 flex-wrap">
-          <div *ngFor="let f of metricas.fondos.fondos" class="fondo-item">
-            <span class="fondo-banco">{{ f.banco }}</span>
-            <span class="fondo-monto">${{ f.saldo | number:'1.0-0' }}</span>
-            <span class="fondo-nombre">{{ f.fondo_monetario }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+
   </div>
 
   <!-- FILA 5: Tareas + Gastos -->
