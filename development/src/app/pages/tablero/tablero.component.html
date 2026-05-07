@@ -235,8 +235,24 @@
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-fin-card h-100" (click)="onNavegar('/gastos-mantenimiento')" style="cursor:pointer">
-          <div class="fin-header"><div class="fin-icon-wrap"><i class="pi pi-minus-circle"></i></div><span class="fin-label">Gastos Mantenimiento</span></div>
-          <div class="fin-value">{{ getCardTitle('Gastos mantenimiento') }}</div>
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-minus-circle"></i></div>
+            <span class="fin-label">Gastos Mantenimiento</span>
+            <span class="fin-badge" *ngIf="metricas" [ngClass]="metricas.financieras.gastos.tendencia==='up'?'badge-red':metricas.financieras.gastos.tendencia==='down'?'badge-green':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.financieras.gastos.tendencia==='up'?'pi-arrow-up':metricas.financieras.gastos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.financieras.gastos.porcentaje }}%
+            </span>
+            <span class="fin-value ms-auto" *ngIf="metricas">${{ metricas.financieras.gastos.valor | number:'1.2-2' }}</span>
+          </div>
+          <div class="d-flex gap-3 mt-2 flex-wrap" *ngIf="metricas">
+            <div class="fondo-item"><span class="fondo-banco">Administrativos</span><span class="fondo-monto">${{ metricas.financieras.gastos.administrativos | number:'1.2-2' }}</span></div>
+            <div class="fondo-item"><span class="fondo-banco">Operativos</span><span class="fondo-monto">${{ metricas.financieras.gastos.operativos | number:'1.2-2' }}</span></div>
+            <div class="fondo-item"><span class="fondo-banco">Servicios</span><span class="fondo-monto">${{ metricas.financieras.gastos.servicios | number:'1.2-2' }}</span></div>
+          </div>
+          <div class="fin-comparativo" *ngIf="metricas">
+            <span [ngClass]="metricas.financieras.gastos.diferencia<=0?'comp-pos':'comp-neg'">{{ metricas.financieras.gastos.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.gastos.diferencia | number:'1.2-2' }}</span>
+            <span class="comp-label">vs período anterior</span>
+          </div>
         </div>
       </div>
 
