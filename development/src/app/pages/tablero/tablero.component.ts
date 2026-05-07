@@ -108,34 +108,34 @@ export class TableroComponent implements OnInit {
   defaultWidgets(): any[] {
     return [
       // Catálogo — altura fija compacta
-      { id: 'condominios',   span: 2, rows: 2 },
-      { id: 'edificios',     span: 2, rows: 2 },
-      { id: 'unidades',      span: 2, rows: 2 },
-      { id: 'propietarios',  span: 2, rows: 2 },
-      { id: 'condominos',    span: 2, rows: 2 },
-      { id: 'colaboradores', span: 2, rows: 2 },
-      { id: 'areas_comunes', span: 2, rows: 2 },
-      { id: 'avisos',        span: 2, rows: 2 },
+      { id: 'condominios',   col: 1,  row: 1,  span: 2, rows: 2 },
+      { id: 'edificios',     col: 3,  row: 1,  span: 2, rows: 2 },
+      { id: 'unidades',      col: 5,  row: 1,  span: 2, rows: 2 },
+      { id: 'propietarios',  col: 7,  row: 1,  span: 2, rows: 2 },
+      { id: 'condominos',    col: 9,  row: 1,  span: 2, rows: 2 },
+      { id: 'colaboradores', col: 11, row: 1,  span: 2, rows: 2 },
+      { id: 'areas_comunes', col: 1,  row: 3,  span: 2, rows: 2 },
+      { id: 'avisos',        col: 3,  row: 3,  span: 2, rows: 2 },
       // Financieras
-      { id: 'fin_recaudaciones', span: 4, rows: 2 },
-      { id: 'fin_cuotas',        span: 8, rows: 2 },
-      { id: 'fin_egresos',       span: 4, rows: 2 },
-      { id: 'fin_saldo',         span: 4, rows: 2 },
-      { id: 'fin_nomina',        span: 4, rows: 2 },
-      { id: 'fin_gastos',        span: 4, rows: 2 },
-      { id: 'fin_fondos',        span: 8, rows: 2 },
+      { id: 'fin_recaudaciones', col: 1,  row: 5,  span: 4, rows: 3 },
+      { id: 'fin_cuotas',        col: 5,  row: 5,  span: 8, rows: 3 },
+      { id: 'fin_egresos',       col: 1,  row: 8,  span: 4, rows: 3 },
+      { id: 'fin_saldo',         col: 5,  row: 8,  span: 4, rows: 3 },
+      { id: 'fin_nomina',        col: 9,  row: 8,  span: 4, rows: 3 },
+      { id: 'fin_gastos',        col: 1,  row: 11, span: 4, rows: 3 },
+      { id: 'fin_fondos',        col: 5,  row: 11, span: 8, rows: 3 },
       // Gráficas
-      { id: 'grafica_rec',   span: 8, rows: 5 },
-      { id: 'cobranza',      span: 4, rows: 5 },
+      { id: 'grafica_rec',   col: 1,  row: 14, span: 8, rows: 6 },
+      { id: 'cobranza',      col: 9,  row: 14, span: 4, rows: 3 },
       // Operativas
-      { id: 'op_ocupacion',  span: 3, rows: 2 },
-      { id: 'op_quejas',     span: 3, rows: 2 },
-      { id: 'op_asambleas',  span: 3, rows: 2 },
-      { id: 'op_visitas',    span: 3, rows: 2 },
-      { id: 'op_proyectos',  span: 3, rows: 2 },
+      { id: 'op_ocupacion',  col: 9,  row: 17, span: 4, rows: 3 },
+      { id: 'op_quejas',     col: 1,  row: 20, span: 3, rows: 3 },
+      { id: 'op_asambleas',  col: 4,  row: 20, span: 3, rows: 3 },
+      { id: 'op_visitas',    col: 7,  row: 20, span: 3, rows: 3 },
+      { id: 'op_proyectos',  col: 10, row: 20, span: 3, rows: 3 },
       // Tareas y gastos
-      { id: 'tareas',        span: 6, rows: 6 },
-      { id: 'grafica_gastos',span: 6, rows: 6 },
+      { id: 'tareas',        col: 1,  row: 23, span: 6, rows: 7 },
+      { id: 'grafica_gastos',col: 7,  row: 23, span: 6, rows: 7 },
     ];
   }
 
@@ -154,9 +154,11 @@ export class TableroComponent implements OnInit {
   }
 
   getWidgetStyle(w: any): any {
+    const col = w.col || 'auto';
+    const row = w.row || 'auto';
     return {
-      'grid-column': 'span ' + Math.min(w.span || 4, 12),
-      'grid-row': 'span ' + Math.max(1, w.rows || 2),
+      'grid-column': col + ' / span ' + Math.min(w.span || 4, 12),
+      'grid-row': row + ' / span ' + Math.max(1, w.rows || 2),
     };
   }
 
@@ -175,27 +177,44 @@ export class TableroComponent implements OnInit {
     this.dragOverWidget = widget;
   }
 
+  onDropGrid(event: DragEvent) {
+    event.preventDefault();
+    if (!this.dragWidget) return;
+    const grid = document.querySelector('.tb-grid') as HTMLElement;
+    if (grid) {
+      const rect = grid.getBoundingClientRect();
+      const colWidth = rect.width / 12;
+      const rowHeight = 68;
+      const relX = event.clientX - rect.left;
+      const relY = event.clientY - rect.top;
+      this.dragWidget.col = Math.max(1, Math.min(13 - this.dragWidget.span, Math.floor(relX / colWidth) + 1));
+      this.dragWidget.row = Math.max(1, Math.floor(relY / rowHeight) + 1);
+    }
+    this.widgets = [...this.widgets];
+    this.dragWidget = null;
+    this.dragOverWidget = null;
+    this.onLayoutChanged();
+  }
+
   onDrop(event: DragEvent, targetWidget: any) {
     event.preventDefault();
-    if (!this.dragWidget || this.dragWidget.id === targetWidget.id) {
-      this.dragWidget = null;
-      this.dragOverWidget = null;
-      return;
+    if (!this.dragWidget) return;
+
+    // Calcular col/row destino basado en posición del mouse
+    const grid = document.querySelector('.tb-grid') as HTMLElement;
+    if (grid) {
+      const rect = grid.getBoundingClientRect();
+      const colWidth = rect.width / 12;
+      const rowHeight = 60 + 8; // grid-auto-rows + gap
+      const relX = event.clientX - rect.left;
+      const relY = event.clientY - rect.top;
+      const newCol = Math.max(1, Math.min(12, Math.floor(relX / colWidth) + 1));
+      const newRow = Math.max(1, Math.floor(relY / rowHeight) + 1);
+      this.dragWidget.col = newCol;
+      this.dragWidget.row = newRow;
     }
 
-    const fromIdx = this.widgets.findIndex(w => w.id === this.dragWidget.id);
-    let toIdx = this.widgets.findIndex(w => w.id === targetWidget.id);
-
-    // Insertar después del target si se arrastra hacia adelante
-    if (fromIdx < toIdx) toIdx = toIdx;
-    else toIdx = toIdx;
-
-    const [moved] = this.widgets.splice(fromIdx, 1);
-    this.widgets.splice(toIdx, 0, moved);
-
-    // Forzar re-render
     this.widgets = [...this.widgets];
-
     this.dragWidget = null;
     this.dragOverWidget = null;
     this.onLayoutChanged();

@@ -43,7 +43,7 @@
 </div>
 
 <div *ngIf="data" class="hoose-dashboard">
-  <div class="tb-grid">
+  <div class="tb-grid" (dragover)="$event.preventDefault()" (drop)="onDropGrid($event)">
     <ng-container *ngFor="let w of widgets">
 
       <div *ngIf="w.id === 'condominios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"

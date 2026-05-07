@@ -456,5 +456,5 @@
 
 /* Grid sin posiciones fijas */
 .tb-grid {
-  grid-auto-flow: row dense;
+  
 }
