@@ -217,9 +217,9 @@
               <i class="pi" [ngClass]="metricas.financieras.saldo.tendencia==='up'?'pi-arrow-up':metricas.financieras.saldo.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
               {{ metricas.financieras.saldo.porcentaje }}%
             </span>
+            <span class="fin-value ms-auto" [style.color]="metricas.financieras.saldo.valor>=0?'#1BC99A':'#EF4444'">${{ metricas.financieras.saldo.valor | number:'1.2-2' }}</span>
           </div>
-          <div class="fin-value" [style.color]="metricas.financieras.saldo.valor>=0?'#1BC99A':'#EF4444'">${{ metricas.financieras.saldo.valor | number:'1.2-2' }}</div>
-          <div class="fin-comparativo">
+          <div class="fin-comparativo mt-1">
             <span [ngClass]="metricas.financieras.saldo.diferencia>=0?'comp-pos':'comp-neg'">{{ metricas.financieras.saldo.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.saldo.diferencia | number:'1.2-2' }}</span>
             <span class="comp-label">vs período anterior</span>
           </div>
