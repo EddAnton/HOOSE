@@ -1,0 +1,25 @@
+/* :root {
+	--primeng-component-font-size: 0.9rem;
+} */
+
+.p-component {
+	font-family: var(--primeng-component-font-family) !important;
+	font-size: var(--primeng-component-font-size) !important;
+}
+
+/* @media screen and (max-width: 340px) {
+	.p-component {
+		--primeng-component-font-size: 0.8rem;
+	}
+} */
+/* @media screen and (min-width: 341px) and (max-width: 640px) {
+	.p-component {
+		--primeng-component-font-size: 0.85rem;
+	}
+} */
+/* @media screen and (min-width: 641px) and (max-width: 800px) {
+	.p-component {
+		--primeng-component-font-size: 0.95rem;
+	}
+}
+ */

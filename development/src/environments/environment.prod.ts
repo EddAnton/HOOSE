@@ -1,5 +1,5 @@
-const urlBackend = 'api/';
-const APIKey = '2d4c640a-13ed-44fc-9fe3-964fc0b2757f';
+const urlBackend = 'http://api.residenciales.hoose.mx/index.php/';
+const APIKey = 'b7a142358f5590b2a887caad198d1c2';
 
 export const environment = {
   production: true,

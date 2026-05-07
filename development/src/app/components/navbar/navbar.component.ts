@@ -177,7 +177,7 @@ export class NavbarComponent implements OnInit {
 		}, 200);
 
 		this.sidebarVisible = true;
-    if (window.innerWidth < 992) { this.sidebarService.setVisible(true); }
+    this.sidebarService.setVisible(true);
 	}
 
 	sidebarClose() {
