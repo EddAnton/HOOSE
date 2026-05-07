@@ -217,7 +217,7 @@ export class TableroComponent implements OnInit {
     const startX = event.clientX;
     const startY = event.clientY;
     const startSpan = widget.span || 4;
-    const startHeight = widget.height || 160;
+    const startRows = widget.rows || 2;
     const gridEl = (event.target as HTMLElement).closest('.tb-grid') as HTMLElement;
     const gridWidth = gridEl?.clientWidth || 1200;
     const colWidth = gridWidth / 12;
@@ -226,12 +226,12 @@ export class TableroComponent implements OnInit {
       // Resize horizontal (span)
       const diffX = e.clientX - startX;
       const spanDiff = Math.round(diffX / colWidth);
-      widget.span = Math.max(2, Math.min(12, startSpan + spanDiff));
+      widget.span = Math.max(1, Math.min(12, startSpan + spanDiff));
 
-      // Resize vertical (rows)
+      // Resize vertical (rows) - usar startRows como base fija
       const diffY = e.clientY - startY;
-      const rowsDiff = Math.round(diffY / 60);
-      widget.rows = Math.max(1, (widget.rows || 2) + rowsDiff);
+      const rowsDiff = Math.round(diffY / 80);
+      widget.rows = Math.max(1, startRows + rowsDiff);
     };
 
     const onUp = () => {
