@@ -195,11 +195,15 @@
               <i class="pi" [ngClass]="metricas.financieras.egresos.tendencia==='up'?'pi-arrow-up':metricas.financieras.egresos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
               {{ metricas.financieras.egresos.porcentaje }}%
             </span>
+            <span class="fin-value ms-auto">${{ metricas.financieras.egresos.valor | number:'1.2-2' }}</span>
           </div>
-          <div class="fin-value">${{ metricas.financieras.egresos.valor | number:'1.2-2' }}</div>
-          <div class="fin-comparativo">
+          <div class="d-flex gap-3 mt-2">
+            <div class="fondo-item"><span class="fondo-banco">Gastos Mant.</span><span class="fondo-monto">${{ metricas.financieras.gastos.valor | number:'1.2-2' }}</span></div>
+            <div class="fondo-item"><span class="fondo-banco">Nóminas</span><span class="fondo-monto">${{ (metricas.financieras.nominas?.valor || 0) | number:'1.2-2' }}</span></div>
+          </div>
+          <div class="fin-comparativo mt-1 text-end">
             <span [ngClass]="metricas.financieras.egresos.diferencia<=0?'comp-pos':'comp-neg'">{{ metricas.financieras.egresos.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.egresos.diferencia | number:'1.2-2' }}</span>
-            <span class="comp-label">vs período anterior</span>
+            <span class="comp-label"> vs período anterior</span>
           </div>
         </div>
       </div>
