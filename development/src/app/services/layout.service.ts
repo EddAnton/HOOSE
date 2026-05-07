@@ -22,11 +22,11 @@ export class LayoutService {
   saveLayout(items: any[]) {
     const form = new FormData();
     items.forEach((s, i) => {
-      form.append(`secciones[${i}][seccion]`, s.id || s.seccion || '');
-      form.append(`secciones[${i}][cols]`, (s.cols || 4).toString());
-      form.append(`secciones[${i}][rows]`, (s.rows || 3).toString());
-      form.append(`secciones[${i}][x]`, (s.x || 0).toString());
-      form.append(`secciones[${i}][y]`, (s.y || 0).toString());
+      form.append(`secciones[${i}][seccion]`, s.id || '');
+      form.append(`secciones[${i}][cols]`, (s.span || 4).toString());
+      form.append(`secciones[${i}][rows]`, (s.rows || 2).toString());
+      form.append(`secciones[${i}][x]`, (s.col || 1).toString());
+      form.append(`secciones[${i}][y]`, (s.row || 1).toString());
       form.append(`secciones[${i}][orden]`, i.toString());
       form.append(`secciones[${i}][visible]`, '1');
       form.append(`secciones[${i}][col_size]`, '12');

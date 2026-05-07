@@ -143,7 +143,8 @@ export class TableroComponent implements OnInit {
     this.widgets = this.defaultWidgets();
     this.layoutService.getLayout().toPromise()
       .then((r: any) => {
-        if (r.data && r.data.length > 0 && r.data[0].id) {
+        if (r.data && r.data.length === this.defaultWidgets().length) {
+          // Solo cargar si tiene todos los widgets
           this.widgets = r.data;
         }
       }).catch(() => {});
@@ -154,6 +155,23 @@ export class TableroComponent implements OnInit {
   }
 
   getWidgetStyle(w: any): any {
+    const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth > 768 && window.innerWidth <= 1199;
+
+    if (isMobile) {
+      return {};
+    }
+
+    if (isTablet) {
+      const cols = window.innerWidth >= 1000 ? 8 : 4;
+      const ratio = cols / 12;
+      const tabletSpan = Math.max(2, Math.min(cols, Math.round((w.span || 4) * ratio)));
+      return {
+        'grid-column': 'span ' + tabletSpan,
+        'grid-row': 'span ' + Math.max(1, w.rows || 2),
+      };
+    }
+
     const col = w.col || 'auto';
     const row = w.row || 'auto';
     return {
