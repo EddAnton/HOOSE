@@ -171,9 +171,13 @@
             </span>
             <span class="fin-value ms-auto">${{ metricas.financieras.cuotas.valor | number:'1.2-2' }}</span>
           </div>
-          <div class="d-flex gap-3 mt-2">
+          <div class="d-flex gap-3 mt-2 align-items-center">
             <div class="fondo-item"><span class="fondo-banco">Ordinarias</span><span class="fondo-monto">${{ metricas.financieras.cuotas.ordinarias | number:'1.2-2' }}</span></div>
             <div class="fondo-item"><span class="fondo-banco">Extraordinarias</span><span class="fondo-monto">${{ metricas.financieras.cuotas.extraordinarias | number:'1.2-2' }}</span></div>
+            <div class="ms-auto">
+              <span [ngClass]="metricas.financieras.cuotas.diferencia>=0?'comp-pos':'comp-neg'">{{ metricas.financieras.cuotas.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.cuotas.diferencia | number:'1.2-2' }}</span>
+              <span class="comp-label ms-1">vs anterior</span>
+            </div>
           </div>
         </div>
       </div>
@@ -215,6 +219,10 @@
             </span>
           </div>
           <div class="fin-value" [style.color]="metricas.financieras.saldo.valor>=0?'#1BC99A':'#EF4444'">${{ metricas.financieras.saldo.valor | number:'1.2-2' }}</div>
+          <div class="fin-comparativo">
+            <span [ngClass]="metricas.financieras.saldo.diferencia>=0?'comp-pos':'comp-neg'">{{ metricas.financieras.saldo.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.saldo.diferencia | number:'1.2-2' }}</span>
+            <span class="comp-label">vs período anterior</span>
+          </div>
         </div>
       </div>
 
