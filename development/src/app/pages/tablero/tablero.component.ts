@@ -87,20 +87,14 @@ export class TableroComponent implements OnInit {
   }
 
   private calcularCobranza() {
-    if (!this.data?.cards) return;
-    const cardSaldo = this.data.cards.find(c => c.subtitle === 'Cuotas mantenimiento' && c.content === 'Saldo pendiente');
-    const cardOrdinarias = this.data.cards.find(c => c.subtitle === 'Cuotas mantenimiento' && c.content === 'Orinarias');
-    const cardMorosidad = this.data.cards.find(c => c.content === 'Morosidad');
-    if (cardSaldo || cardOrdinarias) {
-      const limpiar = (val: string) => val ? val.replace(/[$,]/g, '') : '0';
-      const recaudado = parseFloat(limpiar(cardOrdinarias?.title));
-      const pendiente = parseFloat(limpiar(cardSaldo?.title));
-      const total = recaudado + pendiente;
+    if (this.metricas?.morosidad) {
+      const m = this.metricas.morosidad;
+      const formatMonto = (v: number) => '$' + v.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
       this.cardCobranza = {
-        recaudado: cardOrdinarias?.title || '$0.00',
-        pendiente: cardSaldo?.title || '$0.00',
-        morosidad: cardMorosidad?.title || '0.00%',
-        pctPendiente: total > 0 ? (pendiente / total * 100).toFixed(0) : '0',
+        recaudado: formatMonto(m.cobrado),
+        pendiente: formatMonto(m.pendiente),
+        morosidad: m.porcentaje.toFixed(1) + '%',
+        pctPendiente: m.porcentaje.toFixed(0),
       };
     }
   }
@@ -301,7 +295,10 @@ export class TableroComponent implements OnInit {
 
   cargarMetricas() {
     this.metricasService.Tablero(this.comparativo).toPromise()
-      .then((r: any) => { this.metricas = r.data; })
+      .then((r: any) => {
+        this.metricas = r.data;
+        this.calcularCobranza();
+      })
       .catch(() => {});
   }
 
