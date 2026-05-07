@@ -7,6 +7,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 import { TareasService } from '../../services/tareas.service';
 import { MetricasService } from '../../services/metricas.service';
+import { LayoutService } from '../../services/layout.service';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,11 @@ export class TableroComponent implements OnInit {
   totalTareasPendientes: number = 0;
   metricas: any = null;
   comparativo: string = 'mes_anterior';
+  widgets: any[] = [];
+  dragWidget: any = null;
+  dragOverWidget: any = null;
+  guardandoLayout = false;
+  private layoutTimer: any;
   catalogoCards: any[] = [];
   finCards: any[] = [];
 
@@ -60,10 +66,12 @@ export class TableroComponent implements OnInit {
     private dashboardService: DashboardService,
     private tareasService: TareasService,
     private metricasService: MetricasService,
+    private layoutService: LayoutService,
   ) {}
 
   ngOnInit() {
     this.idCondominio = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+    this.initWidgets();
     this.onActualizarInformacion();
     this.cargarTareas();
     this.cargarMetricas();
@@ -95,6 +103,161 @@ export class TableroComponent implements OnInit {
         pctPendiente: total > 0 ? (pendiente / total * 100).toFixed(0) : '0',
       };
     }
+  }
+
+  defaultWidgets(): any[] {
+    return [
+      // Catálogo — altura fija compacta
+      { id: 'condominios',   span: 2, height: 100 },
+      { id: 'edificios',     span: 2, height: 100 },
+      { id: 'unidades',      span: 2, height: 100 },
+      { id: 'propietarios',  span: 2, height: 100 },
+      { id: 'condominos',    span: 2, height: 100 },
+      { id: 'colaboradores', span: 2, height: 100 },
+      { id: 'areas_comunes', span: 2, height: 100 },
+      { id: 'avisos',        span: 2, height: 100 },
+      // Financieras
+      { id: 'fin_recaudaciones', span: 4, height: 140 },
+      { id: 'fin_cuotas',        span: 8, height: 140 },
+      { id: 'fin_egresos',       span: 4, height: 140 },
+      { id: 'fin_saldo',         span: 4, height: 140 },
+      { id: 'fin_nomina',        span: 4, height: 140 },
+      { id: 'fin_gastos',        span: 4, height: 140 },
+      { id: 'fin_fondos',        span: 8, height: 140 },
+      // Gráficas
+      { id: 'grafica_rec',   span: 8, height: 320 },
+      { id: 'cobranza',      span: 4, height: 320 },
+      // Operativas
+      { id: 'op_ocupacion',  span: 3, height: 150 },
+      { id: 'op_quejas',     span: 3, height: 150 },
+      { id: 'op_asambleas',  span: 3, height: 150 },
+      { id: 'op_visitas',    span: 3, height: 150 },
+      { id: 'op_proyectos',  span: 3, height: 150 },
+      // Tareas y gastos
+      { id: 'tareas',        span: 6, height: 350 },
+      { id: 'grafica_gastos',span: 6, height: 350 },
+    ];
+  }
+
+  initWidgets() {
+    this.widgets = this.defaultWidgets();
+    this.layoutService.getLayout().toPromise()
+      .then((r: any) => {
+        if (r.data && r.data.length > 0 && r.data[0].id) {
+          this.widgets = r.data;
+        }
+      }).catch(() => {});
+  }
+
+  getWidget(id: string): any {
+    return this.widgets.find(w => w.id === id) || { col: 1, span: 12, row: 99 };
+  }
+
+  getWidgetStyle(w: any): any {
+    return {
+      'grid-column': 'span ' + Math.min(w.span || 4, 12),
+    };
+  }
+
+  onDragStart(event: DragEvent, widget: any) {
+    this.dragWidget = widget;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', widget.id);
+    }
+    const el = event.currentTarget as HTMLElement;
+    setTimeout(() => el.classList.add('dragging'), 0);
+  }
+
+  onDragOver(event: DragEvent, widget: any) {
+    event.preventDefault();
+    this.dragOverWidget = widget;
+  }
+
+  onDrop(event: DragEvent, targetWidget: any) {
+    event.preventDefault();
+    if (!this.dragWidget || this.dragWidget.id === targetWidget.id) {
+      this.dragWidget = null;
+      this.dragOverWidget = null;
+      return;
+    }
+
+    const fromIdx = this.widgets.findIndex(w => w.id === this.dragWidget.id);
+    let toIdx = this.widgets.findIndex(w => w.id === targetWidget.id);
+
+    // Insertar después del target si se arrastra hacia adelante
+    if (fromIdx < toIdx) toIdx = toIdx;
+    else toIdx = toIdx;
+
+    const [moved] = this.widgets.splice(fromIdx, 1);
+    this.widgets.splice(toIdx, 0, moved);
+
+    // Forzar re-render
+    this.widgets = [...this.widgets];
+
+    this.dragWidget = null;
+    this.dragOverWidget = null;
+    this.onLayoutChanged();
+  }
+
+  onDragEnd() {
+    document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+    this.dragWidget = null;
+    this.dragOverWidget = null;
+  }
+
+  changeSpan(widget: any, newSpan: number) {
+    widget.span = newSpan;
+    this.onLayoutChanged();
+  }
+
+  onResizeStart(event: MouseEvent, widget: any) {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startSpan = widget.span || 4;
+    const startHeight = widget.height || 160;
+    const gridEl = (event.target as HTMLElement).closest('.tb-grid') as HTMLElement;
+    const gridWidth = gridEl?.clientWidth || 1200;
+    const colWidth = gridWidth / 12;
+
+    const onMove = (e: MouseEvent) => {
+      // Resize horizontal (span)
+      const diffX = e.clientX - startX;
+      const spanDiff = Math.round(diffX / colWidth);
+      widget.span = Math.max(2, Math.min(12, startSpan + spanDiff));
+
+      // Resize vertical (height en px)
+      const diffY = e.clientY - startY;
+      widget.height = Math.max(120, startHeight + diffY);
+    };
+
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      this.onLayoutChanged();
+    };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
+
+  onLayoutChanged() {
+    clearTimeout(this.layoutTimer);
+    this.layoutTimer = setTimeout(() => this.guardarLayout(), 1500);
+  }
+
+  guardarLayout() {
+    if (!this.widgets.length || this.guardandoLayout) return;
+    this.guardandoLayout = true;
+    this.layoutService.saveLayout(this.widgets).toPromise()
+      .then(() => { this.guardandoLayout = false; })
+      .catch(() => { this.guardandoLayout = false; });
+  }
+
+  getCardValue(subtitle: string): string {
+    if (!this.data?.cards) return '0';
+    return this.data.cards.find(c => c.subtitle === subtitle)?.title || '0';
   }
 
   cargarMetricas() {

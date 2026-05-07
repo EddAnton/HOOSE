@@ -43,356 +43,387 @@
 </div>
 
 <div *ngIf="data" class="hoose-dashboard">
+  <div class="tb-grid">
+    <ng-container *ngFor="let w of widgets">
 
-  <!-- FILA 1: Cards catálogo -->
-  <div class="row g-2 mb-3">
-    <div class="col-6 col-md-4 col-xl" *ngFor="let card of catalogoCards">
-      <div class="hoose-cat-card" (click)="onNavegar(card.path)" [class.clickable]="card.path">
-        <div class="cat-icon-wrap">
-          <i class="pi" [ngClass]="getCardIcon(card.subtitle)"></i>
-        </div>
-        <div class="cat-body">
-          <div class="cat-label">{{ card.subtitle }}</div>
-          <div class="cat-value">{{ card.title }}</div>
+      <div *ngIf="w.id === 'condominios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/condominios')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-home"></i></div>
+          <div class="cat-body"><div class="cat-label">Condominios</div><div class="cat-value">{{ getCardValue('Condominios') }}</div></div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- FILA 2: Cards financieras con comparativo -->
-  <div class="row g-2 mb-3" *ngIf="metricas">
-
-    <!-- Recaudaciones -->
-    <div class="col-12 col-sm-6 col-xl-4">
-      <div class="hoose-fin-card" (click)="onNavegar('/recaudaciones')" style="cursor:pointer">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-home"></i></div>
-          <span class="fin-label">Recaudaciones</span>
-          <span class="fin-badge" [ngClass]="metricas.financieras.recaudaciones.tendencia==='up'?'badge-green':metricas.financieras.recaudaciones.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.financieras.recaudaciones.tendencia==='up'?'pi-arrow-up':metricas.financieras.recaudaciones.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.financieras.recaudaciones.porcentaje }}%
-          </span>
-        </div>
-        <div class="fin-value">${{ metricas.financieras.recaudaciones.valor | number:'1.2-2' }}</div>
-        <div class="fin-comparativo">
-          <span [ngClass]="metricas.financieras.recaudaciones.diferencia>=0?'comp-pos':'comp-neg'">
-            {{ metricas.financieras.recaudaciones.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.recaudaciones.diferencia | number:'1.2-2' }}
-          </span>
-          <span class="comp-label">respecto al período anterior</span>
+      <div *ngIf="w.id === 'edificios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/edificios')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-building"></i></div>
+          <div class="cat-body"><div class="cat-label">Edificios / Pisos</div><div class="cat-value">{{ getCardValue('Edificios / Pisos') }}</div></div>
         </div>
       </div>
-    </div>
 
-    <!-- Cuotas Mantenimiento -->
-    <div class="col-12 col-xl-8">
-      <div class="hoose-fin-card" (click)="onNavegar('/cuotas-mantenimiento')" style="cursor:pointer">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-dollar"></i></div>
-          <span class="fin-label">Cuotas Mantenimiento</span>
-          <span class="fin-badge ms-2" [ngClass]="metricas.financieras.cuotas.tendencia==='up'?'badge-green':metricas.financieras.cuotas.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.financieras.cuotas.tendencia==='up'?'pi-arrow-up':metricas.financieras.cuotas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.financieras.cuotas.porcentaje }}%
-          </span>
-          <span class="fin-value ms-auto">${{ metricas.financieras.cuotas.valor | number:'1.2-2' }}</span>
+      <div *ngIf="w.id === 'unidades'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-th-large"></i></div>
+          <div class="cat-body"><div class="cat-label">Unidades</div><div class="cat-value">{{ getCardValue('Unidades') }}</div></div>
         </div>
-        <div class="d-flex gap-4 mt-2 flex-wrap align-items-center">
-          <div class="fondo-item">
-            <span class="fondo-banco">Ordinarias</span>
-            <span class="fondo-monto">${{ metricas.financieras.cuotas.ordinarias | number:'1.2-2' }}</span>
-            <span class="fondo-nombre">vs ${{ metricas.financieras.cuotas.ordinarias_anterior | number:'1.2-2' }} ant.</span>
-          </div>
-          <div class="fondo-item">
-            <span class="fondo-banco">Extraordinarias</span>
-            <span class="fondo-monto">${{ metricas.financieras.cuotas.extraordinarias | number:'1.2-2' }}</span>
-            <span class="fondo-nombre">vs ${{ metricas.financieras.cuotas.extraordinarias_anterior | number:'1.2-2' }} ant.</span>
-          </div>
-          <div class="ms-auto">
-            <span [ngClass]="metricas.financieras.cuotas.diferencia>=0?'comp-pos':'comp-neg'">
-              {{ metricas.financieras.cuotas.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.cuotas.diferencia | number:'1.2-2' }}
+      </div>
+
+      <div *ngIf="w.id === 'propietarios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/propietarios')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-user"></i></div>
+          <div class="cat-body"><div class="cat-label">Propietarios</div><div class="cat-value">{{ getCardValue('Propietarios') }}</div></div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'condominos'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/condominos')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-users"></i></div>
+          <div class="cat-body"><div class="cat-label">Condóminos</div><div class="cat-value">{{ getCardValue('Condóminos') }}</div></div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'colaboradores'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/colaboradores')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-id-card"></i></div>
+          <div class="cat-body"><div class="cat-label">Colaboradores</div><div class="cat-value">{{ getCardValue('Colaboradores') }}</div></div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'areas_comunes'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/areas-comunes')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-star"></i></div>
+          <div class="cat-body"><div class="cat-label">Áreas Comunes</div><div class="cat-value">{{ getCardValue('Áreas comunes') }}</div></div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'avisos'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-cat-card h-100" (click)="onNavegar('/tablero-avisos')" style="cursor:pointer">
+          <div class="cat-icon-wrap"><i class="pi pi-bell"></i></div>
+          <div class="cat-body"><div class="cat-label">Avisos</div><div class="cat-value">{{ getCardValue('Avisos') }}</div></div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'fin_recaudaciones' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100" (click)="onNavegar('/recaudaciones')" style="cursor:pointer">
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-home"></i></div>
+            <span class="fin-label">Recaudaciones</span>
+            <span class="fin-badge" [ngClass]="metricas.financieras.recaudaciones.tendencia==='up'?'badge-green':metricas.financieras.recaudaciones.tendencia==='down'?'badge-red':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.financieras.recaudaciones.tendencia==='up'?'pi-arrow-up':metricas.financieras.recaudaciones.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.financieras.recaudaciones.porcentaje }}%
             </span>
-            <span class="comp-label ms-1">vs período anterior</span>
+          </div>
+          <div class="fin-value">${{ metricas.financieras.recaudaciones.valor | number:'1.2-2' }}</div>
+          <div class="fin-comparativo">
+            <span [ngClass]="metricas.financieras.recaudaciones.diferencia>=0?'comp-pos':'comp-neg'">{{ metricas.financieras.recaudaciones.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.recaudaciones.diferencia | number:'1.2-2' }}</span>
+            <span class="comp-label">vs período anterior</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Egresos -->
-    <div class="col-12 col-sm-6 col-xl-4">
-      <div class="hoose-fin-card">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-shopping-cart"></i></div>
-          <span class="fin-label">Egresos</span>
-          <span class="fin-badge" [ngClass]="metricas.financieras.egresos.tendencia==='up'?'badge-red':metricas.financieras.egresos.tendencia==='down'?'badge-green':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.financieras.egresos.tendencia==='up'?'pi-arrow-up':metricas.financieras.egresos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.financieras.egresos.porcentaje }}%
-          </span>
-        </div>
-        <div class="fin-value">${{ metricas.financieras.egresos.valor | number:'1.2-2' }}</div>
-        <div class="fin-comparativo">
-          <span [ngClass]="metricas.financieras.egresos.diferencia<=0?'comp-pos':'comp-neg'">
-            {{ metricas.financieras.egresos.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.egresos.diferencia | number:'1.2-2' }}
-          </span>
-          <span class="comp-label">respecto al período anterior</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Saldo -->
-    <div class="col-12 col-sm-6 col-xl-4">
-      <div class="hoose-fin-card">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-chart-bar"></i></div>
-          <span class="fin-label">Saldo del Período</span>
-          <span class="fin-badge" [ngClass]="metricas.financieras.saldo.tendencia==='up'?'badge-green':metricas.financieras.saldo.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.financieras.saldo.tendencia==='up'?'pi-arrow-up':metricas.financieras.saldo.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.financieras.saldo.porcentaje }}%
-          </span>
-        </div>
-        <div class="fin-value" [style.color]="metricas.financieras.saldo.valor>=0?'#1BC99A':'#EF4444'">${{ metricas.financieras.saldo.valor | number:'1.2-2' }}</div>
-        <div class="fin-comparativo">
-          <span [ngClass]="metricas.financieras.saldo.diferencia>=0?'comp-pos':'comp-neg'">
-            {{ metricas.financieras.saldo.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.saldo.diferencia | number:'1.2-2' }}
-          </span>
-          <span class="comp-label">respecto al período anterior</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nómina -->
-    <div class="col-12 col-sm-6 col-xl-4">
-      <div class="hoose-fin-card" (click)="onNavegar('/nomina')" style="cursor:pointer">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-money-bill"></i></div>
-          <span class="fin-label">Nómina</span>
-        </div>
-        <div class="fin-value">{{ getCardTitle('Nómina') }}</div>
-        <div class="fin-content">Erogación</div>
-      </div>
-    </div>
-
-    <!-- Gastos Mantenimiento -->
-    <div class="col-12 col-sm-6 col-xl-4">
-      <div class="hoose-fin-card" (click)="onNavegar('/gastos-mantenimiento')" style="cursor:pointer">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-minus-circle"></i></div>
-          <span class="fin-label">Gastos Mantenimiento</span>
-        </div>
-        <div class="fin-value">{{ getCardTitle('Gastos mantenimiento') }}</div>
-        <div class="fin-content">Erogación</div>
-      </div>
-    </div>
-
-  </div>
-  <!-- FILA 2b: Fondos Monetarios con desglose -->
-  <div class="row g-2 mb-3" *ngIf="metricas">
-    <div class="col-12">
-      <div class="hoose-fin-card" (click)="onNavegar('/fondos-monetarios')" style="cursor:pointer">
-        <div class="fin-header">
-          <div class="fin-icon-wrap"><i class="pi pi-wallet"></i></div>
-          <span class="fin-label">Fondos Monetarios</span>
-          <span class="fin-value ms-auto">${{ metricas.fondos.total | number:'1.2-2' }}</span>
-        </div>
-        <div class="d-flex gap-4 mt-2 flex-wrap">
-          <div *ngFor="let f of metricas.fondos.fondos" class="fondo-item">
-            <span class="fondo-banco">{{ f.banco }}</span>
-            <span class="fondo-monto">${{ f.saldo | number:'1.0-0' }}</span>
-            <span class="fondo-nombre">{{ f.fondo_monetario }}</span>
+      <div *ngIf="w.id === 'fin_cuotas' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100" (click)="onNavegar('/cuotas-mantenimiento')" style="cursor:pointer">
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-dollar"></i></div>
+            <span class="fin-label">Cuotas Mantenimiento</span>
+            <span class="fin-badge" [ngClass]="metricas.financieras.cuotas.tendencia==='up'?'badge-green':metricas.financieras.cuotas.tendencia==='down'?'badge-red':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.financieras.cuotas.tendencia==='up'?'pi-arrow-up':metricas.financieras.cuotas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.financieras.cuotas.porcentaje }}%
+            </span>
+            <span class="fin-value ms-auto">${{ metricas.financieras.cuotas.valor | number:'1.2-2' }}</span>
+          </div>
+          <div class="d-flex gap-3 mt-2">
+            <div class="fondo-item"><span class="fondo-banco">Ordinarias</span><span class="fondo-monto">${{ metricas.financieras.cuotas.ordinarias | number:'1.2-2' }}</span></div>
+            <div class="fondo-item"><span class="fondo-banco">Extraordinarias</span><span class="fondo-monto">${{ metricas.financieras.cuotas.extraordinarias | number:'1.2-2' }}</span></div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- FILA 3: Gráfica + Cobranza -->
-  <div class="row g-2 mb-3">
-    <div class="col-12 col-lg-7">
-      <div class="hoose-chart-card h-100">
-        <div class="chart-card-header d-flex align-items-center gap-2">
-          <i class="pi pi-chart-bar chart-icon"></i>
-          <span class="chart-card-title">Histórico de Recaudación</span>
-        </div>
-        <div class="chart-wrap" *ngIf="charts[0]?.type; else sinGrafica">
-          <p-chart [type]="charts[0].type" [data]="charts[0]" [options]="charts[0].options" width="100%" height="240px"></p-chart>
-        </div>
-        <ng-template #sinGrafica>
-          <div class="no-data-msg">Sin datos para el período seleccionado</div>
-        </ng-template>
-      </div>
-    </div>
-    <div class="col-12 col-lg-5">
-      <div class="hoose-chart-card h-100" *ngIf="cardCobranza">
-        <div class="chart-card-header d-flex align-items-center gap-2">
-          <i class="pi pi-credit-card chart-icon"></i>
-          <span class="chart-card-title">Cobranza</span>
-        </div>
-        <div class="cobranza-morosidad mb-2">
-          <div class="morosidad-label">morosidad</div>
-          <div class="morosidad-value">{{ cardCobranza.morosidad }}</div>
-        </div>
-        <div class="cobranza-bars mb-2">
-          <div class="cob-bar recaudado"></div>
-          <div class="cob-bar pendiente" [style.width]="cardCobranza.pctPendiente + '%'"></div>
-        </div>
-        <div class="d-flex justify-content-between cobranza-amounts">
-          <div>
-            <div class="cob-amount-label">Recaudado</div>
-            <div class="cob-amount green">{{ cardCobranza.recaudado }}</div>
+      <div *ngIf="w.id === 'fin_egresos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100">
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-shopping-cart"></i></div>
+            <span class="fin-label">Egresos</span>
+            <span class="fin-badge" [ngClass]="metricas.financieras.egresos.tendencia==='up'?'badge-red':metricas.financieras.egresos.tendencia==='down'?'badge-green':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.financieras.egresos.tendencia==='up'?'pi-arrow-up':metricas.financieras.egresos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.financieras.egresos.porcentaje }}%
+            </span>
           </div>
-          <div class="text-end">
-            <div class="cob-amount-label">Pendiente</div>
-            <div class="cob-amount red">{{ cardCobranza.pendiente }}</div>
+          <div class="fin-value">${{ metricas.financieras.egresos.valor | number:'1.2-2' }}</div>
+          <div class="fin-comparativo">
+            <span [ngClass]="metricas.financieras.egresos.diferencia<=0?'comp-pos':'comp-neg'">{{ metricas.financieras.egresos.diferencia >= 0 ? '+' : '' }}${{ metricas.financieras.egresos.diferencia | number:'1.2-2' }}</span>
+            <span class="comp-label">vs período anterior</span>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- FILA 4: Métricas operativas con comparativo -->
-  <div class="row g-2 mb-3" *ngIf="metricas">
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
-        <div class="metrica-header">
-          <div class="metrica-icon-wrap"><i class="pi pi-home metrica-icon"></i></div>
-          <span class="metrica-title">Ocupación</span>
-        </div>
-        <div class="metrica-num">{{ metricas.ocupacion.porcentaje }}%</div>
-        <div class="metrica-sub">{{ metricas.ocupacion.ocupadas }}/{{ metricas.ocupacion.total }} unidades</div>
-      </div>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/quejas')" style="cursor:pointer">
-        <div class="metrica-header">
-          <div class="metrica-icon-wrap"><i class="pi pi-exclamation-circle metrica-icon"></i></div>
-          <span class="metrica-title">Quejas</span>
-          <span class="metrica-badge" [ngClass]="metricas.quejas.tendencia==='up'?'badge-red':metricas.quejas.tendencia==='down'?'badge-green':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.quejas.tendencia==='up'?'pi-arrow-up':metricas.quejas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.quejas.diferencia !== 0 ? (metricas.quejas.diferencia > 0 ? '+' : '') + metricas.quejas.diferencia : '=' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.quejas.actual }}</div>
-        <div class="metrica-sub">{{ metricas.quejas.sin_revisar }} pend · {{ metricas.quejas.en_proceso }} proc · {{ metricas.quejas.atendidas }} ok</div>
-      </div>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/asambleas')" style="cursor:pointer">
-        <div class="metrica-header">
-          <div class="metrica-icon-wrap"><i class="pi pi-users metrica-icon"></i></div>
-          <span class="metrica-title">Asambleas</span>
-          <span class="metrica-badge" [ngClass]="metricas.asambleas.tendencia==='up'?'badge-green':metricas.asambleas.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.asambleas.tendencia==='up'?'pi-arrow-up':metricas.asambleas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.asambleas.diferencia !== 0 ? (metricas.asambleas.diferencia > 0 ? '+' : '') + metricas.asambleas.diferencia : '=' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.asambleas.actual }}</div>
-        <div class="metrica-sub">{{ metricas.asambleas.ordinarias }} ord · {{ metricas.asambleas.extraordinarias }} ext</div>
-      </div>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/visitas')" style="cursor:pointer">
-        <div class="metrica-header">
-          <div class="metrica-icon-wrap"><i class="pi pi-car metrica-icon"></i></div>
-          <span class="metrica-title">Visitas</span>
-          <span class="metrica-badge" [ngClass]="metricas.visitas.tendencia==='up'?'badge-green':metricas.visitas.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.visitas.tendencia==='up'?'pi-arrow-up':metricas.visitas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : '=' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.visitas.actual }}</div>
-        <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs anterior</div>
-      </div>
-    </div>
-    <div class="col-6 col-md-3">
-      <div class="hoose-metrica-card" (click)="onNavegar('/proyectos')" style="cursor:pointer">
-        <div class="metrica-header">
-          <div class="metrica-icon-wrap"><i class="pi pi-building metrica-icon"></i></div>
-          <span class="metrica-title">Proyectos</span>
-          <span class="metrica-badge" [ngClass]="metricas.proyectos.tendencia==='up'?'badge-green':metricas.proyectos.tendencia==='down'?'badge-red':'badge-gray'">
-            <i class="pi" [ngClass]="metricas.proyectos.tendencia==='up'?'pi-arrow-up':metricas.proyectos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
-            {{ metricas.proyectos.diferencia !== 0 ? (metricas.proyectos.diferencia > 0 ? '+' : '') + metricas.proyectos.diferencia : '=' }}
-          </span>
-        </div>
-        <div class="metrica-num">{{ metricas.proyectos.en_curso }}</div>
-        <div class="metrica-sub">{{ metricas.proyectos.completados }} completados · ${{ metricas.proyectos.inversion_total | number:'1.0-0' }} inversión</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- FILA 5: Tareas + Gastos -->
-  <div class="row g-2 mb-3">
-    <div class="col-12 col-lg-6">
-      <div class="hoose-chart-card h-100">
-        <div class="chart-card-header d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-2">
-            <i class="pi pi-list-check chart-icon"></i>
-            <span class="chart-card-title">Tareas</span>
+      <div *ngIf="w.id === 'fin_saldo' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100">
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-chart-bar"></i></div>
+            <span class="fin-label">Saldo del Período</span>
+            <span class="fin-badge" [ngClass]="metricas.financieras.saldo.tendencia==='up'?'badge-green':metricas.financieras.saldo.tendencia==='down'?'badge-red':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.financieras.saldo.tendencia==='up'?'pi-arrow-up':metricas.financieras.saldo.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.financieras.saldo.porcentaje }}%
+            </span>
           </div>
-          <div class="d-flex align-items-center gap-2">
+          <div class="fin-value" [style.color]="metricas.financieras.saldo.valor>=0?'#1BC99A':'#EF4444'">${{ metricas.financieras.saldo.valor | number:'1.2-2' }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'fin_nomina'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100" (click)="onNavegar('/nomina')" style="cursor:pointer">
+          <div class="fin-header"><div class="fin-icon-wrap"><i class="pi pi-money-bill"></i></div><span class="fin-label">Nómina</span></div>
+          <div class="fin-value">{{ getCardTitle('Nómina') }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'fin_gastos'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100" (click)="onNavegar('/gastos-mantenimiento')" style="cursor:pointer">
+          <div class="fin-header"><div class="fin-icon-wrap"><i class="pi pi-minus-circle"></i></div><span class="fin-label">Gastos Mantenimiento</span></div>
+          <div class="fin-value">{{ getCardTitle('Gastos mantenimiento') }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'fin_fondos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-fin-card h-100" (click)="onNavegar('/fondos-monetarios')" style="cursor:pointer">
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-wallet"></i></div>
+            <span class="fin-label">Fondos Monetarios</span>
+            <span class="fin-value ms-auto">${{ metricas.fondos.total | number:'1.2-2' }}</span>
+          </div>
+          <div class="d-flex gap-4 mt-2 flex-wrap">
+            <div *ngFor="let f of metricas.fondos.fondos" class="fondo-item">
+              <span class="fondo-banco">{{ f.banco }}</span>
+              <span class="fondo-monto">${{ f.saldo | number:'1.0-0' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'grafica_rec'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-chart-card h-100">
+          <div class="chart-card-header d-flex align-items-center gap-2">
+            <i class="pi pi-chart-bar chart-icon"></i><span class="chart-card-title">Histórico de Recaudación</span>
+          </div>
+          <div *ngIf="charts[0]?.type; else sinGrafica">
+            <p-chart [type]="charts[0].type" [data]="charts[0]" [options]="charts[0].options" width="100%" height="220px"></p-chart>
+          </div>
+          <ng-template #sinGrafica><div class="no-data-msg">Sin datos para el período</div></ng-template>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'cobranza' && cardCobranza" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-chart-card h-100">
+          <div class="chart-card-header d-flex align-items-center gap-2">
+            <i class="pi pi-credit-card chart-icon"></i><span class="chart-card-title">Cobranza</span>
+          </div>
+          <div class="cobranza-morosidad mb-2"><div class="morosidad-label">morosidad</div><div class="morosidad-value">{{ cardCobranza.morosidad }}</div></div>
+          <div class="cobranza-bars mb-2"><div class="cob-bar recaudado"></div><div class="cob-bar pendiente" [style.width]="cardCobranza.pctPendiente + '%'"></div></div>
+          <div class="d-flex justify-content-between">
+            <div><div class="cob-amount-label">Recaudado</div><div class="cob-amount green">{{ cardCobranza.recaudado }}</div></div>
+            <div class="text-end"><div class="cob-amount-label">Pendiente</div><div class="cob-amount red">{{ cardCobranza.pendiente }}</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'op_ocupacion' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-metrica-card h-100" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
+          <div class="metrica-header"><div class="metrica-icon-wrap"><i class="pi pi-home metrica-icon"></i></div><span class="metrica-title">Ocupación</span></div>
+          <div class="metrica-num">{{ metricas.ocupacion.porcentaje }}%</div>
+          <div class="metrica-sub">{{ metricas.ocupacion.ocupadas }}/{{ metricas.ocupacion.total }} unidades</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'op_quejas' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-metrica-card h-100" (click)="onNavegar('/quejas')" style="cursor:pointer">
+          <div class="metrica-header">
+            <div class="metrica-icon-wrap"><i class="pi pi-exclamation-circle metrica-icon"></i></div>
+            <span class="metrica-title">Quejas</span>
+            <span class="metrica-badge" [ngClass]="metricas.quejas.tendencia==='up'?'badge-red':metricas.quejas.tendencia==='down'?'badge-green':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.quejas.tendencia==='up'?'pi-arrow-up':metricas.quejas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.quejas.diferencia !== 0 ? (metricas.quejas.diferencia > 0 ? '+' : '') + metricas.quejas.diferencia : '=' }}
+            </span>
+          </div>
+          <div class="metrica-num">{{ metricas.quejas.actual }}</div>
+          <div class="metrica-sub">{{ metricas.quejas.sin_revisar }} pend · {{ metricas.quejas.atendidas }} ok</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'op_asambleas' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-metrica-card h-100" (click)="onNavegar('/asambleas')" style="cursor:pointer">
+          <div class="metrica-header">
+            <div class="metrica-icon-wrap"><i class="pi pi-users metrica-icon"></i></div>
+            <span class="metrica-title">Asambleas</span>
+            <span class="metrica-badge" [ngClass]="metricas.asambleas.tendencia==='up'?'badge-green':metricas.asambleas.tendencia==='down'?'badge-red':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.asambleas.tendencia==='up'?'pi-arrow-up':metricas.asambleas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.asambleas.diferencia !== 0 ? (metricas.asambleas.diferencia > 0 ? '+' : '') + metricas.asambleas.diferencia : '=' }}
+            </span>
+          </div>
+          <div class="metrica-num">{{ metricas.asambleas.actual }}</div>
+          <div class="metrica-sub">{{ metricas.asambleas.ordinarias }} ord · {{ metricas.asambleas.extraordinarias }} ext</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'op_visitas' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-metrica-card h-100" (click)="onNavegar('/visitas')" style="cursor:pointer">
+          <div class="metrica-header">
+            <div class="metrica-icon-wrap"><i class="pi pi-car metrica-icon"></i></div>
+            <span class="metrica-title">Visitas</span>
+            <span class="metrica-badge" [ngClass]="metricas.visitas.tendencia==='up'?'badge-green':metricas.visitas.tendencia==='down'?'badge-red':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.visitas.tendencia==='up'?'pi-arrow-up':metricas.visitas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : '=' }}
+            </span>
+          </div>
+          <div class="metrica-num">{{ metricas.visitas.actual }}</div>
+          <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs anterior</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'op_proyectos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-metrica-card h-100" (click)="onNavegar('/proyectos')" style="cursor:pointer">
+          <div class="metrica-header">
+            <div class="metrica-icon-wrap"><i class="pi pi-chart-line metrica-icon"></i></div>
+            <span class="metrica-title">Proyectos</span>
+            <span class="metrica-badge" [ngClass]="metricas.proyectos.tendencia==='up'?'badge-green':metricas.proyectos.tendencia==='down'?'badge-red':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.proyectos.tendencia==='up'?'pi-arrow-up':metricas.proyectos.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.proyectos.diferencia !== 0 ? (metricas.proyectos.diferencia > 0 ? '+' : '') + metricas.proyectos.diferencia : '=' }}
+            </span>
+          </div>
+          <div class="metrica-num">{{ metricas.proyectos.en_curso }}</div>
+          <div class="metrica-sub">{{ metricas.proyectos.completados }} completados</div>
+        </div>
+      </div>
+
+      <div *ngIf="w.id === 'tareas'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-chart-card h-100">
+          <div class="chart-card-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2"><i class="pi pi-list-check chart-icon"></i><span class="chart-card-title">Tareas</span></div>
             <a routerLink="/tareas" class="chart-card-link">Ver todas →</a>
-            <button pButton pRipple type="button" icon="pi pi-plus"
-              class="p-button-rounded p-button-text"
-              style="width:26px;height:26px;color:#e91e8c"
-              (click)="onNavegar('/tareas')">
-            </button>
           </div>
-        </div>
-        <div *ngIf="cargandoTareas" class="text-center py-3">
-          <i class="pi pi-spin pi-spinner" style="color:#e91e8c"></i>
-        </div>
-        <div class="tareas-list mt-2" *ngIf="!cargandoTareas">
-          <div class="tarea-item" *ngFor="let tarea of tareasRecientes" [class.completada]="tarea.fk_id_estatus === 3">
-            <div>
+          <div class="tareas-list mt-2">
+            <div class="tarea-item" *ngFor="let tarea of tareasRecientes" [class.completada]="tarea.fk_id_estatus === 3">
               <button class="tarea-check-btn" (click)="onCambiarEstatusTarea(tarea)">
                 <i class="pi" [ngClass]="tarea.fk_id_estatus === 3 ? 'pi-check-circle' : 'pi-circle'"></i>
               </button>
-            </div>
-            <div class="tarea-item-body" (click)="onNavegar('/tareas')">
-              <span class="tarea-texto" [class.tachado]="tarea.fk_id_estatus === 3">{{ tarea.titulo }}</span>
-              <div class="tarea-item-meta">
-                <span class="tarea-prioridad-badge" [ngClass]="getPrioridadClass(tarea.prioridad)">{{ tarea.prioridad_label }}</span>
-                <span *ngIf="tarea.fecha_limite" class="tarea-fecha" [class.vencida]="tarea.fk_id_estatus !== 3 && tarea.fecha_limite < hoy">
-                  <i class="pi pi-calendar"></i> {{ tarea.fecha_limite | date:'dd/MM/yy' }}
-                </span>
-                <span class="tarea-responsable"><i class="pi pi-user"></i> {{ tarea.responsable_nombre }}</span>
+              <div class="tarea-item-body" (click)="onNavegar('/tareas')">
+                <span class="tarea-texto" [class.tachado]="tarea.fk_id_estatus === 3">{{ tarea.titulo }}</span>
+                <div class="tarea-item-meta">
+                  <span class="tarea-prioridad-badge" [ngClass]="getPrioridadClass(tarea.prioridad)">{{ tarea.prioridad_label }}</span>
+                  <span *ngIf="tarea.fecha_limite" class="tarea-fecha"><i class="pi pi-calendar"></i> {{ tarea.fecha_limite | date:'dd/MM/yy' }}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div *ngIf="tareasRecientes.length === 0" class="no-data-msg">
-            <i class="pi pi-check-circle" style="color:#1BC99A"></i>
-            <p class="mt-1">Sin tareas pendientes</p>
+            <div *ngIf="tareasRecientes.length === 0" class="no-data-msg">Sin tareas pendientes</div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-12 col-lg-6">
-      <div class="hoose-chart-card h-100" *ngIf="charts[1]?.type">
-        <div class="chart-card-header d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-2">
-            <i class="pi pi-wrench chart-icon"></i>
-            <span class="chart-card-title">Gastos Mantenimiento</span>
+
+      <div *ngIf="w.id === 'grafica_gastos' && charts[1]?.type" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+        draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
+        (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
+        <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
+        <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
+<div class="hoose-chart-card h-100">
+          <div class="chart-card-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2"><i class="pi pi-wrench chart-icon"></i><span class="chart-card-title">Gastos Mantenimiento</span></div>
+            <span class="gastos-total">{{ getGastosTotal() }}</span>
           </div>
-          <span class="gastos-total">{{ getGastosTotal() }}</span>
-        </div>
-        <div class="chart-wrap">
           <p-chart [type]="charts[1].type" [data]="charts[1]" [options]="charts[1].options" width="100%" height="220px"></p-chart>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- FILA 6: Gráficas restantes -->
-  <div class="row g-2" *ngIf="charts.length > 2">
-    <div class="col-12 col-md-6" *ngFor="let chart of charts | slice:2">
-      <div class="hoose-chart-card" *ngIf="chart?.type">
-        <div class="chart-card-header d-flex align-items-center gap-2">
-          <i class="pi pi-chart-line chart-icon"></i>
-          <span class="chart-card-title">{{ chart.title }}</span>
-        </div>
-        <div class="chart-wrap">
-          <p-chart [type]="chart.type" [data]="chart" [options]="chart.options" width="100%" height="220px"></p-chart>
-        </div>
-      </div>
-    </div>
+    </ng-container>
   </div>
-
 </div>

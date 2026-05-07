@@ -326,3 +326,134 @@
 .desglose-sep { color: var(--dim); }
 .text-success-custom { color: var(--green) !important; }
 .text-danger-custom { color: var(--red) !important; }
+
+/* ===== CSS GRID NATIVO ===== */
+.tb-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px;
+  padding: 12px;
+  background: #111318;
+  min-height: calc(100vh - 60px);
+}
+
+@media (max-width: 991px) {
+  .tb-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .tb-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tb-widget {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.tb-widget.drag-over {
+  outline: 2px dashed #e91e8c;
+  border-radius: 12px;
+}
+
+.tb-widget[draggable="true"] {
+  user-select: none;
+}
+
+.tb-widget.drag-over {
+  outline: 2px dashed #e91e8c;
+  border-radius: 12px;
+  opacity: 0.7;
+}
+
+.tb-widget.dragging {
+  opacity: 0.4;
+}
+
+/* Handle de arrastre */
+.widget-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 10;
+  cursor: grab;
+  color: transparent;
+  font-size: 0.85rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.tb-widget:hover .widget-handle {
+  color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.5);
+  pointer-events: all;
+  cursor: grab;
+}
+
+.widget-handle:active { cursor: grabbing; }
+
+/* Botones de tamaño */
+.widget-size-btns {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 10;
+  display: none;
+  gap: 2px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+
+.tb-widget:hover .widget-size-btns {
+  display: flex;
+}
+
+.widget-size-btns button {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.6rem;
+  padding: 1px 4px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.1s;
+}
+
+.widget-size-btns button:hover,
+.widget-size-btns button.active {
+  background: #e91e8c;
+  color: white;
+}
+
+/* Resize handle esquina inferior derecha */
+.widget-resize-handle {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  cursor: se-resize;
+  background: transparent;
+  border-right: 3px solid rgba(233,30,140,0.5);
+  border-bottom: 3px solid rgba(233,30,140,0.5);
+  border-radius: 0 0 4px 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.tb-widget:hover .widget-resize-handle {
+  opacity: 1;
+}
+
+/* Grid sin posiciones fijas */
+.tb-grid {
+  grid-auto-flow: row dense;
+}
