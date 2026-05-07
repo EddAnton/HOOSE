@@ -3,7 +3,7 @@ echo "🚀 Iniciando deploy de Hoose..."
 
 SFTP_USER="u105933725"
 SFTP_HOST="access885200975.webspace-data.io"
-SSH_KEY="$HOME/.ssh/hoose_ionos"
+SFTP_PASS=$(cat ~/.hoose_deploy_pass)
 
 # 1. Build Angular
 echo "📦 Compilando Angular..."
@@ -16,7 +16,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# 2. Copiar .htaccess al dist
+# 2. .htaccess
 cat > ~/Desktop/hoose-1/development/dist/.htaccess << 'HTACCESS'
 RewriteEngine On
 RewriteBase /
@@ -28,15 +28,21 @@ HTACCESS
 
 # 3. Subir frontend
 echo "⬆️  Subiendo frontend..."
-lftp -e "set sftp:auto-confirm yes; mirror -R --delete ~/Desktop/hoose-1/development/dist /httpdocs; bye" \
-  -u $SFTP_USER sftp://$SFTP_HOST --sftp-connect-program "ssh -i $SSH_KEY -p 22"
+lftp -u $SFTP_USER,$SFTP_PASS sftp://$SFTP_HOST << 'LFTP'
+set sftp:auto-confirm yes
+mirror -R --delete /Users/eduardodiazanton/Desktop/hoose-1/development/dist /httpdocs
+bye
+LFTP
 
 # 4. Subir API
 echo "⬆️  Subiendo API..."
-lftp -e "set sftp:auto-confirm yes; mirror -R --delete /Applications/XAMPP/xamppfiles/htdocs/api /httpdocs/api; bye" \
-  -u $SFTP_USER sftp://$SFTP_HOST --sftp-connect-program "ssh -i $SSH_KEY -p 22"
+lftp -u $SFTP_USER,$SFTP_PASS sftp://$SFTP_HOST << 'LFTP'
+set sftp:auto-confirm yes
+mirror -R --delete /Applications/XAMPP/xamppfiles/htdocs/api /httpdocs/api
+bye
+LFTP
 
-# 5. Git commit y push
+# 5. Git
 echo "💾 Guardando en GitHub..."
 cd ~/Desktop/hoose-1
 git add .
