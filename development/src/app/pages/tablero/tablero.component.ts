@@ -108,34 +108,34 @@ export class TableroComponent implements OnInit {
   defaultWidgets(): any[] {
     return [
       // Catálogo — altura fija compacta
-      { id: 'condominios',   span: 2, height: 100 },
-      { id: 'edificios',     span: 2, height: 100 },
-      { id: 'unidades',      span: 2, height: 100 },
-      { id: 'propietarios',  span: 2, height: 100 },
-      { id: 'condominos',    span: 2, height: 100 },
-      { id: 'colaboradores', span: 2, height: 100 },
-      { id: 'areas_comunes', span: 2, height: 100 },
-      { id: 'avisos',        span: 2, height: 100 },
+      { id: 'condominios',   span: 2, rows: 2 },
+      { id: 'edificios',     span: 2, rows: 2 },
+      { id: 'unidades',      span: 2, rows: 2 },
+      { id: 'propietarios',  span: 2, rows: 2 },
+      { id: 'condominos',    span: 2, rows: 2 },
+      { id: 'colaboradores', span: 2, rows: 2 },
+      { id: 'areas_comunes', span: 2, rows: 2 },
+      { id: 'avisos',        span: 2, rows: 2 },
       // Financieras
-      { id: 'fin_recaudaciones', span: 4, height: 140 },
-      { id: 'fin_cuotas',        span: 8, height: 140 },
-      { id: 'fin_egresos',       span: 4, height: 140 },
-      { id: 'fin_saldo',         span: 4, height: 140 },
-      { id: 'fin_nomina',        span: 4, height: 140 },
-      { id: 'fin_gastos',        span: 4, height: 140 },
-      { id: 'fin_fondos',        span: 8, height: 140 },
+      { id: 'fin_recaudaciones', span: 4, rows: 2 },
+      { id: 'fin_cuotas',        span: 8, rows: 2 },
+      { id: 'fin_egresos',       span: 4, rows: 2 },
+      { id: 'fin_saldo',         span: 4, rows: 2 },
+      { id: 'fin_nomina',        span: 4, rows: 2 },
+      { id: 'fin_gastos',        span: 4, rows: 2 },
+      { id: 'fin_fondos',        span: 8, rows: 2 },
       // Gráficas
-      { id: 'grafica_rec',   span: 8, height: 320 },
-      { id: 'cobranza',      span: 4, height: 320 },
+      { id: 'grafica_rec',   span: 8, rows: 5 },
+      { id: 'cobranza',      span: 4, rows: 5 },
       // Operativas
-      { id: 'op_ocupacion',  span: 3, height: 150 },
-      { id: 'op_quejas',     span: 3, height: 150 },
-      { id: 'op_asambleas',  span: 3, height: 150 },
-      { id: 'op_visitas',    span: 3, height: 150 },
-      { id: 'op_proyectos',  span: 3, height: 150 },
+      { id: 'op_ocupacion',  span: 3, rows: 2 },
+      { id: 'op_quejas',     span: 3, rows: 2 },
+      { id: 'op_asambleas',  span: 3, rows: 2 },
+      { id: 'op_visitas',    span: 3, rows: 2 },
+      { id: 'op_proyectos',  span: 3, rows: 2 },
       // Tareas y gastos
-      { id: 'tareas',        span: 6, height: 350 },
-      { id: 'grafica_gastos',span: 6, height: 350 },
+      { id: 'tareas',        span: 6, rows: 6 },
+      { id: 'grafica_gastos',span: 6, rows: 6 },
     ];
   }
 
@@ -156,6 +156,7 @@ export class TableroComponent implements OnInit {
   getWidgetStyle(w: any): any {
     return {
       'grid-column': 'span ' + Math.min(w.span || 4, 12),
+      'grid-row': 'span ' + Math.max(1, w.rows || 2),
     };
   }
 
@@ -227,9 +228,10 @@ export class TableroComponent implements OnInit {
       const spanDiff = Math.round(diffX / colWidth);
       widget.span = Math.max(2, Math.min(12, startSpan + spanDiff));
 
-      // Resize vertical (height en px)
+      // Resize vertical (rows)
       const diffY = e.clientY - startY;
-      widget.height = Math.max(120, startHeight + diffY);
+      const rowsDiff = Math.round(diffY / 60);
+      widget.rows = Math.max(1, (widget.rows || 2) + rowsDiff);
     };
 
     const onUp = () => {
