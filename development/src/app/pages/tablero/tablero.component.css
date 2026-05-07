@@ -316,7 +316,7 @@
 .fondo-monto { font-size: 0.9rem; font-weight: 700; color: var(--green); }
 .fondo-nombre { font-size: 0.62rem; color: var(--dim); }
 
-.fin-comparativo { display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+.fin-comparativo { display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; justify-content: flex-end; }
 .comp-pos { font-size: 0.82rem; font-weight: 700; color: var(--green); }
 .comp-neg { font-size: 0.82rem; font-weight: 700; color: var(--red); }
 .comp-label { font-size: 0.7rem; color: var(--dim); }
