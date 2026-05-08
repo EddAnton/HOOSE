@@ -112,14 +112,14 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'areas_comunes'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'areas_comunes' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/areas-comunes')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-star"></i></div>
-          <div class="cat-body"><div class="cat-label">Áreas Comunes</div><div class="cat-value">{{ getCardValue('Áreas comunes') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Áreas Comunes</div><div class="cat-value">{{ metricas?.areas_comunes?.total || 0 }}</div></div>
         </div>
       </div>
 
@@ -348,7 +348,7 @@
               {{ metricas.quejas.diferencia !== 0 ? (metricas.quejas.diferencia > 0 ? '+' : '') + metricas.quejas.diferencia : '=' }}
             </span>
           </div>
-          <div class="metrica-num">{{ metricas.quejas.actual }}</div>
+          <div class="metrica-num">{{ metricas.quejas.total }}</div>
           <div class="metrica-sub">{{ metricas.quejas.sin_revisar }} pend · {{ metricas.quejas.atendidas }} ok</div>
         </div>
       </div>
@@ -386,7 +386,7 @@
               {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : '=' }}
             </span>
           </div>
-          <div class="metrica-num">{{ metricas.visitas.actual }}</div>
+          <div class="metrica-num">{{ metricas.visitas.total }}</div>
           <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs anterior</div>
         </div>
       </div>
