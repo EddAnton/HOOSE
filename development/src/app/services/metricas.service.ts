@@ -15,11 +15,10 @@ export class MetricasService {
     });
   }
 
-  Tablero(comparativo: string = 'mes_anterior') {
-    return this.http.get(
-      `${environment.urlBackend}metricas/tablero?comparativo=${comparativo}`,
-
-      { headers: this.headers }
-    ).pipe(map(r => r));
+  Tablero(comparativo: string = 'mes_anterior', fechaInicio?: string, fechaFin?: string) {
+    let url = `${environment.urlBackend}metricas/tablero?comparativo=${comparativo}`;
+    if (fechaInicio) url += `&fecha_inicio=${fechaInicio}`;
+    if (fechaFin) url += `&fecha_fin=${fechaFin}`;
+    return this.http.get(url, { headers: this.headers }).pipe(map(r => r));
   }
 }

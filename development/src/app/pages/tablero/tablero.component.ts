@@ -293,8 +293,8 @@ export class TableroComponent implements OnInit {
     return this.data.cards.find(c => c.subtitle === subtitle)?.title || '0';
   }
 
-  cargarMetricas() {
-    this.metricasService.Tablero(this.comparativo).toPromise()
+  cargarMetricas(fechaInicio?: string, fechaFin?: string) {
+    this.metricasService.Tablero(this.comparativo, fechaInicio, fechaFin).toPromise()
       .then((r: any) => {
         this.metricas = r.data;
         this.calcularCobranza();
@@ -358,6 +358,9 @@ export class TableroComponent implements OnInit {
     this.data = null;
     this.charts = [];
     this.cardCobranza = null;
+    const fi = this.fechaInicial.toISOString().split('T')[0];
+    const ff = this.fechaFinal.toISOString().split('T')[0];
+    this.cargarMetricas(fi, ff);
     this.dashboardService.Listar(formData).toPromise()
       .then((r) => {
         this.data = r['data'];
