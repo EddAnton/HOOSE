@@ -46,69 +46,69 @@
   <div class="tb-grid" (dragover)="$event.preventDefault()" (drop)="onDropGrid($event)">
     <ng-container *ngFor="let w of widgets">
 
-      <div *ngIf="w.id === 'condominios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'condominios' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/condominios')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-home"></i></div>
-          <div class="cat-body"><div class="cat-label">Condominios</div><div class="cat-value">{{ getCardValue('Condominios') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Condominios</div><div class="cat-value">{{ metricas?.catalogo?.condominios || 0 }}</div></div>
         </div>
       </div>
 
-      <div *ngIf="w.id === 'edificios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'edificios' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/edificios')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-building"></i></div>
-          <div class="cat-body"><div class="cat-label">Edificios / Pisos</div><div class="cat-value">{{ getCardValue('Edificios / Pisos') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Edificios / Pisos</div><div class="cat-value">{{ metricas?.catalogo?.edificios || 0 }}</div></div>
         </div>
       </div>
 
-      <div *ngIf="w.id === 'unidades'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'unidades' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/unidades')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-th-large"></i></div>
-          <div class="cat-body"><div class="cat-label">Unidades</div><div class="cat-value">{{ getCardValue('Unidades') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Unidades</div><div class="cat-value">{{ metricas?.catalogo?.unidades || 0 }}</div></div>
         </div>
       </div>
 
-      <div *ngIf="w.id === 'propietarios'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'propietarios' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/propietarios')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-user"></i></div>
-          <div class="cat-body"><div class="cat-label">Propietarios</div><div class="cat-value">{{ getCardValue('Propietarios') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Propietarios</div><div class="cat-value">{{ metricas?.catalogo?.propietarios || 0 }}</div></div>
         </div>
       </div>
 
-      <div *ngIf="w.id === 'condominos'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'condominos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/condominos')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-users"></i></div>
-          <div class="cat-body"><div class="cat-label">Condóminos</div><div class="cat-value">{{ getCardValue('Condóminos') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Condóminos</div><div class="cat-value">{{ metricas?.catalogo?.condominos || 0 }}</div></div>
         </div>
       </div>
 
-      <div *ngIf="w.id === 'colaboradores'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'colaboradores' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/catalogos/colaboradores')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-id-card"></i></div>
-          <div class="cat-body"><div class="cat-label">Colaboradores</div><div class="cat-value">{{ getCardValue('Colaboradores') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Colaboradores</div><div class="cat-value">{{ metricas?.catalogo?.colaboradores || 0 }}</div></div>
         </div>
       </div>
 
@@ -123,14 +123,14 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'avisos'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'avisos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-cat-card h-100" (click)="onNavegar('/tablero-avisos')" style="cursor:pointer">
           <div class="cat-icon-wrap"><i class="pi pi-bell"></i></div>
-          <div class="cat-body"><div class="cat-label">Avisos</div><div class="cat-value">{{ getCardValue('Avisos') }}</div></div>
+          <div class="cat-body"><div class="cat-label">Avisos</div><div class="cat-value">{{ metricas?.catalogo?.avisos || 0 }}</div></div>
         </div>
       </div>
 
@@ -230,14 +230,14 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'fin_nomina'" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'fin_nomina' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-fin-card h-100" (click)="onNavegar('/nomina')" style="cursor:pointer">
           <div class="fin-header"><div class="fin-icon-wrap"><i class="pi pi-money-bill"></i></div><span class="fin-label">Nómina</span></div>
-          <div class="fin-value">{{ getCardTitle('Nómina') }}</div>
+          <div class="fin-value">${{ (metricas?.financieras?.nominas?.valor || 0) | number:'1.2-2' }}</div>
         </div>
       </div>
 
