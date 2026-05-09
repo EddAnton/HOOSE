@@ -54,7 +54,7 @@
           <!-- Botones relacionados con el Acta -->
           <!-- Botón Redactar acta -->
           <button
-            *ngIf="Convocatoria.estatus == 1 && Convocatoria.convocatoria_vencida == 1 && Convocatoria.id_acta == 0"
+            *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
             pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success me-1"
             pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
           <!-- Botón Detalles acta -->
