@@ -348,7 +348,7 @@
               {{ metricas.quejas.diferencia !== 0 ? (metricas.quejas.diferencia > 0 ? '+' : '') + metricas.quejas.diferencia : '=' }}
             </span>
           </div>
-          <div class="metrica-num">{{ metricas.quejas.total }}</div>
+          <div class="metrica-num">{{ metricas.quejas.actual }}</div>
           <div class="metrica-sub">{{ metricas.quejas.sin_revisar }} pend · {{ metricas.quejas.atendidas }} ok</div>
         </div>
       </div>
@@ -386,7 +386,7 @@
               {{ metricas.visitas.porcentaje !== 0 ? metricas.visitas.porcentaje + '%' : '=' }}
             </span>
           </div>
-          <div class="metrica-num">{{ metricas.visitas.total }}</div>
+          <div class="metrica-num">{{ metricas.visitas.actual }}</div>
           <div class="metrica-sub">{{ metricas.visitas.diferencia > 0 ? '+' : '' }}{{ metricas.visitas.diferencia }} vs anterior</div>
         </div>
       </div>
