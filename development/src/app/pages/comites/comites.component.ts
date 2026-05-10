@@ -61,7 +61,7 @@ export class ComitesComponent implements OnInit {
         this.comitesService.Listar().toPromise(),
         this.usuariosService.ListarUsuariosActaAsambleas().toPromise(),
       ]);
-      this.TiposComites = t['tipos_comites'] || [];
+      this.TiposComites = (t['tipos_comites'] || []).filter((tc: any) => +tc.id_tipo_comite !== 1);
       this.Comites = c['comites'] || [];
       const grupos = u['usuarios'] || [];
       this.UsuariosDisponibles = grupos.reduce((acc: any[], g: any) =>

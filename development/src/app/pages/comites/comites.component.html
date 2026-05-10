@@ -202,10 +202,10 @@
         </div>
 
         <!-- Fecha inicio -->
-        <div class="col-6 py-1">
+        <div class="col-12 col-md-6 py-1">
           <label class="fw-bold">Fecha inicio <span class="text-danger">*</span></label>
           <p-calendar formControlName="fecha_inicio" dateFormat="dd/mm/yy"
-            [showIcon]="true" styleClass="w-100"></p-calendar>
+            [showIcon]="true" styleClass="w-100" appendTo="body"></p-calendar>
           <small class="text-danger"
             *ngIf="frmMiembro.get('fecha_inicio').invalid && frmMiembro.get('fecha_inicio').touched">
             Requerido
@@ -213,10 +213,10 @@
         </div>
 
         <!-- Fecha fin -->
-        <div class="col-6 py-1">
+        <div class="col-12 col-md-6 py-1">
           <label class="fw-bold">Fecha fin</label>
           <p-calendar formControlName="fecha_fin" dateFormat="dd/mm/yy"
-            [showIcon]="true" styleClass="w-100" [showClear]="true"></p-calendar>
+            [showIcon]="true" styleClass="w-100" [showClear]="true" appendTo="body"></p-calendar>
         </div>
 
       </div>
