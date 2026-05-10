@@ -42,6 +42,38 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	mostrarDialogoEdicionAdministrador: boolean = false;
 	mostrarDialogoImagenAdministrador: boolean = false;
 	mostrarDialogoDetallesAdministrador: boolean = false;
+
+	// Tipo de administración
+	tipoAdministracion: string = 'UNICO';
+	tipoAcceso: string = 'EXTERNO';
+	tipoPersona: string = 'FISICA';
+	UsuariosInternos: any[] = [];
+	MiembrosComite: any[] = [];
+	frmMiembroComite: any = null;
+	mostrarFrmMiembro: boolean = false;
+	razonSocial: string = null;
+	rfcMoral: string = null;
+	representanteLegal: string = null;
+	archivosPersonaMoral: any = { acta_constitutiva: null, constancia_fiscal: null, id_representante: null };
+
+	opcionesTipoAdmin = [
+		{ label: 'Administrador Único', value: 'UNICO' },
+		{ label: 'Comité de Administración', value: 'COMITE' },
+	];
+	opcionesTipoAcceso = [
+		{ label: 'Interno (Propietario/Condómino)', value: 'INTERNO' },
+		{ label: 'Externo', value: 'EXTERNO' },
+	];
+	opcionesTipoPersona = [
+		{ label: 'Persona Física', value: 'FISICA' },
+		{ label: 'Persona Moral', value: 'MORAL' },
+	];
+	opcionesCargos = [
+		{ label: 'PRESIDENTE', value: 1 },
+		{ label: 'SECRETARIO', value: 2 },
+		{ label: 'TESORERO', value: 3 },
+		{ label: 'VOCAL', value: 4 },
+	];
 	srcImagen: string = null;
 	srcIdentificacionAnverso: string = null;
 	srcIdentificacionReverso: string = null;
@@ -146,11 +178,75 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			this.bImagenBorrar = false;
 			this.bIdentificacionAnversoBorrar = false;
 			this.bIdentificacionReversoBorrar = false;
+
+			// Reset tipo administración
+			this.tipoAdministracion = 'UNICO';
+			this.tipoAcceso = 'EXTERNO';
+			this.tipoPersona = 'FISICA';
+			this.MiembrosComite = [];
+			this.mostrarFrmMiembro = false;
+
+			// Cargar usuarios internos
+			this.usuariosService?.ListarUsuariosActaAsambleas().toPromise()
+				.then((r: any) => {
+					const grupos = r['usuarios'] || [];
+					this.UsuariosInternos = grupos.reduce((acc: any[], g: any) =>
+						acc.concat((g.usuarios || []).map((u: any) => ({
+							...u, label: u.usuario + ' — ' + u.perfil_usuario
+						}))), []);
+				}).catch(() => {});
+
 			this.mostrarDialogoEdicionAdministrador = true;
 		} catch (e) {
 			hlpSwal.Error(e);
 		}
 	}
+
+	onTipoAdminChange(val: string) {
+		this.tipoAdministracion = val;
+		if (val === 'COMITE') this.MiembrosComite = [];
+	}
+
+	onTipoAccesoChange(val: string) { this.tipoAcceso = val; }
+
+	onAgregarMiembroComite() {
+		this.mostrarFrmMiembro = true;
+		this.frmMiembroComite = { id_usuario: null, id_cargo: null, label: '' };
+	}
+
+	onConfirmarMiembro(usuario: any, idCargo: number) {
+		if (!usuario || !idCargo) return;
+		const cargo = this.opcionesCargos.find(c => c.value === idCargo);
+		// Verificar que no esté duplicado
+		const existe = this.MiembrosComite.find(m => m.id_usuario === usuario.id_usuario && m.id_cargo === idCargo);
+		if (existe) { hlpSwal.Advertencia('Este miembro ya tiene ese cargo.'); return; }
+		const cargosUnicos = [1,2,3]; // Presidente, Secretario, Tesorero son únicos
+		if (cargosUnicos.includes(idCargo) && this.MiembrosComite.find(m => m.id_cargo === idCargo)) {
+			hlpSwal.Advertencia('Ya existe un ' + cargo.label + ' en el comité.'); return;
+		}
+		this.MiembrosComite.push({ id_usuario: usuario.id_usuario, usuario: usuario.usuario, perfil_usuario: usuario.perfil_usuario, id_cargo: idCargo, cargo: cargo.label });
+		this.mostrarFrmMiembro = false;
+	}
+
+
+	onArchivoSeleccionado(event: any, tipo: string) {
+		const files = event.target.files;
+		if (!files || files.length === 0) return;
+		this.archivosPersonaMoral[tipo] = tipo === 'id_representante' ? Array.from(files) : files[0];
+	}
+
+	onTipoPersonaChange(val: string) {
+		this.tipoPersona = val;
+		this.razonSocial = null;
+		this.rfcMoral = null;
+		this.representanteLegal = null;
+		this.archivosPersonaMoral = { acta_constitutiva: null, constancia_fiscal: null, id_representante: null };
+	}
+
+	onEliminarMiembro(idx: number) {
+		this.MiembrosComite.splice(idx, 1);
+	}
+
 
 	async onImagenSeleccionada(event, idImagen: number = 0) {
 		if (event.target.files.length != 1 || idImagen == 0) return;

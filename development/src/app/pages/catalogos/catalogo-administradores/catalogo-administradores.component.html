@@ -158,6 +158,128 @@
 >
 	<ng-template pTemplate="content">
 		<form id="frmAdministrador" class="mt-1" [formGroup]="frmAdministrador" autocomplete="off">
+
+		<!-- Selector tipo de administración -->
+		<div class="row py-1 mb-2 border-bottom pb-3">
+			<div class="col-12 col-md-6 py-1">
+				<label class="fw-bold">Tipo de Administración</label>
+				<p-dropdown [options]="opcionesTipoAdmin" [(ngModel)]="tipoAdministracion"
+					[ngModelOptions]="{standalone: true}"
+					optionLabel="label" optionValue="value"
+					(onChange)="onTipoAdminChange($event.value)"
+					styleClass="w-100">
+				</p-dropdown>
+			</div>
+			<div class="col-12 col-md-6 py-1" *ngIf="tipoAdministracion === 'UNICO'">
+				<label class="fw-bold">Tipo de Acceso</label>
+				<p-dropdown [options]="opcionesTipoAcceso" [(ngModel)]="tipoAcceso"
+					[ngModelOptions]="{standalone: true}"
+					optionLabel="label" optionValue="value"
+					(onChange)="onTipoAccesoChange($event.value)"
+					styleClass="w-100">
+				</p-dropdown>
+			</div>
+		</div>
+
+		<!-- ÚNICO INTERNO -->
+		<div *ngIf="tipoAdministracion === 'UNICO' && tipoAcceso === 'INTERNO'" class="row py-1 mb-2">
+			<div class="col-12">
+				<label class="fw-bold">Propietario / Condómino <span class="text-danger">*</span></label>
+				<p-dropdown [options]="UsuariosInternos" [(ngModel)]="frmMiembroComite"
+					[ngModelOptions]="{standalone: true}"
+					optionLabel="label" placeholder="Buscar..." [filter]="true" filterBy="label"
+					[showClear]="true" styleClass="w-100">
+				</p-dropdown>
+				<small class="text-muted">Este usuario tendrá acceso como Administrador al sistema.</small>
+			</div>
+		</div>
+
+		<!-- ÚNICO EXTERNO: tipo persona -->
+		<div *ngIf="tipoAdministracion === 'UNICO' && tipoAcceso === 'EXTERNO'" class="row py-1 mb-2">
+			<div class="col-12 col-md-6">
+				<label class="fw-bold">Tipo de Persona</label>
+				<p-dropdown [options]="opcionesTipoPersona" [(ngModel)]="tipoPersona"
+					[ngModelOptions]="{standalone: true}"
+					optionLabel="label" optionValue="value"
+					(onChange)="onTipoPersonaChange($event.value)"
+					styleClass="w-100">
+				</p-dropdown>
+			</div>
+		</div>
+
+		<!-- EXTERNO PERSONA MORAL: campos adicionales -->
+		<div *ngIf="tipoAdministracion === 'UNICO' && tipoAcceso === 'EXTERNO' && tipoPersona === 'MORAL'" class="row py-1 mb-2">
+			<div class="col-12 col-md-6 py-1">
+				<label class="fw-bold">Razón Social <span class="text-danger">*</span></label>
+				<input pInputText [(ngModel)]="razonSocial" [ngModelOptions]="{standalone: true}"
+					class="w-100 uppercase" placeholder="Nombre de la empresa" />
+			</div>
+			<div class="col-12 col-md-6 py-1">
+				<label class="fw-bold">RFC <span class="text-danger">*</span></label>
+				<input pInputText [(ngModel)]="rfcMoral" [ngModelOptions]="{standalone: true}"
+					class="w-100 uppercase" placeholder="RFC de la empresa" />
+			</div>
+			<div class="col-12 py-1">
+				<label class="fw-bold">Representante Legal <span class="text-danger">*</span></label>
+				<input pInputText [(ngModel)]="representanteLegal" [ngModelOptions]="{standalone: true}"
+					class="w-100 uppercase" placeholder="Nombre del representante legal" />
+			</div>
+			<div class="col-12 col-md-4 py-1">
+				<label class="fw-bold">Acta Constitutiva</label>
+				<input type="file" class="form-control form-control-sm"
+					(change)="onArchivoSeleccionado($event, 'acta_constitutiva')" accept=".pdf,.jpg,.png" />
+			</div>
+			<div class="col-12 col-md-4 py-1">
+				<label class="fw-bold">Constancia de Situación Fiscal</label>
+				<input type="file" class="form-control form-control-sm"
+					(change)="onArchivoSeleccionado($event, 'constancia_fiscal')" accept=".pdf,.jpg,.png" />
+			</div>
+
+		</div>
+
+		<!-- COMITÉ DE ADMINISTRACIÓN -->
+		<div *ngIf="tipoAdministracion === 'COMITE'" class="mb-3">
+			<div class="d-flex align-items-center mb-2">
+				<span class="fw-bold me-auto">Integrantes del Comité</span>
+				<button pButton type="button" icon="pi pi-plus" label="Agregar miembro"
+					class="p-button-sm p-button-success" (click)="onAgregarMiembroComite()"></button>
+			</div>
+			<div *ngIf="mostrarFrmMiembro" class="card p-2 mb-2 bg-light">
+				<div class="row">
+					<div class="col-12 col-md-6 py-1">
+						<label class="fw-bold">Propietario / Condómino</label>
+						<p-dropdown [options]="UsuariosInternos" [(ngModel)]="frmMiembroComite.usuario"
+							[ngModelOptions]="{standalone: true}"
+							optionLabel="label" placeholder="Buscar..." [filter]="true" filterBy="label"
+							[showClear]="true" styleClass="w-100">
+						</p-dropdown>
+					</div>
+					<div class="col-12 col-md-4 py-1">
+						<label class="fw-bold">Cargo</label>
+						<p-dropdown [options]="opcionesCargos" [(ngModel)]="frmMiembroComite.id_cargo"
+							[ngModelOptions]="{standalone: true}"
+							optionLabel="label" optionValue="value"
+							placeholder="Cargo" styleClass="w-100">
+						</p-dropdown>
+					</div>
+					<div class="col-12 col-md-2 py-1 d-flex align-items-end">
+						<button pButton type="button" icon="pi pi-check" class="p-button-success p-button-sm me-1"
+							(click)="onConfirmarMiembro(frmMiembroComite.usuario, frmMiembroComite.id_cargo)"></button>
+						<button pButton type="button" icon="pi pi-times" class="p-button-warning p-button-sm"
+							(click)="mostrarFrmMiembro=false"></button>
+					</div>
+				</div>
+			</div>
+			<p-table [value]="MiembrosComite" styleClass="p-datatable-sm p-datatable-striped" [rowHover]="true">
+				<ng-template pTemplate="header"><tr><th>Cargo</th><th>Nombre</th><th>Perfil</th><th style="width:60px"></th></tr></ng-template>
+				<ng-template pTemplate="body" let-m let-i="rowIndex">
+					<tr><td><span class="badge bg-primary">{{m.cargo}}</span></td><td>{{m.usuario}}</td><td>{{m.perfil_usuario}}</td>
+					<td><button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="onEliminarMiembro(i)"></button></td></tr>
+				</ng-template>
+				<ng-template pTemplate="emptymessage"><tr><td colspan="4" class="text-center text-muted">Sin miembros</td></tr></ng-template>
+			</p-table>
+		</div>
+
 			<div class="row py-1">
 				<!-- Nombre -->
 				<div class="col-12 col-md-8">
@@ -255,205 +377,31 @@
 				</div>
 			</div>
 
-			<!-- Imagen -->
+			<!-- Imagen e Identificación -->
 			<hr />
-			Imagen
 			<div class="row py-1">
-				<!-- Thumbnail de la Imagen del propietario -->
-				<div class="col-12 text-center pb-3">
-					<img
-						*ngIf="srcImagen != null"
-						[src]="srcImagen"
-						class="imagenThumbnail img-thumbnail"
-						style="cursor: pointer"
-						(click)="onImagenMostrar(srcImagen)"
-					/>
-				</div>
-				<!-- Botones de acción -->
-				<div class="col-12 text-center">
-					<div class="input-group" style="display: unset">
-						<!-- Botón Seleccionar imagen -->
-						<label
-							for="txtImagenArchivo"
-							class="btn btn-dark"
-							pTooltip="Selecciona imagen del Administrador"
-							tooltipPosition="top"
-						>
-							<i class="pi pi-folder-open"></i
-						></label>
-						<input
-							type="file"
-							id="txtImagenArchivo"
-							class="form-control d-none"
-							accept=".png,.jpg,.jpeg"
-							aria-describedby="btnClearImagen"
-							pTooltip="Selecciona imagen del Administrador"
-							tooltipPosition="top"
-							(change)="onImagenSeleccionada($event, 1)"
-						/>
-						<!-- Botón Eliminar imagen seleccionada -->
-						<button
-							*ngIf="frmAdministrador.get('archivo_imagen').value"
-							type="button"
-							id="btnClearImagen"
-							class="btn btn-secondary"
-							pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Administrador"
-							tooltipPosition="left"
-							[disabled]="!frmAdministrador.get('archivo_imagen').value"
-							(click)="onImagenSeleccionadaCancelar(1)"
-						>
-							<i class="pi pi-undo"></i>
-						</button>
-						<!-- Botón Eliminar imagen -->
-						<button
-							*ngIf="frmAdministrador.get('imagen').value"
-							type="button"
-							icon="pi pi-trash"
-							class="btn btn-danger"
-							pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Administrador"
-							tooltipPosition="left"
-							[disabled]="!frmAdministrador.get('imagen').value"
-							(click)="onImagenEliminar(1)"
-						>
-							<i class="pi pi-trash"></i>
-						</button>
+				<div class="col-12 col-md-6 py-1">
+					<label class="fw-bold">Imagen</label>
+					<input type="file" class="form-control form-control-sm"
+						(change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg" />
+					<div *ngIf="srcImagen" class="mt-1">
+						<img [src]="srcImagen" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcImagen)" />
 					</div>
 				</div>
-			</div>
-
-			<!-- Identificación -->
-			<hr />
-			Identificación
-			<div class="row py-2">
-				<!-- Imagen del Anverso de la Identificación del propietario -->
-				<div class="col-12">
-					<div class="row">
-						<!-- Thumbnail  Anverso -->
-						<div class="col-12 col-md-6 text-center pb-3">
-							<img
-								class="imagenThumbnail img-thumbnail"
-								style="cursor: pointer"
-								*ngIf="srcIdentificacionAnverso != null"
-								[src]="srcIdentificacionAnverso"
-								(click)="onImagenMostrar(srcIdentificacionAnverso)"
-							/>
-							<!-- 							<div
-								*ngIf="srcIdentificacionAnverso == null && srcIdentificacionReverso != null"
-								class="d-none d-md-block h-100"
-							></div> -->
-						</div>
-						<!-- Thumbnail  Reverso -->
-						<div class="col-12 col-md-6 text-center pb-3">
-							<img
-								class="imagenThumbnail img-thumbnail"
-								style="cursor: pointer"
-								*ngIf="srcIdentificacionReverso != null"
-								[src]="srcIdentificacionReverso"
-								(click)="onImagenMostrar(srcIdentificacionReverso)"
-							/>
-						</div>
+				<div class="col-12 col-md-6 py-1">
+					<label class="fw-bold">Identificación (Anverso)</label>
+					<input type="file" class="form-control form-control-sm"
+						(change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg,.pdf" />
+					<div *ngIf="srcIdentificacionAnverso" class="mt-1">
+						<img [src]="srcIdentificacionAnverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
 					</div>
-					<div class="row">
-						<!-- Botones de acción Anverso -->
-						<div class="col-12 col-md-6 text-center">
-							<div class="input-group" style="display: unset">
-								<!-- Botón Seleccionar imagen -->
-								<label
-									for="txtAnversoIdentificacionArchivo"
-									class="btn btn-dark"
-									pTooltip="Selecciona imagen del anverso de la identificación del Administrador"
-									tooltipPosition="top"
-								>
-									<i class="pi pi-folder-open"></i
-								></label>
-								<input
-									type="file"
-									id="txtAnversoIdentificacionArchivo"
-									class="form-control d-none"
-									accept=".png,.jpg,.jpeg"
-									aria-describedby="btnClearAnversoIdentificacion"
-									pTooltip="Selecciona imagen del anverso de la identificación del Administrador"
-									tooltipPosition="top"
-									(change)="onImagenSeleccionada($event, 2)"
-								/>
-								<!-- Botón Eliminar imagen seleccionada -->
-								<button
-									*ngIf="frmAdministrador.get('archivo_identificacion_anverso').value"
-									type="button"
-									id="btnClearAnversoIdentificacion"
-									class="btn btn-secondary"
-									pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Administrador"
-									tooltipPosition="left"
-									[disabled]="!frmAdministrador.get('archivo_identificacion_anverso').value"
-									(click)="onImagenSeleccionadaCancelar(2)"
-								>
-									<i class="pi pi-undo"></i>
-								</button>
-								<!-- Botón Eliminar imagen -->
-								<button
-									*ngIf="frmAdministrador.get('identificacion_anverso').value"
-									type="button"
-									icon="pi pi-trash"
-									class="btn btn-danger"
-									pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Administrador"
-									tooltipPosition="left"
-									[disabled]="!frmAdministrador.get('identificacion_anverso').value"
-									(click)="onImagenEliminar(2)"
-								>
-									<i class="pi pi-trash"></i>
-								</button>
-							</div>
-						</div>
-						<!-- Botones de acción Reverso -->
-						<div class="col-12 col-md-6 text-center">
-							<div class="input-group" style="display: unset">
-								<!-- Botón Seleccionar imagen -->
-								<label
-									for="txtReversoIdentificacionArchivo"
-									class="btn btn-dark"
-									pTooltip="Selecciona imagen del reverso de la identificación del Administrador"
-									tooltipPosition="top"
-								>
-									<i class="pi pi-folder-open"></i
-								></label>
-								<input
-									type="file"
-									id="txtReversoIdentificacionArchivo"
-									class="form-control d-none"
-									accept=".png,.jpg,.jpeg"
-									aria-describedby="btnClearReversoIdentificacion"
-									pTooltip="Selecciona imagen del reverso de la identificación del Administrador"
-									tooltipPosition="top"
-									(change)="onImagenSeleccionada($event, 3)"
-								/>
-								<!-- Botón Eliminar imagen seleccionada -->
-								<button
-									*ngIf="frmAdministrador.get('archivo_identificacion_reverso').value"
-									type="button"
-									id="btnClearReversoIdentificacion"
-									class="btn btn-secondary"
-									pTooltip="Anular la elección de nueva imagen del reverso de la identificación del Administrador"
-									tooltipPosition="left"
-									[disabled]="!frmAdministrador.get('archivo_identificacion_reverso').value"
-									(click)="onImagenSeleccionadaCancelar(3)"
-								>
-									<i class="pi pi-undo"></i>
-								</button>
-								<!-- Botón Eliminar imagen -->
-								<button
-									*ngIf="frmAdministrador.get('identificacion_reverso').value"
-									type="button"
-									icon="pi pi-trash"
-									class="btn btn-danger"
-									pTooltip="Borrar la imagen ya almacenada del reverso de la identificación del Administrador"
-									tooltipPosition="left"
-									[disabled]="!frmAdministrador.get('identificacion_reverso').value"
-									(click)="onImagenEliminar(3)"
-								>
-									<i class="pi pi-trash"></i>
-								</button>
-							</div>
-						</div>
+				</div>
+				<div class="col-12 col-md-6 py-1">
+					<label class="fw-bold">Identificación (Reverso)</label>
+					<input type="file" class="form-control form-control-sm"
+						(change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg,.pdf" />
+					<div *ngIf="srcIdentificacionReverso" class="mt-1">
+						<img [src]="srcIdentificacionReverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionReverso)" />
 					</div>
 				</div>
 			</div>

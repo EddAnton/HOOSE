@@ -63,7 +63,7 @@ export class SidebarComponent implements OnInit {
       },
       {
         path: '/catalogos/administradores',
-        title: 'Administradores',
+        title: 'Administración',
         visiblePerfilUsuario: [1],
         visible: true,
         icon: 'bi bi-person-workspace',
@@ -140,7 +140,7 @@ export class SidebarComponent implements OnInit {
         path: '/comite-administracion',
         title: 'Comité de administración',
         visiblePerfilUsuario: [1, 2, 3],
-        visible: true,
+        visible: false,
         icon: 'bx bx-male-female',
       },
       { path: '/comites', title: 'Comités', visiblePerfilUsuario: [1, 2], visible: true, icon: 'bx bxs-group' },
