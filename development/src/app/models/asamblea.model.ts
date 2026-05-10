@@ -162,13 +162,9 @@ export class ActaModel {
   quien_emite: string;
   total_unidades: number;
   estatus: number;
-  /* existe_quorum: boolean;
-  votos_pendientes: boolean; */
-  /*
-  /*
-  pase_lista: ActaPaseListaModel[];
-  orden_dia: ActaOrdenDiaModel[];
-  */
+  id_presidente: number;
+  id_secretario: number;
+  id_escrutadores: number[];
 
   constructor() {
     return {
@@ -180,13 +176,10 @@ export class ActaModel {
       cierre: null,
       quien_emite: null,
       total_unidades: 0,
-      /* existe_quorum: false,
-      votos_pendientes: true, */
       estatus: 0,
-      /*
-      pase_lista: [],
-      orden_dia: [],
-      */
+      id_presidente: null,
+      id_secretario: null,
+      id_escrutadores: [],
     }
   }
 }

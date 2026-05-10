@@ -116,6 +116,7 @@ export class AsambleasComponent implements OnInit {
   frmActa: FormGroup;
   mostrarDialogoEdicionActa: boolean = false;
   mostrarDialogoEmisionActa: boolean = false;
+  usuariosActaFlat: any[] = [];
 
   constructor(private formBuilder: FormBuilder,
     private tiposAsambleasService: TiposAsambleasService,
@@ -460,6 +461,31 @@ export class AsambleasComponent implements OnInit {
   get actaPaseLista() { return this.frmActa.get('actaPaseLista') as FormArray; }
   get actaOrdenDia() { return this.frmActa.get('actaOrdenDia') as FormArray; }
 
+  // Opciones filtradas para la mesa de asamblea (excluye los ya seleccionados)
+  get opcionesPresidente() {
+    const excluir = [
+      this.frmActa?.get('id_secretario')?.value?.id_usuario,
+      ...(this.frmActa?.get('id_escrutadores')?.value || []).map((e: any) => e?.id_usuario)
+    ].filter(v => v);
+    return this.usuariosActaFlat.filter(u => !excluir.includes(u.id_usuario));
+  }
+
+  get opcionesSecretario() {
+    const excluir = [
+      this.frmActa?.get('id_presidente')?.value?.id_usuario,
+      ...(this.frmActa?.get('id_escrutadores')?.value || []).map((e: any) => e?.id_usuario)
+    ].filter(v => v);
+    return this.usuariosActaFlat.filter(u => !excluir.includes(u.id_usuario));
+  }
+
+  get opcionesEscrutadores() {
+    const excluir = [
+      this.frmActa?.get('id_presidente')?.value?.id_usuario,
+      this.frmActa?.get('id_secretario')?.value?.id_usuario,
+    ].filter(v => v);
+    return this.usuariosActaFlat.filter(u => !excluir.includes(u.id_usuario));
+  }
+
   async onActaEditar(Convocatoria: ConvocatoriaResumenModel) {
     if (Convocatoria.id_acta > 0) {
       return;
@@ -508,6 +534,22 @@ export class AsambleasComponent implements OnInit {
         .catch(async (e) => {
           await hlpSwal.Error(e).then(() => null);
         });
+
+      // Lista plana de todos los usuarios para la mesa de asamblea
+      this.usuariosActaFlat = usuariosActa
+        ? usuariosActa.reduce((acc: any[], unidad: any) => {
+            return acc.concat(unidad.usuarios.map((u: any) => ({
+              ...u,
+              label: u.usuario + ' - ' + u.perfil_usuario,
+            })));
+          }, [])
+        : [];
+
+      // Reiniciamos selecciones de mesa
+      this.frmActa.get('id_presidente').setValue(null);
+      this.frmActa.get('id_secretario').setValue(null);
+      this.frmActa.get('id_escrutadores').setValue([]);
+
       const ordenDiaActa = await this.asambleasService.ListarOrdenDiaConvocatoria(this.idAsamblea).toPromise()
         .then((r) => r['orden_dia'])
         .catch(async (e) => {

@@ -55,7 +55,7 @@
           <!-- Botón Redactar acta -->
           <button
             *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
-            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success me-1"
+            pButton type="button" icon="pi pi-book" class="p-button-rounded p-button-text p-button-success me-1"
             pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
           <!-- Botón Detalles acta -->
           <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta  > 0" pButton type="button"
@@ -71,7 +71,7 @@
           <!-- Botón Editar convocatoria-->
           <button
             *ngIf="Convocatoria.estatus == 1 && Convocatoria.convocatoria_vencida == 0 && Convocatoria.id_acta == 0"
-            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-success me-1"
+            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning me-1"
             pTooltip="Editar convocatoria" tooltipPosition="left"
             (click)="onConvocatoriaEditar(Convocatoria.id_asamblea)"></button>
           <!-- Botón Detalle convocatoria -->
@@ -252,6 +252,33 @@
           </div>
         </div>
       </div> -->
+
+      <!-- Mesa de la Asamblea -->
+      <p-fieldset legend="Mesa de la Asamblea" [toggleable]="true" styleClass="mt-2">
+        <div class="row py-1">
+          <div class="col-12 col-md-4 py-1">
+            <label class="fw-bold mb-1">Presidente</label>
+            <p-dropdown [options]="opcionesPresidente" formControlName="id_presidente"
+              optionLabel="label" placeholder="Selecciona presidente"
+              [showClear]="true" styleClass="w-100">
+            </p-dropdown>
+          </div>
+          <div class="col-12 col-md-4 py-1">
+            <label class="fw-bold mb-1">Secretario</label>
+            <p-dropdown [options]="opcionesSecretario" formControlName="id_secretario"
+              optionLabel="label" placeholder="Selecciona secretario"
+              [showClear]="true" styleClass="w-100">
+            </p-dropdown>
+          </div>
+          <div class="col-12 col-md-4 py-1">
+            <label class="fw-bold mb-1">Escrutadores</label>
+            <p-multiSelect [options]="opcionesEscrutadores" formControlName="id_escrutadores"
+              optionLabel="label" placeholder="Selecciona escrutadores"
+              styleClass="w-100">
+            </p-multiSelect>
+          </div>
+        </div>
+      </p-fieldset>
 
       <!-- Puntos del Orden del día -->
       <!-- <p-divider></p-divider> -->
