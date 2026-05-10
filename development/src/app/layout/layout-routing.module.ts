@@ -30,6 +30,7 @@ import { ReservarAreasComunesComponent } from '../pages/reservar-areas-comunes/r
 import { QuejasComponent } from '../pages/quejas/quejas.component';
 import { TareasComponent } from '../pages/tareas/tareas.component';
 import { NotificacionesComponent } from '../pages/notificaciones/notificaciones.component';
+import { ComitesComponent } from '../pages/comites/comites.component';
 
 const routes: Routes = [
 	{
@@ -189,6 +190,12 @@ const routes: Routes = [
 		component: TareasComponent,
 		canActivate: [AppAuthGuard],
 		data: { perfilesUsuarioPermitidos: [1, 2, 3] },
+	},
+	{
+		path: 'comites',
+		component: ComitesComponent,
+		canActivate: [AppAuthGuard],
+		data: { perfilesUsuarioPermitidos: [1, 2] },
 	},
 	{
 		path: 'quejas',

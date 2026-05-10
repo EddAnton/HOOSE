@@ -85,6 +85,7 @@ import { TareasComponent } from '../pages/tareas/tareas.component';
 import { NotificacionesComponent } from '../pages/notificaciones/notificaciones.component';
 import { DashboardChartComponent } from '../components/shared/dashboard/dashboard-chart/dashboard-chart.component';
 import { ComitesComponent } from '../pages/comites/comites.component';
+import { ComitesService } from '../services/comites.service';
 
 @NgModule({
   imports: [

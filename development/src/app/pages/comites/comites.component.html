@@ -1,1 +1,233 @@
-<p>comites works!</p>
+<!-- Módulo Comités -->
+<div class="card shadow-sm">
+  <div class="card-body p-2">
+    <div class="d-flex align-items-center p-1 mb-2">
+      <div class="me-auto">
+        <h5 class="mb-0"><i class="pi pi-users me-2"></i>Comités</h5>
+      </div>
+      <button pButton type="button" icon="pi pi-plus" label="Agregar miembro"
+        class="p-button-rounded p-button-raised p-button-success ms-1"
+        (click)="onNuevoMiembro()"></button>
+      <button pButton type="button" icon="pi pi-refresh"
+        class="p-button-rounded p-button-raised p-button-secondary ms-1"
+        (click)="onActualizarInformacion()"></button>
+      <button pButton type="button" icon="pi pi-cog" label="Tipos de comité"
+        class="p-button-rounded p-button-raised p-button-info ms-1"
+        pTooltip="Gestionar tipos de comité" tooltipPosition="bottom"
+        (click)="onNuevoTipo()"></button>
+    </div>
+
+    <!-- Sin datos -->
+    <div *ngIf="Comites.length === 0" class="text-center text-muted py-4">
+      <i class="pi pi-users" style="font-size:2rem"></i>
+      <p class="mt-2">No hay miembros registrados en ningún comité.</p>
+    </div>
+
+    <!-- Comités agrupados por tipo -->
+    <div *ngFor="let comite of Comites" class="mb-3">
+      <p-fieldset [legend]="'COMITÉ DE ' + comite.tipo_comite" [toggleable]="true" styleClass="mt-1">
+        <p-table [value]="comite.miembros" [responsive]="true" [rowHover]="true"
+          styleClass="p-datatable-striped p-datatable-sm" [columns]="ColsMiembros">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns" [ngStyle]="{width: col.width ? col.width : 'inherit'}"
+                [class]="col.textAlign ? 'text-' + col.textAlign : ''">
+                {{ col.header || '&nbsp;' }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-m>
+            <tr>
+              <td><span class="p-column-title">Cargo</span>
+                <span class="badge bg-primary">{{ m.cargo_comite }}</span>
+              </td>
+              <td><span class="p-column-title">Nombre</span>{{ m.usuario }}</td>
+              <td><span class="p-column-title">Perfil</span>{{ m.perfil_usuario }}</td>
+              <td><span class="p-column-title">Desde</span>{{ m.fecha_inicio | date:'dd/MM/yyyy' }}</td>
+              <td><span class="p-column-title">Hasta</span>
+                {{ m.fecha_fin ? (m.fecha_fin | date:'dd/MM/yyyy') : '—' }}
+              </td>
+              <td class="text-center">
+                <button pButton type="button" icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text p-button-warning me-1"
+                  pTooltip="Editar" tooltipPosition="left"
+                  (click)="onEditarMiembro(m)"></button>
+                <button pButton type="button" icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  pTooltip="Eliminar" tooltipPosition="left"
+                  (click)="onEliminarMiembro(m.id_miembro)"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-fieldset>
+    </div>
+  </div>
+</div>
+
+<!-- Diálogo gestionar tipos de comité -->
+<p-dialog [(visible)]="mostrarDialogoTipo" [modal]="true" [closable]="false"
+  [style]="{width: '400px'}" header="{{ TipoSeleccionado ? 'Editar tipo de comité' : 'Nuevo tipo de comité' }}"
+  styleClass="p-fluid" position="top">
+  <ng-template pTemplate="content">
+    <form *ngIf="frmTipo" [formGroup]="frmTipo" autocomplete="off">
+      <div class="py-1">
+        <label class="fw-bold">Nombre del comité <span class="text-danger">*</span></label>
+        <input pInputText formControlName="tipo_comite" class="w-100"
+          placeholder="Ej: COMITÉ DE SEGURIDAD" style="text-transform:uppercase" />
+        <small class="text-danger"
+          *ngIf="frmTipo.get('tipo_comite').invalid && frmTipo.get('tipo_comite').touched">
+          Requerido (mínimo 3 caracteres)
+        </small>
+      </div>
+
+      <!-- Lista de tipos existentes -->
+      <div class="mt-3">
+        <label class="fw-bold">Tipos de comité existentes</label>
+        <p-table [value]="TiposComites" styleClass="p-datatable-sm p-datatable-striped" [rowHover]="true">
+          <ng-template pTemplate="body" let-tipo>
+            <tr>
+              <td>{{ tipo.tipo_comite }}</td>
+              <td class="text-end" style="width:80px">
+                <button pButton type="button" icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text p-button-warning me-1"
+                  pTooltip="Editar" (click)="onEditarTipo(tipo)"></button>
+                <button pButton type="button" icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  pTooltip="Eliminar" (click)="onEliminarTipo(tipo.id_tipo_comite)"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Cerrar" icon="pi pi-times"
+      class="p-button-raised p-button-warning"
+      (click)="mostrarDialogoTipo = false"></button>
+    <button pButton type="button" label="Guardar tipo" icon="pi pi-check"
+      class="p-button-raised p-button-success"
+      (click)="onGuardarTipo()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo agregar/editar miembro -->
+<p-dialog [(visible)]="mostrarDialogo" [modal]="true" [closable]="false"
+  [style]="{width: '500px'}" header="{{ MiembroSeleccionado ? 'Editar miembro' : 'Agregar miembro al comité' }}"
+  styleClass="p-fluid" position="top">
+  <ng-template pTemplate="content">
+    <form *ngIf="frmMiembro" [formGroup]="frmMiembro" autocomplete="off">
+      <div class="row">
+
+        <!-- Tipo de comité -->
+        <div class="col-12 py-1">
+          <label class="fw-bold">Comité <span class="text-danger">*</span></label>
+          <p-dropdown [options]="TiposComites" formControlName="id_tipo_comite"
+            optionLabel="tipo_comite" optionValue="id_tipo_comite"
+            placeholder="Selecciona el comité" [showClear]="true" styleClass="w-100"
+            (onChange)="onTipoChange($event.value)">
+          </p-dropdown>
+          <small class="text-danger"
+            *ngIf="frmMiembro.get('id_tipo_comite').invalid && frmMiembro.get('id_tipo_comite').touched">
+            Requerido
+          </small>
+        </div>
+
+        <!-- Cargo -->
+        <div class="col-12 py-1">
+          <label class="fw-bold">Cargo <span class="text-danger">*</span></label>
+          <p-dropdown [options]="CargosComite" formControlName="id_cargo_comite"
+            optionLabel="cargo_comite" optionValue="id_cargo_comite"
+            placeholder="Selecciona el cargo" [showClear]="true" styleClass="w-100"
+            [disabled]="!frmMiembro.get('id_tipo_comite').value"
+            (onChange)="onCargoChange($event.value)">
+          </p-dropdown>
+          <small class="text-danger"
+            *ngIf="frmMiembro.get('id_cargo_comite').invalid && frmMiembro.get('id_cargo_comite').touched">
+            Requerido
+          </small>
+        </div>
+
+        <!-- === ADMINISTRADOR ÚNICO === -->
+        <ng-container *ngIf="esAdminUnico">
+
+          <!-- Tipo de persona -->
+          <div class="col-12 py-1">
+            <label class="fw-bold">Tipo de persona <span class="text-danger">*</span></label>
+            <p-dropdown [options]="tiposPersona" formControlName="tipo_persona"
+              optionLabel="label" optionValue="value"
+              placeholder="Selecciona tipo" [showClear]="true" styleClass="w-100">
+            </p-dropdown>
+          </div>
+
+          <!-- Persona Física: seleccionar de propietarios/condóminos -->
+          <div class="col-12 py-1" *ngIf="!esMoral">
+            <label class="fw-bold">Propietario / Condómino <span class="text-danger">*</span></label>
+            <p-dropdown [options]="UsuariosDisponibles" formControlName="id_usuario"
+              optionLabel="label" optionValue="id_usuario"
+              placeholder="Selecciona persona" [showClear]="true" styleClass="w-100"
+              [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+
+          <!-- Persona Moral -->
+          <ng-container *ngIf="esMoral">
+            <div class="col-12 py-1">
+              <label class="fw-bold">Razón social <span class="text-danger">*</span></label>
+              <input pInputText formControlName="razon_social" class="w-100"
+                placeholder="Nombre de la empresa" style="text-transform:uppercase" />
+            </div>
+            <div class="col-12 py-1">
+              <label class="fw-bold">Representante legal <span class="text-danger">*</span></label>
+              <input pInputText formControlName="representante_legal" class="w-100"
+                placeholder="Nombre del representante legal" style="text-transform:uppercase" />
+            </div>
+          </ng-container>
+
+        </ng-container>
+
+        <!-- === MIEMBRO DE COMITÉ (no único) === -->
+        <div class="col-12 py-1" *ngIf="!esAdminUnico">
+          <label class="fw-bold">Propietario / Condómino <span class="text-danger">*</span></label>
+          <p-dropdown [options]="UsuariosDisponibles" formControlName="id_usuario"
+            optionLabel="label" optionValue="id_usuario"
+            placeholder="Selecciona persona" [showClear]="true" styleClass="w-100"
+            [filter]="true" filterBy="label">
+          </p-dropdown>
+          <small class="text-danger"
+            *ngIf="frmMiembro.get('id_usuario').invalid && frmMiembro.get('id_usuario').touched">
+            Requerido
+          </small>
+        </div>
+
+        <!-- Fecha inicio -->
+        <div class="col-6 py-1">
+          <label class="fw-bold">Fecha inicio <span class="text-danger">*</span></label>
+          <p-calendar formControlName="fecha_inicio" dateFormat="dd/mm/yy"
+            [showIcon]="true" styleClass="w-100"></p-calendar>
+          <small class="text-danger"
+            *ngIf="frmMiembro.get('fecha_inicio').invalid && frmMiembro.get('fecha_inicio').touched">
+            Requerido
+          </small>
+        </div>
+
+        <!-- Fecha fin -->
+        <div class="col-6 py-1">
+          <label class="fw-bold">Fecha fin</label>
+          <p-calendar formControlName="fecha_fin" dateFormat="dd/mm/yy"
+            [showIcon]="true" styleClass="w-100" [showClear]="true"></p-calendar>
+        </div>
+
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-raised p-button-warning"
+      (click)="mostrarDialogo = false"></button>
+    <button pButton type="button" label="Guardar" icon="pi pi-check"
+      class="p-button-raised p-button-success"
+      (click)="onGuardar()"></button>
+  </ng-template>
+</p-dialog>

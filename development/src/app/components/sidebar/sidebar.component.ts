@@ -143,6 +143,7 @@ export class SidebarComponent implements OnInit {
         visible: true,
         icon: 'bx bx-male-female',
       },
+      { path: '/comites', title: 'Comités', visiblePerfilUsuario: [1, 2], visible: true, icon: 'bx bxs-group' },
       { path: '/asambleas', title: 'Asambleas', visiblePerfilUsuario: [1, 2], visible: true, icon: 'bx bxs-receipt' },
       {
         path: '/reservar-areas-comunes',
