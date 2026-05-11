@@ -541,12 +541,34 @@
           </select>
         </div>
 
-        <!-- Fecha y hora -->
+        <!-- Fecha asamblea -->
         <div class="col-12 col-md-3">
-          <label for="txtFechaHora">Fecha y hora asamblea</label>
-          <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy" showTime="true"
+          <label for="txtFechaHora">Fecha de la asamblea</label>
+          <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy"
             [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaAsamblea"
             inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
+        </div>
+
+        <!-- Hora primera convocatoria -->
+        <div class="col-12 col-md-2">
+          <label for="txtHoraPrimera">Hora 1ª convocatoria</label>
+          <p-calendar inputId="txtHoraPrimera" formControlName="hora_primera_convocatoria"
+            [timeOnly]="true" hourFormat="24" [appendTo]="dlgConvocatoria"
+            [inputStyle]="{ 'text-align': 'center' }" inputStyleClass="uppercase"
+            placeholder="HH:MM"></p-calendar>
+        </div>
+
+        <!-- Hora segunda convocatoria -->
+        <div class="col-12 col-md-2">
+          <label for="txtHoraSegunda">Hora 2ª convocatoria</label>
+          <p-calendar inputId="txtHoraSegunda" formControlName="hora_segunda_convocatoria"
+            [timeOnly]="true" hourFormat="24" [appendTo]="dlgConvocatoria"
+            [inputStyle]="{ 'text-align': 'center' }" inputStyleClass="uppercase"
+            placeholder="HH:MM"></p-calendar>
+          <small class="text-danger"
+            *ngIf="frmConvocatoria.get('hora_segunda_convocatoria').errors?.horaSegundaInvalida">
+            Debe ser al menos 30 min después de la 1ª
+          </small>
         </div>
 
         <!-- Lugar -->

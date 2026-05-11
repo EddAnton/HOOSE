@@ -18,6 +18,8 @@ export class ConvocatoriaModel {
   id_asamblea: number;
   id_tipo_asamblea: number;
   fecha_hora: Date;
+  hora_primera_convocatoria: string;
+  hora_segunda_convocatoria: string;
   lugar: string;
   fundamento_legal: string;
   convocatoria_cierre: string;
@@ -32,6 +34,8 @@ export class ConvocatoriaModel {
       id_asamblea: 0,
       id_tipo_asamblea: 0,
       fecha_hora: null,
+      hora_primera_convocatoria: null,
+      hora_segunda_convocatoria: null,
       lugar: null,
       fundamento_legal: isDevMode() ? asamblea : null,
       convocatoria_cierre: isDevMode() ? asamblea : null,

@@ -261,6 +261,76 @@ export class AsambleasComponent implements OnInit {
         validators: FormsValidator.fechaMenorQue('convocatoria_fecha', 'fecha_hora'),
       });
       this.frmConvocatoria.get('fecha_hora').setValidators([Validators.required]);
+      this.frmConvocatoria.get('hora_primera_convocatoria').setValidators([Validators.required]);
+
+      // Validador: hora segunda convocatoria >= hora primera + 30 min
+      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
+        (control) => {
+          const segunda = control.value;
+          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
+          if (!segunda || !primera) return null;
+          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
+          if (toMin(segunda) < toMin(primera) + 30) {
+            return { horaSegundaInvalida: true };
+          }
+          return null;
+        }
+      ]);
+      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
+        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
+      });
+
+      // Validador: hora segunda convocatoria >= hora primera + 30 min
+      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
+        (control) => {
+          const segunda = control.value;
+          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
+          if (!segunda || !primera) return null;
+          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
+          if (toMin(segunda) < toMin(primera) + 30) {
+            return { horaSegundaInvalida: true };
+          }
+          return null;
+        }
+      ]);
+      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
+        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
+      });
+      this.frmConvocatoria.get('hora_primera_convocatoria').setValidators([Validators.required]);
+
+      // Validador: hora segunda convocatoria >= hora primera + 30 min
+      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
+        (control) => {
+          const segunda = control.value;
+          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
+          if (!segunda || !primera) return null;
+          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
+          if (toMin(segunda) < toMin(primera) + 30) {
+            return { horaSegundaInvalida: true };
+          }
+          return null;
+        }
+      ]);
+      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
+        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
+      });
+
+      // Validador: hora segunda convocatoria >= hora primera + 30 min
+      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
+        (control) => {
+          const segunda = control.value;
+          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
+          if (!segunda || !primera) return null;
+          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
+          if (toMin(segunda) < toMin(primera) + 30) {
+            return { horaSegundaInvalida: true };
+          }
+          return null;
+        }
+      ]);
+      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
+        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
+      });
       this.frmConvocatoria.get('id_tipo_asamblea').setValidators([Validators.min(1)]);
       this.frmConvocatoria
         .get('lugar')
