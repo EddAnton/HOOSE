@@ -233,6 +233,10 @@ export class SesionUsuarioService {
     return Number(this.sesionUsuarioModel ? this.sesionUsuarioModel.id_perfil_usuario : 0);
   }
 
+  obtenerNombreCondominio(): string {
+    return this.sesionUsuarioModel?.condominio_usuario || '';
+  }
+
   /* UsuarioEstaAutenticado(data: any): number {
     if (isDevMode()) {
       return 1;

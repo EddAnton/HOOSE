@@ -533,7 +533,7 @@
         <!-- Tipo asamblea -->
         <div class="col-12 col-md-3 form-label-group">
           <label for="cmbTipoAsamblea">Tipo de Asamblea</label>
-          <select #cmbTipoAsamblea id="cmbTipoAsamblea" formControlName="id_tipo_asamblea" class="form-select">
+          <select #cmbTipoAsamblea id="cmbTipoAsamblea" formControlName="id_tipo_asamblea" class="form-select" (change)="actualizarVariablesConvocatoria()">
             <option [value]="0" disabled selected>Selecciona una opción...</option>
             <option *ngFor="let tipoAsamblea of TiposAsambleas" [value]="tipoAsamblea.id_tipo_asamblea">
               {{ tipoAsamblea.tipo_asamblea }}
@@ -545,7 +545,7 @@
         <div class="col-12 col-md-3">
           <label for="txtFechaHora">Fecha de la asamblea</label>
           <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy"
-            [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaAsamblea"
+            (onSelect)="actualizarVariablesConvocatoria()" [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaAsamblea"
             inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
         </div>
 
@@ -553,7 +553,7 @@
         <div class="col-12 col-md-2">
           <label for="txtHoraPrimera">Hora 1ª convocatoria</label>
           <p-calendar inputId="txtHoraPrimera" formControlName="hora_primera_convocatoria"
-            [timeOnly]="true" hourFormat="24" [appendTo]="dlgConvocatoria"
+            [timeOnly]="true" hourFormat="24" (onSelect)="actualizarVariablesConvocatoria()" [appendTo]="dlgConvocatoria"
             [inputStyle]="{ 'text-align': 'center' }" inputStyleClass="uppercase"
             placeholder="HH:MM"></p-calendar>
         </div>
@@ -562,7 +562,7 @@
         <div class="col-12 col-md-2">
           <label for="txtHoraSegunda">Hora 2ª convocatoria</label>
           <p-calendar inputId="txtHoraSegunda" formControlName="hora_segunda_convocatoria"
-            [timeOnly]="true" hourFormat="24" [appendTo]="dlgConvocatoria"
+            [timeOnly]="true" hourFormat="24" (onSelect)="actualizarVariablesConvocatoria()" [appendTo]="dlgConvocatoria"
             [inputStyle]="{ 'text-align': 'center' }" inputStyleClass="uppercase"
             placeholder="HH:MM"></p-calendar>
           <small class="text-danger"
@@ -575,7 +575,7 @@
         <div class="col-12 col-md-6">
           <label for="txtLugar">Lugar celebración</label>
           <input type="text" pInputText id="txtLugar" formControlName="lugar" class="uppercase" autofocus
-            (focus)="hlpApp.selectAllContent($event)" />
+            (focus)="hlpApp.selectAllContent($event)" (input)="actualizarVariablesConvocatoria()" />
         </div>
       </div>
 
@@ -592,6 +592,7 @@
             </ng-container>
             <ng-template #templateFundamentoLegal>
               <p-editor #fundamentoLegal formControlName="fundamento_legal" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'fundamento_legal')"
                 [modules]="ModulosEditorDescripcion">
                 <p-header>
                   <span class="ql-formats">
@@ -695,6 +696,7 @@
             </ng-container>
             <ng-template #templateCierreConvocatoria>
               <p-editor #convocatoriaCierre formControlName="convocatoria_cierre" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'convocatoria_cierre')"
                 [modules]="ModulosEditorDescripcion">
                 <p-header>
                   <span class="ql-formats">
@@ -742,7 +744,7 @@
         <div class="col-12 col-sm-4 col-md-3 pt-2">
           <label for="txtConvocatoriaFecha">Fecha convocatoria</label>
           <p-calendar inputId="txtConvocatoriaFecha" formControlName="convocatoria_fecha" dateFormat="dd-MM-yy"
-            [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaConvocatoria"
+            (onSelect)="actualizarVariablesConvocatoria()" [appendTo]="dlgConvocatoria" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaConvocatoria"
             inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
         </div>
 
@@ -750,7 +752,7 @@
         <div class="col-12 col-sm-4 col-md-4 pt-2">
           <label for="txtConvocatoriaCiudad">Ciudad convocatoria</label>
           <input pInputText type="text" id="txtConvocatoriaCiudad" formControlName="convocatoria_ciudad"
-            class="uppercase" (focus)="hlpApp.selectAllContent($event)" />
+            class="uppercase" (input)="actualizarVariablesConvocatoria()" (focus)="hlpApp.selectAllContent($event)" />
         </div>
 
         <!-- Convocatoria quien emite -->

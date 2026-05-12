@@ -1,4 +1,4 @@
-import { Component, OnInit, isDevMode } from '@angular/core';
+import { Component, OnInit, isDevMode, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import alasql from 'alasql';
@@ -22,6 +22,8 @@ import {
 import { AsambleasService } from '../../services/asambleas.service';
 import { UsuariosService } from '../../services/usuarios.service';
 import { TiposAsambleasService } from '../../services/tipos-asambleas.service';
+import { ConfiguracionService } from '../../services/configuracion.service';
+import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 
 @Component({
   selector: 'app-asambleas',
@@ -62,6 +64,9 @@ export class AsambleasComponent implements OnInit {
   // Convocatorias: ConvocatoriaModel[] = [];
   Convocatorias: ConvocatoriaResumenModel[] = [];
   TiposAsambleas: any[] = [];
+  quillEditors: any = {};
+  textosOriginalesConfig: any = {};
+  private _updateTimer: any = null;
   idAsamblea: number = 0;
   Convocatoria: ConvocatoriaModel;
   fechaMinimaAsamblea: Date = new Date();
@@ -127,6 +132,8 @@ export class AsambleasComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private tiposAsambleasService: TiposAsambleasService,
     private asambleasService: AsambleasService,
+    private configuracionService: ConfiguracionService,
+    private sesionUsuarioService: SesionUsuarioService,
     private usuariosService: UsuariosService,
     // private unidadesService: UnidadesService
   ) { }
@@ -346,6 +353,54 @@ export class AsambleasComponent implements OnInit {
       this.frmConvocatoria.get('convocatoria_fecha').setValidators([Validators.required]);
       this.frmConvocatoria.get('convocatoria_ciudad').setValidators([Validators.required]);
       this.frmConvocatoria.get('convocatoria_quien_emite').setValidators([Validators.required]);
+
+      // Precargar textos de configuración solo para convocatorias nuevas
+      if (idAsamblea === 0) {
+        try {
+          const cfg: any = await this.configuracionService.Listar().toPromise();
+          const config = cfg['config'] || {};
+          // Valores disponibles al momento de precargar
+          const valoresIniciales = {
+            nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
+            tipo_asamblea: '',
+            fecha_asamblea: '',
+            hora_primera_convocatoria: '',
+            hora_segunda_convocatoria: '',
+            lugar: '',
+            ciudad_convocatoria: '',
+            fecha_convocatoria: '',
+            quien_convoca: '',
+          };
+          if (config['convocatoria_fundamento_legal']) {
+            this.textosOriginalesConfig['fundamento_legal'] = config['convocatoria_fundamento_legal'];
+            this.frmConvocatoria.get('fundamento_legal').setValue(
+              this.reemplazarVariables(config['convocatoria_fundamento_legal'], valoresIniciales)
+            );
+          }
+          if (config['convocatoria_cierre']) {
+            this.textosOriginalesConfig['convocatoria_cierre'] = config['convocatoria_cierre'];
+            this.frmConvocatoria.get('convocatoria_cierre').setValue(
+              this.reemplazarVariables(config['convocatoria_cierre'], valoresIniciales)
+            );
+          }
+          if (config['convocatoria_disposiciones_generales'] && this.frmConvocatoria.get('disposiciones_generales')) {
+            this.frmConvocatoria.get('disposiciones_generales').setValue(config['convocatoria_disposiciones_generales']);
+          }
+
+          // Suscribir a cambios del formulario para actualizar variables en tiempo real
+          const camposQueActualizan = ['lugar', 'fecha_hora', 'hora_primera_convocatoria',
+            'hora_segunda_convocatoria', 'convocatoria_ciudad', 'convocatoria_fecha',
+            'convocatoria_quien_emite', 'id_tipo_asamblea'];
+
+          camposQueActualizan.forEach(campo => {
+            this.frmConvocatoria.get(campo)?.valueChanges.subscribe(() => {
+              this.actualizarVariablesConvocatoria();
+            });
+          });
+
+        } catch(e) { console.error('Error cargando config:', e); }
+      }
+
       this.OrdenesDelDia = [];
       if (this.Convocatoria.orden_dia) {
         this.OrdenesDelDia = this.Convocatoria.orden_dia.map((o) => {
@@ -530,6 +585,80 @@ export class AsambleasComponent implements OnInit {
           hlpSwal.ExitoToast(r.value.msg);
         }
       });
+  }
+
+  onQuillInit(editor: any, campo: string) {
+    this.quillEditors[campo] = editor;
+  }
+
+  actualizarVariablesConvocatoria() {
+    if (!this.frmConvocatoria) return;
+    const f = this.frmConvocatoria.value;
+
+    // Obtener tipo asamblea
+    const tipoAsamblea = this.TiposAsambleas.find(t => +t.id_tipo_asamblea === +f.id_tipo_asamblea)?.tipo_asamblea || '';
+
+    // Formatear fechas
+    const formatFecha = (d: Date) => {
+      if (!d) return '';
+      const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+      return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+    };
+    const formatHora = (d: Date) => {
+      if (!d) return '';
+      return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+    };
+
+    const valores = {
+      nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
+      tipo_asamblea: tipoAsamblea,
+      fecha_asamblea: f.fecha_hora ? formatFecha(new Date(f.fecha_hora)) : '',
+      hora_primera_convocatoria: f.hora_primera_convocatoria ? formatHora(new Date(f.hora_primera_convocatoria)) : '',
+      hora_segunda_convocatoria: f.hora_segunda_convocatoria ? formatHora(new Date(f.hora_segunda_convocatoria)) : '',
+      lugar: f.lugar || '',
+      ciudad_convocatoria: f.convocatoria_ciudad || '',
+      fecha_convocatoria: f.convocatoria_fecha ? formatFecha(new Date(f.convocatoria_fecha)) : '',
+      quien_convoca: f.convocatoria_quien_emite || '',
+    };
+
+    // Actualizar FormControls inmediatamente
+    ['fundamento_legal', 'convocatoria_cierre'].forEach(campo => {
+      const textoOriginal = this.textosOriginalesConfig[campo];
+      if (!textoOriginal) return;
+      const nuevoValor = this.reemplazarVariables(textoOriginal, valores);
+      this.frmConvocatoria.get(campo)?.setValue(nuevoValor, { emitEvent: false });
+    });
+
+    // Actualizar editores Quill con debounce para no robar el foco mientras escribe
+    if (this._updateTimer) clearTimeout(this._updateTimer);
+    this._updateTimer = setTimeout(() => {
+      ['fundamento_legal', 'convocatoria_cierre'].forEach(campo => {
+        const textoOriginal = this.textosOriginalesConfig[campo];
+        if (!textoOriginal) return;
+        const ctrl = this.frmConvocatoria.get(campo);
+        if (ctrl && this.quillEditors[campo]) {
+          const qlEditor = this.quillEditors[campo].root;
+          if (qlEditor) qlEditor.innerHTML = ctrl.value;
+        }
+      });
+    }, 800);
+
+
+  }
+
+  // Reemplazar variables en texto con valores del formulario
+  reemplazarVariables(texto: string, valores: any): string {
+    if (!texto) return texto;
+    return texto
+      .replace(/{{nombre_condominio}}/g, valores.nombre_condominio || '<<Nombre del Condominio>>')
+      .replace(/{{tipo_asamblea}}/g, valores.tipo_asamblea || '<<Ordinaria/Extraordinaria>>')
+      .replace(/{{fecha_asamblea}}/g, valores.fecha_asamblea || '<<DD de MMMM de YYYY>>')
+      .replace(/{{hora_primera_convocatoria}}/g, valores.hora_primera_convocatoria || '<<HH:MM>>')
+      .replace(/{{hora_segunda_convocatoria}}/g, valores.hora_segunda_convocatoria || '<<HH:MM>>')
+      .replace(/{{lugar}}/g, valores.lugar || '<<Lugar>>')
+      .replace(/{{ciudad_convocatoria}}/g, valores.ciudad_convocatoria || '<<Ciudad>>')
+      .replace(/{{fecha_convocatoria}}/g, valores.fecha_convocatoria || '<<DD de MMMM de YYYY>>')
+      .replace(/{{quien_convoca}}/g, valores.quien_convoca || '<<Quien Convoca>>');
   }
 
   // get existeQuorum() { return this.frmActa.get('existe_quorum') }
