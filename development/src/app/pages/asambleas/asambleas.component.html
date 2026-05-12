@@ -179,7 +179,7 @@
 
       <!-- Pase de lista -->
       <!-- <p-divider></p-divider> -->
-      <p-fieldset legend="Pase de lista" [toggleable]="true" styleClass="mt-2">
+      <p-fieldset *ngIf="frmActa" legend="Pase de lista" [toggleable]="true" styleClass="mt-2">
         <p-table #ptPaseLista [value]="actaPaseLista.controls" [columns]="PaseListaCols" [responsive]="true"
           [rowHover]="true" dataKey="id_unidad" styleClass="p-datatable-striped">
           <ng-template pTemplate="header" let-columns>
@@ -254,13 +254,13 @@
       </div> -->
 
       <!-- Mesa de la Asamblea -->
-      <p-fieldset legend="Mesa de la Asamblea" [toggleable]="true" styleClass="mt-2">
+      <p-fieldset *ngIf="frmActa && usuariosActaFlat.length > 0" legend="Mesa de la Asamblea" [toggleable]="true" styleClass="mt-2">
         <div class="row py-1">
           <div class="col-12 col-md-4 py-1">
             <label class="fw-bold mb-1">Presidente</label>
             <p-dropdown [options]="opcionesPresidente" formControlName="id_presidente"
               optionLabel="label" placeholder="Selecciona presidente"
-              [showClear]="true" styleClass="w-100">
+              [showClear]="true" styleClass="w-100" appendTo="body">
             </p-dropdown>
           </div>
           <div class="col-12 col-md-4 py-1">
@@ -274,7 +274,7 @@
             <label class="fw-bold mb-1">Escrutadores</label>
             <p-multiSelect [options]="opcionesEscrutadores" formControlName="id_escrutadores"
               optionLabel="label" placeholder="Selecciona escrutadores"
-              styleClass="w-100">
+              styleClass="w-100" appendTo="body">
             </p-multiSelect>
           </div>
         </div>
@@ -756,8 +756,11 @@
         <!-- Convocatoria quien emite -->
         <div class="col-12 col-sm-4 col-md-5 pt-2">
           <label for="txtConvocatoriaQuienEmite">¿Quién convoca?</label>
-          <input pInputText type="text" id="txtConvocatoriaQuienEmite" formControlName="convocatoria_quien_emite"
-            class="uppercase" (focus)="hlpApp.selectAllContent($event)" />
+          <p-dropdown [options]="opcionesQuienConvoca" formControlName="convocatoria_quien_emite"
+            optionLabel="label" optionValue="value"
+            placeholder="Selecciona quién convoca" [showClear]="true"
+            [appendTo]="dlgConvocatoria" styleClass="w-100">
+          </p-dropdown>
         </div>
       </div>
     </form>

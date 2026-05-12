@@ -31,6 +31,7 @@ import { QuejasComponent } from '../pages/quejas/quejas.component';
 import { TareasComponent } from '../pages/tareas/tareas.component';
 import { NotificacionesComponent } from '../pages/notificaciones/notificaciones.component';
 import { ComitesComponent } from '../pages/comites/comites.component';
+import { ConfiguracionComponent } from '../pages/configuracion/configuracion.component';
 
 const routes: Routes = [
 	{
@@ -190,6 +191,12 @@ const routes: Routes = [
 		component: TareasComponent,
 		canActivate: [AppAuthGuard],
 		data: { perfilesUsuarioPermitidos: [1, 2, 3] },
+	},
+	{
+		path: 'configuracion',
+		component: ConfiguracionComponent,
+		canActivate: [AppAuthGuard],
+		data: { perfilesUsuarioPermitidos: [1, 2] },
 	},
 	{
 		path: 'comites',

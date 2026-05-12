@@ -1,0 +1,67 @@
+<div class="card shadow-sm">
+  <div class="card-body p-2">
+    <div class="d-flex align-items-center p-1 mb-2">
+      <div class="me-auto">
+        <h5 class="mb-0"><i class="pi pi-cog me-2"></i>Configuración General — Textos Precargados</h5>
+      </div>
+      <button pButton type="button" icon="pi pi-save" label="Guardar configuración"
+        class="p-button-rounded p-button-raised p-button-success ms-1"
+        (click)="onGuardar()"></button>
+    </div>
+
+    <p class="text-muted small mb-3">
+      <i class="pi pi-info-circle me-1"></i>
+      Escribe los textos base para convocatorias y actas. Usa las <strong>variables disponibles</strong>
+      haciendo clic en ellas — se insertarán automáticamente en el editor activo.
+      Al generar una convocatoria o acta, las variables se reemplazarán con los datos reales.
+    </p>
+
+    <form *ngIf="frmConfig" [formGroup]="frmConfig" autocomplete="off">
+      <div *ngFor="let seccion of secciones" class="mb-4">
+        <p-fieldset [legend]="seccion" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
+
+          <!-- Variables disponibles -->
+          <div class="mb-3 p-2 border rounded bg-light">
+            <small class="fw-bold text-secondary d-block mb-1">
+              <i class="pi pi-tag me-1"></i>Variables disponibles — haz clic para insertar en el editor activo:
+            </small>
+            <div class="d-flex flex-wrap gap-1">
+              <span *ngFor="let v of variablesSeccion(seccion)"
+                class="badge bg-secondary" style="cursor:pointer; font-size:0.75rem"
+                [pTooltip]="v.descripcion" tooltipPosition="top"
+                (click)="insertarVariable(v.variable)">
+                {{v.variable}}
+              </span>
+            </div>
+          </div>
+
+          <!-- Campos de texto -->
+          <div *ngFor="let campo of clavesSeccion(seccion)" class="row py-2">
+            <div class="col-12">
+              <label class="fw-bold mb-1">{{ campo.label }}</label>
+              <p-editor [formControlName]="campo.clave" [style]="{ height: '180px' }"
+                (onInit)="onEditorInit($event.editor, campo.clave)"
+                (click)="onEditorFocus(campo.clave)">
+                <p-header>
+                  <span class="ql-formats">
+                    <button class="ql-bold" tabindex="-1"></button>
+                    <button class="ql-italic" tabindex="-1"></button>
+                    <button class="ql-underline" tabindex="-1"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered" tabindex="-1"></button>
+                    <button class="ql-list" value="bullet" tabindex="-1"></button>
+                  </span>
+                </p-header>
+              </p-editor>
+              <small class="text-muted" *ngIf="editorActivo === campo.clave">
+                <i class="pi pi-pencil me-1 text-success"></i>Editor activo
+              </small>
+            </div>
+          </div>
+
+        </p-fieldset>
+      </div>
+    </form>
+  </div>
+</div>

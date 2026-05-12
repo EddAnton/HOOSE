@@ -9,6 +9,7 @@ import { PhoneFormatPipe } from '../pipes/phone-format.pipe';
 import { TableModule } from 'primeng/table';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
@@ -85,6 +86,7 @@ import { TareasComponent } from '../pages/tareas/tareas.component';
 import { NotificacionesComponent } from '../pages/notificaciones/notificaciones.component';
 import { DashboardChartComponent } from '../components/shared/dashboard/dashboard-chart/dashboard-chart.component';
 import { ComitesComponent } from '../pages/comites/comites.component';
+import { ConfiguracionComponent } from '../pages/configuracion/configuracion.component';
 import { ComitesService } from '../services/comites.service';
 
 @NgModule({
@@ -96,6 +98,7 @@ import { ComitesService } from '../services/comites.service';
     TableModule,
     SelectButtonModule,
     DropdownModule,
+    MultiSelectModule,
     InputNumberModule,
     InputTextareaModule,
     ButtonModule,
@@ -156,6 +159,7 @@ import { ComitesService } from '../services/comites.service';
     NotificacionesComponent,
     DashboardChartComponent,
     ComitesComponent,
+		ConfiguracionComponent,
   ],
   exports: [LayoutComponent, NavbarComponent],
   bootstrap: [TableroComponent],

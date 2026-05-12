@@ -43,6 +43,12 @@ export class AsambleasComponent implements OnInit {
 
   // Tabla Convocatorias
   // Columnas de la tabla
+
+  opcionesQuienConvoca: any[] = [
+    { label: 'ADMINISTRADOR', value: 'ADMINISTRADOR' },
+    { label: 'COMITÉ DE VIGILANCIA', value: 'COMITÉ DE VIGILANCIA' },
+    { label: 'ADMINISTRADOR Y COMITÉ DE VIGILANCIA', value: 'ADMINISTRADOR Y COMITÉ DE VIGILANCIA' },
+  ];
   ConvocatoriasCols: any[] = [
     { header: 'Fecha', width: '140px' },
     { header: 'Tipo' },
@@ -531,13 +537,26 @@ export class AsambleasComponent implements OnInit {
   get actaPaseLista() { return this.frmActa.get('actaPaseLista') as FormArray; }
   get actaOrdenDia() { return this.frmActa.get('actaOrdenDia') as FormArray; }
 
-  // Opciones filtradas para la mesa de asamblea (excluye los ya seleccionados)
+  // Usuarios con asistencia confirmada en el pase de lista
+  get usuariosConAsistencia(): any[] {
+    if (!this.actaPaseLista) return [];
+    const idsConAsistencia = new Set<string>();
+    this.actaPaseLista.controls.forEach((ctrl: any) => {
+      if (ctrl.get('asistencia')?.value) {
+        const idUsuario = ctrl.get('id_usuario')?.value;
+        if (idUsuario) idsConAsistencia.add(String(idUsuario));
+      }
+    });
+    return this.usuariosActaFlat.filter(u => idsConAsistencia.has(String(u.id_usuario)));
+  }
+
+  // Opciones filtradas para la mesa de asamblea (solo asistentes, excluye ya seleccionados)
   get opcionesPresidente() {
     const excluir = [
       this.frmActa?.get('id_secretario')?.value?.id_usuario,
       ...(this.frmActa?.get('id_escrutadores')?.value || []).map((e: any) => e?.id_usuario)
     ].filter(v => v);
-    return this.usuariosActaFlat.filter(u => !excluir.includes(u.id_usuario));
+    return this.usuariosConAsistencia.filter(u => !excluir.includes(u.id_usuario));
   }
 
   get opcionesSecretario() {
@@ -545,7 +564,7 @@ export class AsambleasComponent implements OnInit {
       this.frmActa?.get('id_presidente')?.value?.id_usuario,
       ...(this.frmActa?.get('id_escrutadores')?.value || []).map((e: any) => e?.id_usuario)
     ].filter(v => v);
-    return this.usuariosActaFlat.filter(u => !excluir.includes(u.id_usuario));
+    return this.usuariosConAsistencia.filter(u => !excluir.includes(u.id_usuario));
   }
 
   get opcionesEscrutadores() {
@@ -553,7 +572,7 @@ export class AsambleasComponent implements OnInit {
       this.frmActa?.get('id_presidente')?.value?.id_usuario,
       this.frmActa?.get('id_secretario')?.value?.id_usuario,
     ].filter(v => v);
-    return this.usuariosActaFlat.filter(u => !excluir.includes(u.id_usuario));
+    return this.usuariosConAsistencia.filter(u => !excluir.includes(u.id_usuario));
   }
 
   async onActaEditar(Convocatoria: ConvocatoriaResumenModel) {
@@ -588,7 +607,22 @@ export class AsambleasComponent implements OnInit {
       this.fechaMinimaAsamblea = new Date();
       this.Acta.fecha_hora = new Date(this.Acta.fecha_hora);
 
-      this.frmActa = this.formBuilder.group(new ActaModel());
+      this.frmActa = this.formBuilder.group({
+        id_acta: [0],
+        fecha_hora: [new Date()],
+        lugar: [null],
+        apertura: [null],
+        cierre: [null],
+        quien_emite: [null],
+        total_unidades: [0],
+        estatus: [0],
+        id_presidente: [null],
+        id_secretario: [null],
+        id_escrutadores: [[]],
+        existe_quorum: [false],
+        actaPaseLista: this.formBuilder.array([]),
+        actaOrdenDia: this.formBuilder.array([]),
+      });
       this.frmActa.patchValue(this.Acta);
 
       this.frmActa.get('fecha_hora').setValidators([Validators.required]);
@@ -626,18 +660,18 @@ export class AsambleasComponent implements OnInit {
           await hlpSwal.Error(e).then(() => null);
         });
 
-      this.frmActa.addControl('actaPaseLista', this.formBuilder.array([]));
+      this.actaPaseLista.clear();
       this.actaPaseLista.clear();
 
       // Este fragmento de código debería ser utilizado incluso si se está editando el acta
       this.frmActa.get('total_unidades').setValue(usuariosActa.length);
       usuariosActa.map((u) => {
-        const usuarios = Object.keys(u.usuarios).map(key => (u.usuarios[key]));
+        const usuarios = Array.isArray(u.usuarios) ? u.usuarios : Object.keys(u.usuarios).map(key => (u.usuarios[key]));
         this.actaPaseLista.push(this.formBuilder.group({
           id_unidad: u.id_unidad,
           unidad: u.unidad,
           total_usuarios: usuarios.length,
-          usuarios: this.formBuilder.group(usuarios),
+          usuarios: [usuarios],
           id_usuario: usuarios.length == 1 ? usuarios[0].id_usuario : 0,
           usuario: usuarios.length == 1 ? usuarios[0].usuario + ' - ' + usuarios[0].perfil_usuario : null,
           asistencia: false,
@@ -658,7 +692,7 @@ export class AsambleasComponent implements OnInit {
       });
 
       // Este fragmento de código debería ser utilizado incluso si se está editando el acta
-      this.frmActa.addControl('actaOrdenDia', this.formBuilder.array([]));
+      this.actaOrdenDia.clear();
       this.actaOrdenDia.clear();
       let requiere_votacion = false;
       ordenDiaActa.map((o) => {
@@ -953,3 +987,5 @@ export class AsambleasComponent implements OnInit {
       });
   }
 }
+// domingo, 10 de mayo de 2026, 23:54:34 CST
+// domingo, 10 de mayo de 2026, 23:55:32 CST
