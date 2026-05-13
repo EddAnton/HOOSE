@@ -103,7 +103,7 @@
     <form id="frmActa" class="mt-1" [formGroup]="frmActa" autocomplete="off">
 
       <!-- Apertura -->
-      <p-fieldset legend="Apertura del acta" [toggleable]="true" styleClass="mt-2">
+      <p-fieldset legend="Apertura del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
         <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
           [modules]="ModulosEditorDescripcion">
           <p-header>
@@ -179,7 +179,35 @@
 
       <!-- Pase de lista -->
       <!-- <p-divider></p-divider> -->
-      <p-fieldset *ngIf="frmActa" legend="Pase de lista" [toggleable]="true" styleClass="mt-2">
+      <p-fieldset *ngIf="frmActa" legend="Pase de lista" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
+
+        <!-- Tipo de convocatoria y conteo -->
+        <div class="row mb-2 align-items-center" [formGroup]="frmActa">
+          <div class="col-12 col-md-4 py-1">
+            <label class="fw-bold">Tipo de convocatoria</label>
+            <p-dropdown [options]="[{label:'Primera Convocatoria', value:'PRIMERA'},{label:'Segunda Convocatoria', value:'SEGUNDA'}]"
+              formControlName="tipo_convocatoria" optionLabel="label" optionValue="value"
+              styleClass="w-100" appendTo="body">
+            </p-dropdown>
+          </div>
+          <div class="col-12 col-md-8 py-1">
+            <div class="d-flex gap-3 mt-3">
+              <span class="badge bg-primary fs-6">
+                Asistentes: {{ totalAsistentes }}
+                / {{ actaPaseLista.controls.length }}
+              </span>
+              <span class="badge fs-6" [class.bg-success]="bExisteQuorum" [class.bg-danger]="!bExisteQuorum">
+                {{ bExisteQuorum ? '✓ Quórum suficiente' : '✗ Sin quórum' }}
+              </span>
+              <span class="badge bg-secondary fs-6" *ngIf="frmActa.get('tipo_convocatoria').value === 'PRIMERA'">
+                Se requiere >50% de unidades
+              </span>
+              <span class="badge bg-secondary fs-6" *ngIf="frmActa.get('tipo_convocatoria').value === 'SEGUNDA'">
+                Cualquier asistencia es válida
+              </span>
+            </div>
+          </div>
+        </div>
         <p-table #ptPaseLista [value]="actaPaseLista.controls" [columns]="PaseListaCols" [responsive]="true"
           [rowHover]="true" dataKey="id_unidad" styleClass="p-datatable-striped">
           <ng-template pTemplate="header" let-columns>
@@ -254,7 +282,7 @@
       </div> -->
 
       <!-- Mesa de la Asamblea -->
-      <p-fieldset *ngIf="frmActa && usuariosActaFlat.length > 0" legend="Mesa de la Asamblea" [toggleable]="true" styleClass="mt-2">
+      <p-fieldset *ngIf="frmActa && usuariosActaFlat.length > 0" legend="Mesa de la Asamblea" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
         <div class="row py-1">
           <div class="col-12 col-md-4 py-1">
             <label class="fw-bold mb-1">Presidente</label>
@@ -440,7 +468,7 @@
 
       <!-- Cierre -->
       <!-- <p-divider></p-divider> -->
-      <p-fieldset legend="Cierre del acta" [toggleable]="true" styleClass="mt-2">
+      <p-fieldset legend="Cierre del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
         <p-editor #convocatoriaCierre formControlName="cierre" [style]="{ height: '150px' }"
           [modules]="ModulosEditorDescripcion">
           <p-header>

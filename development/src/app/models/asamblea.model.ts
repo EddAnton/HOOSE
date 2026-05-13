@@ -157,8 +157,8 @@ export class ActaPaseListaModel {
 } */
 
 export class ActaModel {
-  // id_asamblea: number;
   id_acta: number;
+  tipo_convocatoria: string;
   fecha_hora: Date;
   lugar: string;
   apertura: string;
@@ -172,8 +172,8 @@ export class ActaModel {
 
   constructor() {
     return {
-      // id_asamblea: 0,
       id_acta: 0,
+      tipo_convocatoria: 'PRIMERA',
       fecha_hora: new Date(),
       lugar: null,
       apertura: null,

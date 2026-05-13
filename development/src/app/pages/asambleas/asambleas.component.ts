@@ -66,6 +66,7 @@ export class AsambleasComponent implements OnInit {
   TiposAsambleas: any[] = [];
   quillEditors: any = {};
   textosOriginalesConfig: any = {};
+  textosOriginalesActa: any = {};
   private _updateTimer: any = null;
   idAsamblea: number = 0;
   Convocatoria: ConvocatoriaModel;
@@ -162,9 +163,12 @@ export class AsambleasComponent implements OnInit {
  */
 
   private calcularExistenciaQuorum() {
-    this.bExisteQuorum = this.actaPaseLista.value.filter((p) => p.asistencia).length > this.actaPaseLista.controls.length / 2;
+    const tipoConv = this.frmActa?.get('tipo_convocatoria')?.value || 'PRIMERA';
+    const totalUnidades = this.actaPaseLista.controls.length;
+    const asistentes = this.actaPaseLista.value.filter((p: any) => p.asistencia).length;
+    this.bExisteQuorum = tipoConv === 'SEGUNDA' ? asistentes > 0 : asistentes > totalUnidades / 2;
     /*
-    let bExisteQuorum = this.actaPaseLista.value.filter((p) => p.asistencia).length > this.actaPaseLista.controls.length / 2;
+    let bExisteQuorum = tipoConv === 'SEGUNDA' ? asistentes > 0 : asistentes > totalUnidades / 2;
     if (bExisteQuorum) {
       this.frmActa.controls['cierre'].enable();
       this.frmActa.controls['cierre'].setValue('<p><br></p>');
@@ -262,9 +266,9 @@ export class AsambleasComponent implements OnInit {
     hlpSwal.Cerrar();
 
     try {
-      this.fechaMinimaAsamblea = new Date();
       this.fechaMinimaConvocatoria = new Date();
-      this.fechaMinimaAsamblea.setDate(this.fechaMinimaConvocatoria.getDate() + 1);
+      this.fechaMinimaAsamblea = new Date();
+      this.fechaMinimaAsamblea.setDate(this.fechaMinimaAsamblea.getDate() + 1);
       this.Convocatoria.fecha_hora =
         idAsamblea > 0 ? new Date(this.Convocatoria.fecha_hora) : this.Convocatoria.fecha_hora;
       this.Convocatoria.convocatoria_fecha =
@@ -273,6 +277,13 @@ export class AsambleasComponent implements OnInit {
       this.frmConvocatoria = this.formBuilder.group(this.Convocatoria, {
         validators: FormsValidator.fechaMenorQue('convocatoria_fecha', 'fecha_hora'),
       });
+      // Asegurar campos de hora si no están en el modelo
+      if (!this.frmConvocatoria.get('hora_primera_convocatoria')) {
+        this.frmConvocatoria.addControl('hora_primera_convocatoria', this.formBuilder.control(null));
+      }
+      if (!this.frmConvocatoria.get('hora_segunda_convocatoria')) {
+        this.frmConvocatoria.addControl('hora_segunda_convocatoria', this.formBuilder.control(null));
+      }
       this.frmConvocatoria.get('fecha_hora').setValidators([Validators.required]);
       this.frmConvocatoria.get('hora_primera_convocatoria').setValidators([Validators.required]);
 
@@ -293,57 +304,9 @@ export class AsambleasComponent implements OnInit {
         this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
       });
 
-      // Validador: hora segunda convocatoria >= hora primera + 30 min
-      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
-        (control) => {
-          const segunda = control.value;
-          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
-          if (!segunda || !primera) return null;
-          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
-          if (toMin(segunda) < toMin(primera) + 30) {
-            return { horaSegundaInvalida: true };
-          }
-          return null;
-        }
-      ]);
-      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
-        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
-      });
       this.frmConvocatoria.get('hora_primera_convocatoria').setValidators([Validators.required]);
 
-      // Validador: hora segunda convocatoria >= hora primera + 30 min
-      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
-        (control) => {
-          const segunda = control.value;
-          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
-          if (!segunda || !primera) return null;
-          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
-          if (toMin(segunda) < toMin(primera) + 30) {
-            return { horaSegundaInvalida: true };
-          }
-          return null;
-        }
-      ]);
-      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
-        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
-      });
 
-      // Validador: hora segunda convocatoria >= hora primera + 30 min
-      this.frmConvocatoria.get('hora_segunda_convocatoria').setValidators([
-        (control) => {
-          const segunda = control.value;
-          const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
-          if (!segunda || !primera) return null;
-          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
-          if (toMin(segunda) < toMin(primera) + 30) {
-            return { horaSegundaInvalida: true };
-          }
-          return null;
-        }
-      ]);
-      this.frmConvocatoria.get('hora_primera_convocatoria').valueChanges.subscribe(() => {
-        this.frmConvocatoria.get('hora_segunda_convocatoria').updateValueAndValidity();
-      });
       this.frmConvocatoria.get('id_tipo_asamblea').setValidators([Validators.min(1)]);
       this.frmConvocatoria
         .get('lugar')
@@ -646,6 +609,22 @@ export class AsambleasComponent implements OnInit {
 
   }
 
+  reemplazarVariablesActa(texto: string, valores: any): string {
+    if (!texto) return texto;
+    return texto
+      .replace(/{{nombre_condominio}}/g, valores.nombre_condominio || '<<Nombre del Condominio>>')
+      .replace(/{{tipo_asamblea}}/g, valores.tipo_asamblea || '<<Ordinaria/Extraordinaria>>')
+      .replace(/{{tipo_convocatoria}}/g, valores.tipo_convocatoria || '<<Primera/Segunda>>')
+      .replace(/{{fecha_asamblea}}/g, valores.fecha_asamblea || '<<DD de MMMM de YYYY>>')
+      .replace(/{{hora_asamblea}}/g, valores.hora_asamblea || '<<HH:MM>>')
+      .replace(/{{lugar}}/g, valores.lugar || '<<Lugar>>')
+      .replace(/{{presidente_asamblea}}/g, valores.presidente_asamblea || '<<Presidente>>')
+      .replace(/{{secretario_asamblea}}/g, valores.secretario_asamblea || '<<Secretario>>')
+      .replace(/{{escrutadores}}/g, valores.escrutadores || '<<Escrutadores>>')
+      .replace(/{{porcentaje_quorum}}/g, valores.porcentaje_quorum || '<<XX%>>')
+      .replace(/{{total_asistentes}}/g, valores.total_asistentes || '<<N>>');
+  }
+
   // Reemplazar variables en texto con valores del formulario
   reemplazarVariables(texto: string, valores: any): string {
     if (!texto) return texto;
@@ -724,6 +703,7 @@ export class AsambleasComponent implements OnInit {
     this.Acta = new ActaModel();
     this.idActa = 0;
     this.bExisteQuorum = false;
+    this.textosOriginalesActa = {};
 
     /* } else {
       this.idActa = this.Acta.id_acta;
@@ -738,6 +718,7 @@ export class AsambleasComponent implements OnInit {
 
       this.frmActa = this.formBuilder.group({
         id_acta: [0],
+        tipo_convocatoria: ['PRIMERA'],
         fecha_hora: [new Date()],
         lugar: [null],
         apertura: [null],
@@ -761,6 +742,33 @@ export class AsambleasComponent implements OnInit {
       this.frmActa.get('apertura').setValidators([Validators.required]);
       this.frmActa.get('cierre').setValidators([Validators.required]);
       this.frmActa.get('quien_emite').setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(250)]);
+
+      // Precargar textos de configuración para acta nueva
+      try {
+        const cfg: any = await this.configuracionService.Listar().toPromise();
+        const config = cfg['config'] || {};
+        const valoresActa = {
+          nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
+          tipo_asamblea: '',
+          tipo_convocatoria: '',
+          fecha_asamblea: '',
+          hora_asamblea: '',
+          lugar: '',
+          presidente_asamblea: '',
+          secretario_asamblea: '',
+          escrutadores: '',
+          porcentaje_quorum: '',
+          total_asistentes: '',
+        };
+        if (config['acta_apertura']) {
+          this.textosOriginalesActa['apertura'] = config['acta_apertura'];
+          this.frmActa.get('apertura').setValue(this.reemplazarVariablesActa(config['acta_apertura'], valoresActa));
+        }
+        if (config['acta_cierre']) {
+          this.textosOriginalesActa['cierre'] = config['acta_cierre'];
+          this.frmActa.get('cierre').setValue(this.reemplazarVariablesActa(config['acta_cierre'], valoresActa));
+        }
+      } catch(e) { console.error('Error cargando config acta:', e); }
 
       const usuariosActa = await this.usuariosService.ListarUsuariosActaAsambleas().toPromise()
         .then((r) => r['usuarios'])
