@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as hlpSwal from '../../helpers/sweetalert2-helper';
 import { ConfiguracionService } from '../../services/configuracion.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-configuracion',
@@ -51,6 +52,12 @@ export class ConfiguracionComponent implements OnInit {
   editorActivo: string = null;
   quillEditors: any = {};
 
+  // Imágenes
+  srcLogo: string = null;
+  srcLogoDashboard: string = null;
+  srcFondo: string = null;
+  urlImages = environment.urlBackendImagesFiles;
+
   constructor(
     private fb: FormBuilder,
     private configuracionService: ConfiguracionService,
@@ -62,6 +69,23 @@ export class ConfiguracionComponent implements OnInit {
     hlpSwal.Cargando();
     try {
       const r: any = await this.configuracionService.Listar().toPromise();
+
+      // Cargar imágenes por separado para no afectar los textos
+      try {
+        const imgs: any = await this.configuracionService.ListarImagenes().toPromise();
+        console.log('Imágenes:', imgs);
+        const imagenes = imgs['data'] || [];
+        console.log('imagenes array:', imagenes);
+        const logo = imagenes.find((i: any) => i.opcion === 'login_logo');
+        console.log('logo encontrado:', logo);
+        const logoDash = imagenes.find((i: any) => i.opcion === 'logo_dashboard');
+        const fondo = imagenes.find((i: any) => i.opcion === 'login_background');
+        this.srcLogo = logo ? this.urlImages + logo.valor : null;
+        this.srcLogoDashboard = logoDash ? this.urlImages + logoDash.valor : null;
+        this.srcFondo = fondo ? this.urlImages + fondo.valor : null;
+        console.log('srcLogo:', this.srcLogo);
+        console.log('urlImages:', this.urlImages);
+      } catch(e) { console.error('Error cargando imágenes:', e); }
       const config = r['config'] || {};
       const controls: any = {};
       this.claves.forEach(c => { controls[c.clave] = [config[c.clave] || '']; });
@@ -95,6 +119,19 @@ export class ConfiguracionComponent implements OnInit {
     if (!editor) return;
     const range = editor.getSelection(true);
     editor.insertText(range ? range.index : editor.getLength(), variable, 'user');
+  }
+
+  async onSubirImagen(event: any, opcion: string, carpeta: string) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const r = await hlpSwal.Pregunta('¿Deseas actualizar esta imagen?');
+    if (!r.isConfirmed) return;
+    hlpSwal.Cargando();
+    try {
+      const res: any = await this.configuracionService.GuardarImagen(opcion, carpeta, file).toPromise();
+      await hlpSwal.Exito('Imagen actualizada correctamente.');
+      await this.cargarConfig();
+    } catch(e) { await hlpSwal.Error(e); }
   }
 
   async onGuardar() {

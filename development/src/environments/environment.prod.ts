@@ -1,4 +1,5 @@
 const urlBackend = 'http://api.residenciales.hoose.mx/index.php/';
+const urlBackendStatic = 'http://api.residenciales.hoose.mx/';
 const APIKey = 'b7a142358f5590b2a887caad198d1c2';
 
 export const environment = {
@@ -15,7 +16,7 @@ export const environment = {
   urlBackendMiembrosComiteFiles: urlBackend + 'uploads/miembros_comites_administracion/',
   urlBackendGastosMantenimientoFiles: urlBackend + 'uploads/gastos_mantenimiento/',
   urlBackendCloudFiles: urlBackend + 'uploads/cloud/',
-  urlBackendImagesFiles: urlBackend + 'uploads/images/',
+  urlBackendImagesFiles: urlBackendStatic + 'uploads/images/',
   urlBackendFondosMonetariosFiles: urlBackend + 'uploads/fondos_monetarios/',
   urlBackendProyectosFiles: urlBackend + 'uploads/proyectos/',
   urlBackendQuejasFiles: urlBackend + 'uploads/quejas/',

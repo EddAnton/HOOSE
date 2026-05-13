@@ -48,14 +48,14 @@ export class LoginComponent implements OnInit {
 						if (d.opcion == 'login_background') return d.valor;
 					})[0] || null;
 				if (imgBackground != null) {
-					this.imgBackground = environment.urlBackendImagesFiles + 'background/' + imgBackground.valor;
+					this.imgBackground = environment.urlBackendImagesFiles + imgBackground.valor;
 				}
 				const imgLogo =
 					data.filter((d) => {
 						if (d.opcion == 'login_logo') return d.valor;
 					})[0] || null;
 				if (imgLogo != null) {
-					this.imgLogo = environment.urlBackendImagesFiles + 'logos/' + imgLogo.valor;
+					this.imgLogo = environment.urlBackendImagesFiles + imgLogo.valor;
 				}
 			})
 			.catch(async (e) => {
@@ -141,3 +141,4 @@ export class LoginComponent implements OnInit {
 			});
 	}
 }
+// fix login miércoles, 13 de mayo de 2026, 14:21:44 CST
