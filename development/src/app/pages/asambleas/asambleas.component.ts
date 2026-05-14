@@ -24,6 +24,9 @@ import { UsuariosService } from '../../services/usuarios.service';
 import { TiposAsambleasService } from '../../services/tipos-asambleas.service';
 import { PropositoGeneralService } from '../../services/proposito-general.service';
 import { ConfiguracionService } from '../../services/configuracion.service';
+import { ComitesService } from '../../services/comites.service';
+import { UsuariosAdministradoresService } from '../../services/usuarios-administradores.service';
+import { CondominiosService } from '../../services/condominios.service';
 import { PdfService } from '../../services/pdf.service';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 
@@ -142,12 +145,20 @@ export class AsambleasComponent implements OnInit {
     private sesionUsuarioService: SesionUsuarioService,
     private pdfService: PdfService,
     private propositoGeneralService: PropositoGeneralService,
+    private comitesService: ComitesService,
+    private administradoresService: UsuariosAdministradoresService,
+    private condominiosService: CondominiosService,
     private usuariosService: UsuariosService,
     // private unidadesService: UnidadesService
   ) { }
 
   ngOnInit(): void {
     this.onActualizarInformacion();
+    // Cargar domicilio del condominio para variables
+    const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+    this.condominiosService.ListarCondominio(idCond).toPromise()
+      .then((r: any) => { this.domicilioCondominioPdf = r?.['condominios']?.domicilio || ''; })
+      .catch(() => {});
     // Cargar logo para PDFs como base64
     this.propositoGeneralService.LoginImagenes().toPromise().then((r: any) => {
       const data = r['data'] || [];
@@ -316,7 +327,10 @@ export class AsambleasComponent implements OnInit {
           const segunda = control.value;
           const primera = this.frmConvocatoria?.get('hora_primera_convocatoria')?.value;
           if (!segunda || !primera) return null;
-          const toMin = (t: Date) => t.getHours() * 60 + t.getMinutes();
+          const toMin = (t: any) => {
+            const d = t instanceof Date ? t : new Date('1970-01-01T' + t);
+            return d.getHours() * 60 + d.getMinutes();
+          };
           if (toMin(segunda) < toMin(primera) + 30) {
             return { horaSegundaInvalida: true };
           }
@@ -348,6 +362,7 @@ export class AsambleasComponent implements OnInit {
           // Valores disponibles al momento de precargar
           const valoresIniciales = {
             nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
+            domicilio_condominio: '',
             tipo_asamblea: '',
             fecha_asamblea: '',
             hora_primera_convocatoria: '',
@@ -521,14 +536,50 @@ export class AsambleasComponent implements OnInit {
     this.mostrarDialogoConvocatoria = false;
   }
 
+  AdministradoresPdf: any[] = [];
+  ComiteVigilanciaPdf: any[] = [];
+  FirmasPdf: any[] = [];
+  domicilioCondominioPdf: string = '';
+
   async onGenerarPdfConvocatoria(idAsamblea: number) {
     if (idAsamblea == 0) return;
     hlpSwal.Cargando();
     try {
-      this.ConvocatoriaPdf = await this.asambleasService
-        .ListarConvocatoria(idAsamblea)
-        .toPromise()
-        .then((r) => r['asamblea']);
+      const idCondominio = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+      const [convR, adminR, comitesR, condR] = await Promise.all([
+        this.asambleasService.ListarConvocatoria(idAsamblea).toPromise(),
+        this.administradoresService.Listar().toPromise(),
+        this.comitesService.Listar().toPromise(),
+        this.condominiosService.ListarCondominio(idCondominio).toPromise(),
+      ]);
+      this.domicilioCondominioPdf = condR?.['condominios']?.domicilio || '';
+
+      this.ConvocatoriaPdf = convR['asamblea'];
+      const quienConvoca = this.ConvocatoriaPdf?.convocatoria_quien_emite || '';
+      const comites = comitesR['comites'] || [];
+
+      this.FirmasPdf = [];
+
+      // Administrador(es)
+      if (quienConvoca.includes('ADMINISTRADOR')) {
+        const admins = adminR['administradores'] || [];
+        admins.forEach((a: any) => {
+          this.FirmasPdf.push({ nombre: a.nombre, cargo: 'ADMINISTRADOR' });
+        });
+      }
+
+      // Comité de Vigilancia
+      if (quienConvoca.includes('VIGILANCIA')) {
+        const comiteVigilancia = comites.find((c: any) =>
+          c.tipo_comite?.toUpperCase().includes('VIGILANCIA')
+        );
+        if (comiteVigilancia?.miembros) {
+          comiteVigilancia.miembros.forEach((m: any) => {
+            this.FirmasPdf.push({ nombre: m.usuario, cargo: m.cargo_comite });
+          });
+        }
+      }
+
       this.mostrarPdfConvocatoria = true;
       hlpSwal.Cerrar();
       setTimeout(() => {
@@ -622,6 +673,7 @@ export class AsambleasComponent implements OnInit {
 
     const valores = {
       nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
+      domicilio_condominio: this.domicilioCondominioPdf || '',
       tipo_asamblea: tipoAsamblea,
       fecha_asamblea: f.fecha_hora ? formatFecha(new Date(f.fecha_hora)) : '',
       hora_primera_convocatoria: f.hora_primera_convocatoria ? formatHora(new Date(f.hora_primera_convocatoria)) : '',
@@ -657,10 +709,21 @@ export class AsambleasComponent implements OnInit {
 
   }
 
+  limpiarHtmlPdf(html: string): string {
+    if (!html) return '';
+    // Eliminar párrafos vacíos del editor Quill
+    return html
+      .replace(/<p><br><\/p>/g, '')
+      .replace(/<p>\s*<\/p>/g, '')
+      .replace(/<h[1-6]><br><\/h[1-6]>/g, '')
+      .trim();
+  }
+
   reemplazarVariablesActa(texto: string, valores: any): string {
     if (!texto) return texto;
     return texto
       .replace(/{{nombre_condominio}}/g, valores.nombre_condominio || '<<Nombre del Condominio>>')
+      .replace(/{{domicilio_condominio}}/g, valores.domicilio_condominio || '<<Dirección del Condominio>>')
       .replace(/{{tipo_asamblea}}/g, valores.tipo_asamblea || '<<Ordinaria/Extraordinaria>>')
       .replace(/{{tipo_convocatoria}}/g, valores.tipo_convocatoria || '<<Primera/Segunda>>')
       .replace(/{{fecha_asamblea}}/g, valores.fecha_asamblea || '<<DD de MMMM de YYYY>>')
@@ -678,6 +741,7 @@ export class AsambleasComponent implements OnInit {
     if (!texto) return texto;
     return texto
       .replace(/{{nombre_condominio}}/g, valores.nombre_condominio || '<<Nombre del Condominio>>')
+      .replace(/{{domicilio_condominio}}/g, valores.domicilio_condominio || '<<Dirección del Condominio>>')
       .replace(/{{tipo_asamblea}}/g, valores.tipo_asamblea || '<<Ordinaria/Extraordinaria>>')
       .replace(/{{fecha_asamblea}}/g, valores.fecha_asamblea || '<<DD de MMMM de YYYY>>')
       .replace(/{{hora_primera_convocatoria}}/g, valores.hora_primera_convocatoria || '<<HH:MM>>')

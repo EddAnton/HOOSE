@@ -26,6 +26,8 @@ export class ConfiguracionComponent implements OnInit {
 
   variablesConvocatoria = [
     { variable: '{{nombre_condominio}}', descripcion: 'Nombre del condominio' },
+    { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
+    { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
     { variable: '{{tipo_asamblea}}', descripcion: 'Tipo (Ordinaria/Extraordinaria)' },
     { variable: '{{fecha_asamblea}}', descripcion: 'Fecha de la asamblea' },
     { variable: '{{hora_primera_convocatoria}}', descripcion: 'Hora 1ª convocatoria' },
@@ -38,6 +40,8 @@ export class ConfiguracionComponent implements OnInit {
 
   variablesActa = [
     { variable: '{{nombre_condominio}}', descripcion: 'Nombre del condominio' },
+    { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
+    { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
     { variable: '{{tipo_asamblea}}', descripcion: 'Tipo (Ordinaria/Extraordinaria)' },
     { variable: '{{tipo_convocatoria}}', descripcion: 'Primera/Segunda convocatoria' },
     { variable: '{{fecha_asamblea}}', descripcion: 'Fecha de la asamblea' },
