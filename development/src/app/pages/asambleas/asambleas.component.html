@@ -74,10 +74,10 @@
             pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning me-1"
             pTooltip="Editar convocatoria" tooltipPosition="left"
             (click)="onConvocatoriaEditar(Convocatoria.id_asamblea)"></button>
-          <!-- Botón Detalle convocatoria -->
+          <!-- Botón PDF convocatoria -->
           <button pButton type="button" icon="pi pi-file-pdf"
-            class="p-button-rounded p-button-text p-button-primary me-1" pTooltip="Detalles de la convocatoria"
-            tooltipPosition="left" (click)="onConvocatoriaDetalles(Convocatoria.id_asamblea)"></button>
+            class="p-button-rounded p-button-text p-button-danger me-1" pTooltip="Imprimir convocatoria"
+            tooltipPosition="left" (click)="onGenerarPdfConvocatoria(Convocatoria.id_asamblea)"></button>
           <!-- Botón Eliminar convocatoria -->
           <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta == 0" pButton type="button"
             icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger me-1"
@@ -659,6 +659,36 @@
           </div>
         </div>
 
+        <!-- Disposiciones generales -->
+        <div class="col-12 pt-2">
+          <span><b>Disposiciones generales</b></span>
+          <div class="col-12">
+            <ng-container *ngIf="!frmConvocatoria.disabled; then templateDisposiciones; else elseDisposiciones">
+            </ng-container>
+            <ng-template #templateDisposiciones>
+              <p-editor formControlName="disposiciones_generales" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'disposiciones_generales')"
+                (click)="onEditorFocus('disposiciones_generales')"
+                [modules]="ModulosEditorDescripcion">
+                <p-header>
+                  <span class="ql-formats">
+                    <button class="ql-bold" tabindex="-1"></button>
+                    <button class="ql-italic" tabindex="-1"></button>
+                    <button class="ql-underline" tabindex="-1"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered" tabindex="-1"></button>
+                    <button class="ql-list" value="bullet" tabindex="-1"></button>
+                  </span>
+                </p-header>
+              </p-editor>
+            </ng-template>
+            <ng-template #elseDisposiciones>
+              <div class="card p-2" [innerHtml]="frmConvocatoria.get('disposiciones_generales').value"></div>
+            </ng-template>
+          </div>
+        </div>
+
         <!-- Orden del día -->
         <div class="col-12 pt-2">
           <span><b>Orden del día</b></span>
@@ -1132,3 +1162,64 @@
     </div>
   </ng-template>
 </p-dialog>
+<!-- Template PDF Convocatoria (oculto) -->
+<div *ngIf="mostrarPdfConvocatoria" id="pdfConvocatoria"
+  style="display:block;width:100%;padding:48px 56px;background:#fff;font-family:'Times New Roman',serif;font-size:12pt;color:#000;line-height:1.6">
+
+  <!-- Encabezado con logo y nombre -->
+  <div style="text-align:center;margin-bottom:24px;border-bottom:2px solid #000;padding-bottom:16px">
+    <img *ngIf="imgLogoPdf" [src]="imgLogoPdf"
+      style="max-height:80px;max-width:200px;object-fit:contain;display:block;margin:0 auto 8px" />
+    <div style="font-size:16pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+      {{ sesionUsuarioService.obtenerNombreCondominio() }}
+    </div>
+    <div style="font-size:13pt;text-transform:uppercase;margin-top:4px">
+      CONVOCATORIA A ASAMBLEA GENERAL {{ ConvocatoriaPdf?.tipo_asamblea | uppercase }}
+    </div>
+  </div>
+
+  <!-- Fundamento legal -->
+  <div *ngIf="ConvocatoriaPdf?.fundamento_legal"
+    [innerHTML]="ConvocatoriaPdf.fundamento_legal"
+    style="margin-bottom:16px;text-align:justify">
+  </div>
+
+  <!-- Disposiciones generales -->
+  <div *ngIf="ConvocatoriaPdf?.disposiciones_generales"
+    [innerHTML]="ConvocatoriaPdf.disposiciones_generales"
+    style="margin-bottom:16px;text-align:justify">
+  </div>
+
+  <!-- Orden del día -->
+  <div style="margin-bottom:20px" *ngIf="ConvocatoriaPdf?.orden_dia?.length > 0">
+    <div style="font-weight:bold;text-decoration:underline;margin-bottom:8px">ORDEN DEL DÍA:</div>
+    <ol style="margin-left:24px;padding:0">
+      <li *ngFor="let punto of ConvocatoriaPdf.orden_dia" style="margin-bottom:4px">
+        {{ punto.orden_dia }}
+      </li>
+    </ol>
+  </div>
+
+  <!-- Cierre -->
+  <div *ngIf="ConvocatoriaPdf?.convocatoria_cierre"
+    [innerHTML]="ConvocatoriaPdf.convocatoria_cierre"
+    style="margin-bottom:32px;text-align:justify">
+  </div>
+
+  <!-- Fecha y firma -->
+  <div style="margin-top:48px">
+    <div style="text-align:right;margin-bottom:48px">
+      {{ ConvocatoriaPdf?.convocatoria_ciudad }},
+      {{ ConvocatoriaPdf?.convocatoria_fecha | date:"dd 'de' MMMM 'de' yyyy" | uppercase }}
+    </div>
+    <div style="text-align:center">
+      <div style="display:inline-block;min-width:280px;text-align:center">
+        <div style="border-top:1px solid #000;padding-top:8px;margin-top:48px">
+          <div style="font-weight:bold">{{ ConvocatoriaPdf?.convocatoria_quien_emite }}</div>
+          <div style="font-size:10pt;color:#444">CONVOCANTE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

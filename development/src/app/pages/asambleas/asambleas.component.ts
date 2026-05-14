@@ -22,7 +22,9 @@ import {
 import { AsambleasService } from '../../services/asambleas.service';
 import { UsuariosService } from '../../services/usuarios.service';
 import { TiposAsambleasService } from '../../services/tipos-asambleas.service';
+import { PropositoGeneralService } from '../../services/proposito-general.service';
 import { ConfiguracionService } from '../../services/configuracion.service';
+import { PdfService } from '../../services/pdf.service';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 
 @Component({
@@ -65,6 +67,9 @@ export class AsambleasComponent implements OnInit {
   Convocatorias: ConvocatoriaResumenModel[] = [];
   TiposAsambleas: any[] = [];
   quillEditors: any = {};
+  ConvocatoriaPdf: any = null;
+  mostrarPdfConvocatoria: boolean = false;
+  imgLogoPdf: string = null;
   textosOriginalesConfig: any = {};
   textosOriginalesActa: any = {};
   private _updateTimer: any = null;
@@ -135,12 +140,30 @@ export class AsambleasComponent implements OnInit {
     private asambleasService: AsambleasService,
     private configuracionService: ConfiguracionService,
     private sesionUsuarioService: SesionUsuarioService,
+    private pdfService: PdfService,
+    private propositoGeneralService: PropositoGeneralService,
     private usuariosService: UsuariosService,
     // private unidadesService: UnidadesService
   ) { }
 
   ngOnInit(): void {
     this.onActualizarInformacion();
+    // Cargar logo para PDFs como base64
+    this.propositoGeneralService.LoginImagenes().toPromise().then((r: any) => {
+      const data = r['data'] || [];
+      const logo = data.find((d: any) => d.opcion === 'login_logo');
+      if (logo) {
+        const url = environment.urlBackendImagesFiles + logo.valor;
+        fetch(url)
+          .then(res => res.blob())
+          .then(blob => {
+            const reader = new FileReader();
+            reader.onloadend = () => { this.imgLogoPdf = reader.result as string; };
+            reader.readAsDataURL(blob);
+          })
+          .catch(() => {});
+      }
+    }).catch(() => {});
   }
 
   private OrdenarConvocatorias(asambleas: ConvocatoriaResumenModel[]) {
@@ -340,6 +363,12 @@ export class AsambleasComponent implements OnInit {
               this.reemplazarVariables(config['convocatoria_fundamento_legal'], valoresIniciales)
             );
           }
+          if (config['convocatoria_disposiciones_generales']) {
+            this.textosOriginalesConfig['disposiciones_generales'] = config['convocatoria_disposiciones_generales'];
+            this.frmConvocatoria.get('disposiciones_generales').setValue(
+              this.reemplazarVariables(config['convocatoria_disposiciones_generales'], valoresIniciales)
+            );
+          }
           if (config['convocatoria_cierre']) {
             this.textosOriginalesConfig['convocatoria_cierre'] = config['convocatoria_cierre'];
             this.frmConvocatoria.get('convocatoria_cierre').setValue(
@@ -492,6 +521,25 @@ export class AsambleasComponent implements OnInit {
     this.mostrarDialogoConvocatoria = false;
   }
 
+  async onGenerarPdfConvocatoria(idAsamblea: number) {
+    if (idAsamblea == 0) return;
+    hlpSwal.Cargando();
+    try {
+      this.ConvocatoriaPdf = await this.asambleasService
+        .ListarConvocatoria(idAsamblea)
+        .toPromise()
+        .then((r) => r['asamblea']);
+      this.mostrarPdfConvocatoria = true;
+      hlpSwal.Cerrar();
+      setTimeout(() => {
+        hlpApp.imprimirElemento('pdfConvocatoria');
+      }, 800);
+    } catch(e) {
+      hlpSwal.Cerrar();
+      await hlpSwal.Error(e);
+    }
+  }
+
   async onConvocatoriaDetalles(idAsamblea: number = 0) {
     if (idAsamblea == 0) {
       return;
@@ -585,7 +633,7 @@ export class AsambleasComponent implements OnInit {
     };
 
     // Actualizar FormControls inmediatamente
-    ['fundamento_legal', 'convocatoria_cierre'].forEach(campo => {
+    ['fundamento_legal', 'disposiciones_generales', 'convocatoria_cierre'].forEach(campo => {
       const textoOriginal = this.textosOriginalesConfig[campo];
       if (!textoOriginal) return;
       const nuevoValor = this.reemplazarVariables(textoOriginal, valores);
@@ -595,7 +643,7 @@ export class AsambleasComponent implements OnInit {
     // Actualizar editores Quill con debounce para no robar el foco mientras escribe
     if (this._updateTimer) clearTimeout(this._updateTimer);
     this._updateTimer = setTimeout(() => {
-      ['fundamento_legal', 'convocatoria_cierre'].forEach(campo => {
+      ['fundamento_legal', 'disposiciones_generales', 'convocatoria_cierre'].forEach(campo => {
         const textoOriginal = this.textosOriginalesConfig[campo];
         if (!textoOriginal) return;
         const ctrl = this.frmConvocatoria.get(campo);

@@ -22,6 +22,7 @@ export class ConvocatoriaModel {
   hora_segunda_convocatoria: string;
   lugar: string;
   fundamento_legal: string;
+  disposiciones_generales: string;
   convocatoria_cierre: string;
   convocatoria_fecha: Date;
   convocatoria_ciudad: string;
@@ -38,6 +39,7 @@ export class ConvocatoriaModel {
       hora_segunda_convocatoria: null,
       lugar: null,
       fundamento_legal: isDevMode() ? asamblea : null,
+      disposiciones_generales: null,
       convocatoria_cierre: isDevMode() ? asamblea : null,
       convocatoria_fecha: null,
       convocatoria_ciudad: null,

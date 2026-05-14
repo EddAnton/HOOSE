@@ -17,6 +17,7 @@ export class ConfiguracionComponent implements OnInit {
     { clave: 'convocatoria_fundamento_legal', label: 'Fundamento Legal', seccion: 'Convocatoria' },
     { clave: 'convocatoria_disposiciones_generales', label: 'Disposiciones Generales', seccion: 'Convocatoria' },
     { clave: 'convocatoria_cierre', label: 'Cierre de Convocatoria', seccion: 'Convocatoria' },
+    { clave: 'convocatoria_orden_dia_intro', label: 'Introducción Orden del Día', seccion: 'Convocatoria' },
     { clave: 'acta_apertura', label: 'Apertura del Acta', seccion: 'Acta' },
     { clave: 'acta_cierre', label: 'Cierre del Acta', seccion: 'Acta' },
   ];

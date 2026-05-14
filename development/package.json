@@ -41,6 +41,8 @@
     "chartjs-plugin-datalabels": "^1.0.0",
     "chartjs-plugin-piechart-outlabels": "^0.1.4",
     "crypto-js": "^4.1.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.4.0",
     "prettier": "^3.2.5",
     "primeflex": "^2.0.0",
     "primeicons": "^5.0.0",
