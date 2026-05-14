@@ -2,8 +2,8 @@
 	<div class="sidebar">
 		<div class="header">
 			<div class="brand">
-				<span class="brand-icon"><i class="bx bx-building-house bx-sm"></i></span>
-				<span class="brand-title">{{ appData.appName }}</span>
+<span class="brand-icon"><img *ngIf="imgLogoDashboard" [src]="imgLogoDashboard" style="max-height:40px;max-width:100px;object-fit:contain" /><i *ngIf="!imgLogoDashboard" class="bx bx-building-house bx-sm"></i></span>
+<span class="brand-title" style="font-size:0.8rem">{{ sesionUsuarioService.obtenerNombreCondominio() || appData.appName }}</span>
 			</div>
 			<span class="version">{{ appData.appVersion }}</span>
 			<hr />

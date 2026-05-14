@@ -3,6 +3,7 @@ import * as hlpSwal from '../../helpers/sweetalert2-helper';
 import { environment } from '../../../environments/environment';
 import { SidebarOptionsInterface } from '../../interfaces/sidebar-options-interface';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
+import { PropositoGeneralService } from '../../services/proposito-general.service';
 
 export let mnuOpciones: SidebarOptionsInterface[];
 
@@ -13,9 +14,14 @@ export let mnuOpciones: SidebarOptionsInterface[];
 })
 export class SidebarComponent implements OnInit {
   appData = environment;
+  imgLogoDashboard: string = null;
+  urlImages = environment.urlBackendImagesFiles;
   public menuOptions: SidebarOptionsInterface[];
 
-  constructor(private sesionUsuarioService: SesionUsuarioService) {
+  constructor(
+    public sesionUsuarioService: SesionUsuarioService,
+    private propositoGeneralService: PropositoGeneralService,
+  ) {
     mnuOpciones = [
       { path: '/tablero', title: 'Tablero Ejecutivo', visiblePerfilUsuario: [], visible: true, icon: 'bx bxs-dashboard' },
       /* Catálogos */
@@ -208,7 +214,17 @@ export class SidebarComponent implements OnInit {
     ];
   }
 
+  async cargarLogo() {
+    try {
+      const r: any = await this.propositoGeneralService.LoginImagenes().toPromise();
+      const data = r['data'] || [];
+      const logo = data.find((d: any) => d.opcion === 'logo_dashboard');
+      if (logo) this.imgLogoDashboard = this.urlImages + logo.valor;
+    } catch(e) { console.error('Error cargando logo:', e); }
+  }
+
   ngOnInit(): void {
+    this.cargarLogo();
     this.menuOptions = mnuOpciones.filter(
       (menuItem) =>
         menuItem.visible &&
