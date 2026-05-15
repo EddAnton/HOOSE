@@ -103,84 +103,6 @@
     <form id="frmActa" class="mt-1" [formGroup]="frmActa" autocomplete="off">
 
       <!-- Apertura -->
-      <p-fieldset legend="Apertura del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
-        <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
-                (onInit)="onQuillInit($event.editor, 'apertura')"
-          [modules]="ModulosEditorDescripcion">
-          <p-header>
-            <span class="ql-formats">
-              <select class="ql-header" tabindex="-1">
-                <option value="1" tabindex="-1">Título</option>
-                <option value="2" tabindex="-1">Subtítulo</option>
-                <option selected tabindex="-1">Normal</option>
-              </select>
-              <select class="ql-font" tabindex="-1">
-                <option selected tabindex="-1">Sans Serif</option>
-                <option value="serif" tabindex="-1">Serif</option>
-                <option value="monospace" tabindex="-1">Monospace</option>
-              </select>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
-              <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
-              <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
-              <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
-              <select class="ql-align" tabindex="-1">
-                <option selected tabindex="-1"></option>
-                <option value="center" tabindex="-1"></option>
-                <option value="right" tabindex="-1"></option>
-                <option value="justify" tabindex="-1"></option>
-              </select>
-            </span>
-          </p-header>
-        </p-editor>
-      </p-fieldset>
-      <!-- <div class="row py-1">
-        <div class="col-12">
-          <span><b>Apertura del acta</b></span>
-          <div class="col-12 ms-2">
-            <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
-                (onInit)="onQuillInit($event.editor, 'apertura')"
-              [modules]="ModulosEditorDescripcion">
-              <p-header>
-                <span class="ql-formats">
-                  <select class="ql-header" tabindex="-1">
-                    <option value="1" tabindex="-1">Título</option>
-                    <option value="2" tabindex="-1">Subtítulo</option>
-                    <option selected tabindex="-1">Normal</option>
-                  </select>
-                  <select class="ql-font" tabindex="-1">
-                    <option selected tabindex="-1">Sans Serif</option>
-                    <option value="serif" tabindex="-1">Serif</option>
-                    <option value="monospace" tabindex="-1">Monospace</option>
-                  </select>
-                </span>
-                <span class="ql-formats">
-                  <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
-                  <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
-                  <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
-                </span>
-                <span class="ql-formats">
-                  <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
-                  <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
-                  <select class="ql-align" tabindex="-1">
-                    <option selected tabindex="-1"></option>
-                    <option value="center" tabindex="-1"></option>
-                    <option value="right" tabindex="-1"></option>
-                    <option value="justify" tabindex="-1"></option>
-                  </select>
-                </span>
-              </p-header>
-            </p-editor>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- Pase de lista -->
-      <!-- <p-divider></p-divider> -->
       <p-fieldset *ngIf="frmActa" legend="Pase de lista" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
 
         <!-- Tipo de convocatoria y conteo -->
@@ -311,6 +233,84 @@
       </p-fieldset>
 
       <!-- Puntos del Orden del día -->
+      <!-- <p-divider></p-divider> -->
+      <p-fieldset legend="Apertura del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
+        <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'apertura')"
+          [modules]="ModulosEditorDescripcion">
+          <p-header>
+            <span class="ql-formats">
+              <select class="ql-header" tabindex="-1">
+                <option value="1" tabindex="-1">Título</option>
+                <option value="2" tabindex="-1">Subtítulo</option>
+                <option selected tabindex="-1">Normal</option>
+              </select>
+              <select class="ql-font" tabindex="-1">
+                <option selected tabindex="-1">Sans Serif</option>
+                <option value="serif" tabindex="-1">Serif</option>
+                <option value="monospace" tabindex="-1">Monospace</option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+              <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+              <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+              <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+              <select class="ql-align" tabindex="-1">
+                <option selected tabindex="-1"></option>
+                <option value="center" tabindex="-1"></option>
+                <option value="right" tabindex="-1"></option>
+                <option value="justify" tabindex="-1"></option>
+              </select>
+            </span>
+          </p-header>
+        </p-editor>
+      </p-fieldset>
+      <!-- <div class="row py-1">
+        <div class="col-12">
+          <span><b>Apertura del acta</b></span>
+          <div class="col-12 ms-2">
+            <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'apertura')"
+              [modules]="ModulosEditorDescripcion">
+              <p-header>
+                <span class="ql-formats">
+                  <select class="ql-header" tabindex="-1">
+                    <option value="1" tabindex="-1">Título</option>
+                    <option value="2" tabindex="-1">Subtítulo</option>
+                    <option selected tabindex="-1">Normal</option>
+                  </select>
+                  <select class="ql-font" tabindex="-1">
+                    <option selected tabindex="-1">Sans Serif</option>
+                    <option value="serif" tabindex="-1">Serif</option>
+                    <option value="monospace" tabindex="-1">Monospace</option>
+                  </select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                  <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                  <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                  <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                  <select class="ql-align" tabindex="-1">
+                    <option selected tabindex="-1"></option>
+                    <option value="center" tabindex="-1"></option>
+                    <option value="right" tabindex="-1"></option>
+                    <option value="justify" tabindex="-1"></option>
+                  </select>
+                </span>
+              </p-header>
+            </p-editor>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Pase de lista -->
       <!-- <p-divider></p-divider> -->
       <p-fieldset legend="Orden del día{{ !bExisteQuorum ? ' - SIN QUORUM' : ''}}" [toggleable]="bExisteQuorum"
         [collapsed]="!bExisteQuorum" styleClass="mt-2">
@@ -471,6 +471,38 @@
       <!-- Cierre -->
       <!-- <p-divider></p-divider> -->
       <p-fieldset legend="Cierre del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
+
+        <!-- Campos antes del texto de cierre -->
+        <div class="row ps-2 pe-2 pb-3">
+          <!-- Fecha y hora -->
+          <div class="col-12 col-md-3">
+            <label>Fecha y hora del cierre</label>
+            <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy" showTime="true"
+              [appendTo]="dlgActa" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaActa"
+              inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
+          </div>
+
+          <!-- Lugar -->
+          <div class="col-12 col-md-3">
+            <label>Lugar</label>
+            <input type="text" pInputText formControlName="lugar" class="uppercase"
+              (focus)="hlpApp.selectAllContent($event)" />
+          </div>
+
+          <!-- Quien emite -->
+          <div class="col-12 col-md-6">
+            <label>¿Quién firma el Acta?</label>
+            <p-dropdown [options]="opcionesQuienConvoca" formControlName="quien_emite"
+              optionLabel="label" optionValue="value"
+              placeholder="Selecciona quién emite" [showClear]="true"
+              [appendTo]="dlgActa" styleClass="w-100">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Texto de cierre del acta -->
         <p-editor #convocatoriaCierre formControlName="cierre" [style]="{ height: '150px' }"
                 (onInit)="onQuillInit($event.editor, 'cierre')"
           [modules]="ModulosEditorDescripcion">
@@ -481,11 +513,6 @@
                 <option value="2" tabindex="-1">Subtítulo</option>
                 <option selected tabindex="-1">Normal</option>
               </select>
-              <select class="ql-font" tabindex="-1">
-                <option selected tabindex="-1">Sans Serif</option>
-                <option value="serif" tabindex="-1">Serif</option>
-                <option value="monospace" tabindex="-1">Monospace</option>
-              </select>
             </span>
             <span class="ql-formats">
               <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
@@ -495,49 +522,12 @@
             <span class="ql-formats">
               <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
               <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
-              <select class="ql-align" tabindex="-1">
-                <option selected tabindex="-1"></option>
-                <option value="center" tabindex="-1"></option>
-                <option value="right" tabindex="-1"></option>
-                <option value="justify" tabindex="-1"></option>
-              </select>
             </span>
           </p-header>
         </p-editor>
 
-        <p-divider></p-divider>
-        <div class="row ps-2 pe-2 pb-3">
-          <!-- Fecha y hora -->
-          <div class="col-12 col-md-2">
-            <label for="txtFechaHora">Fecha y hora</label>
-            <p-calendar inputId="txtFechaHora" formControlName="fecha_hora" dateFormat="dd-MM-yy" showTime="true"
-              [appendTo]="dlgActa" [inputStyle]="{ 'text-align': 'right' }" [minDate]="fechaMinimaActa"
-              inputStyleClass="uppercase" showButtonBar="true"></p-calendar>
-          </div>
-
-          <!-- Lugar -->
-          <div class="col-12 col-md-4">
-            <label for="txtLugar">Lugar</label>
-            <input type="text" pInputText id="txtLugar" formControlName="lugar" class="uppercase"
-              (focus)="hlpApp.selectAllContent($event)" />
-          </div>
-          <!-- Quien emite -->
-          <div class="col-12 col-md-6">
-            <label for="txtQuienEmite">¿Quién emite?</label>
-            <input type="text" pInputText id="txtQuienEmite" formControlName="quien_emite" class="uppercase"
-              (focus)="hlpApp.selectAllContent($event)" />
-          </div>
-          <!-- Finalizada -->
-          <!-- <div class="col-12 col-md-2 align-self-end">
-            <div class="d-flex flex-row-reverse align-items-center me-2">
-              <label for="actaFinalizada" class="ps-3">Finalizada</label>
-              <p-inputSwitch inputId="chkFinalizada" name="actaFinalizada" (onChange)="onFinalizarActaChange($event)"
-                [disabled]="!frmActa.valid || votosPendientes.value"
-                pTooltip="Una vez finalizada el acta no será posible su edición" tooltipPosition="top"></p-inputSwitch>
-            </div>
-          </div> -->
-        </div>
       </p-fieldset>
+
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
