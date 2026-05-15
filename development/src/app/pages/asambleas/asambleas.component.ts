@@ -540,6 +540,7 @@ export class AsambleasComponent implements OnInit {
   ComiteVigilanciaPdf: any[] = [];
   FirmasPdf: any[] = [];
   domicilioCondominioPdf: string = '';
+  ciudadConvocatoria: string = '';
 
   async onGenerarPdfConvocatoria(idAsamblea: number) {
     if (idAsamblea == 0) return;
@@ -651,6 +652,10 @@ export class AsambleasComponent implements OnInit {
 
   onQuillInit(editor: any, campo: string) {
     this.quillEditors[campo] = editor;
+    // Si es editor del acta y hay textos originales, actualizar variables
+    if (['apertura', 'cierre'].includes(campo) && this.textosOriginalesActa?.[campo]) {
+      setTimeout(() => this.actualizarVariablesActa(), 200);
+    }
   }
 
   actualizarVariablesConvocatoria() {
@@ -709,6 +714,50 @@ export class AsambleasComponent implements OnInit {
 
   }
 
+  actualizarVariablesActa() {
+    if (!this.frmActa || !this.textosOriginalesActa) return;
+    const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
+      'agosto','septiembre','octubre','noviembre','diciembre'];
+    const fechaActa = this.frmActa.get('fecha_hora')?.value;
+    const fecha = fechaActa ? new Date(fechaActa) : null;
+    const formatFecha = (d: Date) => d ? d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear() : '';
+    const formatHora = (d: Date) => d ? d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0') : '';
+
+    const presidente = this.frmActa.get('id_presidente')?.value;
+    const secretario = this.frmActa.get('id_secretario')?.value;
+    const escrutadoresArr = this.frmActa.get('id_escrutadores')?.value || [];
+    const tipoConv = this.frmActa.get('tipo_convocatoria')?.value || 'PRIMERA';
+    const totalAsistentes = this.actaPaseLista ? this.actaPaseLista.value.filter((p: any) => p.asistencia).length : 0;
+    const totalUnidades = this.actaPaseLista?.controls?.length || 0;
+    const pct = totalUnidades > 0 ? Math.round(totalAsistentes / totalUnidades * 100) : 0;
+
+    const valores = {
+      nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
+      domicilio_condominio: this.domicilioCondominioPdf || '',
+      tipo_asamblea: this.TiposAsambleas.find((t: any) => +t.id_tipo_asamblea === +this.Convocatoria?.id_tipo_asamblea)?.tipo_asamblea || '',
+      tipo_convocatoria: tipoConv === 'SEGUNDA' ? 'Segunda Convocatoria' : 'Primera Convocatoria',
+      fecha_asamblea: fecha ? formatFecha(fecha) : (this.Convocatoria?.fecha_hora ? formatFecha(new Date(this.Convocatoria.fecha_hora)) : ''),
+      hora_asamblea: fecha ? formatHora(fecha) : '',
+      lugar: this.frmActa.get('lugar')?.value || this.Convocatoria?.lugar || '',
+      ciudad_convocatoria: this.ciudadConvocatoria || '',
+      presidente_asamblea: presidente?.usuario || '',
+      secretario_asamblea: secretario?.usuario || '',
+      escrutadores: Array.isArray(escrutadoresArr) ? escrutadoresArr.map((e: any) => e?.usuario || '').filter(Boolean).join(', ') : '',
+      total_asistentes: totalAsistentes.toString(),
+      porcentaje_quorum: pct + '%',
+    };
+
+    ['apertura', 'cierre'].forEach(campo => {
+      const original = this.textosOriginalesActa[campo];
+      if (!original) return;
+      const nuevoValor = this.reemplazarVariablesActa(original, valores);
+      this.frmActa.get(campo)?.setValue(nuevoValor, { emitEvent: false });
+      if (this.quillEditors[campo]) {
+        this.quillEditors[campo].root.innerHTML = nuevoValor;
+      }
+    });
+  }
+
   limpiarHtmlPdf(html: string): string {
     if (!html) return '';
     // Eliminar párrafos vacíos del editor Quill
@@ -729,6 +778,7 @@ export class AsambleasComponent implements OnInit {
       .replace(/{{fecha_asamblea}}/g, valores.fecha_asamblea || '<<DD de MMMM de YYYY>>')
       .replace(/{{hora_asamblea}}/g, valores.hora_asamblea || '<<HH:MM>>')
       .replace(/{{lugar}}/g, valores.lugar || '<<Lugar>>')
+      .replace(/{{ciudad_convocatoria}}/g, valores.ciudad_convocatoria || '<<Ciudad>>')
       .replace(/{{presidente_asamblea}}/g, valores.presidente_asamblea || '<<Presidente>>')
       .replace(/{{secretario_asamblea}}/g, valores.secretario_asamblea || '<<Secretario>>')
       .replace(/{{escrutadores}}/g, valores.escrutadores || '<<Escrutadores>>')
@@ -855,17 +905,43 @@ export class AsambleasComponent implements OnInit {
       this.frmActa.get('cierre').setValidators([Validators.required]);
       this.frmActa.get('quien_emite').setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(250)]);
 
+      // Cargar detalle completo de la convocatoria para tener todos los datos
+      try {
+        const detalleR: any = await this.asambleasService.ListarConvocatoria(this.idAsamblea).toPromise();
+        if (detalleR?.asamblea) {
+          this.Convocatoria = { ...this.Convocatoria, ...detalleR.asamblea };
+          this.ciudadConvocatoria = detalleR.asamblea.convocatoria_ciudad || '';
+        }
+      } catch(e) { console.error('Error cargando detalle convocatoria:', e); }
+
+      // Cargar detalle completo de la convocatoria para tener todos los datos
+      try {
+        const detalleR: any = await this.asambleasService.ListarConvocatoria(this.idAsamblea).toPromise();
+        if (detalleR?.asamblea) {
+          this.Convocatoria = { ...this.Convocatoria, ...detalleR.asamblea };
+          this.ciudadConvocatoria = detalleR.asamblea.convocatoria_ciudad || '';
+        }
+      } catch(e) { console.error('Error cargando detalle convocatoria:', e); }
+
       // Precargar textos de configuración para acta nueva
       try {
         const cfg: any = await this.configuracionService.Listar().toPromise();
         const config = cfg['config'] || {};
+        const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
+          'agosto','septiembre','octubre','noviembre','diciembre'];
+        const fechaAsamblea = this.Convocatoria?.fecha_hora ? new Date(this.Convocatoria.fecha_hora) : null;
+        const formatFecha = (d: Date) => d ? d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear() : '';
+        const formatHora = (d: Date) => d ? d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0') : '';
+
         const valoresActa = {
           nombre_condominio: this.sesionUsuarioService.obtenerNombreCondominio(),
-          tipo_asamblea: '',
+          domicilio_condominio: this.domicilioCondominioPdf || '',
+          tipo_asamblea: this.TiposAsambleas.find((t: any) => +t.id_tipo_asamblea === +this.Convocatoria?.id_tipo_asamblea)?.tipo_asamblea || '',
           tipo_convocatoria: '',
-          fecha_asamblea: '',
-          hora_asamblea: '',
-          lugar: '',
+          fecha_asamblea: fechaAsamblea ? formatFecha(fechaAsamblea) : '',
+          hora_asamblea: fechaAsamblea ? formatHora(fechaAsamblea) : '',
+          lugar: this.Convocatoria?.lugar || '',
+          ciudad_convocatoria: this.ciudadConvocatoria || '',
           presidente_asamblea: '',
           secretario_asamblea: '',
           escrutadores: '',
@@ -880,6 +956,8 @@ export class AsambleasComponent implements OnInit {
           this.textosOriginalesActa['cierre'] = config['acta_cierre'];
           this.frmActa.get('cierre').setValue(this.reemplazarVariablesActa(config['acta_cierre'], valoresActa));
         }
+        // Actualizar con datos reales después de un momento
+        setTimeout(() => this.actualizarVariablesActa(), 500);
       } catch(e) { console.error('Error cargando config acta:', e); }
 
       const usuariosActa = await this.usuariosService.ListarUsuariosActaAsambleas().toPromise()
@@ -902,6 +980,13 @@ export class AsambleasComponent implements OnInit {
       this.frmActa.get('id_presidente').setValue(null);
       this.frmActa.get('id_secretario').setValue(null);
       this.frmActa.get('id_escrutadores').setValue([]);
+
+      // Suscribir a cambios para actualizar variables del acta
+      ['id_presidente', 'id_secretario', 'id_escrutadores', 'tipo_convocatoria', 'fecha_hora', 'lugar'].forEach(campo => {
+        this.frmActa.get(campo)?.valueChanges.subscribe(() => {
+          setTimeout(() => this.actualizarVariablesActa(), 100);
+        });
+      });
 
       const ordenDiaActa = await this.asambleasService.ListarOrdenDiaConvocatoria(this.idAsamblea).toPromise()
         .then((r) => r['orden_dia'])
@@ -1044,6 +1129,8 @@ export class AsambleasComponent implements OnInit {
 
   // Cuando se cambia el valor de la asistencia
   onPaseListaAsistenciaChange(e: any, paseListaUsuario: any) {
+    // Actualizar variables del acta cuando cambia asistencia
+    setTimeout(() => this.actualizarVariablesActa(), 200);
     this.calcularExistenciaQuorum();
     let puntosConVotacion = this.actaOrdenDia.controls.filter((o) => o.get('requiere_votacion').value == true);
     puntosConVotacion.forEach((punto) => {

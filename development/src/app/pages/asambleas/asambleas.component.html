@@ -105,6 +105,7 @@
       <!-- Apertura -->
       <p-fieldset legend="Apertura del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
         <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'apertura')"
           [modules]="ModulosEditorDescripcion">
           <p-header>
             <span class="ql-formats">
@@ -142,6 +143,7 @@
           <span><b>Apertura del acta</b></span>
           <div class="col-12 ms-2">
             <p-editor #apertura formControlName="apertura" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'apertura')"
               [modules]="ModulosEditorDescripcion">
               <p-header>
                 <span class="ql-formats">
@@ -470,6 +472,7 @@
       <!-- <p-divider></p-divider> -->
       <p-fieldset legend="Cierre del acta" [toggleable]="true" [collapsed]="true" styleClass="mt-2">
         <p-editor #convocatoriaCierre formControlName="cierre" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'cierre')"
           [modules]="ModulosEditorDescripcion">
           <p-header>
             <span class="ql-formats">
@@ -659,6 +662,7 @@
           </div>
         </div>
 
+        <!-- Orden del día -->
         <div class="col-12 pt-2">
           <span><b>Orden del día</b></span>
           <div class="card">
@@ -714,8 +718,6 @@
           </div>
         </div>
 
-        <!-- Convocatoria cierre -->
-        <div class="col-12 pt-2">
         <!-- Disposiciones generales -->
         <div class="col-12 pt-2">
           <span><b>Disposiciones generales</b></span>
@@ -746,13 +748,7 @@
           </div>
         </div>
 
-        <!-- Orden del día -->
 
-      </div>
-
-      <!-- Convocatoria fecha -->
-      <!-- Convocatoria ciudad -->
-      <!-- Convocatoria quien emite -->
       <!-- Convocatoria fecha -->
       <!-- Convocatoria ciudad -->
       <!-- Convocatoria quien emite -->
@@ -782,8 +778,54 @@
           </p-dropdown>
         </div>
       </div>
-    </form>
-
+        <!-- Convocatoria cierre -->
+        <div class="col-12 pt-2">
+          <span><b>Cierre convocatoria</b></span>
+          <div class="col-12">
+            <ng-container
+              *ngIf="!frmConvocatoria.disabled; then templateCierreConvocatoria; else elseCierreConvocatoria">
+            </ng-container>
+            <ng-template #templateCierreConvocatoria>
+              <p-editor #convocatoriaCierre formControlName="convocatoria_cierre" [style]="{ height: '150px' }"
+                (onInit)="onQuillInit($event.editor, 'convocatoria_cierre')"
+                [modules]="ModulosEditorDescripcion">
+                <p-header>
+                  <span class="ql-formats">
+                    <select class="ql-header" tabindex="-1">
+                      <option value="1" tabindex="-1">Título</option>
+                      <option value="2" tabindex="-1">Subtítulo</option>
+                      <option selected tabindex="-1">Normal</option>
+                    </select>
+                    <select class="ql-font" tabindex="-1">
+                      <option selected tabindex="-1">Sans Serif</option>
+                      <option value="serif" tabindex="-1">Serif</option>
+                      <option value="monospace" tabindex="-1">Monospace</option>
+                    </select>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+                    <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+                    <button class="ql-underline" aria-label="Underline" tabindex="-1"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered" aria-label="Ordered List" tabindex="-1"></button>
+                    <button class="ql-list" value="bullet" aria-label="Unordered List" tabindex="-1"></button>
+                    <select class="ql-align" tabindex="-1">
+                      <option selected tabindex="-1"></option>
+                      <option value="center" tabindex="-1"></option>
+                      <option value="right" tabindex="-1"></option>
+                      <option value="justify" tabindex="-1"></option>
+                    </select>
+                  </span>
+                </p-header>
+              </p-editor>
+            </ng-template>
+            <ng-template #elseCierreConvocatoria>
+              <div class="card p-2" [innerHtml]="frmConvocatoria.get('convocatoria_cierre').value"></div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
@@ -1134,57 +1176,48 @@
     <div style="font-size:16pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
       {{ sesionUsuarioService.obtenerNombreCondominio() }}
     </div>
-    <div style="font-size:10pt;color:#555;margin-top:2px" *ngIf="domicilioCondominioPdf">
-      ({{ domicilioCondominioPdf }})
+    <div style="font-size:13pt;text-transform:uppercase;margin-top:4px">
+      CONVOCATORIA A ASAMBLEA GENERAL {{ ConvocatoriaPdf?.tipo_asamblea | uppercase }}
     </div>
+  </div>
 
   <!-- Fundamento legal -->
   <div *ngIf="ConvocatoriaPdf?.fundamento_legal"
-    [innerHTML]="limpiarHtmlPdf(ConvocatoriaPdf.fundamento_legal)"
-    style="margin-bottom:12px;text-align:justify">
+    [innerHTML]="ConvocatoriaPdf.fundamento_legal"
+    style="margin-bottom:16px;text-align:justify">
+  </div>
+
+  <!-- Disposiciones generales -->
+  <div *ngIf="ConvocatoriaPdf?.disposiciones_generales"
+    [innerHTML]="ConvocatoriaPdf.disposiciones_generales"
+    style="margin-bottom:16px;text-align:justify">
   </div>
 
   <!-- Orden del día -->
-  <div style="margin-bottom:12px" *ngIf="ConvocatoriaPdf?.orden_dia?.length > 0">
-    <div style="font-weight:bold;text-decoration:underline;margin-bottom:6px">ORDEN DEL DÍA:</div>
-    <ol style="margin-left:24px;padding:0;margin-top:0">
-      <li *ngFor="let punto of ConvocatoriaPdf.orden_dia" style="margin-bottom:2px">
+  <div style="margin-bottom:20px" *ngIf="ConvocatoriaPdf?.orden_dia?.length > 0">
+    <div style="font-weight:bold;text-decoration:underline;margin-bottom:8px">ORDEN DEL DÍA:</div>
+    <ol style="margin-left:24px;padding:0">
+      <li *ngFor="let punto of ConvocatoriaPdf.orden_dia" style="margin-bottom:4px">
         {{ punto.orden_dia }}
       </li>
     </ol>
   </div>
 
-  <!-- Disposiciones generales -->
-  <div *ngIf="ConvocatoriaPdf?.disposiciones_generales"
-    [innerHTML]="limpiarHtmlPdf(ConvocatoriaPdf.disposiciones_generales)"
-    style="margin-bottom:12px;text-align:justify">
-  </div>
-
   <!-- Cierre -->
   <div *ngIf="ConvocatoriaPdf?.convocatoria_cierre"
-    [innerHTML]="limpiarHtmlPdf(ConvocatoriaPdf.convocatoria_cierre)"
-    style="margin-bottom:24px;text-align:justify">
+    [innerHTML]="ConvocatoriaPdf.convocatoria_cierre"
+    style="margin-bottom:32px;text-align:justify">
   </div>
 
   <!-- Fecha y firma -->
-  <div style="margin-top:40px">
-    <div style="text-align:right;margin-bottom:40px">
+  <div style="margin-top:48px">
+    <div style="text-align:right;margin-bottom:48px">
       {{ ConvocatoriaPdf?.convocatoria_ciudad }},
       {{ ConvocatoriaPdf?.convocatoria_fecha | date:"dd 'de' MMMM 'de' yyyy" | uppercase }}
     </div>
-    <!-- Firmas dinámicas -->
-    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:40px;margin-top:40px">
-      <ng-container *ngIf="FirmasPdf.length > 0">
-        <div *ngFor="let firma of FirmasPdf" style="text-align:center;min-width:220px">
-          <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
-            <div style="font-weight:bold;text-transform:uppercase">{{ firma.nombre }}</div>
-            <div style="font-size:10pt;color:#444">{{ firma.cargo }}</div>
-          </div>
-        </div>
-      </ng-container>
-      <!-- Fallback si no hay firmas -->
-      <div *ngIf="FirmasPdf.length === 0" style="text-align:center;min-width:280px">
-        <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
+    <div style="text-align:center">
+      <div style="display:inline-block;min-width:280px;text-align:center">
+        <div style="border-top:1px solid #000;padding-top:8px;margin-top:48px">
           <div style="font-weight:bold">{{ ConvocatoriaPdf?.convocatoria_quien_emite }}</div>
           <div style="font-size:10pt;color:#444">CONVOCANTE</div>
         </div>
@@ -1193,4 +1226,3 @@
   </div>
 
 </div>
-
