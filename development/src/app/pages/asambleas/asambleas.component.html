@@ -57,10 +57,10 @@
             *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
             pButton type="button" icon="pi pi-book" class="p-button-rounded p-button-text p-button-success me-1"
             pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
-          <!-- Botón Detalles acta -->
+          <!-- Botón PDF acta -->
           <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta  > 0" pButton type="button"
-            icon="pi pi-file-pdf" class="p-button-rounded p-button-text p-button-primary me-1"
-            pTooltip="Detalles del acta" tooltipPosition="left" (click)="onActaDetalles(Convocatoria.id_acta)"></button>
+            icon="pi pi-file-pdf" class="p-button-rounded p-button-text p-button-danger me-1"
+            pTooltip="Imprimir acta" tooltipPosition="left" (click)="onGenerarPdfActa(Convocatoria.id_asamblea)"></button>
           <!-- Botón Eliminar acta -->
           <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta > 0" pButton type="button" icon="pi pi-trash"
             class="p-button-rounded p-button-text p-button-danger me-1" pTooltip="Eliminar acta" tooltipPosition="left"
@@ -1211,6 +1211,93 @@
           <div style="font-weight:bold">{{ ConvocatoriaPdf?.convocatoria_quien_emite }}</div>
           <div style="font-size:10pt;color:#444">CONVOCANTE</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Template PDF Acta (oculto) -->
+<div *ngIf="mostrarPdfActa" id="pdfActa"
+  style="display:block;width:100%;padding:48px 56px;background:#fff;font-family:'Times New Roman',serif;font-size:12pt;color:#000;line-height:1.6">
+
+  <!-- Encabezado -->
+  <div style="text-align:center;margin-bottom:24px;border-bottom:2px solid #000;padding-bottom:16px">
+    <img *ngIf="imgLogoPdf" [src]="imgLogoPdf"
+      style="max-height:80px;max-width:200px;object-fit:contain;display:block;margin:0 auto 8px" />
+    <div style="font-size:16pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+      {{ sesionUsuarioService.obtenerNombreCondominio() }}
+    </div>
+    <div style="font-size:10pt;color:#555;margin-top:2px" *ngIf="domicilioCondominioPdf">
+      ({{ domicilioCondominioPdf }})
+    </div>
+    <div style="font-size:13pt;text-transform:uppercase;margin-top:4px">
+      ACTA DE ASAMBLEA GENERAL
+    </div>
+  </div>
+
+  <!-- Apertura -->
+  <div *ngIf="ActaPdf?.apertura"
+    [innerHTML]="limpiarHtmlPdf(ActaPdf.apertura)"
+    style="margin-bottom:16px;text-align:justify">
+  </div>
+
+  <!-- Orden del día -->
+  <div style="margin-bottom:16px" *ngIf="ActaPdf?.orden_dia?.length > 0">
+    <div style="font-weight:bold;text-decoration:underline;margin-bottom:8px">ORDEN DEL DÍA:</div>
+    <div *ngFor="let punto of ActaPdf.orden_dia; let i = index" style="margin-bottom:12px">
+      <!-- Título del punto -->
+      <div style="font-weight:bold">{{ i+1 }}. {{ punto.orden_dia }}</div>
+      <!-- Apertura/acuerdos -->
+      <div *ngIf="punto.apertura" [innerHTML]="limpiarHtmlPdf(punto.apertura)"
+        style="margin-left:16px;text-align:justify"></div>
+      <!-- Votación -->
+      <div *ngIf="punto.votaciones?.length > 0" style="margin-left:16px;margin-top:4px">
+        <div style="font-weight:bold;font-size:10pt">VOTACIÓN:</div>
+        <table style="width:100%;border-collapse:collapse;font-size:10pt;margin-top:4px">
+          <tr style="background:#f0f0f0">
+            <th style="border:1px solid #ccc;padding:3px 6px;text-align:left">Condómino</th>
+            <th style="border:1px solid #ccc;padding:3px 6px;text-align:left">Unidad</th>
+            <th style="border:1px solid #ccc;padding:3px 6px;text-align:center">Voto</th>
+          </tr>
+          <tr *ngFor="let voto of punto.votaciones">
+            <td style="border:1px solid #ccc;padding:3px 6px">{{ voto.usuario }}</td>
+            <td style="border:1px solid #ccc;padding:3px 6px">{{ voto.unidad }}</td>
+            <td style="border:1px solid #ccc;padding:3px 6px;text-align:center">{{ voto.sentido_votacion }}</td>
+          </tr>
+        </table>
+      </div>
+      <!-- Cierre del punto -->
+      <div *ngIf="punto.cierre" [innerHTML]="limpiarHtmlPdf(punto.cierre)"
+        style="margin-left:16px;text-align:justify;margin-top:4px"></div>
+    </div>
+  </div>
+
+  <!-- Cierre -->
+  <div *ngIf="ActaPdf?.cierre"
+    [innerHTML]="limpiarHtmlPdf(ActaPdf.cierre)"
+    style="margin-bottom:24px;text-align:justify">
+  </div>
+
+  <!-- Fecha y lugar -->
+  <div style="text-align:right;margin-bottom:48px">
+    {{ ActaPdf?.lugar }},
+    {{ ActaPdf?.fecha_hora | date:"dd 'de' MMMM 'de' yyyy, HH:mm" | uppercase }}
+  </div>
+
+  <!-- Firmas -->
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:40px;margin-top:40px">
+    <ng-container *ngIf="FirmasPdf.length > 0">
+      <div *ngFor="let firma of FirmasPdf" style="text-align:center;min-width:220px">
+        <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
+          <div style="font-weight:bold;text-transform:uppercase">{{ firma.nombre }}</div>
+          <div style="font-size:10pt;color:#444">{{ firma.cargo }}</div>
+        </div>
+      </div>
+    </ng-container>
+    <div *ngIf="FirmasPdf.length === 0" style="text-align:center;min-width:280px">
+      <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
+        <div style="font-weight:bold">{{ ActaPdf?.quien_emite }}</div>
       </div>
     </div>
   </div>

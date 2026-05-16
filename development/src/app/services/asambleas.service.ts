@@ -119,8 +119,8 @@ export class AsambleasService {
     );
   }
 
-  ListarActa(idActa: number = 0) {
-    const url = 'asambleas/acta/' + idActa;
+  ListarActa(idAsamblea: number = 0) {
+    const url = 'asambleas/' + idAsamblea + '/acta';
     const headers = new HttpHeaders({
       'X-API-KEY': environment.appKey,
       Authorization: this.sesionUsuarioService.obtenerToken(),

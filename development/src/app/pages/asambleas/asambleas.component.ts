@@ -537,6 +537,8 @@ export class AsambleasComponent implements OnInit {
   }
 
   AdministradoresPdf: any[] = [];
+  ActaPdf: any = null;
+  mostrarPdfActa: boolean = false;
   ComiteVigilanciaPdf: any[] = [];
   FirmasPdf: any[] = [];
   domicilioCondominioPdf: string = '';
@@ -843,6 +845,88 @@ export class AsambleasComponent implements OnInit {
       this.frmActa?.get('id_secretario')?.value?.id_usuario,
     ].filter(v => v);
     return this.usuariosConAsistencia.filter(u => !excluir.includes(u.id_usuario));
+  }
+
+  async onGenerarPdfActa(idAsamblea: number) {
+    if (!idAsamblea || idAsamblea == 0) return;
+    hlpSwal.Cargando();
+    try {
+      const [actaR, adminR, comitesR, condR] = await Promise.all([
+        this.asambleasService.ListarActa(idAsamblea).toPromise(),
+        this.administradoresService.Listar().toPromise(),
+        this.comitesService.Listar().toPromise(),
+        this.condominiosService.ListarCondominio(this.sesionUsuarioService.obtenerIDCondominioUsuario()).toPromise(),
+      ]);
+
+      this.ActaPdf = actaR['acta'];
+      this.domicilioCondominioPdf = condR?.['condominios']?.domicilio || '';
+
+      const quienEmite = this.ActaPdf?.quien_emite || '';
+      const comites = comitesR['comites'] || [];
+      this.FirmasPdf = [];
+
+      // 1. Mesa de la asamblea
+      const idPresidente = this.ActaPdf?.fk_id_presidente;
+      const idSecretario = this.ActaPdf?.fk_id_secretario;
+      const idEscrutadores = this.ActaPdf?.id_escrutadores
+        ? JSON.parse(this.ActaPdf.id_escrutadores) : [];
+
+      // Cargar usuarios de la mesa desde el pase de lista
+      // Obtener nombres de la mesa - buscar en pase lista o en escrutadores
+      const paseLista = this.ActaPdf?.pase_lista || [];
+      const findEnPaseLista = (id: any) => paseLista.find((u: any) => +u.id_usuario === +id);
+
+      if (idPresidente) {
+        const u = findEnPaseLista(idPresidente);
+        this.FirmasPdf.push({ nombre: u?.usuario || '________________', cargo: 'PRESIDENTE(A) DE LA ASAMBLEA' });
+      }
+      if (idSecretario) {
+        const u = findEnPaseLista(idSecretario);
+        this.FirmasPdf.push({ nombre: u?.usuario || '________________', cargo: 'SECRETARIO(A) DE LA ASAMBLEA' });
+      }
+      // Escrutadores vienen con datos completos en el JSON
+      if (Array.isArray(idEscrutadores)) {
+        idEscrutadores.forEach((e: any) => {
+          const nombre = e?.usuario || findEnPaseLista(e?.id_usuario || e)?.usuario || '________________';
+          this.FirmasPdf.push({ nombre, cargo: 'ESCRUTADOR(A)' });
+        });
+      }
+
+      // 2. Administrador(es) o Comité de Administración
+      if (quienEmite.includes('ADMINISTRADOR')) {
+        const comiteAdmin = comites.find((c: any) => c.tipo_comite?.toUpperCase().includes('ADMINISTRACI'));
+        if (comiteAdmin?.miembros?.length > 0) {
+          comiteAdmin.miembros.forEach((m: any) => {
+            this.FirmasPdf.push({ nombre: m.usuario, cargo: m.cargo_comite + ' - COMITÉ DE ADMINISTRACIÓN' });
+          });
+        } else {
+          const admins = adminR['administradores'] || [];
+          admins.forEach((a: any) => {
+            this.FirmasPdf.push({ nombre: a.nombre, cargo: 'ADMINISTRADOR' });
+          });
+        }
+      }
+
+      // 3. Comité de Vigilancia
+      if (quienEmite.includes('VIGILANCIA')) {
+        const comiteV = comites.find((c: any) => c.tipo_comite?.toUpperCase().includes('VIGILANCIA'));
+        if (comiteV?.miembros) {
+          comiteV.miembros.forEach((m: any) => {
+            this.FirmasPdf.push({ nombre: m.usuario, cargo: m.cargo_comite + ' - COMITÉ DE VIGILANCIA' });
+          });
+        }
+      }
+
+      this.mostrarPdfActa = true;
+      hlpSwal.Cerrar();
+      setTimeout(() => {
+        hlpApp.imprimirElemento('pdfActa');
+        setTimeout(() => { this.mostrarPdfActa = false; }, 2000);
+      }, 1500);
+    } catch(e) {
+      hlpSwal.Cerrar();
+      await hlpSwal.Error(e);
+    }
   }
 
   async onActaEditar(Convocatoria: ConvocatoriaResumenModel) {
@@ -1225,6 +1309,11 @@ export class AsambleasComponent implements OnInit {
     delete acta.actaPaseLista;
     delete acta.actaOrdenDia;
 
+    // Extraer solo el id_usuario del presidente y secretario
+    acta.id_presidente = acta.id_presidente?.id_usuario || acta.id_presidente || null;
+    acta.id_secretario = acta.id_secretario?.id_usuario || acta.id_secretario || null;
+    acta.id_escrutadores = Array.isArray(acta.id_escrutadores) ? acta.id_escrutadores : [];
+
     acta.pase_lista = Object.assign({}, actaPaseLista.filter((o) => o.asistencia).map(p => {
       return {
         id_unidad: Number(p.id_unidad),
@@ -1305,13 +1394,13 @@ export class AsambleasComponent implements OnInit {
     this.mostrarDialogoEdicionActa = false;
   }
 
-  onActaDetalles(idActa) {
+  onActaDetalles(idAsamblea) {
     this.Acta = null;
 
     hlpSwal.Cargando();
 
     this.asambleasService
-      .ListarActa(idActa)
+      .ListarActa(idAsamblea)
       .toPromise()
       .then((r) => {
         this.Acta = r['acta'];
