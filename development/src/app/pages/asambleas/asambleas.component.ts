@@ -571,6 +571,7 @@ export class AsambleasComponent implements OnInit {
   mostrarPdfActa: boolean = false;
   ComiteVigilanciaPdf: any[] = [];
   FirmasPdf: any[] = [];
+  FirmasConvocatoriaPdf: any[] = [];
   domicilioCondominioPdf: string = '';
   ciudadConvocatoria: string = '';
 
@@ -591,14 +592,23 @@ export class AsambleasComponent implements OnInit {
       const quienConvoca = this.ConvocatoriaPdf?.convocatoria_quien_emite || '';
       const comites = comitesR['comites'] || [];
 
-      this.FirmasPdf = [];
+      this.FirmasConvocatoriaPdf = [];
 
-      // Administrador(es)
+      // Administrador(es) o Comité de Administración
       if (quienConvoca.includes('ADMINISTRADOR')) {
-        const admins = adminR['administradores'] || [];
-        admins.forEach((a: any) => {
-          this.FirmasPdf.push({ nombre: a.nombre, cargo: 'ADMINISTRADOR' });
-        });
+        const comiteAdmin = comites.find((c: any) =>
+          c.tipo_comite?.toUpperCase().includes('ADMINISTRACI')
+        );
+        if (comiteAdmin?.miembros?.length > 0) {
+          comiteAdmin.miembros.forEach((m: any) => {
+            this.FirmasConvocatoriaPdf.push({ nombre: m.usuario, cargo: m.cargo_comite + ' - COMITÉ DE ADMINISTRACIÓN' });
+          });
+        } else {
+          const admins = adminR['administradores'] || [];
+          admins.forEach((a: any) => {
+            this.FirmasConvocatoriaPdf.push({ nombre: a.nombre, cargo: 'ADMINISTRADOR' });
+          });
+        }
       }
 
       // Comité de Vigilancia
@@ -608,7 +618,7 @@ export class AsambleasComponent implements OnInit {
         );
         if (comiteVigilancia?.miembros) {
           comiteVigilancia.miembros.forEach((m: any) => {
-            this.FirmasPdf.push({ nombre: m.usuario, cargo: m.cargo_comite });
+            this.FirmasConvocatoriaPdf.push({ nombre: m.usuario, cargo: m.cargo_comite + ' - COMITÉ DE VIGILANCIA' });
           });
         }
       }

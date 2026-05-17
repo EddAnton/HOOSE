@@ -1219,9 +1219,17 @@
       {{ ConvocatoriaPdf?.convocatoria_ciudad }},
       {{ ConvocatoriaPdf?.convocatoria_fecha | date:"dd 'de' MMMM 'de' yyyy" | uppercase }}
     </div>
-    <div style="text-align:center">
-      <div style="display:inline-block;min-width:280px;text-align:center">
-        <div style="border-top:1px solid #000;padding-top:8px;margin-top:48px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:40px;margin-top:40px">
+      <ng-container *ngIf="FirmasConvocatoriaPdf.length > 0">
+        <div *ngFor="let firma of FirmasConvocatoriaPdf" style="text-align:center;min-width:220px">
+          <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
+            <div style="font-weight:bold;text-transform:uppercase">{{ firma.nombre }}</div>
+            <div style="font-size:10pt;color:#444">{{ firma.cargo }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <div *ngIf="FirmasConvocatoriaPdf.length === 0" style="text-align:center;min-width:280px">
+        <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
           <div style="font-weight:bold">{{ ConvocatoriaPdf?.convocatoria_quien_emite }}</div>
           <div style="font-size:10pt;color:#444">CONVOCANTE</div>
         </div>
@@ -1301,15 +1309,15 @@
 
   <!-- Firmas -->
   <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:40px;margin-top:40px">
-    <ng-container *ngIf="FirmasPdf.length > 0">
-      <div *ngFor="let firma of FirmasPdf" style="text-align:center;min-width:220px">
+    <ng-container *ngIf="FirmasConvocatoriaPdf.length > 0">
+      <div *ngFor="let firma of FirmasConvocatoriaPdf" style="text-align:center;min-width:220px">
         <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
           <div style="font-weight:bold;text-transform:uppercase">{{ firma.nombre }}</div>
           <div style="font-size:10pt;color:#444">{{ firma.cargo }}</div>
         </div>
       </div>
     </ng-container>
-    <div *ngIf="FirmasPdf.length === 0" style="text-align:center;min-width:280px">
+    <div *ngIf="FirmasConvocatoriaPdf.length === 0" style="text-align:center;min-width:280px">
       <div style="border-top:1px solid #000;padding-top:8px;margin-top:40px">
         <div style="font-weight:bold">{{ ActaPdf?.quien_emite }}</div>
       </div>
