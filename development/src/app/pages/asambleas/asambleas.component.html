@@ -690,6 +690,11 @@
                     <span class="p-column-title"><b>Requiere votación</b></span>
                     {{ OrdenDelDia.requiere_votacion ? 'SI' : 'NO'}}
                   </td>
+                  <td *ngIf="OrdenDelDia.requiere_votacion">
+                    <span class="p-column-title"><b>Tipo votación</b></span>
+                    {{ OrdenDelDia.tipo_votacion || 'MAYORÍA SIMPLE' }}
+                  </td>
+                  <td *ngIf="!OrdenDelDia.requiere_votacion"></td>
                   <!-- Botones -->
                   <td class="text-end">
                     <!-- Botón Editar -->
@@ -853,6 +858,15 @@
             <span class="align-self-center"><p-inputSwitch formControlName="requiere_votacion"
                 name="OrdenDelDiaRequiereVotacion"></p-inputSwitch></span>
           </div>
+        </div>
+        <!-- Tipo de votación -->
+        <div class="col-12 pt-3" *ngIf="frmOrdenDelDia.get('requiere_votacion').value">
+          <label>Tipo de votación</label>
+          <p-dropdown [options]="opcionesTipoVotacion" formControlName="tipo_votacion"
+            optionLabel="label" optionValue="value"
+            placeholder="Selecciona tipo de votación"
+            [appendTo]="dlgOrdenDia" styleClass="w-100">
+          </p-dropdown>
         </div>
       </div>
     </form>

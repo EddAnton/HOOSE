@@ -51,6 +51,12 @@ export class AsambleasComponent implements OnInit {
   // Tabla Convocatorias
   // Columnas de la tabla
 
+  opcionesTipoVotacion: any[] = [
+    { label: 'Mayoría Simple', value: 'MAYORÍA SIMPLE' },
+    { label: 'Mayoría Calificada (2/3 presentes)', value: 'MAYORÍA CALIFICADA' },
+    { label: 'Por Indiviso (≥51% indiviso)', value: 'POR INDIVISO' },
+  ];
+
   opcionesQuienConvoca: any[] = [
     { label: 'ADMINISTRADOR', value: 'ADMINISTRADOR' },
     { label: 'COMITÉ DE VIGILANCIA', value: 'COMITÉ DE VIGILANCIA' },
@@ -415,9 +421,33 @@ export class AsambleasComponent implements OnInit {
             id_asamblea_orden_dia: o.id_asamblea_orden_dia,
             orden_dia: o.orden_dia,
             requiere_votacion: o.requiere_votacion == 1,
+            tipo_votacion: o.tipo_votacion || 'MAYORÍA SIMPLE',
           }
         });
       }
+
+      // Precargar puntos del orden del día para convocatoria nueva
+      if (idAsamblea == 0 && this.OrdenesDelDia.length == 0) {
+        try {
+          const cfg: any = await this.configuracionService.Listar().toPromise();
+          const config = cfg['config'] || {};
+          this.OrdenesDelDia = [
+            {
+              id_asamblea_orden_dia: 1,
+              orden_dia: 'PASE DE LISTA',
+              requiere_votacion: false,
+              tipo_votacion: 'MAYORÍA SIMPLE',
+            },
+            {
+              id_asamblea_orden_dia: 2,
+              orden_dia: 'LECTURA Y APROBACIÓN EN SU CASO DE LA MINUTA DE LA SESIÓN ANTERIOR',
+              requiere_votacion: true,
+              tipo_votacion: 'MAYORÍA SIMPLE',
+            },
+          ];
+        } catch(e) { console.error('Error cargando orden del día por default:', e); }
+      }
+
       this.idOrdenDelDia = this.OrdenesDelDia.length + 1;
 
       this.frmConvocatoria.updateValueAndValidity();
@@ -623,6 +653,7 @@ export class AsambleasComponent implements OnInit {
           id_asamblea_orden_dia: o.id_asamblea_orden_dia,
           orden_dia: o.orden_dia,
           requiere_votacion: o.requiere_votacion == 1,
+          tipo_votacion: o.tipo_votacion || 'MAYORÍA SIMPLE',
         }
       });
     }
@@ -746,6 +777,7 @@ export class AsambleasComponent implements OnInit {
       secretario_asamblea: secretario?.usuario || '',
       escrutadores: Array.isArray(escrutadoresArr) ? escrutadoresArr.map((e: any) => e?.usuario || '').filter(Boolean).join(', ') : '',
       total_asistentes: totalAsistentes.toString(),
+      total_unidades: (this.actaPaseLista?.controls?.length || 0).toString(),
       porcentaje_quorum: pct + '%',
     };
 
@@ -785,7 +817,8 @@ export class AsambleasComponent implements OnInit {
       .replace(/{{secretario_asamblea}}/g, valores.secretario_asamblea || '<<Secretario>>')
       .replace(/{{escrutadores}}/g, valores.escrutadores || '<<Escrutadores>>')
       .replace(/{{porcentaje_quorum}}/g, valores.porcentaje_quorum || '<<XX%>>')
-      .replace(/{{total_asistentes}}/g, valores.total_asistentes || '<<N>>');
+      .replace(/{{total_asistentes}}/g, valores.total_asistentes || '<<N>>')
+      .replace(/{{unidades}}/g, valores.total_unidades || '<<Total Unidades>>');
   }
 
   // Reemplazar variables en texto con valores del formulario
@@ -1112,23 +1145,43 @@ export class AsambleasComponent implements OnInit {
       // Este fragmento de código debería ser utilizado incluso si se está editando el acta
       this.actaOrdenDia.clear();
       this.actaOrdenDia.clear();
+
+      // Cargar textos de configuración para apertura de puntos del orden del día
+      let cfgOrdenDia: any = {};
+      try {
+        const cfgR: any = await this.configuracionService.Listar().toPromise();
+        cfgOrdenDia = cfgR['config'] || {};
+      } catch(e) {}
+
       let requiere_votacion = false;
       ordenDiaActa.map((o) => {
         if (!requiere_votacion && o.requiere_votacion == 1) {
           requiere_votacion = true;
-          /* if (!this.bExisteQuorum) {
-            this.bExisteQuorum = false;
-          } */
         }
+
+        // Precargar apertura desde configuración si es acta nueva
+        let aperturaDefault = null;
+        if (this.idActa == 0) {
+          const nombrePunto = (o.orden_dia || '').toUpperCase();
+          if (nombrePunto.includes('PASE DE LISTA')) {
+            aperturaDefault = cfgOrdenDia['orden_dia_pase_lista_apertura'] || null;
+          } else if (nombrePunto.includes('MINUTA') || nombrePunto.includes('LECTURA')) {
+            aperturaDefault = cfgOrdenDia['orden_dia_minuta_apertura'] || null;
+          }
+        } else {
+          aperturaDefault = o.apertura || null;
+        }
+
         this.actaOrdenDia.push(this.formBuilder.group({
           id_asamblea_orden_dia: o.id_asamblea_orden_dia,
           orden_dia: o.orden_dia,
           requiere_votacion: o.requiere_votacion == 1,
-          apertura: [null, [Validators.required, Validators.min(1)]],
+          apertura: [aperturaDefault, [Validators.required, Validators.min(1)]],
           cierre: null,
           votacion: this.formBuilder.array([])
         }));
       });
+
 
       this.bExisteQuorum = !requiere_votacion;
       // this.votosPendientes.setValue(requiere_votacion);

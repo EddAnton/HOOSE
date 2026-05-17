@@ -53,13 +53,15 @@ export class ConvocatoriaModel {
 export class OrdenDelDiaModel {
   id_asamblea_orden_dia: number;
   orden_dia: string;
-  requiere_votacion: boolean
+  requiere_votacion: boolean;
+  tipo_votacion: string;
 
   constructor() {
     return {
       id_asamblea_orden_dia: 0,
       orden_dia: null,
-      requiere_votacion: false
+      requiere_votacion: false,
+      tipo_votacion: 'MAYORÍA SIMPLE',
     }
   }
 }

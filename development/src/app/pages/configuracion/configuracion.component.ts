@@ -19,6 +19,8 @@ export class ConfiguracionComponent implements OnInit {
     { clave: 'convocatoria_cierre', label: 'Cierre de Convocatoria', seccion: 'Convocatoria' },
     { clave: 'convocatoria_orden_dia_intro', label: 'Introducción Orden del Día', seccion: 'Convocatoria' },
     { clave: 'acta_apertura', label: 'Apertura del Acta', seccion: 'Acta' },
+    { clave: 'orden_dia_pase_lista_apertura', label: 'Orden del Día - Pase de Lista (Quórum)', seccion: 'Acta' },
+    { clave: 'orden_dia_minuta_apertura', label: 'Orden del Día - Lectura de Minuta', seccion: 'Acta' },
     { clave: 'acta_cierre', label: 'Cierre del Acta', seccion: 'Acta' },
   ];
 
@@ -27,7 +29,14 @@ export class ConfiguracionComponent implements OnInit {
   variablesConvocatoria = [
     { variable: '{{nombre_condominio}}', descripcion: 'Nombre del condominio' },
     { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
+    { variable: '{{total_asistentes}}', descripcion: 'Total de asistentes' },
+    { variable: '{{unidades}}', descripcion: 'Total de unidades del condominio' },
+    { variable: '{{porcentaje_quorum}}', descripcion: 'Porcentaje de quórum' },
+    { variable: '{{tipo_convocatoria}}', descripcion: 'Primera o Segunda Convocatoria' },
     { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
+    { variable: '{{total_asistentes}}', descripcion: 'Total de asistentes' },
+    { variable: '{{porcentaje_quorum}}', descripcion: 'Porcentaje de quórum' },
+    { variable: '{{tipo_convocatoria}}', descripcion: 'Primera o Segunda Convocatoria' },
     { variable: '{{tipo_asamblea}}', descripcion: 'Tipo (Ordinaria/Extraordinaria)' },
     { variable: '{{fecha_asamblea}}', descripcion: 'Fecha de la asamblea' },
     { variable: '{{hora_primera_convocatoria}}', descripcion: 'Hora 1ª convocatoria' },
@@ -41,7 +50,13 @@ export class ConfiguracionComponent implements OnInit {
   variablesActa = [
     { variable: '{{nombre_condominio}}', descripcion: 'Nombre del condominio' },
     { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
+    { variable: '{{total_asistentes}}', descripcion: 'Total de asistentes' },
+    { variable: '{{porcentaje_quorum}}', descripcion: 'Porcentaje de quórum' },
+    { variable: '{{tipo_convocatoria}}', descripcion: 'Primera o Segunda Convocatoria' },
     { variable: '{{domicilio_condominio}}', descripcion: 'Dirección del condominio' },
+    { variable: '{{total_asistentes}}', descripcion: 'Total de asistentes' },
+    { variable: '{{porcentaje_quorum}}', descripcion: 'Porcentaje de quórum' },
+    { variable: '{{tipo_convocatoria}}', descripcion: 'Primera o Segunda Convocatoria' },
     { variable: '{{tipo_asamblea}}', descripcion: 'Tipo (Ordinaria/Extraordinaria)' },
     { variable: '{{tipo_convocatoria}}', descripcion: 'Primera/Segunda convocatoria' },
     { variable: '{{fecha_asamblea}}', descripcion: 'Fecha de la asamblea' },
