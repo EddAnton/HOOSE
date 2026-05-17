@@ -309,10 +309,33 @@ export class AsambleasComponent implements OnInit {
       this.fechaMinimaConvocatoria = new Date();
       this.fechaMinimaAsamblea = new Date();
       this.fechaMinimaAsamblea.setDate(this.fechaMinimaAsamblea.getDate() + 1);
-      this.Convocatoria.fecha_hora =
-        idAsamblea > 0 ? new Date(this.Convocatoria.fecha_hora) : this.Convocatoria.fecha_hora;
-      this.Convocatoria.convocatoria_fecha =
-        idAsamblea > 0 ? new Date(this.Convocatoria.convocatoria_fecha + ' 0000:00') : this.Convocatoria.convocatoria_fecha;
+      // Calcular hora redondeada a 30 min más cercano
+      const ahora = new Date();
+      const minutos = ahora.getMinutes();
+      const horaRedondeada = new Date(ahora);
+      if (minutos < 15) {
+        horaRedondeada.setMinutes(0, 0, 0);
+      } else if (minutos < 45) {
+        horaRedondeada.setMinutes(30, 0, 0);
+      } else {
+        horaRedondeada.setHours(ahora.getHours() + 1, 0, 0, 0);
+      }
+      const horaSegunda = new Date(horaRedondeada);
+      horaSegunda.setMinutes(horaRedondeada.getMinutes() + 30);
+
+      if (idAsamblea > 0) {
+        this.Convocatoria.fecha_hora = new Date(this.Convocatoria.fecha_hora);
+        this.Convocatoria.convocatoria_fecha = new Date(this.Convocatoria.convocatoria_fecha + ' 0000:00');
+      } else {
+        // Valores por default para nueva convocatoria
+        const manana = new Date();
+        manana.setDate(manana.getDate() + 1);
+        this.Convocatoria.fecha_hora = manana;
+        this.Convocatoria.convocatoria_fecha = new Date();
+        // p-calendar timeOnly espera Date objects
+        this.Convocatoria.hora_primera_convocatoria = horaRedondeada as any;
+        this.Convocatoria.hora_segunda_convocatoria = horaSegunda as any;
+      }
 
       this.frmConvocatoria = this.formBuilder.group(this.Convocatoria, {
         validators: FormsValidator.fechaMenorQue('convocatoria_fecha', 'fecha_hora'),
