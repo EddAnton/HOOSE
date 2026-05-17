@@ -192,3 +192,11 @@ flex-direction: column;
     z-index: 9999 !important;
   }
 }
+
+@media print {
+  body * { visibility: hidden !important; }
+  #pdfConvocatoria, #pdfConvocatoria * { visibility: visible !important; }
+  #pdfActa, #pdfActa * { visibility: visible !important; }
+  #pdfConvocatoria { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; }
+  #pdfActa { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; }
+}

@@ -88,15 +88,22 @@ export function imprimirElemento(elemento) {
 
   var printWindow = window.open('', 'Imprimir', 'top=10,left=10,height=600,width=800');
 
-  printWindow.document.write('<html><head><title>' + document.title + '</title>');
-  // printWindow.document.write('<link rel="stylesheet" href="styles.css" type="text/css"/>');
-  printWindow.document.write('</head><body class="m-4">');
+  const estilosBase = `<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+    body { font-family: 'Montserrat', sans-serif; font-size: 11pt; color: #000; line-height: 1.6; margin: 0; padding: 0; }
+    strong, b { font-weight: 700; }
+    em, i { font-style: italic; }
+    u { text-decoration: underline; }
+    ol, ul { margin-left: 24px; }
+    p { margin: 0 0 8px 0; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1px solid #ccc; padding: 4px 8px; }
+    @page { margin: 20mm; }
+  </style>`;
+
+  printWindow.document.write('<html><head><title>' + document.title + '</title>' + estilosBase + '</head><body>');
   printWindow.document.write(element.innerHTML);
   printWindow.document.write('</body></html>');
-  // Clonar CSS y etiquetas de estilo a la ventana externa
-  document.querySelectorAll('link, style').forEach((htmlElement) => {
-    printWindow.document.head.appendChild(htmlElement.cloneNode(true));
-  });
 
   printWindow.onhashchange = function () {
     printWindow.close();

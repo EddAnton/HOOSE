@@ -531,6 +531,7 @@ export class AsambleasComponent implements OnInit {
       return {
         orden_dia: o.orden_dia,
         requiere_votacion: o.requiere_votacion ? 1 : 0,
+        tipo_votacion: o.tipo_votacion || 'MAYORÍA SIMPLE',
       }
     });
 
@@ -627,7 +628,8 @@ export class AsambleasComponent implements OnInit {
       hlpSwal.Cerrar();
       setTimeout(() => {
         hlpApp.imprimirElemento('pdfConvocatoria');
-      }, 800);
+        setTimeout(() => { this.mostrarPdfConvocatoria = false; }, 2000);
+      }, 1500);
     } catch(e) {
       hlpSwal.Cerrar();
       await hlpSwal.Error(e);
@@ -757,6 +759,65 @@ export class AsambleasComponent implements OnInit {
 
   }
 
+  getIconoVotacion(sentido: string): string {
+    const s = (sentido || '').toLowerCase();
+    if (s.includes('favor')) return '✔';
+    if (s.includes('contra')) return '✖';
+    if (s.includes('abstencion') || s.includes('abstención')) return '–';
+    return '·';
+  }
+
+  getClaseVotacion(sentido: string): string {
+    const s = (sentido || '').toLowerCase();
+    if (s.includes('favor')) return 'text-success';
+    if (s.includes('contra')) return 'text-danger';
+    if (s.includes('abstencion') || s.includes('abstención')) return 'text-warning';
+    return 'text-secondary';
+  }
+
+  getClaseResultado(resultado: string): string {
+    if (resultado === 'NO SE APRUEBA') return 'text-danger';
+    if (resultado.indexOf('SE APRUEBA') === 0) return 'text-success';
+    return 'text-secondary';
+  }
+
+  getIconoResultado(resultado: string): string {
+    if (resultado === 'NO SE APRUEBA') return '✖';
+    if (resultado.indexOf('SE APRUEBA') === 0) return '✔';
+    return '·';
+  }
+
+  getResultadoVotacion(punto: any): string {
+    const votaciones = punto.get('votacion')?.value || [];
+    if (votaciones.length === 0) return 'SIN VOTAR';
+    const sinVotar = votaciones.filter((v: any) => +v.id_sentido_votacion === 0).length;
+    if (sinVotar === votaciones.length) return 'SIN VOTAR';
+
+    const tipoVotacion = punto.get('tipo_votacion')?.value || 'MAYORÍA SIMPLE';
+    const votosFavor = votaciones.filter((v: any) => +v.id_sentido_votacion === 1).length;
+    const votosContra = votaciones.filter((v: any) => +v.id_sentido_votacion === 2).length;
+    const totalVotos = votaciones.filter((v: any) => +v.id_sentido_votacion !== 0).length;
+
+    const totalPresentes = votaciones.length; // todos los que pueden votar (presentes)
+    let aprobado = false;
+    if (tipoVotacion === 'MAYORÍA SIMPLE') {
+      aprobado = votosFavor > votosContra;
+    } else if (tipoVotacion === 'MAYORÍA CALIFICADA') {
+      // 2/3 de los presentes (no solo de los que ya votaron)
+      aprobado = totalPresentes > 0 && votosFavor >= Math.ceil((2/3) * totalPresentes);
+    } else if (tipoVotacion === 'POR INDIVISO') {
+      const pctFavor = votaciones
+        .filter((v: any) => +v.id_sentido_votacion === 1)
+        .reduce((sum: number, v: any) => sum + (+v.porcentaje_indiviso || 0), 0);
+      aprobado = pctFavor > 50;
+    }
+    if (totalVotos === 0) return 'SIN VOTAR';
+    const unanimidad = (votosFavor === totalPresentes && votosContra === 0) || 
+                       (votosContra === totalPresentes && votosFavor === 0);
+    const tipoAprobacion = unanimidad ? 'por unanimidad' : 'por mayoría';
+    return aprobado ? 'SE APRUEBA ' + tipoAprobacion : 'NO SE APRUEBA';
+  }
+
   actualizarVariablesActa() {
     if (!this.frmActa || !this.textosOriginalesActa) return;
     const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
@@ -788,9 +849,11 @@ export class AsambleasComponent implements OnInit {
       escrutadores: Array.isArray(escrutadoresArr) ? escrutadoresArr.map((e: any) => e?.usuario || '').filter(Boolean).join(', ') : '',
       total_asistentes: totalAsistentes.toString(),
       total_unidades: (this.actaPaseLista?.controls?.length || 0).toString(),
+      unidades: (this.actaPaseLista?.controls?.length || 0).toString(),
       porcentaje_quorum: pct + '%',
     };
 
+    // Actualizar apertura y cierre del acta
     ['apertura', 'cierre'].forEach(campo => {
       const original = this.textosOriginalesActa[campo];
       if (!original) return;
@@ -800,11 +863,87 @@ export class AsambleasComponent implements OnInit {
         this.quillEditors[campo].root.innerHTML = nuevoValor;
       }
     });
+
+    // Actualizar apertura/cierre de cada punto del orden del día
+    this.actaOrdenDia?.controls?.forEach((punto: any, idx: number) => {
+      const nombrePunto = (punto.get('orden_dia')?.value || '').toUpperCase();
+      const requiereVotacion = punto.get('requiere_votacion')?.value;
+      const esPaseLista = punto.get('es_pase_lista')?.value;
+      const esMinuta = punto.get('es_minuta')?.value;
+
+      // Calcular resultados de votación para este punto
+      const votaciones = punto.get('votacion')?.value || [];
+      const votosFavor = votaciones.filter((v: any) => v.id_sentido_votacion == 1).length;
+      const votosContra = votaciones.filter((v: any) => v.id_sentido_votacion == 2).length;
+      const votosAbstencion = votaciones.filter((v: any) => v.id_sentido_votacion == 3).length;
+      const totalVotos = votosFavor + votosContra + votosAbstencion;
+      const tipoVotacion = punto.get('tipo_votacion')?.value || 'MAYORÍA SIMPLE';
+      let aprobado = false;
+      if (tipoVotacion === 'MAYORÍA SIMPLE') {
+        aprobado = votosFavor > votosContra;
+      } else if (tipoVotacion === 'MAYORÍA CALIFICADA') {
+        aprobado = totalVotos > 0 && votosFavor >= (2/3) * totalVotos;
+      } else if (tipoVotacion === 'POR INDIVISO') {
+        // Sumar % indiviso de unidades que votaron a favor
+        const votacionesArray = punto.get('votacion')?.value || [];
+        const pctFavor = votacionesArray
+          .filter((v: any) => +v.id_sentido_votacion === 1)
+          .reduce((sum: number, v: any) => sum + (+v.porcentaje_indiviso || 0), 0);
+        aprobado = pctFavor > 50;
+      }
+
+      // Unanimidad: todos votan en el mismo sentido sin ninguno en contrario
+      const unanimidad = totalVotos > 0 && (
+        (votosFavor === totalVotos) || // todos a favor
+        (votosContra === totalVotos)   // todos en contra
+      );
+
+      const tipoVotacionLabel = tipoVotacion === 'MAYORÍA SIMPLE'
+        ? 'MAYORÍA SIMPLE (50% + 1)'
+        : tipoVotacion === 'MAYORÍA CALIFICADA'
+        ? 'MAYORÍA CALIFICADA (2/3 de los presentes)'
+        : 'POR INDIVISO (% de la unidad)';
+
+      const valoresPunto = {
+        ...valores,
+        nombre_punto: punto.get('orden_dia')?.value || '',
+        votos_favor: votosFavor.toString(),
+        votos_contra: votosContra.toString(),
+        votos_abstencion: votosAbstencion.toString(),
+        aprobacion: aprobado ? 'SE APRUEBA' : 'NO SE APRUEBA',
+        tipo_aprobacion: unanimidad ? 'UNANIMIDAD' : 'MAYORÍA',
+        tipo_votacion: tipoVotacionLabel,
+      };
+
+      let textoApertura = null;
+      let textoCierre = null;
+
+      if (esPaseLista) {
+        textoApertura = this.textosOriginalesActa['orden_dia_pase_lista'];
+      } else if (esMinuta) {
+        textoCierre = this.textosOriginalesActa['orden_dia_minuta'];
+      } else if (requiereVotacion) {
+        textoCierre = this.textosOriginalesActa['orden_dia_votacion_cierre'];
+      }
+
+      if (textoApertura) {
+        const nuevoValor = this.reemplazarVariablesActa(textoApertura, valoresPunto);
+        punto.get('apertura')?.setValue(nuevoValor, { emitEvent: false });
+        const editor = this.quillEditors['ordenDiaApertura' + idx];
+        if (editor) editor.root.innerHTML = nuevoValor;
+      }
+      if (textoCierre) {
+        const nuevoValor = this.reemplazarVariablesActa(textoCierre, valoresPunto);
+        punto.get('cierre')?.setValue(nuevoValor, { emitEvent: false });
+        const editor = this.quillEditors['ordenDiaCierre' + idx];
+        if (editor) editor.root.innerHTML = nuevoValor;
+      }
+    });
   }
 
   limpiarHtmlPdf(html: string): string {
     if (!html) return '';
-    // Eliminar párrafos vacíos del editor Quill
+    // Eliminar solo párrafos vacíos del editor Quill, preservar negritas y demás formato
     return html
       .replace(/<p><br><\/p>/g, '')
       .replace(/<p>\s*<\/p>/g, '')
@@ -823,6 +962,18 @@ export class AsambleasComponent implements OnInit {
       .replace(/{{hora_asamblea}}/g, valores.hora_asamblea || '<<HH:MM>>')
       .replace(/{{lugar}}/g, valores.lugar || '<<Lugar>>')
       .replace(/{{ciudad_convocatoria}}/g, valores.ciudad_convocatoria || '<<Ciudad>>')
+      .replace(/{{unidades}}/g, valores.unidades || valores.total_unidades || '<<N>>')
+      .replace(/{{nombre_punto}}/g, valores.nombre_punto || '<<Punto del Orden del Día>>')
+      .replace(/{{tipo_votacion}}/g, valores.tipo_votacion || '<<Tipo de Votación>>')
+      .replace(/{{tipo_votación}}/g, valores.tipo_votacion || '<<Tipo de Votación>>')
+      .replace(/{{aprobacion}}/g, valores.aprobacion || '<<SE APRUEBA / NO SE APRUEBA>>')
+      .replace(/{{aprobación}}/g, valores.aprobacion || '<<SE APRUEBA / NO SE APRUEBA>>')
+      .replace(/{{tipo_aprobacion}}/g, valores.tipo_aprobacion || '<<UNANIMIDAD / MAYORÍA>>')
+      .replace(/{{tipo_aprobación}}/g, valores.tipo_aprobacion || '<<UNANIMIDAD / MAYORÍA>>')
+      .replace(/{{votos_favor}}/g, valores.votos_favor || '<<N>>')
+      .replace(/{{votos_contra}}/g, valores.votos_contra || '<<N>>')
+      .replace(/{{votos_abstencion}}/g, valores.votos_abstencion || '<<N>>')
+      .replace(/{{votos_abstención}}/g, valores.votos_abstencion || '<<N>>')
       .replace(/{{presidente_asamblea}}/g, valores.presidente_asamblea || '<<Presidente>>')
       .replace(/{{secretario_asamblea}}/g, valores.secretario_asamblea || '<<Secretario>>')
       .replace(/{{escrutadores}}/g, valores.escrutadores || '<<Escrutadores>>')
@@ -914,23 +1065,31 @@ export class AsambleasComponent implements OnInit {
       const idEscrutadores = this.ActaPdf?.id_escrutadores
         ? JSON.parse(this.ActaPdf.id_escrutadores) : [];
 
-      // Cargar usuarios de la mesa desde el pase de lista
-      // Obtener nombres de la mesa - buscar en pase lista o en escrutadores
+      // Buscar usuarios en pase lista y votaciones para encontrar nombres
       const paseLista = this.ActaPdf?.pase_lista || [];
-      const findEnPaseLista = (id: any) => paseLista.find((u: any) => +u.id_usuario === +id);
+      const todosUsuariosActa = [...paseLista];
+      // Agregar usuarios de votaciones
+      (this.ActaPdf?.orden_dia || []).forEach((od: any) => {
+        (od.votaciones || []).forEach((v: any) => {
+          if (!todosUsuariosActa.find((u: any) => +u.id_usuario === +v.id_usuario)) {
+            todosUsuariosActa.push(v);
+          }
+        });
+      });
+      const findUsuarioActa = (id: any) => todosUsuariosActa.find((u: any) => +u.id_usuario === +id);
 
       if (idPresidente) {
-        const u = findEnPaseLista(idPresidente);
-        this.FirmasPdf.push({ nombre: u?.usuario || '________________', cargo: 'PRESIDENTE(A) DE LA ASAMBLEA' });
+        const u = findUsuarioActa(idPresidente);
+        if (u) this.FirmasPdf.push({ nombre: u.usuario, cargo: 'PRESIDENTE(A) DE LA ASAMBLEA' });
       }
       if (idSecretario) {
-        const u = findEnPaseLista(idSecretario);
-        this.FirmasPdf.push({ nombre: u?.usuario || '________________', cargo: 'SECRETARIO(A) DE LA ASAMBLEA' });
+        const u = findUsuarioActa(idSecretario);
+        if (u) this.FirmasPdf.push({ nombre: u.usuario, cargo: 'SECRETARIO(A) DE LA ASAMBLEA' });
       }
       // Escrutadores vienen con datos completos en el JSON
       if (Array.isArray(idEscrutadores)) {
         idEscrutadores.forEach((e: any) => {
-          const nombre = e?.usuario || findEnPaseLista(e?.id_usuario || e)?.usuario || '________________';
+          const nombre = e?.usuario || findUsuarioActa(e?.id_usuario || e)?.usuario || '________________';
           this.FirmasPdf.push({ nombre, cargo: 'ESCRUTADOR(A)' });
         });
       }
@@ -1083,6 +1242,15 @@ export class AsambleasComponent implements OnInit {
           this.textosOriginalesActa['cierre'] = config['acta_cierre'];
           this.frmActa.get('cierre').setValue(this.reemplazarVariablesActa(config['acta_cierre'], valoresActa));
         }
+        if (config['orden_dia_pase_lista_apertura']) {
+          this.textosOriginalesActa['orden_dia_pase_lista'] = config['orden_dia_pase_lista_apertura'];
+        }
+        if (config['orden_dia_minuta_apertura']) {
+          this.textosOriginalesActa['orden_dia_minuta'] = config['orden_dia_minuta_apertura'];
+        }
+        if (config['orden_dia_votacion_cierre']) {
+          this.textosOriginalesActa['orden_dia_votacion_cierre'] = config['orden_dia_votacion_cierre'];
+        }
         // Actualizar con datos reales después de un momento
         setTimeout(() => this.actualizarVariablesActa(), 500);
       } catch(e) { console.error('Error cargando config acta:', e); }
@@ -1169,25 +1337,34 @@ export class AsambleasComponent implements OnInit {
           requiere_votacion = true;
         }
 
-        // Precargar apertura desde configuración si es acta nueva
-        let aperturaDefault = null;
+        // Precargar según tipo de punto
+        const nombrePunto = (o.orden_dia || '').toUpperCase();
+        const esPaseLista = nombrePunto.includes('PASE DE LISTA');
+        const esMinuta = nombrePunto.includes('MINUTA') || nombrePunto.includes('LECTURA');
+        const requiereVotacion = o.requiere_votacion == 1;
+
+        let aperturaDefault = this.idActa == 0 ? null : (o.apertura || null);
+        let cierreDefault = this.idActa == 0 ? null : (o.cierre || null);
+
         if (this.idActa == 0) {
-          const nombrePunto = (o.orden_dia || '').toUpperCase();
-          if (nombrePunto.includes('PASE DE LISTA')) {
+          if (esPaseLista) {
             aperturaDefault = cfgOrdenDia['orden_dia_pase_lista_apertura'] || null;
-          } else if (nombrePunto.includes('MINUTA') || nombrePunto.includes('LECTURA')) {
-            aperturaDefault = cfgOrdenDia['orden_dia_minuta_apertura'] || null;
+          } else if (esMinuta) {
+            cierreDefault = cfgOrdenDia['orden_dia_minuta_apertura'] || null;
+          } else if (requiereVotacion) {
+            cierreDefault = cfgOrdenDia['orden_dia_votacion_cierre'] || null;
           }
-        } else {
-          aperturaDefault = o.apertura || null;
         }
 
         this.actaOrdenDia.push(this.formBuilder.group({
           id_asamblea_orden_dia: o.id_asamblea_orden_dia,
           orden_dia: o.orden_dia,
-          requiere_votacion: o.requiere_votacion == 1,
+          requiere_votacion: requiereVotacion,
+          tipo_votacion: o.tipo_votacion || 'MAYORÍA SIMPLE',
+          es_pase_lista: esPaseLista,
+          es_minuta: esMinuta,
           apertura: [aperturaDefault, [Validators.required, Validators.min(1)]],
-          cierre: null,
+          cierre: cierreDefault,
           votacion: this.formBuilder.array([])
         }));
       });

@@ -21,6 +21,7 @@ export class ConfiguracionComponent implements OnInit {
     { clave: 'acta_apertura', label: 'Apertura del Acta', seccion: 'Acta' },
     { clave: 'orden_dia_pase_lista_apertura', label: 'Orden del Día - Pase de Lista (Quórum)', seccion: 'Acta' },
     { clave: 'orden_dia_minuta_apertura', label: 'Orden del Día - Lectura de Minuta', seccion: 'Acta' },
+    { clave: 'orden_dia_votacion_cierre', label: 'Orden del Día - Cierre de Punto con Votación', seccion: 'Acta' },
     { clave: 'acta_cierre', label: 'Cierre del Acta', seccion: 'Acta' },
   ];
 

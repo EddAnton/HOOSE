@@ -327,10 +327,11 @@
             </div>
 
             <!-- Apertura del orden del día -->
-            <div class="row py-1">
+            <!-- Pase de lista: solo apertura con texto quorum. Minuta: sin apertura. Otros: apertura normal -->
+            <div class="row py-1" *ngIf="!punto.get('es_minuta').value">
               <div class="col-12">
-                <span *ngIf="punto.get('requiere_votacion').value == true" class="pt-3"><b>Apertura del
-                    punto</b></span>
+                <span *ngIf="punto.get('requiere_votacion').value == true" class="pt-3"><b>Apertura del punto</b></span>
+                <span *ngIf="punto.get('es_pase_lista').value" class="pt-3"><b>Declaratoria de Quórum</b></span>
                 <div class="col-12 ms-2">
                   <p-editor id="{{'ordenDiaApertura' + idxPunto}}" [style]="{ height: '150px' }"
                     [formControl]="punto.get('apertura')" [modules]="ModulosEditorDescripcion">
@@ -371,7 +372,8 @@
             <!-- Votación del orden del día -->
             <div *ngIf="punto.get('requiere_votacion').value == true" class="row py-1">
               <div class="col-12">
-                <span class="pt-3"><b>Votación sobre el punto</b></span><br>
+                <span class="pt-3"><b>Votación sobre el punto</b></span>
+                <span class="ms-2 badge bg-secondary">{{ punto.get('tipo_votacion')?.value || 'MAYORÍA SIMPLE' }}</span><br>
                 <div id="logVotacion{{ punto.get('id_asamblea_orden_dia').value }}"></div>
                 <div class="card ms-2 col-12">
                   <p-table #ptVotacionPuntoOrdenDia [value]="punto.get('votacion').controls"
@@ -392,7 +394,7 @@
                         <td><span class="p-column-title">Unidad</span>{{ votacion.get('unidad').value }}</td>
                         <td><span class="p-column-title">Nombre</span>{{ votacion.get('usuario').value }}</td>
                         <td class="text-center">
-                          <select [formControl]="votacion.get('id_sentido_votacion')" class="form-select">
+                          <select [formControl]="votacion.get('id_sentido_votacion')" class="form-select" (change)="actualizarVariablesActa()">
                             <option *ngFor="let sentidoVotacion of catSentidoVotacion" [ngValue]="sentidoVotacion.id">
                               {{ sentidoVotacion.sentido_votacion }}
                             </option>
@@ -412,10 +414,13 @@
                     <ng-template pTemplate="footer" let-columns>
                       <tr>
                         <td [colSpan]="columns.length" class="text-end">
-                          <span
-                            *ngFor="let sentidoVotacion of getTotalesVotacionPuntoOrdenDia(punto.get('id_asamblea_orden_dia').value); let i = index">
-                            {{sentidoVotacion.sentido_votacion}}: {{sentidoVotacion.total}}<span
-                              *ngIf="i + 1 < catSentidoVotacion.length"> |</span></span>
+                          <span *ngFor="let sv of getTotalesVotacionPuntoOrdenDia(punto.get('id_asamblea_orden_dia').value); let i = index">
+                            <span [class]="getClaseVotacion(sv.sentido_votacion)">{{ getIconoVotacion(sv.sentido_votacion) }}</span>
+                            <span [class]="getClaseVotacion(sv.sentido_votacion)">{{ sv.sentido_votacion }}</span><span>: {{ sv.total }}</span><span *ngIf="i + 1 < catSentidoVotacion.length"> | </span></span>
+                          <strong class="ms-3 fw-bold"
+                            [ngClass]="getClaseResultado(getResultadoVotacion(punto))">
+                            | {{ getIconoResultado(getResultadoVotacion(punto)) }} {{ getResultadoVotacion(punto) }}
+                          </strong>
                         </td>
                       </tr>
                     </ng-template>
@@ -1187,19 +1192,13 @@
 
   <!-- Fundamento legal -->
   <div *ngIf="ConvocatoriaPdf?.fundamento_legal"
-    [innerHTML]="ConvocatoriaPdf.fundamento_legal"
-    style="margin-bottom:16px;text-align:justify">
-  </div>
-
-  <!-- Disposiciones generales -->
-  <div *ngIf="ConvocatoriaPdf?.disposiciones_generales"
-    [innerHTML]="ConvocatoriaPdf.disposiciones_generales"
+    [innerHTML]="limpiarHtmlPdf(ConvocatoriaPdf.fundamento_legal)"
     style="margin-bottom:16px;text-align:justify">
   </div>
 
   <!-- Orden del día -->
   <div style="margin-bottom:20px" *ngIf="ConvocatoriaPdf?.orden_dia?.length > 0">
-    <div style="font-weight:bold;text-decoration:underline;margin-bottom:8px">ORDEN DEL DÍA:</div>
+    <div style="font-weight:bold;margin-bottom:8px">ORDEN DEL DÍA:</div>
     <ol style="margin-left:24px;padding:0">
       <li *ngFor="let punto of ConvocatoriaPdf.orden_dia" style="margin-bottom:4px">
         {{ punto.orden_dia }}
@@ -1207,15 +1206,23 @@
     </ol>
   </div>
 
+  <!-- Disposiciones generales -->
+  <div *ngIf="ConvocatoriaPdf?.disposiciones_generales" style="margin-bottom:16px">
+    <div style="font-weight:bold;margin-bottom:8px">DISPOSICIONES GENERALES:</div>
+    <div [innerHTML]="limpiarHtmlPdf(ConvocatoriaPdf.disposiciones_generales)"
+      style="text-align:justify">
+    </div>
+  </div>
+
   <!-- Cierre -->
   <div *ngIf="ConvocatoriaPdf?.convocatoria_cierre"
-    [innerHTML]="ConvocatoriaPdf.convocatoria_cierre"
+    [innerHTML]="limpiarHtmlPdf(ConvocatoriaPdf.convocatoria_cierre)"
     style="margin-bottom:32px;text-align:justify">
   </div>
 
   <!-- Fecha y firma -->
   <div style="margin-top:48px">
-    <div style="text-align:right;margin-bottom:48px">
+    <div style="text-align:center;margin-bottom:48px;font-weight:600">
       {{ ConvocatoriaPdf?.convocatoria_ciudad }},
       {{ ConvocatoriaPdf?.convocatoria_fecha | date:"dd 'de' MMMM 'de' yyyy" | uppercase }}
     </div>
@@ -1302,7 +1309,7 @@
   </div>
 
   <!-- Fecha y lugar -->
-  <div style="text-align:right;margin-bottom:48px">
+  <div style="text-align:center;margin-bottom:48px;font-weight:600">
     {{ ActaPdf?.lugar }},
     {{ ActaPdf?.fecha_hora | date:"dd 'de' MMMM 'de' yyyy, HH:mm" | uppercase }}
   </div>
