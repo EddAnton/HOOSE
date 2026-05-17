@@ -52,21 +52,6 @@
         <!-- Botones -->
         <td class="text-end">
           <!-- Botones relacionados con el Acta -->
-          <!-- Botón Redactar acta -->
-          <button
-            *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
-            pButton type="button" icon="pi pi-book" class="p-button-rounded p-button-text p-button-success me-1"
-            pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
-          <!-- Botón PDF acta -->
-          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta  > 0" pButton type="button"
-            icon="pi pi-file-pdf" class="p-button-rounded p-button-text p-button-danger me-1"
-            pTooltip="Imprimir acta" tooltipPosition="left" (click)="onGenerarPdfActa(Convocatoria.id_asamblea)"></button>
-          <!-- Botón Eliminar acta -->
-          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta > 0" pButton type="button" icon="pi pi-trash"
-            class="p-button-rounded p-button-text p-button-danger me-1" pTooltip="Eliminar acta" tooltipPosition="left"
-            (click)="onActaEliminar(Convocatoria.id_acta)"></button>
-          <br>
-
           <!-- Botones relacionados con la Convocatoria -->
           <!-- Botón Editar convocatoria-->
           <button
@@ -76,13 +61,22 @@
             (click)="onConvocatoriaEditar(Convocatoria.id_asamblea)"></button>
           <!-- Botón PDF convocatoria -->
           <button pButton type="button" icon="pi pi-file-pdf"
-            class="p-button-rounded p-button-text p-button-danger me-1" pTooltip="Imprimir convocatoria"
+            class="p-button-rounded p-button-text p-button-primary me-1" pTooltip="Convocatoria de Asamblea"
             tooltipPosition="left" (click)="onGenerarPdfConvocatoria(Convocatoria.id_asamblea)"></button>
           <!-- Botón Eliminar convocatoria -->
           <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta == 0" pButton type="button"
             icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger me-1"
             pTooltip="Eliminar convocatoria" tooltipPosition="left"
             (click)="onConvocatoriaEliminar(Convocatoria.id_asamblea)"></button>
+          <!-- Botón Redactar acta -->
+          <button
+            *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
+            pButton type="button" icon="pi pi-book" class="p-button-rounded p-button-text p-button-success me-1"
+            pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
+          <!-- Botón PDF acta -->
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta  > 0" pButton type="button"
+            icon="pi pi-file-pdf" class="p-button-rounded p-button-text p-button-success me-1"
+            pTooltip="Acta de Asamblea" tooltipPosition="left" (click)="onGenerarPdfActa(Convocatoria.id_asamblea)"></button>
         </td>
       </tr>
     </ng-template>
@@ -379,6 +373,19 @@
                   <p-table #ptVotacionPuntoOrdenDia [value]="punto.get('votacion').controls"
                     [columns]="VotacionPuntoOrdenDiaCols" [responsive]="true" [rowHover]="true" dataKey="id_unidad"
                     styleClass="p-datatable-striped">
+                    <ng-template pTemplate="caption">
+                      <div class="d-flex gap-2 justify-content-end">
+                        <button pButton type="button" label="✔ Todos a favor" icon="pi pi-check"
+                          class="p-button-sm p-button-success p-button-outlined"
+                          (click)="votarTodos(punto, 1)"></button>
+                        <button pButton type="button" label="✖ Todos en contra" icon="pi pi-times"
+                          class="p-button-sm p-button-danger p-button-outlined"
+                          (click)="votarTodos(punto, 2)"></button>
+                        <button pButton type="button" label="– Todos abstención" icon="pi pi-minus"
+                          class="p-button-sm p-button-warning p-button-outlined"
+                          (click)="votarTodos(punto, 3)"></button>
+                      </div>
+                    </ng-template>
                     <ng-template pTemplate="header" let-columns>
                       <tr>
                         <th *ngFor="let col of columns" class="text-center"

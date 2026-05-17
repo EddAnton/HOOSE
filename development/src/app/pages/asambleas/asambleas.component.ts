@@ -323,9 +323,21 @@ export class AsambleasComponent implements OnInit {
       const horaSegunda = new Date(horaRedondeada);
       horaSegunda.setMinutes(horaRedondeada.getMinutes() + 30);
 
+      const horaStringToDate = (hora: any): Date | null => {
+        if (!hora) return null;
+        if (hora instanceof Date) return hora;
+        const partes = hora.toString().split(':');
+        if (partes.length < 2) return null;
+        const d = new Date();
+        d.setHours(+partes[0], +partes[1], 0, 0);
+        return d;
+      };
+
       if (idAsamblea > 0) {
         this.Convocatoria.fecha_hora = new Date(this.Convocatoria.fecha_hora);
         this.Convocatoria.convocatoria_fecha = new Date(this.Convocatoria.convocatoria_fecha + ' 0000:00');
+        this.Convocatoria.hora_primera_convocatoria = horaStringToDate(this.Convocatoria.hora_primera_convocatoria) as any;
+        this.Convocatoria.hora_segunda_convocatoria = horaStringToDate(this.Convocatoria.hora_segunda_convocatoria) as any;
       } else {
         // Valores por default para nueva convocatoria
         const manana = new Date();
@@ -798,6 +810,14 @@ export class AsambleasComponent implements OnInit {
     return 'text-secondary';
   }
 
+  votarTodos(punto: any, sentido: number) {
+    const votaciones = punto.get('votacion') as any;
+    votaciones.controls.forEach((v: any) => {
+      v.get('id_sentido_votacion').setValue(sentido);
+    });
+    setTimeout(() => this.actualizarVariablesActa(), 100);
+  }
+
   getClaseResultado(resultado: string): string {
     if (resultado === 'NO SE APRUEBA') return 'text-danger';
     if (resultado.indexOf('SE APRUEBA') === 0) return 'text-success';
@@ -1023,7 +1043,7 @@ export class AsambleasComponent implements OnInit {
 
   // get existeQuorum() { return this.frmActa.get('existe_quorum') }
   // get votosPendientes() { return this.frmActa.get('votos_pendientes') }
-  get actaPaseLista() { return this.frmActa.get('actaPaseLista') as FormArray; }
+  get actaPaseLista() { return this.frmActa?.get('actaPaseLista') as FormArray; }
   get actaOrdenDia() { return this.frmActa.get('actaOrdenDia') as FormArray; }
 
   // Usuarios con asistencia confirmada en el pase de lista
