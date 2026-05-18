@@ -105,8 +105,13 @@ export class TareasComponent implements OnInit {
     );
   }
 
+  subtareasNuevas: string[] = [];
+  nuevaSubtareaInput: string = '';
+
   onNuevaTarea() {
     this.tareaEditando = { id_tarea: 0 };
+    this.subtareasNuevas = [];
+    this.nuevaSubtareaInput = '';
     this.frmTarea = this.formBuilder.group({
       titulo:                    ['', [Validators.required, Validators.minLength(3)]],
       descripcion:               [''],
@@ -119,6 +124,17 @@ export class TareasComponent implements OnInit {
       id_registro_vinculado:     [null],
     });
     this.mostrarDialogo = true;
+  }
+
+  onAgregarSubtareaNueva() {
+    const titulo = (this.nuevaSubtareaInput || '').trim();
+    if (!titulo) return;
+    this.subtareasNuevas = [...this.subtareasNuevas, titulo];
+    this.nuevaSubtareaInput = '';
+  }
+
+  onEliminarSubtareaNueva(idx: number) {
+    this.subtareasNuevas = this.subtareasNuevas.filter((_, i) => i !== idx);
   }
 
   onEditarTarea(tarea: any) {
@@ -154,6 +170,10 @@ export class TareasComponent implements OnInit {
         }
       }
     });
+
+    if (this.tareaEditando.id_tarea === 0 && this.subtareasNuevas.length > 0) {
+      this.subtareasNuevas.forEach((t, i) => data.append('subtareas[' + i + ']', t));
+    }
 
     hlpSwal.Pregunta({
       html: '¿Deseas guardar la tarea?',
@@ -240,5 +260,51 @@ export class TareasComponent implements OnInit {
 
   getRecordatorioLabel(minutos: number): string {
     return this.recordatorioOpciones.find(r => r.value === minutos)?.label || '';
+  }
+
+  // ===================== SUBTAREAS =====================
+
+  onAgregarSubtarea(tarea: any) {
+    const titulo = (tarea._nuevaSubtarea || '').trim();
+    if (!titulo) return;
+    this.tareasService.InsertarSubtarea(tarea.id_tarea, { titulo }).toPromise()
+      .then((r: any) => {
+        if (!r.err) {
+          tarea.subtareas = [...(tarea.subtareas || []), r.data];
+          tarea._nuevaSubtarea = '';
+          hlpSwal.ExitoToast('Subtarea agregada.');
+        }
+      })
+      .catch(async (e) => await hlpSwal.Error(e));
+  }
+
+  onToggleSubtarea(tarea: any, subtarea: any) {
+    const completada = subtarea.completada == 1 ? 0 : 1;
+    this.tareasService.ActualizarSubtarea(subtarea.id_subtarea, { completada }).toPromise()
+      .then((r: any) => {
+        if (!r.err) {
+          subtarea.completada = completada;
+          subtarea.fecha_completada = r.data?.fecha_completada || null;
+        }
+      })
+      .catch(async (e) => await hlpSwal.Error(e));
+  }
+
+  onEliminarSubtarea(tarea: any, idSubtarea: number) {
+    this.tareasService.EliminarSubtarea(idSubtarea).toPromise()
+      .then((r: any) => {
+        if (!r.err) {
+          tarea.subtareas = tarea.subtareas.filter((s: any) => s.id_subtarea !== idSubtarea);
+          hlpSwal.ExitoToast('Subtarea eliminada.');
+        }
+      })
+      .catch(async (e) => await hlpSwal.Error(e));
+  }
+
+  getProgresoSubtareas(tarea: any): number {
+    const total = (tarea.subtareas || []).length;
+    if (!total) return 0;
+    const completadas = tarea.subtareas.filter((s: any) => s.completada == 1).length;
+    return Math.round((completadas / total) * 100);
   }
 }

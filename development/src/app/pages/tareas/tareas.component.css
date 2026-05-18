@@ -42,3 +42,191 @@
 .btn-accion.eliminar  { color: #EF4444 !important; }
 .frm-label { font-size: 0.8rem; color: #8a8f9e; display: block; margin-bottom: 4px; }
 .tareas-btn-guardar { background: #e91e8c !important; border: none !important; }
+
+/* ===================== SUBTAREAS ===================== */
+.tarea-subtareas {
+  margin: 8px 0 4px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 8px;
+}
+
+/* Progreso */
+.subtareas-progreso { margin-bottom: 8px; }
+.subtareas-progreso-label {
+  display: flex; justify-content: space-between;
+  font-size: 0.68rem; color: #8a8f9e;
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.subtareas-progreso-bar {
+  height: 4px; background: rgba(255,255,255,0.08);
+  border-radius: 4px; overflow: hidden;
+}
+.subtareas-progreso-fill {
+  height: 100%; background: #1BC99A;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Items */
+.subtarea-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 0;
+}
+.subtarea-check {
+  cursor: pointer; font-size: 1rem; flex-shrink: 0;
+  color: #8a8f9e; transition: color 0.15s;
+}
+.subtarea-check:hover { color: #1BC99A; }
+.subtarea-check .pi-check-circle { color: #1BC99A; }
+.subtarea-titulo {
+  flex: 1; font-size: 0.8rem; color: #f0f0f0;
+  transition: all 0.15s;
+}
+.subtarea-completada {
+  text-decoration: line-through;
+  color: #555a6a !important;
+}
+.subtarea-btn-del {
+  width: 22px !important; height: 22px !important;
+  opacity: 0; transition: opacity 0.15s;
+}
+.subtarea-item:hover .subtarea-btn-del { opacity: 1; }
+
+/* Input nueva subtarea */
+.subtarea-nueva {
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 6px;
+}
+.subtarea-input {
+  flex: 1;
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 6px !important;
+  color: #f0f0f0 !important;
+  padding: 5px 10px !important;
+  font-size: 0.78rem !important;
+  outline: none !important;
+  transition: border-color 0.15s;
+}
+.subtarea-input:focus { border-color: #e91e8c !important; }
+.subtarea-input::placeholder { color: #555a6a !important; }
+.subtarea-btn-add {
+  width: 26px !important; height: 26px !important;
+}
+
+/* ===================== FORMULARIO OSCURO ===================== */
+:host ::ng-deep .tareas-dialogo .p-dialog {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dialog-header {
+  background: #181b22 !important;
+  color: #f0f0f0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 14px 20px !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dialog-content {
+  background: #1a1d24 !important;
+  color: #f0f0f0 !important;
+  padding: 20px !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dialog-footer {
+  background: #181b22 !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 0 0 12px 12px !important;
+  padding: 12px 20px !important;
+}
+
+/* Inputs */
+:host ::ng-deep .tareas-dialogo .p-inputtext,
+:host ::ng-deep .tareas-dialogo textarea {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 0.85rem !important;
+  transition: border-color 0.15s !important;
+}
+:host ::ng-deep .tareas-dialogo .p-inputtext:focus,
+:host ::ng-deep .tareas-dialogo textarea:focus {
+  border-color: #e91e8c !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+:host ::ng-deep .tareas-dialogo .p-inputtext::placeholder,
+:host ::ng-deep .tareas-dialogo textarea::placeholder {
+  color: #555a6a !important;
+}
+
+/* Dropdowns */
+:host ::ng-deep .tareas-dialogo .p-dropdown {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 8px !important;
+  transition: border-color 0.15s !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown:hover,
+:host ::ng-deep .tareas-dialogo .p-dropdown.p-focus {
+  border-color: #e91e8c !important;
+  box-shadow: none !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown .p-dropdown-label {
+  color: #f0f0f0 !important;
+  font-size: 0.85rem !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown .p-dropdown-trigger { color: #8a8f9e !important; }
+:host ::ng-deep .tareas-dialogo .p-dropdown-panel {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown-item {
+  color: #f0f0f0 !important;
+  font-size: 0.85rem !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown-item:hover {
+  background: rgba(233,30,140,0.1) !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown-item.p-highlight {
+  background: rgba(233,30,140,0.2) !important;
+  color: #e91e8c !important;
+}
+:host ::ng-deep .tareas-dialogo .p-dropdown-filter {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  color: #f0f0f0 !important;
+  border-radius: 6px !important;
+}
+
+/* Calendar */
+:host ::ng-deep .tareas-dialogo .p-calendar .p-inputtext {
+  border-radius: 8px !important;
+}
+:host ::ng-deep .tareas-dialogo .p-datepicker {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+}
+:host ::ng-deep .tareas-dialogo .p-datepicker .p-datepicker-header {
+  background: #181b22 !important;
+  color: #f0f0f0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+:host ::ng-deep .tareas-dialogo .p-datepicker td span {
+  color: #f0f0f0 !important;
+}
+:host ::ng-deep .tareas-dialogo .p-datepicker td span.p-highlight {
+  background: #e91e8c !important;
+  color: #fff !important;
+}
+:host ::ng-deep .tareas-dialogo .p-datepicker td span:hover {
+  background: rgba(233,30,140,0.15) !important;
+}
+
+/* Descripción completa */
+.tarea-descripcion--full {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}

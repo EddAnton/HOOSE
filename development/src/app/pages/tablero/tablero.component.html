@@ -418,18 +418,29 @@
 <div class="hoose-chart-card h-100">
           <div class="chart-card-header d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2"><i class="pi pi-list-check chart-icon"></i><span class="chart-card-title">Tareas</span></div>
-            <a routerLink="/tareas" class="chart-card-link">Ver todas →</a>
+            <div class="d-flex align-items-center gap-2">
+              <button pButton type="button" icon="pi pi-plus"
+                class="p-button-rounded p-button-text p-button-success"
+                style="width:28px;height:28px"
+                pTooltip="Nueva tarea" tooltipPosition="left"
+                (click)="onAbrirNuevaTarea()">
+              </button>
+              <a routerLink="/tareas" class="chart-card-link">Ver todas →</a>
+            </div>
           </div>
           <div class="tareas-list mt-2">
             <div class="tarea-item" *ngFor="let tarea of tareasRecientes" [class.completada]="tarea.fk_id_estatus === 3">
               <button class="tarea-check-btn" (click)="onCambiarEstatusTarea(tarea)">
                 <i class="pi" [ngClass]="tarea.fk_id_estatus === 3 ? 'pi-check-circle' : 'pi-circle'"></i>
               </button>
-              <div class="tarea-item-body" (click)="onNavegar('/tareas')">
+              <div class="tarea-item-body" (click)="onAbrirDetalleTarea(tarea)" style="cursor:pointer">
                 <span class="tarea-texto" [class.tachado]="tarea.fk_id_estatus === 3">{{ tarea.titulo }}</span>
                 <div class="tarea-item-meta">
                   <span class="tarea-prioridad-badge" [ngClass]="getPrioridadClass(tarea.prioridad)">{{ tarea.prioridad_label }}</span>
                   <span *ngIf="tarea.fecha_limite" class="tarea-fecha"><i class="pi pi-calendar"></i> {{ tarea.fecha_limite | date:'dd/MM/yy' }}</span>
+                  <span *ngIf="tarea.subtareas?.length > 0" class="tarea-fecha">
+                    <i class="pi pi-list"></i> {{ getProgresoSubtareas(tarea) }}%
+                  </span>
                 </div>
               </div>
             </div>
@@ -454,4 +465,124 @@
 
     </ng-container>
   </div>
-</div>
+
+<!-- DIÁLOGO DETALLE TAREA -->
+<p-dialog [(visible)]="mostrarDetalleTarea" [modal]="true" [draggable]="false"
+  [style]="{ width: '480px' }" styleClass="hoose-dialogo"
+  [header]="tareaDetalle?.titulo" [closable]="true">
+  <div *ngIf="tareaDetalle">
+    <p *ngIf="tareaDetalle.descripcion" style="font-size:0.85rem;color:#8a8f9e;margin-bottom:12px">
+      {{ tareaDetalle.descripcion }}
+    </p>
+
+    <!-- Progreso -->
+    <div *ngIf="tareaDetalle.subtareas?.length > 0" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#8a8f9e;text-transform:uppercase;margin-bottom:4px">
+        <span>Subtareas</span><span>{{ getProgresoSubtareas(tareaDetalle) }}%</span>
+      </div>
+      <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden">
+        <div [style.width.%]="getProgresoSubtareas(tareaDetalle)" style="height:100%;background:#1BC99A;border-radius:4px;transition:width 0.3s"></div>
+      </div>
+    </div>
+
+    <!-- Lista subtareas -->
+    <div *ngFor="let sub of tareaDetalle.subtareas" class="subtarea-item" style="padding:4px 0">
+      <div class="subtarea-check" (click)="onToggleSubtareaDetalle(sub)" style="cursor:pointer">
+        <i class="pi" [ngClass]="sub.completada == 1 ? 'pi-check-circle' : 'pi-circle'"
+          [style.color]="sub.completada == 1 ? '#1BC99A' : '#8a8f9e'"></i>
+      </div>
+      <span [style.textDecoration]="sub.completada == 1 ? 'line-through' : 'none'"
+        [style.color]="sub.completada == 1 ? '#555a6a' : '#f0f0f0'"
+        style="font-size:0.82rem;flex:1">{{ sub.titulo }}</span>
+    </div>
+
+    <!-- Nueva subtarea -->
+    <div style="display:flex;gap:6px;margin-top:10px">
+      <input type="text" class="subtarea-input" placeholder="+ Agregar subtarea..."
+        [(ngModel)]="nuevaSubtareaDetalle"
+        (keyup.enter)="onAgregarSubtareaDetalle()"
+        style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#f0f0f0;padding:6px 10px;font-size:0.82rem"/>
+      <button pButton type="button" icon="pi pi-plus"
+        class="p-button-rounded p-button-text p-button-success"
+        style="width:32px;height:32px"
+        (click)="onAgregarSubtareaDetalle()">
+      </button>
+    </div>
+
+    <!-- Meta -->
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-wrap:wrap;gap:8px">
+      <span style="font-size:0.75rem;color:#8a8f9e"><i class="pi pi-user me-1"></i>{{ tareaDetalle.responsable_nombre }}</span>
+      <span *ngIf="tareaDetalle.fecha_limite" style="font-size:0.75rem;color:#8a8f9e">
+        <i class="pi pi-calendar me-1"></i>{{ tareaDetalle.fecha_limite | date:'dd/MM/yyyy' }}
+      </span>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <a pButton type="button" icon="pi pi-external-link" label="Ver en módulo"
+      class="p-button-text p-button-secondary" routerLink="/tareas"
+      (click)="mostrarDetalleTarea=false">
+    </a>
+    <button pButton type="button" label="Cerrar"
+      class="p-button-text hoose-btn-cancelar" (click)="mostrarDetalleTarea=false">
+    </button>
+  </ng-template>
+</p-dialog>
+
+<!-- DIÁLOGO NUEVA TAREA DESDE TABLERO -->
+<p-dialog [(visible)]="mostrarNuevaTarea" [modal]="true" [draggable]="false"
+  [style]="{ width: '520px' }" styleClass="hoose-dialogo" header="Nueva Tarea">
+  <form [formGroup]="frmTareaNueva" *ngIf="frmTareaNueva">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="frm-label">Título *</label>
+        <input pInputText formControlName="titulo" class="w-100" placeholder="Título de la tarea"/>
+      </div>
+      <div class="col-12">
+        <label class="frm-label">Descripción</label>
+        <textarea pInputTextarea formControlName="descripcion" class="w-100" rows="2" placeholder="Opcional"></textarea>
+      </div>
+      <div class="col-12">
+        <label class="frm-label">Subtareas</label>
+        <div class="subtarea-item" *ngFor="let sub of subtareasNuevas; let i = index">
+          <i class="pi pi-circle" style="color:#555a6a;font-size:0.9rem"></i>
+          <span style="flex:1;font-size:0.82rem;color:#f0f0f0">{{ sub }}</span>
+          <button pButton type="button" icon="pi pi-times"
+            class="p-button-rounded p-button-text p-button-danger"
+            style="width:22px;height:22px" (click)="subtareasNuevas.splice(i,1)">
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <input type="text" class="subtarea-input" placeholder="+ Agregar subtarea..."
+            [(ngModel)]="nuevaSubtareaInput" [ngModelOptions]="{standalone:true}"
+            (keyup.enter)="onAgregarSubtareaNueva()"
+            style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#f0f0f0;padding:6px 10px;font-size:0.82rem"/>
+          <button pButton type="button" icon="pi pi-plus"
+            class="p-button-rounded p-button-text p-button-success"
+            style="width:32px;height:32px" (click)="onAgregarSubtareaNueva()">
+          </button>
+        </div>
+      </div>
+      <div class="col-6">
+        <label class="frm-label">Prioridad *</label>
+        <p-dropdown formControlName="prioridad" [options]="prioridades" styleClass="w-100"></p-dropdown>
+      </div>
+      <div class="col-6">
+        <label class="frm-label">Fecha límite</label>
+        <p-calendar formControlName="fecha_limite" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-100"></p-calendar>
+      </div>
+      <div class="col-12">
+        <label class="frm-label">Responsable *</label>
+        <p-dropdown formControlName="fk_id_usuario_responsable" [options]="usuariosAsignables"
+          placeholder="Selecciona" [filter]="true" styleClass="w-100"></p-dropdown>
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Cancelar"
+      class="p-button-text hoose-btn-cancelar" (click)="mostrarNuevaTarea=false">
+    </button>
+    <button pButton type="button" icon="pi pi-check" label="Guardar"
+      class="hoose-btn-guardar" (click)="onGuardarNuevaTarea()">
+    </button>
+  </ng-template>
+</p-dialog>

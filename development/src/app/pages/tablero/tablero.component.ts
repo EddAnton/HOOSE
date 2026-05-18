@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as hlpApp from '../../helpers/app-helper';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import * as hlpSwal from '../../helpers/sweetalert2-helper';
@@ -28,6 +30,24 @@ export class TableroComponent implements OnInit {
   cardCobranza: any = null;
   tareasRecientes: any[] = [];
   totalTareasPendientes: number = 0;
+  usuariosAsignables: any[] = [];
+
+  // Diálogo detalle tarea
+  tareaDetalle: any = null;
+  mostrarDetalleTarea: boolean = false;
+  nuevaSubtareaDetalle: string = '';
+
+  // Diálogo nueva tarea
+  frmTareaNueva: FormGroup;
+  mostrarNuevaTarea: boolean = false;
+  subtareasNuevas: string[] = [];
+  nuevaSubtareaInput: string = '';
+
+  prioridades = [
+    { label: '🔴 Alta',  value: 1 },
+    { label: '🟡 Media', value: 2 },
+    { label: '🟢 Baja',  value: 3 },
+  ];
   metricas: any = null;
   comparativo: string = 'mes_anterior';
   widgets: any[] = [];
@@ -65,6 +85,7 @@ export class TableroComponent implements OnInit {
     private sesionUsuarioService: SesionUsuarioService,
     private dashboardService: DashboardService,
     private tareasService: TareasService,
+    private formBuilder: FormBuilder,
     private metricasService: MetricasService,
     private layoutService: LayoutService,
   ) {}
@@ -375,6 +396,89 @@ export class TableroComponent implements OnInit {
   onNavegar(path: string) {
     if (!path) return;
     this.router.navigateByUrl(path);
+  }
+
+  onAbrirDetalleTarea(tarea: any) {
+    this.tareaDetalle = { ...tarea };
+    this.nuevaSubtareaDetalle = '';
+    this.mostrarDetalleTarea = true;
+  }
+
+  onToggleSubtareaDetalle(subtarea: any) {
+    const completada = subtarea.completada == 1 ? 0 : 1;
+    this.tareasService.ActualizarSubtarea(subtarea.id_subtarea, { completada }).toPromise()
+      .then((r: any) => { if (!r.err) subtarea.completada = completada; })
+      .catch(() => {});
+  }
+
+  onAgregarSubtareaDetalle() {
+    const titulo = (this.nuevaSubtareaDetalle || '').trim();
+    if (!titulo || !this.tareaDetalle) return;
+    this.tareasService.InsertarSubtarea(this.tareaDetalle.id_tarea, { titulo }).toPromise()
+      .then((r: any) => {
+        if (!r.err) {
+          this.tareaDetalle.subtareas = [...(this.tareaDetalle.subtareas || []), r.data];
+          this.nuevaSubtareaDetalle = '';
+        }
+      }).catch(() => {});
+  }
+
+  getProgresoSubtareas(tarea: any): number {
+    const total = (tarea?.subtareas || []).length;
+    if (!total) return 0;
+    return Math.round((tarea.subtareas.filter((s: any) => s.completada == 1).length / total) * 100);
+  }
+
+  onAbrirNuevaTarea() {
+    this.subtareasNuevas = [];
+    this.nuevaSubtareaInput = '';
+    if (!this.usuariosAsignables.length) {
+      this.tareasService.ListarUsuariosAsignables().toPromise().then((r: any) => {
+        const perfilLabel = {1: 'Super Admin', 2: 'Administrador', 3: 'Colaborador'};
+        this.usuariosAsignables = (r.data || []).map(u => ({
+          label: u.nombre + ' (' + (perfilLabel[u.fk_id_perfil_usuario] || 'Usuario') + ')',
+          value: parseInt(u.id_usuario),
+        }));
+      }).catch(() => {});
+    }
+    this.frmTareaNueva = this.formBuilder.group({
+      titulo:                    ['', [Validators.required, Validators.minLength(3)]],
+      descripcion:               [''],
+      fecha_limite:              [null],
+      prioridad:                 [2, Validators.required],
+      fk_id_usuario_responsable: [null, [Validators.required, Validators.min(1)]],
+    });
+    this.mostrarNuevaTarea = true;
+  }
+
+  onAgregarSubtareaNueva() {
+    const titulo = (this.nuevaSubtareaInput || '').trim();
+    if (!titulo) return;
+    this.subtareasNuevas = [...this.subtareasNuevas, titulo];
+    this.nuevaSubtareaInput = '';
+  }
+
+  onGuardarNuevaTarea() {
+    if (!this.frmTareaNueva.valid) { this.frmTareaNueva.markAllAsTouched(); return; }
+    const valores = this.frmTareaNueva.value;
+    const data = new FormData();
+    Object.keys(valores).forEach(k => {
+      if (valores[k] !== null && valores[k] !== undefined && valores[k] !== '') {
+        data.append(k, valores[k] instanceof Date ? hlpApp.formatDateToMySQL(valores[k]) : valores[k]);
+      }
+    });
+    this.subtareasNuevas.forEach((t, i) => data.append('subtareas[' + i + ']', t));
+    hlpSwal.Cargando();
+    this.tareasService.Insertar(data).toPromise()
+      .then((r: any) => {
+        if (!r.err) {
+          hlpSwal.ExitoToast('Tarea creada.');
+          this.mostrarNuevaTarea = false;
+          this.cargarTareas();
+        }
+      })
+      .catch(async (e) => await hlpSwal.Error(e))
+      .finally(() => hlpSwal.Cerrar());
   }
 
   onCambiarEstatusTarea(tarea: any) {

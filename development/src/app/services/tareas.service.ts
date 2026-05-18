@@ -38,4 +38,16 @@ export class TareasService {
   Eliminar(id: number) {
     return this.http.post(environment.urlBackend + `tareas/eliminar/${id}`, {}, { headers: this.headers }).pipe(map(r => r));
   }
+
+  InsertarSubtarea(idTarea: number, data: any) {
+    return this.http.post(environment.urlBackend + `tareas/insertar-subtarea/${idTarea}`, data, { headers: this.headers }).pipe(map(r => r));
+  }
+
+  ActualizarSubtarea(idSubtarea: number, data: any) {
+    return this.http.post(environment.urlBackend + `tareas/actualizar-subtarea/${idSubtarea}`, data, { headers: this.headers }).pipe(map(r => r));
+  }
+
+  EliminarSubtarea(idSubtarea: number) {
+    return this.http.post(environment.urlBackend + `tareas/eliminar-subtarea/${idSubtarea}`, {}, { headers: this.headers }).pipe(map(r => r));
+  }
 }

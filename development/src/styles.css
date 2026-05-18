@@ -214,3 +214,304 @@ textarea {
 .ql-align-right {
 	text-align: right;
 }
+
+/* =====================================================
+   HOOSE — TEMPLATE FORMULARIOS OSCUROS
+   Uso: agregar styleClass="hoose-dialogo" al p-dialog
+   ===================================================== */
+.hoose-dialogo .p-dialog {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px !important;
+}
+.hoose-dialogo .p-dialog-header {
+  background: #181b22 !important;
+  color: #f0f0f0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 14px 20px !important;
+}
+.hoose-dialogo .p-dialog-content {
+  background: #1a1d24 !important;
+  color: #f0f0f0 !important;
+  padding: 20px !important;
+}
+.hoose-dialogo .p-dialog-footer {
+  background: #181b22 !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 0 0 12px 12px !important;
+  padding: 12px 20px !important;
+}
+
+/* Labels */
+.hoose-dialogo label,
+.hoose-dialogo .frm-label {
+  font-size: 0.78rem !important;
+  color: #8a8f9e !important;
+  margin-bottom: 4px !important;
+  display: block !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* Inputs y Textarea */
+.hoose-dialogo .p-inputtext,
+.hoose-dialogo textarea,
+.hoose-dialogo input[type="text"] {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 0.85rem !important;
+  transition: border-color 0.15s !important;
+}
+.hoose-dialogo .p-inputtext:focus,
+.hoose-dialogo textarea:focus,
+.hoose-dialogo input[type="text"]:focus {
+  border-color: #e91e8c !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.hoose-dialogo .p-inputtext::placeholder,
+.hoose-dialogo textarea::placeholder { color: #555a6a !important; }
+
+/* Dropdowns */
+.hoose-dialogo .p-dropdown {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 8px !important;
+  transition: border-color 0.15s !important;
+}
+.hoose-dialogo .p-dropdown:hover,
+.hoose-dialogo .p-dropdown.p-focus { border-color: #e91e8c !important; box-shadow: none !important; }
+.hoose-dialogo .p-dropdown .p-dropdown-label { color: #f0f0f0 !important; font-size: 0.85rem !important; }
+.hoose-dialogo .p-dropdown .p-dropdown-trigger { color: #8a8f9e !important; }
+.hoose-dialogo .p-dropdown-panel {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+}
+.hoose-dialogo .p-dropdown-item { color: #f0f0f0 !important; font-size: 0.85rem !important; }
+.hoose-dialogo .p-dropdown-item:hover { background: rgba(233,30,140,0.1) !important; }
+.hoose-dialogo .p-dropdown-item.p-highlight { background: rgba(233,30,140,0.2) !important; color: #e91e8c !important; }
+.hoose-dialogo .p-dropdown-filter {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  color: #f0f0f0 !important;
+  border-radius: 6px !important;
+}
+
+/* Calendar */
+.hoose-dialogo .p-datepicker {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-datepicker .p-datepicker-header {
+  background: #181b22 !important;
+  color: #f0f0f0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+.hoose-dialogo .p-datepicker td span { color: #f0f0f0 !important; }
+.hoose-dialogo .p-datepicker td span.p-highlight { background: #e91e8c !important; color: #fff !important; }
+.hoose-dialogo .p-datepicker td span:hover { background: rgba(233,30,140,0.15) !important; }
+
+/* Sección title dentro del diálogo */
+.hoose-dialogo .section-title {
+  color: #e91e8c !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  padding-bottom: 6px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 4px !important;
+}
+
+/* Botón guardar estándar */
+.hoose-btn-guardar { background: #e91e8c !important; border: none !important; }
+.hoose-btn-cancelar { color: #8a8f9e !important; }
+
+/* =====================================================
+   HOOSE — DESIGN SYSTEM — MÓDULOS
+   Uso: aplicar clases hoose-* en cualquier módulo
+   ===================================================== */
+
+/* Variables base — override por módulo con --hoose-accent */
+:root {
+  --hoose-bg:      #111318;
+  --hoose-card:    #1a1d24;
+  --hoose-card2:   #21242d;
+  --hoose-border:  rgba(255,255,255,0.07);
+  --hoose-text:    #f0f0f0;
+  --hoose-muted:   #8a8f9e;
+  --hoose-dim:     #555a6a;
+  --hoose-radius:  12px;
+  --hoose-radius-sm: 8px;
+  --hoose-pink:    #e91e8c;
+  --hoose-green:   #1BC99A;
+  --hoose-blue:    #3B82F6;
+  --hoose-red:     #EF4444;
+  --hoose-yellow:  #F59E0B;
+  --hoose-accent:  #e91e8c;
+}
+
+/* WRAPPER */
+.hoose-wrapper { background: var(--hoose-bg); min-height: 100vh; }
+
+/* HEADER */
+.hoose-header {
+  background: #181b22;
+  border-bottom: 1px solid var(--hoose-border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.hoose-header-title { font-size: 1rem; font-weight: 600; color: var(--hoose-text); }
+.hoose-header-actions { display: flex; gap: 8px; }
+
+/* FILTROS */
+.hoose-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+.hoose-filtro-group { display: flex; flex-direction: column; gap: 4px; }
+.hoose-filtro-label { font-size: 0.72rem; color: var(--hoose-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.hoose-filtro-select .p-dropdown {
+  background: var(--hoose-card) !important;
+  border: 1px solid var(--hoose-border) !important;
+  border-radius: var(--hoose-radius-sm) !important;
+  height: 36px !important;
+  min-width: 130px !important;
+}
+.hoose-filtro-select .p-dropdown .p-dropdown-label { color: var(--hoose-text) !important; font-size: 0.82rem !important; padding: 6px 10px !important; }
+.hoose-filtro-select .p-dropdown-panel { background: var(--hoose-card) !important; border: 1px solid var(--hoose-border) !important; }
+.hoose-filtro-select .p-dropdown-item { color: var(--hoose-text) !important; font-size: 0.82rem !important; }
+.hoose-filtro-select .p-dropdown-item:hover { background: rgba(233,30,140,0.1) !important; }
+.hoose-btn-limpiar { font-size: 0.8rem !important; height: 36px !important; }
+.hoose-search-wrap { position: relative; flex: 1; min-width: 200px; }
+.hoose-search-wrap .pi-search { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--hoose-muted); font-size: 0.82rem; }
+.hoose-search-input {
+  width: 100%;
+  background: var(--hoose-card) !important;
+  border: 1px solid var(--hoose-border) !important;
+  border-radius: var(--hoose-radius-sm) !important;
+  color: var(--hoose-text) !important;
+  padding: 7px 10px 7px 30px !important;
+  font-size: 0.82rem !important;
+  height: 36px !important;
+}
+.hoose-search-input:focus { border-color: var(--hoose-accent) !important; outline: none !important; }
+.hoose-search-input::placeholder { color: var(--hoose-dim) !important; }
+
+/* KPIs */
+.hoose-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 16px 20px 8px;
+}
+.hoose-kpi {
+  background: var(--hoose-card);
+  border: 1px solid var(--hoose-border);
+  border-radius: var(--hoose-radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.hoose-kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.hoose-kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 4px 0 0 4px;
+  background: var(--hoose-accent);
+}
+.hoose-kpi--pink::before   { background: var(--hoose-pink); }
+.hoose-kpi--blue::before   { background: var(--hoose-blue); }
+.hoose-kpi--green::before  { background: var(--hoose-green); }
+.hoose-kpi--yellow::before { background: var(--hoose-yellow); }
+.hoose-kpi--red::before    { background: var(--hoose-red); }
+
+.hoose-kpi-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0; margin-top: 2px;
+}
+.hoose-kpi--pink .hoose-kpi-icon   { background: rgba(233,30,140,0.15); color: var(--hoose-pink); }
+.hoose-kpi--blue .hoose-kpi-icon   { background: rgba(59,130,246,0.15); color: var(--hoose-blue); }
+.hoose-kpi--green .hoose-kpi-icon  { background: rgba(27,201,154,0.15); color: var(--hoose-green); }
+.hoose-kpi--yellow .hoose-kpi-icon { background: rgba(245,158,11,0.15); color: var(--hoose-yellow); }
+.hoose-kpi--red .hoose-kpi-icon    { background: rgba(239,68,68,0.15);  color: var(--hoose-red); }
+
+.hoose-kpi-body { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.hoose-kpi-label { font-size: 0.68rem; color: var(--hoose-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.hoose-kpi-value { font-size: 1.2rem; font-weight: 700; color: var(--hoose-text); line-height: 1.2; }
+.hoose-kpi-value--sm { font-size: 0.95rem !important; }
+.hoose-kpi-sub { font-size: 0.72rem; color: var(--hoose-muted); margin-top: 2px; }
+.hoose-kpi-sub b { color: var(--hoose-text); font-weight: 600; }
+
+/* TABLA */
+.hoose-table-wrap { padding: 0 20px 20px; overflow-x: auto; max-width: 100%; }
+.hoose-table table { min-width: 600px; border-collapse: separate; border-spacing: 0; }
+.hoose-table .p-datatable-thead > tr > th {
+  background: #181b22 !important;
+  color: var(--hoose-muted) !important;
+  border-bottom: 2px solid var(--hoose-border) !important;
+  border-right: none !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 10px 12px !important;
+  white-space: nowrap !important;
+}
+.hoose-table .p-datatable-tbody > tr { background: var(--hoose-card) !important; transition: background 0.15s !important; }
+.hoose-table .p-datatable-tbody > tr:hover { background: var(--hoose-card2) !important; }
+.hoose-table .p-datatable-tbody > tr > td {
+  color: var(--hoose-text) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--hoose-border) !important;
+  padding: 10px 12px !important;
+  font-size: 0.82rem !important;
+}
+.hoose-table .p-paginator {
+  background: #181b22 !important;
+  border-top: 1px solid var(--hoose-border) !important;
+  color: var(--hoose-muted) !important;
+  font-size: 0.78rem !important;
+  padding: 8px 16px !important;
+  border-radius: 0 0 var(--hoose-radius) var(--hoose-radius) !important;
+}
+.hoose-table .p-paginator .p-paginator-page.p-highlight {
+  background: var(--hoose-accent) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
+
+/* BADGES */
+.hoose-badge { font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.hoose-badge--blue   { background: rgba(59,130,246,0.15);  color: var(--hoose-blue); }
+.hoose-badge--green  { background: rgba(27,201,154,0.15);  color: var(--hoose-green); }
+.hoose-badge--yellow { background: rgba(245,158,11,0.15);  color: var(--hoose-yellow); }
+.hoose-badge--orange { background: rgba(249,115,22,0.15);  color: #F97316; }
+.hoose-badge--red    { background: rgba(239,68,68,0.15);   color: var(--hoose-red); }
+.hoose-badge--pink   { background: rgba(233,30,140,0.15);  color: var(--hoose-pink); }
+
+/* CELL */
+.hoose-cell-text { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px; }
+.hoose-btn { width: 28px !important; height: 28px !important; }

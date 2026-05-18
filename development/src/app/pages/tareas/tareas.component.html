@@ -35,8 +35,46 @@
         {{ tarea.titulo }}
       </div>
 
-      <div class="tarea-descripcion" *ngIf="tarea.descripcion">
+      <div class="tarea-descripcion tarea-descripcion--full" *ngIf="tarea.descripcion">
         {{ tarea.descripcion }}
+      </div>
+
+      <!-- SUBTAREAS -->
+      <div class="tarea-subtareas" *ngIf="tarea.subtareas?.length > 0 || tarea.fk_id_estatus !== 3">
+
+        <!-- Progreso -->
+        <div class="subtareas-progreso" *ngIf="tarea.subtareas?.length > 0">
+          <div class="subtareas-progreso-label">
+            <span>Subtareas</span>
+            <span>{{ getProgresoSubtareas(tarea) }}%</span>
+          </div>
+          <div class="subtareas-progreso-bar">
+            <div class="subtareas-progreso-fill" [style.width.%]="getProgresoSubtareas(tarea)"></div>
+          </div>
+        </div>
+
+        <!-- Lista subtareas -->
+        <div class="subtarea-item" *ngFor="let sub of tarea.subtareas">
+          <div class="subtarea-check" (click)="onToggleSubtarea(tarea, sub)">
+            <i class="pi" [ngClass]="sub.completada == 1 ? 'pi-check-circle' : 'pi-circle'"></i>
+          </div>
+          <span class="subtarea-titulo" [class.subtarea-completada]="sub.completada == 1">{{ sub.titulo }}</span>
+          <button pButton type="button" icon="pi pi-times"
+            class="p-button-rounded p-button-text p-button-danger subtarea-btn-del"
+            (click)="onEliminarSubtarea(tarea, sub.id_subtarea)">
+          </button>
+        </div>
+
+        <!-- Input nueva subtarea -->
+        <div class="subtarea-nueva" *ngIf="tarea.fk_id_estatus !== 3">
+          <input type="text" class="subtarea-input" placeholder="+ Agregar subtarea..."
+            [(ngModel)]="tarea._nuevaSubtarea"
+            (keyup.enter)="onAgregarSubtarea(tarea)"/>
+          <button pButton type="button" icon="pi pi-plus"
+            class="p-button-rounded p-button-text p-button-success subtarea-btn-add"
+            (click)="onAgregarSubtarea(tarea)">
+          </button>
+        </div>
       </div>
 
       <div class="tarea-modulo" *ngIf="tarea.modulo_vinculado">
@@ -117,6 +155,57 @@
           placeholder="Descripción detallada (opcional)"></textarea>
       </div>
 
+      <!-- SUBTAREAS (nueva y edición) -->
+      <div class="col-12">
+        <label class="frm-label"><i class="pi pi-list me-1"></i>Subtareas</label>
+
+        <!-- Progreso (solo edición) -->
+        <div class="subtareas-progreso mb-2" *ngIf="tareaEditando?.id_tarea > 0 && tareaEditando?.subtareas?.length > 0">
+          <div class="subtareas-progreso-label">
+            <span>Progreso</span>
+            <span>{{ getProgresoSubtareas(tareaEditando) }}%</span>
+          </div>
+          <div class="subtareas-progreso-bar">
+            <div class="subtareas-progreso-fill" [style.width.%]="getProgresoSubtareas(tareaEditando)"></div>
+          </div>
+        </div>
+
+        <!-- Lista edición -->
+        <div class="subtarea-item" *ngFor="let sub of tareaEditando?.subtareas">
+          <div class="subtarea-check" (click)="onToggleSubtarea(tareaEditando, sub)">
+            <i class="pi" [ngClass]="sub.completada == 1 ? 'pi-check-circle' : 'pi-circle'"></i>
+          </div>
+          <span class="subtarea-titulo" [class.subtarea-completada]="sub.completada == 1">{{ sub.titulo }}</span>
+          <button pButton type="button" icon="pi pi-times"
+            class="p-button-rounded p-button-text p-button-danger subtarea-btn-del"
+            (click)="onEliminarSubtarea(tareaEditando, sub.id_subtarea)">
+          </button>
+        </div>
+
+        <!-- Lista nueva en memoria -->
+        <div class="subtarea-item" *ngFor="let sub of subtareasNuevas; let i = index">
+          <div class="subtarea-check">
+            <i class="pi pi-circle" style="color:#555a6a"></i>
+          </div>
+          <span class="subtarea-titulo">{{ sub }}</span>
+          <button pButton type="button" icon="pi pi-times"
+            class="p-button-rounded p-button-text p-button-danger subtarea-btn-del"
+            (click)="onEliminarSubtareaNueva(i)">
+          </button>
+        </div>
+
+        <!-- Input nueva -->
+        <div class="subtarea-nueva mt-1">
+          <input type="text" class="subtarea-input" placeholder="+ Agregar subtarea..."
+            [(ngModel)]="nuevaSubtareaInput" [ngModelOptions]="{standalone: true}"
+            (keyup.enter)="tareaEditando?.id_tarea > 0 ? onAgregarSubtarea(tareaEditando) : onAgregarSubtareaNueva()"/>
+          <button pButton type="button" icon="pi pi-plus"
+            class="p-button-rounded p-button-text p-button-success subtarea-btn-add"
+            (click)="tareaEditando?.id_tarea > 0 ? onAgregarSubtarea(tareaEditando) : onAgregarSubtareaNueva()">
+          </button>
+        </div>
+      </div>
+
       <div class="col-6">
         <label class="frm-label">Prioridad <span class="text-danger">*</span></label>
         <p-dropdown formControlName="prioridad" [options]="prioridades"
@@ -160,6 +249,8 @@
           placeholder="Sin vínculo" styleClass="w-100">
         </p-dropdown>
       </div>
+
+
 
     </div>
   </form>
