@@ -3,8 +3,11 @@ import { asamblea } from './test.model';
 
 export class ConvocatoriaResumenModel {
   id_asamblea: number;
+  id_tipo_asamblea: number;
   tipo_asamblea: number;
   fecha_hora: Date;
+  hora_primera_convocatoria: string;
+  hora_segunda_convocatoria: string;
   lugar: string;
   convocatoria_quien_emite: string;
   convocatoria_vencida: number;
@@ -12,6 +15,7 @@ export class ConvocatoriaResumenModel {
   id_acta: number;
   acta_finalizada: number;
   estatus: number;
+  total_puntos: number;
 }
 
 export class ConvocatoriaModel {

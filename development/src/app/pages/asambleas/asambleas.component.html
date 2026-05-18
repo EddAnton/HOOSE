@@ -1,85 +1,179 @@
-<!-- Tabla Convocatorias de Asambleas-->
-<div class="card shadow-sm">
-  <p-table #ptConvocatorias [responsive]="true" [value]="Convocatorias" [columns]="ConvocatoriasCols" [rowHover]="true"
-    [globalFilterFields]="ConvocatoriasFilter" [showCurrentPageReport]="true" [paginator]="Convocatorias.length > 0"
-    [rows]="50" dataKey="id_asamblea" styleClass="p-datatable-striped"
-    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros">
-    <ng-template pTemplate="caption">
-      <div class="d-flex align-items-center p-1">
-        <div class="me-auto">
-          <!-- Botón Nuevo -->
-          <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised p-button-success ms-1"
-            pTooltip="Agregar asamblea" tooltipPosition="right" (click)="onConvocatoriaEditar()"></button>
-        </div>
-        <!-- Opciones Filtrado -->
-        <div class="ms-auto">
-          <!-- Botón Actualizar -->
-          <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
-            class="p-button-rounded p-button-text p-button-secondary me-2" pTooltip="Actualizar información"
-            tooltipPosition="right" (click)="onActualizarInformacion()"></button>
-          <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input type="text" id="txtGlobalFilter" class="form-control ms-1 ps-4"
-              (input)="ptConvocatorias.filterGlobal($event.target.value, 'contains')" placeholder="Filtrar" />
-          </span>
-        </div>
-        <div>
-          <button pButton pRipple type="button" id="btnLimpiarFiltro" icon="pi pi-times"
-            class="p-button-rounded p-button-text p-button-danger ms-3" pTooltip="Limpiar filtro" tooltipPosition="left"
-            (click)="hlpPrimeNGTable.reset(ptConvocatorias)"></button>
-        </div>
+<!-- ASAMBLEAS -->
+<div class="asm-wrapper">
+
+  <!-- HEADER -->
+  <div class="asm-header">
+    <span class="asm-header-title">
+      <i class="pi pi-calendar me-2" style="color:#e91e8c"></i>Asambleas
+    </span>
+    <div class="asm-header-actions">
+      <button pButton type="button" icon="pi pi-plus"
+        class="p-button-rounded p-button-raised p-button-success"
+        pTooltip="Agregar asamblea" tooltipPosition="left"
+        (click)="onConvocatoriaEditar()">
+      </button>
+      <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
+        class="p-button-rounded p-button-text p-button-secondary"
+        pTooltip="Actualizar" tooltipPosition="left"
+        (click)="onActualizarInformacion()">
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="asm-filtros">
+    <div class="asm-filtro-group">
+      <label class="asm-filtro-label">Año</label>
+      <p-dropdown [options]="aniosDisponibles" [(ngModel)]="filtroAnio"
+        placeholder="Todos" [showClear]="true"
+        (onChange)="aplicarFiltros()" styleClass="asm-filtro-select">
+      </p-dropdown>
+    </div>
+    <div class="asm-filtro-group">
+      <label class="asm-filtro-label">Tipo</label>
+      <p-dropdown [options]="tiposDisponibles" [(ngModel)]="filtroTipo"
+        placeholder="Todos" [showClear]="true"
+        (onChange)="aplicarFiltros()" styleClass="asm-filtro-select">
+      </p-dropdown>
+    </div>
+    <div class="asm-filtro-group">
+      <label class="asm-filtro-label">Estatus</label>
+      <p-dropdown [options]="estatusDisponibles" [(ngModel)]="filtroEstatus"
+        placeholder="Todos" [showClear]="true"
+        (onChange)="aplicarFiltros()" styleClass="asm-filtro-select">
+      </p-dropdown>
+    </div>
+    <div class="asm-filtro-group" style="justify-content:flex-end">
+      <button pButton type="button" icon="pi pi-filter-slash" label="Limpiar"
+        class="p-button-text p-button-secondary asm-btn-limpiar"
+        (click)="limpiarFiltros()">
+      </button>
+    </div>
+    <div class="asm-search-wrap">
+      <i class="pi pi-search"></i>
+      <input type="text" class="asm-search-input"
+        (input)="ptConvocatorias.filterGlobal($event.target.value, 'contains')"
+        placeholder="Buscar..."/>
+    </div>
+    <button pButton pRipple type="button" icon="pi pi-times"
+      class="p-button-rounded p-button-text p-button-danger"
+      pTooltip="Limpiar búsqueda" tooltipPosition="left"
+      (click)="hlpPrimeNGTable.reset(ptConvocatorias)">
+    </button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="asm-kpis">
+    <div class="asm-kpi asm-kpi--pink">
+      <div class="asm-kpi-icon"><i class="pi pi-calendar"></i></div>
+      <div class="asm-kpi-body">
+        <span class="asm-kpi-label">Total Asambleas</span>
+        <span class="asm-kpi-value">{{ kpiTotalAsambleas }}</span>
+        <span class="asm-kpi-sub">Ord: <b>{{ kpiOrdinarias }}</b> &nbsp;|&nbsp; Ext: <b>{{ kpiExtraordinarias }}</b></span>
       </div>
-    </ng-template>
-    <ng-template pTemplate="header" let-columns>
+    </div>
+    <div class="asm-kpi asm-kpi--blue">
+      <div class="asm-kpi-icon"><i class="pi pi-clock"></i></div>
+      <div class="asm-kpi-body">
+        <span class="asm-kpi-label">Próxima Asamblea</span>
+        <span class="asm-kpi-value asm-kpi-value--sm">{{ kpiProximaAsamblea }}</span>
+        <span class="asm-kpi-sub" *ngIf="kpiProximaAsambleaHoras">{{ kpiProximaAsambleaHoras }}</span>
+      </div>
+    </div>
+    <div class="asm-kpi asm-kpi--green">
+      <div class="asm-kpi-icon"><i class="pi pi-home"></i></div>
+      <div class="asm-kpi-body">
+        <span class="asm-kpi-label">Unidades</span>
+        <span class="asm-kpi-value">{{ kpiTotalUnidades || '—' }}</span>
+        <span class="asm-kpi-sub">Prop: <b>{{ kpiTotalPropietarios }}</b> &nbsp;|&nbsp; Cond: <b>{{ kpiTotalCondominos }}</b></span>
+      </div>
+    </div>
+    <div class="asm-kpi asm-kpi--yellow">
+      <div class="asm-kpi-icon"><i class="pi pi-list"></i></div>
+      <div class="asm-kpi-body">
+        <span class="asm-kpi-label">Puntos Discutidos</span>
+        <span class="asm-kpi-value">{{ kpiPuntosDiscutidosTotal }}</span>
+        <span class="asm-kpi-sub">Excluye pase de lista y minuta</span>
+      </div>
+    </div>
+  </div>
+
+<!-- Tabla Convocatorias de Asambleas-->
+<div class="asm-table-wrap">
+  <p-table #ptConvocatorias
+    styleClass="asm-table"
+    [value]="ConvocatoriasFiltradas"
+    [globalFilterFields]="ConvocatoriasFilter"
+    [rowHover]="true"
+    [paginator]="ConvocatoriasFiltradas.length > 0"
+    [rows]="50"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first}-{last} de {totalRecords} registros"
+    dataKey="id_asamblea">
+
+    <ng-template pTemplate="header">
       <tr>
-        <th *ngFor="let col of columns" class="text-center" [ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}">
-          {{ col.header ? col.header : '&nbsp;' }}
-        </th>
+        <th class="col-asm-fecha">Fecha</th>
+        <th class="col-asm-tipo text-center">Tipo</th>
+        <th class="col-asm-lugar">Lugar</th>
+        <th class="col-asm-emite">Emite</th>
+        <th class="col-asm-estatus text-center">Estatus</th>
+        <th class="col-asm-acciones text-center">Acciones</th>
       </tr>
     </ng-template>
+
     <ng-template pTemplate="body" let-Convocatoria>
       <tr>
-        <td class="text-md-end"><span
-            class="p-column-title">Fecha</span>{{ Convocatoria.fecha_hora | date : 'MMMM dd, yyyy' | uppercase }}<br />
-          {{ Convocatoria.fecha_hora | date : 'hh:mm aaa' | uppercase }}
+        <td class="col-asm-fecha">
+          <span class="asm-fecha-primary">{{ Convocatoria.fecha_hora | date:'MMM dd, yyyy' | uppercase }}</span>
+          <span class="asm-fecha-sub">{{ Convocatoria.fecha_hora | date:'hh:mm a' | uppercase }}</span>
         </td>
-        <td class="text-md-center"><span class="p-column-title">Tipo</span>{{ Convocatoria.tipo_asamblea }}</td>
-        <td class="text-md-center"><span class="p-column-title">Lugar</span>{{ Convocatoria.lugar }}</td>
-        <td class="text-md-center"><span class="p-column-title">Emite</span>{{ Convocatoria.convocatoria_quien_emite }}
+        <td class="col-asm-tipo text-center">
+          <span class="asm-tipo-badge" [ngClass]="{'asm-tipo-ord': +Convocatoria.id_tipo_asamblea === 1, 'asm-tipo-ext': +Convocatoria.id_tipo_asamblea === 2}">
+            {{ Convocatoria.tipo_asamblea }}
+          </span>
         </td>
-        <!-- Botones -->
-        <td class="text-end">
-          <!-- Botones relacionados con el Acta -->
-          <!-- Botones relacionados con la Convocatoria -->
-          <!-- Botón Editar convocatoria-->
-          <button
-            *ngIf="Convocatoria.estatus == 1 && Convocatoria.convocatoria_vencida == 0 && Convocatoria.id_acta == 0"
-            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning me-1"
+        <td class="col-asm-lugar">
+          <span class="cell-text" [pTooltip]="Convocatoria.lugar" tooltipPosition="top">{{ Convocatoria.lugar }}</span>
+        </td>
+        <td class="col-asm-emite">
+          <span class="cell-text">{{ Convocatoria.convocatoria_quien_emite }}</span>
+        </td>
+        <td class="col-asm-estatus text-center">
+          <span *ngIf="+Convocatoria.estatus === 1 && +Convocatoria.convocatoria_vencida === 0" class="asm-badge asm-badge-blue">Vigente</span>
+          <span *ngIf="+Convocatoria.estatus === 1 && +Convocatoria.convocatoria_vencida === 1 && +Convocatoria.id_acta === 0" class="asm-badge asm-badge-yellow">Sin Acta</span>
+          <span *ngIf="+Convocatoria.estatus === 1 && +Convocatoria.id_acta > 0 && +Convocatoria.acta_finalizada === 0" class="asm-badge asm-badge-orange">Acta Borrador</span>
+          <span *ngIf="+Convocatoria.estatus === 1 && +Convocatoria.id_acta > 0 && +Convocatoria.acta_finalizada === 1" class="asm-badge asm-badge-green">Concluida</span>
+          <span *ngIf="+Convocatoria.estatus === 0" class="asm-badge asm-badge-red">Cancelada</span>
+        </td>
+        <td class="col-asm-acciones text-center">
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.convocatoria_vencida == 0 && Convocatoria.id_acta == 0"
+            pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-warning asm-btn"
             pTooltip="Editar convocatoria" tooltipPosition="left"
             (click)="onConvocatoriaEditar(Convocatoria.id_asamblea)"></button>
-          <!-- Botón PDF convocatoria -->
           <button pButton type="button" icon="pi pi-file-pdf"
-            class="p-button-rounded p-button-text p-button-primary me-1" pTooltip="Convocatoria de Asamblea"
-            tooltipPosition="left" (click)="onGenerarPdfConvocatoria(Convocatoria.id_asamblea)"></button>
-          <!-- Botón Eliminar convocatoria -->
-          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta == 0" pButton type="button"
-            icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger me-1"
+            class="p-button-rounded p-button-text p-button-primary asm-btn"
+            pTooltip="Convocatoria de Asamblea" tooltipPosition="left"
+            (click)="onGenerarPdfConvocatoria(Convocatoria.id_asamblea)"></button>
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta == 0"
+            pButton type="button" icon="pi pi-trash"
+            class="p-button-rounded p-button-text p-button-danger asm-btn"
             pTooltip="Eliminar convocatoria" tooltipPosition="left"
             (click)="onConvocatoriaEliminar(Convocatoria.id_asamblea)"></button>
-          <!-- Botón Redactar acta -->
-          <button
-            *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
-            pButton type="button" icon="pi pi-book" class="p-button-rounded p-button-text p-button-success me-1"
-            pTooltip="Redactar acta" tooltipPosition="left" (click)="onActaEditar(Convocatoria)"></button>
-          <!-- Botón PDF acta -->
-          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta  > 0" pButton type="button"
-            icon="pi pi-file-pdf" class="p-button-rounded p-button-text p-button-success me-1"
-            pTooltip="Acta de Asamblea" tooltipPosition="left" (click)="onGenerarPdfActa(Convocatoria.id_asamblea)"></button>
+          <button *ngIf="+Convocatoria.estatus == 1 && +Convocatoria.convocatoria_vencida == 1 && +Convocatoria.id_acta == 0"
+            pButton type="button" icon="pi pi-book"
+            class="p-button-rounded p-button-text p-button-success asm-btn"
+            pTooltip="Redactar acta" tooltipPosition="left"
+            (click)="onActaEditar(Convocatoria)"></button>
+          <button *ngIf="Convocatoria.estatus == 1 && Convocatoria.id_acta > 0"
+            pButton type="button" icon="pi pi-file-pdf"
+            class="p-button-rounded p-button-text p-button-success asm-btn"
+            pTooltip="Acta de Asamblea" tooltipPosition="left"
+            (click)="onGenerarPdfActa(Convocatoria.id_asamblea)"></button>
         </td>
       </tr>
     </ng-template>
+
     <ng-template pTemplate="emptymessage">
       <tr class="no-records">
         <td>Sin registros.</td>
@@ -87,6 +181,7 @@
     </ng-template>
   </p-table>
 </div>
+</div><!-- /asm-wrapper -->
 
 <!-- Diálogo de inserción/edición acta -->
 <!-- (onShow)="onMostrarEdicionActa()" -->

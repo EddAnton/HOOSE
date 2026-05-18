@@ -1,0 +1,363 @@
+:host {
+  --card: #1a1d24;
+  --card2: #21242d;
+  --border: rgba(255,255,255,0.07);
+  --pink: #e91e8c;
+  --green: #1BC99A;
+  --text: #f0f0f0;
+  --muted: #8a8f9e;
+  --dim: #555a6a;
+  --radius: 12px;
+  --bg: #0f1117;
+}
+
+/* ---- Wrapper general ---- */
+.hoose-asm-wrap {
+  background: #13151c;
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* ---- KPI Cards ---- */
+.hoose-fin-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.2s;
+}
+.hoose-fin-card:hover { border-color: rgba(233,30,140,0.3); }
+
+.fin-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.fin-icon-wrap {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(233,30,140,0.15);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.fin-icon-wrap .pi { font-size: 1rem; color: var(--pink); }
+.fin-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; flex: 1; }
+.fin-value { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; line-height: 1.2; }
+.fin-content { font-size: 0.7rem; color: var(--dim); }
+
+/* ---- Tabla principal oscura ---- */
+:host ::ng-deep .asm-table-wrap .p-datatable {
+  background: var(--card) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--border) !important;
+  overflow: hidden;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-datatable-header {
+  background: var(--card2) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  padding: 12px 16px !important;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-datatable-thead > tr > th {
+  background: var(--card2) !important;
+  color: var(--muted) !important;
+  border-bottom: 1px solid var(--border) !important;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-datatable-tbody > tr {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--border) !important;
+  transition: background 0.15s;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-datatable-tbody > tr:hover {
+  background: var(--card2) !important;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-datatable-tbody > tr > td {
+  border: none !important;
+  color: var(--text) !important;
+  font-size: 0.88rem;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-paginator {
+  background: var(--card2) !important;
+  border-top: 1px solid var(--border) !important;
+  color: var(--muted) !important;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-paginator .p-paginator-page,
+:host ::ng-deep .asm-table-wrap .p-datatable .p-paginator .p-paginator-next,
+:host ::ng-deep .asm-table-wrap .p-datatable .p-paginator .p-paginator-prev {
+  color: var(--muted) !important;
+}
+:host ::ng-deep .asm-table-wrap .p-datatable .p-paginator .p-highlight {
+  background: var(--pink) !important;
+  color: #fff !important;
+}
+:host ::ng-deep .asm-table-wrap input[type="text"] {
+  background: var(--card2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: 8px !important;
+}
+
+/* ===================== NUEVO DISEÑO ASM ===================== */
+:host {
+  --asm-bg: #111318;
+  --asm-card: #1a1d24;
+  --asm-card2: #21242d;
+  --asm-border: rgba(255,255,255,0.07);
+  --asm-pink: #e91e8c;
+  --asm-green: #1BC99A;
+  --asm-blue: #3B82F6;
+  --asm-red: #EF4444;
+  --asm-text: #f0f0f0;
+  --asm-muted: #8a8f9e;
+  --asm-dim: #555a6a;
+  --asm-radius: 12px;
+  --asm-radius-sm: 8px;
+}
+
+.asm-wrapper { background: var(--asm-bg); min-height: 100vh; }
+
+/* Header */
+.asm-header {
+  background: #181b22;
+  border-bottom: 1px solid var(--asm-border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.asm-header-title { font-size: 1rem; font-weight: 600; color: var(--asm-text); }
+.asm-header-actions { display: flex; gap: 8px; }
+
+/* KPIs */
+.asm-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  padding: 16px 20px 8px;
+}
+.asm-kpi {
+  background: var(--asm-card);
+  border: 1px solid var(--asm-border);
+  border-radius: var(--asm-radius);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.asm-kpi-label { font-size: 0.7rem; color: var(--asm-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.asm-kpi-value { font-size: 1.15rem; font-weight: 700; color: var(--asm-text); }
+.asm-kpi-sub { font-size: 0.72rem; color: var(--asm-muted); }
+.asm-kpi-sub b { color: var(--asm-text); }
+
+/* Filtros */
+.asm-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+.asm-filtro-group { display: flex; flex-direction: column; gap: 4px; }
+.asm-filtro-label { font-size: 0.72rem; color: var(--asm-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+:host ::ng-deep .asm-filtro-select .p-dropdown {
+  background: var(--asm-card) !important;
+  border: 1px solid var(--asm-border) !important;
+  border-radius: var(--asm-radius-sm) !important;
+  height: 36px !important;
+  min-width: 130px !important;
+}
+:host ::ng-deep .asm-filtro-select .p-dropdown .p-dropdown-label {
+  color: var(--asm-text) !important;
+  font-size: 0.82rem !important;
+  padding: 6px 10px !important;
+}
+:host ::ng-deep .asm-filtro-select .p-dropdown-panel {
+  background: var(--asm-card) !important;
+  border: 1px solid var(--asm-border) !important;
+}
+:host ::ng-deep .asm-filtro-select .p-dropdown-item {
+  color: var(--asm-text) !important;
+  font-size: 0.82rem !important;
+}
+:host ::ng-deep .asm-filtro-select .p-dropdown-item:hover {
+  background: rgba(233,30,140,0.1) !important;
+}
+
+.asm-btn-limpiar { font-size: 0.8rem !important; height: 36px !important; }
+
+.asm-search-wrap { position: relative; flex: 1; min-width: 200px; }
+.asm-search-wrap .pi-search { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--asm-muted); font-size: 0.82rem; }
+.asm-search-input {
+  width: 100%;
+  background: var(--asm-card) !important;
+  border: 1px solid var(--asm-border) !important;
+  border-radius: var(--asm-radius-sm) !important;
+  color: var(--asm-text) !important;
+  padding: 7px 10px 7px 30px !important;
+  font-size: 0.82rem !important;
+  height: 36px !important;
+}
+.asm-search-input:focus { border-color: var(--asm-pink) !important; outline: none !important; }
+.asm-search-input::placeholder { color: var(--asm-dim) !important; }
+
+
+
+
+
+/* ===================== TABLA ASAMBLEAS ===================== */
+.asm-table-wrap { padding: 0 20px 20px; overflow-x: auto; max-width: 100%; }
+
+:host ::ng-deep .asm-table .p-datatable-wrapper { overflow-x: auto !important; }
+:host ::ng-deep .asm-table table { min-width: 700px; border-collapse: separate; border-spacing: 0; }
+:host ::ng-deep .asm-table .p-datatable-thead > tr > th {
+  background: #181b22 !important;
+  color: var(--asm-muted) !important;
+  border-bottom: 2px solid var(--asm-border) !important;
+  border-right: none !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 10px 12px !important;
+  white-space: nowrap !important;
+}
+:host ::ng-deep .asm-table .p-datatable-tbody > tr {
+  background: var(--asm-card) !important;
+  border-bottom: 1px solid var(--asm-border) !important;
+  transition: background 0.15s !important;
+}
+:host ::ng-deep .asm-table .p-datatable-tbody > tr:hover { background: var(--asm-card2) !important; }
+:host ::ng-deep .asm-table .p-datatable-tbody > tr > td {
+  color: var(--asm-text) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--asm-border) !important;
+  padding: 10px 12px !important;
+  font-size: 0.82rem !important;
+}
+:host ::ng-deep .asm-table .p-paginator {
+  background: #181b22 !important;
+  border-top: 1px solid var(--asm-border) !important;
+  color: var(--asm-muted) !important;
+  font-size: 0.78rem !important;
+  padding: 8px 16px !important;
+  border-radius: 0 0 var(--asm-radius) var(--asm-radius) !important;
+}
+:host ::ng-deep .asm-table .p-paginator .p-paginator-page.p-highlight {
+  background: var(--asm-pink) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
+
+/* Columnas */
+:host ::ng-deep .asm-table .col-asm-fecha  { width: 130px; }
+:host ::ng-deep .asm-table .col-asm-tipo   { width: 130px; }
+:host ::ng-deep .asm-table .col-asm-lugar  { min-width: 160px; }
+:host ::ng-deep .asm-table .col-asm-emite  { min-width: 140px; }
+:host ::ng-deep .asm-table .col-asm-estatus { width: 130px; }
+:host ::ng-deep .asm-table .col-asm-acciones { width: 130px; }
+
+/* Fecha */
+.asm-fecha-primary { display: block; font-weight: 600; font-size: 0.82rem; color: var(--asm-text); }
+.asm-fecha-sub     { display: block; font-size: 0.72rem; color: var(--asm-muted); margin-top: 2px; }
+
+/* Tipo badge */
+.asm-tipo-badge {
+  font-size: 0.7rem; font-weight: 700; padding: 3px 10px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.asm-tipo-ord { background: rgba(59,130,246,0.15); color: var(--asm-blue); }
+.asm-tipo-ext { background: rgba(233,30,140,0.15); color: var(--asm-pink); }
+
+/* Estatus badges */
+.asm-badge {
+  font-size: 0.68rem; font-weight: 700; padding: 3px 10px;
+  border-radius: 20px; white-space: nowrap;
+}
+.asm-badge-blue   { background: rgba(59,130,246,0.15);  color: var(--asm-blue); }
+.asm-badge-green  { background: rgba(27,201,154,0.15);  color: var(--asm-green); }
+.asm-badge-yellow { background: rgba(245,158,11,0.15);  color: #F59E0B; }
+.asm-badge-orange { background: rgba(249,115,22,0.15);  color: #F97316; }
+.asm-badge-red    { background: rgba(239,68,68,0.15);   color: var(--asm-red); }
+
+/* cell-text */
+.cell-text {
+  display: block; overflow: hidden;
+  white-space: nowrap; text-overflow: ellipsis; max-width: 200px;
+}
+
+/* Botones tabla */
+.asm-btn { width: 28px !important; height: 28px !important; }
+
+/* ===================== KPIs DEFINITIVO ===================== */
+.asm-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 16px 20px 8px;
+}
+.asm-kpi {
+  background: var(--asm-card);
+  border: 1px solid var(--asm-border);
+  border-radius: var(--asm-radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.asm-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.asm-kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 4px 0 0 4px;
+}
+.asm-kpi--pink::before  { background: var(--asm-pink); }
+.asm-kpi--blue::before  { background: var(--asm-blue); }
+.asm-kpi--green::before { background: var(--asm-green); }
+.asm-kpi--yellow::before { background: #F59E0B; }
+
+.asm-kpi-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.asm-kpi--pink .asm-kpi-icon   { background: rgba(233,30,140,0.15); color: var(--asm-pink); }
+.asm-kpi--blue .asm-kpi-icon   { background: rgba(59,130,246,0.15); color: var(--asm-blue); }
+.asm-kpi--green .asm-kpi-icon  { background: rgba(27,201,154,0.15); color: var(--asm-green); }
+.asm-kpi--yellow .asm-kpi-icon { background: rgba(245,158,11,0.15); color: #F59E0B; }
+
+.asm-kpi-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+.asm-kpi-label {
+  font-size: 0.68rem; color: var(--asm-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+}
+.asm-kpi-value {
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--asm-text); line-height: 1.2;
+}
+.asm-kpi-value--sm { font-size: 0.95rem !important; }
+.asm-kpi-sub { font-size: 0.72rem; color: var(--asm-muted); margin-top: 2px; }
+.asm-kpi-sub b { color: var(--asm-text); font-weight: 600; }

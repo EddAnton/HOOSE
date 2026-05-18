@@ -132,4 +132,13 @@ export class AsambleasService {
       }),
     );
   }
+
+  KpiPuntos() {
+    const url = 'asambleas/kpi_puntos';
+    const headers = new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+    return this.http.get(environment.urlBackend + url, { headers }).pipe(map(r => r));
+  }
 }

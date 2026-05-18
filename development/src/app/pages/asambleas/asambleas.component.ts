@@ -29,6 +29,9 @@ import { UsuariosAdministradoresService } from '../../services/usuarios-administ
 import { CondominiosService } from '../../services/condominios.service';
 import { PdfService } from '../../services/pdf.service';
 import { SesionUsuarioService } from '../../services/sesion-usuario.service';
+import { UnidadesService } from '../../services/unidades.service';
+import { UsuariosCondominosService } from '../../services/usuarios-condominos.service';
+import { UsuariosPropietariosService } from '../../services/usuarios-propietarios.service';
 
 @Component({
   selector: 'app-asambleas',
@@ -74,6 +77,22 @@ export class AsambleasComponent implements OnInit {
 
   // Convocatorias: ConvocatoriaModel[] = [];
   Convocatorias: ConvocatoriaResumenModel[] = [];
+  ConvocatoriasFiltradas: ConvocatoriaResumenModel[] = [];
+
+  // Filtros tabla
+  filtroAnio: number = null;
+  filtroTipo: number = null;
+  filtroEstatus: number = null;
+  aniosDisponibles: any[] = [];
+  tiposDisponibles: any[] = [
+    { label: 'Ordinaria', value: 1 },
+    { label: 'Extraordinaria', value: 2 },
+  ];
+  estatusDisponibles: any[] = [
+    { label: 'Activa', value: 1 },
+    { label: 'Cerrada', value: 0 },
+  ];
+
   TiposAsambleas: any[] = [];
   quillEditors: any = {};
   ConvocatoriaPdf: any = null;
@@ -155,7 +174,9 @@ export class AsambleasComponent implements OnInit {
     private administradoresService: UsuariosAdministradoresService,
     private condominiosService: CondominiosService,
     private usuariosService: UsuariosService,
-    // private unidadesService: UnidadesService
+    private unidadesService: UnidadesService,
+    private condominosService: UsuariosCondominosService,
+    private propietariosService: UsuariosPropietariosService
   ) { }
 
   ngOnInit(): void {
@@ -183,8 +204,75 @@ export class AsambleasComponent implements OnInit {
     }).catch(() => {});
   }
 
+  kpiTotalUnidades: number = 0;
+  kpiTotalCondominos: number = 0;
+  kpiTotalArrendatarios: number = 0;
+  kpiTotalPropietarios: number = 0;
+  get kpiPuntosDiscutidosTotal() { return this.ConvocatoriasFiltradas.reduce((acc, c) => acc + (+c.total_puntos || 0), 0); }
+
+  get kpiTotalAsambleas() { return this.ConvocatoriasFiltradas.length; }
+  get kpiOrdinarias() { return this.ConvocatoriasFiltradas.filter(c => String(c.id_tipo_asamblea) === '1').length; }
+  get kpiExtraordinarias() { return this.ConvocatoriasFiltradas.filter(c => String(c.id_tipo_asamblea) === '2').length; }
+  get kpiProximaAsamblea() {
+    const futuras = this.Convocatorias.filter(c => new Date(c.fecha_hora) >= new Date() && +c.estatus === 1);
+    if (!futuras.length) return 'Sin programar';
+    futuras.sort((a, b) => new Date(a.fecha_hora).getTime() - new Date(b.fecha_hora).getTime());
+    const f = new Date(futuras[0].fecha_hora);
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    return f.getDate() + ' ' + meses[f.getMonth()] + ' ' + f.getFullYear();
+  }
+  get kpiProximaAsambleaHoras() {
+    const futuras = this.Convocatorias.filter(c => new Date(c.fecha_hora) >= new Date() && +c.estatus === 1);
+    if (!futuras.length) return null;
+    futuras.sort((a, b) => new Date(a.fecha_hora).getTime() - new Date(b.fecha_hora).getTime());
+    const c = futuras[0];
+    const formatHora = (h: string) => {
+      if (!h) return null;
+      // Si viene como HH:MM:SS tomar solo HH:MM
+      const partes = h.split(':');
+      if (partes.length >= 2) return partes[0] + ':' + partes[1];
+      return h;
+    };
+    const h1 = c.hora_primera_convocatoria ? '1a conv: ' + formatHora(c.hora_primera_convocatoria) : '';
+    const h2 = c.hora_segunda_convocatoria ? ' | 2a conv: ' + formatHora(c.hora_segunda_convocatoria) : '';
+    return (h1 + h2) || null;
+  }
+
+  get kpiPuntosDiscutidos() {
+    let total = 0;
+    this.Convocatorias.forEach((c: any) => {
+      if (c.orden_dia) {
+        c.orden_dia.forEach((o: any) => {
+          const n = String(o.orden_dia || '').toUpperCase();
+          if (!n.includes('PASE DE LISTA') && !n.includes('MINUTA') && !n.includes('LECTURA')) total++;
+        });
+      }
+    });
+    return total;
+  }
+
   private OrdenarConvocatorias(asambleas: ConvocatoriaResumenModel[]) {
     return asambleas.sort((a, b) => (a.fecha_hora.toString() > b.fecha_hora.toString() ? 1 : -1));
+  }
+
+  private reconstruirAniosDisponibles() {
+    const anios = [...new Set(this.Convocatorias.map(c => new Date(c.fecha_hora).getFullYear()))].sort((a, b) => b - a);
+    this.aniosDisponibles = anios.map(a => ({ label: a.toString(), value: a }));
+  }
+
+  public aplicarFiltros() {
+    let filtradas = [...this.Convocatorias];
+    if (this.filtroAnio) filtradas = filtradas.filter(c => new Date(c.fecha_hora).getFullYear() === this.filtroAnio);
+    if (this.filtroTipo != null) filtradas = filtradas.filter(c => Number(c.id_tipo_asamblea) === this.filtroTipo);
+    if (this.filtroEstatus != null) filtradas = filtradas.filter(c => Number(c.estatus) === this.filtroEstatus);
+    this.ConvocatoriasFiltradas = filtradas;
+  }
+
+  public limpiarFiltros() {
+    this.filtroAnio = null;
+    this.filtroTipo = null;
+    this.filtroEstatus = null;
+    this.ConvocatoriasFiltradas = [...this.Convocatorias];
   }
 
   /* private getTextoPEditor(idxPunto: number, esApertura: boolean = true) {
@@ -262,6 +350,18 @@ export class AsambleasComponent implements OnInit {
 
     hlpSwal.Cargando();
 
+    // Cargar KPIs de unidades, propietarios y condóminos
+    this.unidadesService.Listar().toPromise()
+      .then((r: any) => { this.kpiTotalUnidades = (r?.['unidades'] || []).length; })
+      .catch(() => {});
+    this.propietariosService.Listar().toPromise()
+      .then((r: any) => { this.kpiTotalPropietarios = (r?.['propietarios'] || []).length; })
+      .catch(() => {});
+    this.condominosService.Listar().toPromise()
+      .then((r: any) => { this.kpiTotalCondominos = (r?.['condominos'] || []).length; })
+      .catch(() => {});
+    // kpiPuntosDiscutidosTotal se calcula desde ConvocatoriasFiltradas
+
     this.tiposAsambleasService.ListarActivos().toPromise().then((r) => {
       this.TiposAsambleas = r['tipos_asambleas'];
     })
@@ -274,6 +374,8 @@ export class AsambleasComponent implements OnInit {
       .toPromise()
       .then((r) => {
         this.Convocatorias = this.OrdenarConvocatorias(r['asambleas']);
+        this.reconstruirAniosDisponibles();
+        this.aplicarFiltros();
       })
       .catch(async (e) => {
         await hlpSwal.Error(e);
@@ -562,6 +664,15 @@ export class AsambleasComponent implements OnInit {
     let asamblea = this.frmConvocatoria.value;
     asamblea.fecha_hora = hlpApp.formatDateToMySQL(asamblea.fecha_hora);
     asamblea.convocatoria_fecha = hlpApp.formatDateToMySQL(asamblea.convocatoria_fecha);
+    const padH = (n: number) => n.toString().padStart(2, '0');
+    const horaToString = (h: any): string => {
+      if (!h) return '00:00';
+      if (h instanceof Date) return padH(h.getHours()) + ':' + padH(h.getMinutes());
+      if (typeof h === 'string' && h.includes(':')) return h.substring(0, 5);
+      return '00:00';
+    };
+    asamblea.hora_primera_convocatoria = horaToString(asamblea.hora_primera_convocatoria);
+    asamblea.hora_segunda_convocatoria = horaToString(asamblea.hora_segunda_convocatoria);
     asamblea.orden_dia = this.OrdenesDelDia.map((o) => {
       return {
         orden_dia: o.orden_dia,
@@ -592,6 +703,8 @@ export class AsambleasComponent implements OnInit {
             this.Convocatorias = this.Convocatorias.map((C) => (C.id_asamblea === c.id_asamblea ? c : C));
           }
           this.Convocatorias = this.OrdenarConvocatorias(this.Convocatorias);
+          this.reconstruirAniosDisponibles();
+          this.aplicarFiltros();
           hlpSwal.ExitoToast(r.value.msg);
           this.mostrarDialogoConvocatoria = false;
         }
@@ -1667,6 +1780,8 @@ export class AsambleasComponent implements OnInit {
           const c = r.value.asamblea;
           this.Convocatorias = this.Convocatorias.map((C) => (C.id_asamblea === c.id_asamblea ? c : C));
           this.Convocatorias = this.OrdenarConvocatorias(this.Convocatorias);
+          this.reconstruirAniosDisponibles();
+          this.aplicarFiltros();
           hlpSwal.ExitoToast(r.value.msg);
           this.mostrarDialogoEdicionActa = false;
         }

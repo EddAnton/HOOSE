@@ -69,27 +69,42 @@
 
   <!-- KPIs DE TOTALES -->
   <div class="cm-totales">
-    <div class="cm-kpi">
-      <span class="cm-kpi-label">Registros</span>
-      <span class="cm-kpi-value">{{ CuotasMantenimientoFiltradas.length | number }}</span>
+    <div class="cm-kpi cm-kpi--pink">
+      <div class="cm-kpi-icon"><i class="pi pi-list"></i></div>
+      <div class="cm-kpi-body">
+        <span class="cm-kpi-label">Registros</span>
+        <span class="cm-kpi-value">{{ CuotasMantenimientoFiltradas.length | number }}</span>
+      </div>
     </div>
-    <div class="cm-kpi">
-      <span class="cm-kpi-label">Total Pagado</span>
-      <span class="cm-kpi-value kpi-pagado">$ {{ FilaTotales?.pagado | number:'1.2-2' }}</span>
+    <div class="cm-kpi cm-kpi--green">
+      <div class="cm-kpi-icon"><i class="pi pi-check-circle"></i></div>
+      <div class="cm-kpi-body">
+        <span class="cm-kpi-label">Total Pagado</span>
+        <span class="cm-kpi-value kpi-pagado">$ {{ FilaTotales?.pagado | number:'1.2-2' }}</span>
+      </div>
     </div>
-    <div class="cm-kpi">
-      <span class="cm-kpi-label">Saldo Pendiente</span>
-      <span class="cm-kpi-value saldo">$ {{ FilaTotales?.saldo | number:'1.2-2' }}</span>
+    <div class="cm-kpi cm-kpi--red">
+      <div class="cm-kpi-icon"><i class="pi pi-exclamation-circle"></i></div>
+      <div class="cm-kpi-body">
+        <span class="cm-kpi-label">Saldo Pendiente</span>
+        <span class="cm-kpi-value saldo">$ {{ FilaTotales?.saldo | number:'1.2-2' }}</span>
+      </div>
     </div>
-    <div class="cm-kpi">
-      <span class="cm-kpi-label">Total General</span>
-      <span class="cm-kpi-value total">$ {{ FilaTotales?.total | number:'1.2-2' }}</span>
+    <div class="cm-kpi cm-kpi--blue">
+      <div class="cm-kpi-icon"><i class="pi pi-dollar"></i></div>
+      <div class="cm-kpi-body">
+        <span class="cm-kpi-label">Total General</span>
+        <span class="cm-kpi-value total">$ {{ FilaTotales?.total | number:'1.2-2' }}</span>
+      </div>
     </div>
-    <div class="cm-kpi">
-      <span class="cm-kpi-label">Morosidad</span>
-      <span class="cm-kpi-value" [style.color]="FilaTotales?.total > 0 ? '#EF4444' : '#1BC99A'">
-        {{ FilaTotales?.total > 0 ? ((FilaTotales.saldo / FilaTotales.total) * 100 | number:'1.2-2') : '0.00' }}%
-      </span>
+    <div class="cm-kpi cm-kpi--yellow">
+      <div class="cm-kpi-icon"><i class="pi pi-chart-bar"></i></div>
+      <div class="cm-kpi-body">
+        <span class="cm-kpi-label">Morosidad</span>
+        <span class="cm-kpi-value" [style.color]="FilaTotales?.total > 0 ? '#EF4444' : '#1BC99A'">
+          {{ FilaTotales?.total > 0 ? ((FilaTotales.saldo / FilaTotales.total) * 100 | number:'1.2-2') : '0.00' }}%
+        </span>
+      </div>
     </div>
   </div>
 
