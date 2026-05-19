@@ -11,7 +11,7 @@ export const environment = {
   appTitle: 'Software de Gestión de Condominios',
   urlBackend: urlBackend,
   urlBackendUsuariosFiles: urlBackend + 'uploads/usuarios/',
-  urlBackendCondominiosFiles: urlBackend + 'uploads/condominios/',
+  urlBackendCondominiosFiles: urlBackendStatic + 'uploads/condominios/',
   urlBackendUnidadesFiles: urlBackend + 'uploads/unidades/',
   urlBackendMiembrosComiteFiles: urlBackend + 'uploads/miembros_comites_administracion/',
   urlBackendGastosMantenimientoFiles: urlBackend + 'uploads/gastos_mantenimiento/',

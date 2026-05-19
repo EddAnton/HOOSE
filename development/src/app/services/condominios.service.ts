@@ -5,77 +5,43 @@ import { environment } from '../../environments/environment';
 import { CondominioModel } from '../models/condominio.model';
 import { SesionUsuarioService } from './sesion-usuario.service';
 
-@Injectable({
-	providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class CondominiosService {
-	constructor(private http: HttpClient, private sesionUsuarioService: SesionUsuarioService) {}
+  constructor(private http: HttpClient, private sesionUsuarioService: SesionUsuarioService) {}
 
-	Listar(soloActivos: boolean = false) {
-		const url = 'condominios' + (soloActivos ? '/activos' : '');
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
+  private get headers() {
+    return new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+  }
 
-		return this.http.get(environment.urlBackend + `${url}`, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
+  Listar(soloActivos: boolean = false) {
+    const url = 'condominios' + (soloActivos ? '/activos' : '');
+    return this.http.get(environment.urlBackend + url, { headers: this.headers }).pipe(map(r => r));
+  }
 
-	ListarActivos() {
-		return this.Listar(true);
-	}
+  ListarActivos() { return this.Listar(true); }
 
-	ListarCondominio(idCondominio: number = 0) {
-		const url = 'condominios/' + idCondominio;
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
+  ListarCondominio(idCondominio: number = 0) {
+    return this.http.get(environment.urlBackend + 'condominios/' + idCondominio, { headers: this.headers }).pipe(map(r => r));
+  }
 
-		return this.http.get(environment.urlBackend + `${url}`, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
+  GuardarFormData(formData: FormData, idCondominio: number = 0) {
+    const url = idCondominio == 0 ? 'condominios/insertar' : 'condominios/actualizar/' + idCondominio;
+    return this.http.post(environment.urlBackend + url, formData, { headers: this.headers }).pipe(map(r => r));
+  }
 
-	Guardar(data: CondominioModel) {
-		let url = 'condominios/' + (data.id_condominio == 0 ? 'insertar' : 'actualizar/' + data.id_condominio);
+  Guardar(data: CondominioModel) {
+    const url = 'condominios/' + (data.id_condominio == 0 ? 'insertar' : 'actualizar/' + data.id_condominio);
+    const params: any = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      if (value != null) params.append(key, value);
+    }
+    return this.http.post(environment.urlBackend + url, params, { headers: this.headers }).pipe(map(r => r));
+  }
 
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
-
-		const params: any = new FormData();
-		for (var [key, value] of Object.entries(data)) {
-			if (value != null) {
-				params.append(key, value);
-			}
-		}
-
-		return this.http.post(environment.urlBackend + `${url}`, params, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
-
-	AlternarEstatus(idCondominio: number = 0) {
-		const url = 'condominios/alternar-estatus/' + idCondominio;
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
-
-		return this.http.post(environment.urlBackend + `${url}`, null, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
+  AlternarEstatus(idCondominio: number = 0) {
+    return this.http.post(environment.urlBackend + 'condominios/alternar-estatus/' + idCondominio, null, { headers: this.headers }).pipe(map(r => r));
+  }
 }

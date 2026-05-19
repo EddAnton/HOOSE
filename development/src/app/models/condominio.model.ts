@@ -7,6 +7,11 @@ export class CondominioResumenModel {
 	email: string;
 	telefono: string;
 	domicilio: string;
+	tipo: string;
+	metros_cuadrados: number;
+	tipo_administracion: string;
+	fk_id_administrador: number;
+	administrador_nombre: string;
 	telefono_guardia: string;
 	telefono_secretaria: string;
 	telefono_moderador: string;
@@ -21,6 +26,11 @@ export class CondominioResumenModel {
 			email: null,
 			telefono: null,
 			domicilio: null,
+			tipo: null,
+			metros_cuadrados: null,
+			tipo_administracion: null,
+			fk_id_administrador: null,
+			administrador_nombre: null,
 			telefono_guardia: null,
 			telefono_secretaria: null,
 			telefono_moderador: null,
@@ -37,6 +47,11 @@ export class CondominioModel {
 	email: string;
 	telefono: string;
 	domicilio: string;
+	tipo: string;
+	metros_cuadrados: number;
+	tipo_administracion: string;
+	fk_id_administrador: number;
+	administrador_nombre: string;
 	telefono_guardia: string;
 	telefono_secretaria: string;
 	telefono_moderador: string;
@@ -46,24 +61,37 @@ export class CondominioModel {
 	constructora_telefono: string;
 	constructora_domicilio: string;
 	reglamento: string;
+	archivo_acta_constitutiva: string;
+	archivo_reglamento_interno: string;
+	archivo_poliza_seguro: string;
+	archivo_planos: string;
 	estatus: number;
 
 	constructor() {
 		return {
 			id_condominio: 0,
-			condominio: isDevMode() ? 'condominio de prueba #3' : null,
-			email: isDevMode() ? 'abc@abc.ab' : null,
-			telefono: isDevMode() ? '2281234561' : null,
-			domicilio: isDevMode() ? 'domicilio de prueba' : null,
-			telefono_guardia: isDevMode() ? '2281234562' : null,
-			telefono_secretaria: isDevMode() ? '2281234563' : null,
-			telefono_moderador: isDevMode() ? '2281234564' : null,
-			anio_construccion: isDevMode() ? '2019' : null,
+			condominio: null,
+			email: null,
+			telefono: null,
+			domicilio: null,
+			tipo: null,
+			metros_cuadrados: null,
+			tipo_administracion: null,
+			fk_id_administrador: null,
+			administrador_nombre: null,
+			telefono_guardia: null,
+			telefono_secretaria: null,
+			telefono_moderador: null,
+			anio_construccion: null,
 			imagen: null,
-			constructora: isDevMode() ? 'constructora de prueba' : null,
-			constructora_telefono: isDevMode() ? '2281234565' : null,
-			constructora_domicilio: isDevMode() ? 'domicilio de la constructora de prueba' : null,
-			reglamento: isDevMode() ? reglamento : null,
+			constructora: null,
+			constructora_telefono: null,
+			constructora_domicilio: null,
+			reglamento: null,
+			archivo_acta_constitutiva: null,
+			archivo_reglamento_interno: null,
+			archivo_poliza_seguro: null,
+			archivo_planos: null,
 			estatus: 1,
 		};
 	}
