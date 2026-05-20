@@ -163,30 +163,67 @@
 </p-dialog>
 
 <!-- Diálogo de selección de condominio (Súper Administrador) -->
-<p-dialog [(visible)]="mostrarDialogoSeleccionCondominio" [modal]="true" [style]="{ width: '450px' }"
-  header="Seleccionar Condominio" styleClass="p-fluid">
+<p-dialog [(visible)]="mostrarDialogoSeleccionCondominio" [modal]="true"
+  [style]="{ width: '80vw', maxWidth: '900px' }"
+  [closable]="true" styleClass="hoose-dialogo nav-cond-dialog">
+  <ng-template pTemplate="header">
+    <span style="font-size:1rem;font-weight:700;color:#f0f0f0">
+      <i class="pi pi-building me-2" style="color:#e91e8c"></i>Seleccionar Condominio
+    </span>
+  </ng-template>
   <ng-template pTemplate="content">
-    <form id="frmSeleccionarCondominio" class="pt-4" [formGroup]="frmSeleccionarCondominio" autocomplete="off">
-      <!-- Condominio -->
-      <div class="row">
-        <div class="col form-label-group">
-          <select #cmbCondominio id="cmbCondominio" formControlName="id_condominio" class="form-select" autofocus>
-            <option [value]="0" disabled>Selecciona una opción...</option>
-            <option *ngFor="let condominio of Condominios" [value]="condominio.id_condominio">
-              {{ condominio.condominio }}
-            </option>
-          </select>
+    <div class="nav-cond-carrusel">
+
+      <!-- Flecha izquierda -->
+      <button class="nav-cond-arrow nav-cond-arrow-left" (click)="onAnteriorNav()">
+        <i class="pi pi-chevron-left"></i>
+      </button>
+
+      <!-- Rueda -->
+      <div class="nav-cond-rueda">
+        <div class="nav-cond-item"
+          *ngFor="let c of Condominios; let i = index"
+          [ngStyle]="getItemStyleNav(i)"
+          (click)="onSeleccionarCondominioCarrusel(i)">
+          <img [src]="getImagenUrlNav(c)" [alt]="c.condominio" [ngStyle]="getImgStyleNav(i)"/>
+          <div class="nav-cond-label" *ngIf="isVisibleNav(i) && i !== idxCondominioSeleccionado">
+            <span class="nav-cond-tipo">{{ c.tipo || 'CONDOMINIO' }}</span>
+            <span class="nav-cond-nombre">{{ c.condominio }}</span>
+          </div>
         </div>
       </div>
-    </form>
+
+      <!-- Flecha derecha -->
+      <button class="nav-cond-arrow nav-cond-arrow-right" (click)="onSiguienteNav()">
+        <i class="pi pi-chevron-right"></i>
+      </button>
+
+      <!-- Nombre seleccionado -->
+      <div class="nav-cond-selected" *ngIf="Condominios[idxCondominioSeleccionado]">
+        <span class="nav-cond-selected-tipo">{{ Condominios[idxCondominioSeleccionado].tipo || 'CONDOMINIO' }}</span>
+        <span class="nav-cond-selected-nombre">{{ Condominios[idxCondominioSeleccionado].condominio }}</span>
+        <span class="nav-cond-selected-dir">{{ Condominios[idxCondominioSeleccionado].domicilio }}</span>
+      </div>
+
+      <!-- Dots -->
+      <div class="nav-cond-dots">
+        <span *ngFor="let c of Condominios; let i = index"
+          class="nav-cond-dot" [class.nav-cond-dot-active]="i === idxCondominioSeleccionado"
+          (click)="onSeleccionarCondominioCarrusel(i)">
+        </span>
+      </div>
+
+    </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <!-- Botón Guardar -->
-    <button pButton type="button" label="Guardar" icon="pi pi-save" class="p-button-raised p-button-info me-sm-1"
-      pTooltip="Confirma la selección del condominio" tooltipPosition="top" [disabled]="!frmSeleccionarCondominio.valid"
-      (click)="onCondominioSeleccionado()"></button>
-    <!-- Botón Cancelar -->
-    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2"
-      pTooltip="Cancelar el proceso" tooltipPosition="top" (click)="onCancelarSeleccionarCondominio()"></button>
+    <button pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-text hoose-btn-cancelar"
+      (click)="onCancelarSeleccionarCondominio()">
+    </button>
+    <button pButton type="button" label="Seleccionar" icon="pi pi-check"
+      class="hoose-btn-guardar"
+      [disabled]="!frmSeleccionarCondominio.valid"
+      (click)="onCondominioSeleccionado()">
+    </button>
   </ng-template>
 </p-dialog>

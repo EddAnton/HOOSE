@@ -1,23 +1,11 @@
 <div class="cond-wrapper">
 
-  <!-- HEADER -->
-  <div class="cond-header">
-    <span class="cond-header-title">
-      <i class="pi pi-building me-2" style="color:#e91e8c"></i>Condominios
-    </span>
-    <div class="cond-header-actions">
-      <button pButton type="button" icon="pi pi-plus"
-        class="p-button-rounded p-button-raised p-button-success"
-        pTooltip="Nuevo condominio" tooltipPosition="left"
-        (click)="onCondominioEditar()">
-      </button>
-      <button pButton type="button" icon="pi pi-refresh"
-        class="p-button-rounded p-button-text p-button-secondary"
-        pTooltip="Actualizar" tooltipPosition="left"
-        (click)="onActualizarInformacion()">
-      </button>
-    </div>
-  </div>
+  <!-- FAB -->
+  <button pButton type="button" icon="pi pi-plus"
+    class="p-button-rounded p-button-raised p-button-success cond-fab"
+    pTooltip="Nuevo condominio" tooltipPosition="left"
+    (click)="onCondominioEditar()">
+  </button>
 
   <!-- RUEDA 3D -->
   <div class="cond-rueda-wrap" *ngIf="Condominios.length > 0">
@@ -65,10 +53,14 @@
   <!-- PANEL INFO -->
   <div class="cond-panel" *ngIf="CondominioSeleccionado">
 
-    <!-- Acciones -->
-    <div class="cond-panel-actions">
+    <!-- Panel header -->
+    <div class="cond-panel-header">
+      <span class="cond-panel-titulo">
+        <i class="pi pi-building me-2" style="color:var(--c-pink)"></i>
+        {{ CondominioSeleccionado.condominio }}
+      </span>
       <button pButton type="button" icon="pi pi-pencil" label="Editar"
-        class="p-button-text p-button-secondary cond-btn-accion"
+        class="p-button-raised p-button-sm cond-btn-editar"
         (click)="onCondominioEditar(CondominioSeleccionado.id_condominio)">
       </button>
     </div>
@@ -76,54 +68,88 @@
     <div class="cond-panel-grid">
 
       <!-- Columna 1: Info general -->
-      <div class="cond-panel-section">
-        <div class="cond-section-title">Información General</div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.tipo">
-          <span class="cond-info-label">Tipo</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.tipo }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.metros_cuadrados">
-          <span class="cond-info-label">M²</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.metros_cuadrados | number }} m²</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.anio_construccion">
-          <span class="cond-info-label">Año construcción</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.anio_construccion }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.email">
-          <span class="cond-info-label">Email</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.email }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.telefono">
-          <span class="cond-info-label">Teléfono</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.telefono }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.telefono_guardia">
-          <span class="cond-info-label">Tel. Guardia</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.telefono_guardia }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.telefono_secretaria">
-          <span class="cond-info-label">Tel. Secretaria</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.telefono_secretaria }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.telefono_moderador">
-          <span class="cond-info-label">Tel. Moderador</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.telefono_moderador }}</span>
+      <div class="cond-panel-card">
+        <div class="cond-card-title"><i class="pi pi-info-circle"></i> Información General</div>
+        <div class="cond-data-list">
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.tipo">
+            <i class="pi pi-tag cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Tipo</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.tipo }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.metros_cuadrados">
+            <i class="pi pi-expand cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Superficie</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.metros_cuadrados | number }} m²</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.anio_construccion">
+            <i class="pi pi-calendar cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Año construcción</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.anio_construccion }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.domicilio">
+            <i class="pi pi-map-marker cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Domicilio</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.domicilio }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.email">
+            <i class="pi pi-envelope cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Email</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.email }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono">
+            <i class="pi pi-phone cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Teléfono</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_guardia">
+            <i class="pi pi-shield cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Tel. Guardia</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_guardia }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_secretaria">
+            <i class="pi pi-phone cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Tel. Secretaria</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_secretaria }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_moderador">
+            <i class="pi pi-phone cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Tel. Moderador</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_moderador }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Columna 2: Administración -->
-      <div class="cond-panel-section">
-        <div class="cond-section-title">Administración</div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.tipo_administracion">
-          <span class="cond-info-label">Tipo</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.tipo_administracion }}</span>
+      <!-- Columna 2: Administración + Constructora -->
+      <div class="cond-panel-card">
+        <div class="cond-card-title"><i class="pi pi-users"></i> Administración</div>
+        <div class="cond-data-item" *ngIf="CondominioSeleccionado.tipo_administracion" style="margin-bottom:12px">
+          <i class="pi pi-briefcase cond-data-icon"></i>
+          <div>
+            <span class="cond-data-label">Tipo</span>
+            <span class="cond-data-value">{{ CondominioSeleccionado.tipo_administracion }}</span>
+          </div>
         </div>
         <div class="cond-admins" *ngIf="Administradores.length > 0">
           <div class="cond-admin-item" *ngFor="let admin of Administradores">
-            <div class="cond-admin-avatar">
-              <i class="pi pi-user"></i>
-            </div>
+            <div class="cond-admin-avatar"><i class="pi pi-user"></i></div>
             <div class="cond-admin-info">
               <span class="cond-admin-nombre">{{ admin.nombre }}</span>
               <span class="cond-admin-email">{{ admin.email }}</span>
@@ -131,60 +157,74 @@
           </div>
         </div>
         <div class="cond-no-admins" *ngIf="Administradores.length === 0">
-          <span>Sin administradores asignados</span>
+          <i class="pi pi-info-circle me-1"></i> Sin administradores asignados
         </div>
         <button pButton type="button" icon="pi pi-external-link" label="Ir a Administradores"
-          class="p-button-text p-button-primary cond-btn-link mt-2"
+          class="p-button-text p-button-primary cond-btn-link mt-3"
           (click)="onIrAdministradores()">
         </button>
 
-        <!-- Constructora -->
-        <div class="cond-section-title mt-3">Constructora</div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.constructora">
-          <span class="cond-info-label">Nombre</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.constructora }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.constructora_telefono">
-          <span class="cond-info-label">Teléfono</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.constructora_telefono }}</span>
-        </div>
-        <div class="cond-info-row" *ngIf="CondominioSeleccionado.constructora_domicilio">
-          <span class="cond-info-label">Domicilio</span>
-          <span class="cond-info-value">{{ CondominioSeleccionado.constructora_domicilio }}</span>
+        <div class="cond-divider"></div>
+        <div class="cond-card-title"><i class="pi pi-building"></i> Constructora</div>
+        <div class="cond-data-list">
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.constructora">
+            <i class="pi pi-home cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Nombre</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.constructora }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.constructora_telefono">
+            <i class="pi pi-phone cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Teléfono</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.constructora_telefono }}</span>
+            </div>
+          </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.constructora_domicilio">
+            <i class="pi pi-map-marker cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Domicilio</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.constructora_domicilio }}</span>
+            </div>
+          </div>
+          <div class="cond-no-admins" *ngIf="!CondominioSeleccionado.constructora">
+            <i class="pi pi-info-circle me-1"></i> Sin información de constructora
+          </div>
         </div>
       </div>
 
       <!-- Columna 3: Documentos -->
-      <div class="cond-panel-section">
-        <div class="cond-section-title">Documentos</div>
+      <div class="cond-panel-card">
+        <div class="cond-card-title"><i class="pi pi-folder"></i> Documentos</div>
         <div class="cond-docs-grid">
-          <a class="cond-doc-item"
-            [class.cond-doc-available]="CondominioSeleccionado.archivo_acta_constitutiva"
+          <a class="cond-doc-item" [class.cond-doc-available]="CondominioSeleccionado.archivo_acta_constitutiva"
             [href]="getArchivoUrl(CondominioSeleccionado, 'archivo_acta_constitutiva')"
             [target]="CondominioSeleccionado.archivo_acta_constitutiva ? '_blank' : null">
-            <i class="pi pi-file-pdf"></i>
-            <span>Acta Constitutiva</span>
+            <div class="cond-doc-icon"><i class="pi pi-file-pdf"></i></div>
+            <span class="cond-doc-label">Acta Constitutiva</span>
+            <span class="cond-doc-status">{{ CondominioSeleccionado.archivo_acta_constitutiva ? 'Disponible' : 'Sin archivo' }}</span>
           </a>
-          <a class="cond-doc-item"
-            [class.cond-doc-available]="CondominioSeleccionado.archivo_reglamento_interno"
+          <a class="cond-doc-item" [class.cond-doc-available]="CondominioSeleccionado.archivo_reglamento_interno"
             [href]="getArchivoUrl(CondominioSeleccionado, 'archivo_reglamento_interno')"
             [target]="CondominioSeleccionado.archivo_reglamento_interno ? '_blank' : null">
-            <i class="pi pi-file-pdf"></i>
-            <span>Reglamento Interno</span>
+            <div class="cond-doc-icon"><i class="pi pi-file-pdf"></i></div>
+            <span class="cond-doc-label">Reglamento Interno</span>
+            <span class="cond-doc-status">{{ CondominioSeleccionado.archivo_reglamento_interno ? 'Disponible' : 'Sin archivo' }}</span>
           </a>
-          <a class="cond-doc-item"
-            [class.cond-doc-available]="CondominioSeleccionado.archivo_poliza_seguro"
+          <a class="cond-doc-item" [class.cond-doc-available]="CondominioSeleccionado.archivo_poliza_seguro"
             [href]="getArchivoUrl(CondominioSeleccionado, 'archivo_poliza_seguro')"
             [target]="CondominioSeleccionado.archivo_poliza_seguro ? '_blank' : null">
-            <i class="pi pi-shield"></i>
-            <span>Póliza de Seguro</span>
+            <div class="cond-doc-icon"><i class="pi pi-shield"></i></div>
+            <span class="cond-doc-label">Póliza de Seguro</span>
+            <span class="cond-doc-status">{{ CondominioSeleccionado.archivo_poliza_seguro ? 'Disponible' : 'Sin archivo' }}</span>
           </a>
-          <a class="cond-doc-item"
-            [class.cond-doc-available]="CondominioSeleccionado.archivo_planos"
+          <a class="cond-doc-item" [class.cond-doc-available]="CondominioSeleccionado.archivo_planos"
             [href]="getArchivoUrl(CondominioSeleccionado, 'archivo_planos')"
             [target]="CondominioSeleccionado.archivo_planos ? '_blank' : null">
-            <i class="pi pi-map"></i>
-            <span>Planos</span>
+            <div class="cond-doc-icon"><i class="pi pi-map"></i></div>
+            <span class="cond-doc-label">Planos</span>
+            <span class="cond-doc-status">{{ CondominioSeleccionado.archivo_planos ? 'Disponible' : 'Sin archivo' }}</span>
           </a>
         </div>
       </div>

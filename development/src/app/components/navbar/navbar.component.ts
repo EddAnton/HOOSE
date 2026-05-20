@@ -351,4 +351,72 @@ export class NavbarComponent implements OnInit {
 			}
 		});
 	}
+
+  idxCondominioSeleccionado: number = 0;
+
+  getItemStyleNav(i: number): any {
+    const n = this.Condominios.length;
+    let diff = i - this.idxCondominioSeleccionado;
+    if (diff > n / 2) diff -= n;
+    if (diff < -n / 2) diff += n;
+    if (Math.abs(diff) > 2) return { display: 'none' };
+    const configs: any = {
+      '-2': { translateX: -380, translateY: 50, rotateY: 25, scale: 0.45, opacity: 0.2, zIndex: 1 },
+      '-1': { translateX: -200, translateY: 25, rotateY: 15, scale: 0.65, opacity: 0.55, zIndex: 5 },
+       '0': { translateX: 0,    translateY: 0,  rotateY: 0,  scale: 1,   opacity: 1,   zIndex: 10 },
+       '1': { translateX: 200,  translateY: 25, rotateY: -15, scale: 0.65, opacity: 0.55, zIndex: 5 },
+       '2': { translateX: 380,  translateY: 50, rotateY: -25, scale: 0.45, opacity: 0.2, zIndex: 1 },
+    };
+    const cfg = configs[diff.toString()];
+    const size = diff === 0 ? 240 : Math.abs(diff) === 1 ? 140 : 100;
+    return {
+      transform: `translateX(${cfg.translateX}px) translateY(${cfg.translateY}px) rotateY(${cfg.rotateY}deg) scale(${cfg.scale})`,
+      opacity: cfg.opacity, zIndex: cfg.zIndex, display: 'flex',
+      marginLeft: (-size / 2) + 'px',
+      pointerEvents: diff === 0 ? 'none' : 'all',
+      cursor: diff === 0 ? 'default' : 'pointer',
+    };
+  }
+
+  getImgStyleNav(i: number): any {
+    const n = this.Condominios.length;
+    let diff = i - this.idxCondominioSeleccionado;
+    if (diff > n / 2) diff -= n;
+    if (diff < -n / 2) diff += n;
+    const size = diff === 0 ? 240 : Math.abs(diff) === 1 ? 140 : 100;
+    const brightness = diff === 0 ? 1 : Math.abs(diff) === 1 ? 0.55 : 0.3;
+    return {
+      width: size + 'px', height: size + 'px', objectFit: 'contain',
+      filter: `brightness(${brightness}) drop-shadow(0 10px 20px rgba(0,0,0,0.5))`,
+      transition: 'all 0.4s cubic-bezier(0.25,0.46,0.45,0.94)',
+    };
+  }
+
+  isVisibleNav(i: number): boolean {
+    const n = this.Condominios.length;
+    const visibles = [-2,-1,0,1,2].map(o => ((this.idxCondominioSeleccionado + o) % n + n) % n);
+    return visibles.includes(i);
+  }
+
+  onAnteriorNav() {
+    const n = this.Condominios.length;
+    this.idxCondominioSeleccionado = (this.idxCondominioSeleccionado - 1 + n) % n;
+    this.frmSeleccionarCondominio.get('id_condominio').setValue(this.Condominios[this.idxCondominioSeleccionado].id_condominio);
+  }
+
+  onSiguienteNav() {
+    const n = this.Condominios.length;
+    this.idxCondominioSeleccionado = (this.idxCondominioSeleccionado + 1) % n;
+    this.frmSeleccionarCondominio.get('id_condominio').setValue(this.Condominios[this.idxCondominioSeleccionado].id_condominio);
+  }
+
+  onSeleccionarCondominioCarrusel(i: number) {
+    this.idxCondominioSeleccionado = i;
+    this.frmSeleccionarCondominio.get('id_condominio').setValue(this.Condominios[i].id_condominio);
+  }
+
+  getImagenUrlNav(c: any): string {
+    if (!c?.imagen) return './assets/img/imagen_no_disponible.png';
+    return 'http://api.residenciales.hoose.mx/uploads/condominios/' + c.id_condominio + '/' + c.imagen;
+  }
 }
