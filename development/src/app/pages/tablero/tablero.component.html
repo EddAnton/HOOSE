@@ -1,21 +1,25 @@
-<!-- HEADER -->
-<div class="tb-header">
-  <span class="tb-header-title">
-    <i class="bx bxs-dashboard" style="color:#e91e8c"></i>
-    Tablero Ejecutivo
-  </span>
-  <div class="tb-header-controls">
-    <div class="tb-filtro-group">
-      <label class="tb-filtro-label">Período</label>
+
+
+<!-- BOTÓN FLOTANTE FILTROS -->
+<button class="tb-fab-filtros" (click)="mostrarControles = !mostrarControles"
+  [pTooltip]="mostrarControles ? 'Ocultar filtros' : 'Mostrar filtros'" tooltipPosition="left">
+  <i class="pi" [ngClass]="mostrarControles ? 'pi-times' : 'pi-sliders-h'"></i>
+</button>
+
+<!-- BARRA CONTROLES -->
+<div class="tb-controls-bar" *ngIf="mostrarControles">
+  <div class="tb-controls-inner">
+    <div class="tb-control-group">
+      <span class="tb-control-label">Período</span>
       <div class="d-flex align-items-center gap-1">
         <p-calendar inputId="txtFechaInicial" [(ngModel)]="fechaInicial" view="month" dateFormat="MM/yy"
           [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
-          [inputStyle]="{ 'text-align': 'center', 'width': '95px' }" inputStyleClass="hoose-cal-input uppercase">
+          [inputStyle]="{ 'text-align': 'center', 'width': '85px' }" inputStyleClass="hoose-cal-input uppercase">
         </p-calendar>
-        <span class="tb-filtro-label">—</span>
+        <span class="tb-control-label">—</span>
         <p-calendar inputId="txtFechaFinal" [(ngModel)]="fechaFinal" view="month" dateFormat="MM/yy"
           [yearNavigator]="true" yearRange="{{ appData.appLaunchYear }}:{{ fechaLimite.getFullYear() + 1 }}"
-          [inputStyle]="{ 'text-align': 'center', 'width': '95px' }" inputStyleClass="hoose-cal-input uppercase">
+          [inputStyle]="{ 'text-align': 'center', 'width': '85px' }" inputStyleClass="hoose-cal-input uppercase">
         </p-calendar>
         <button pButton pRipple type="button" icon="pi pi-search"
           class="p-button-rounded hoose-search-btn"
@@ -24,8 +28,8 @@
         </button>
       </div>
     </div>
-    <div class="tb-filtro-group">
-      <label class="tb-filtro-label">Comparar vs</label>
+    <div class="tb-control-group">
+      <span class="tb-control-label">Comparar vs</span>
       <div class="d-flex gap-1">
         <button class="hoose-comp-btn" [class.active]="comparativo === 'mes_anterior'"
           (click)="comparativo='mes_anterior'; cargarMetricas()">Mes ant.</button>
@@ -236,8 +240,22 @@
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
         <div class="widget-resize-handle" (mousedown)="onResizeStart($event, w)"></div>
 <div class="hoose-fin-card h-100" (click)="onNavegar('/nomina')" style="cursor:pointer">
-          <div class="fin-header"><div class="fin-icon-wrap"><i class="pi pi-money-bill"></i></div><span class="fin-label">Nómina</span></div>
+          <div class="fin-header">
+            <div class="fin-icon-wrap"><i class="pi pi-money-bill"></i></div>
+            <span class="fin-label">Nómina</span>
+            <span class="fin-badge" *ngIf="metricas?.financieras?.nominas"
+              [ngClass]="metricas.financieras.nominas.tendencia==='up'?'badge-red':metricas.financieras.nominas.tendencia==='down'?'badge-green':'badge-gray'">
+              <i class="pi" [ngClass]="metricas.financieras.nominas.tendencia==='up'?'pi-arrow-up':metricas.financieras.nominas.tendencia==='down'?'pi-arrow-down':'pi-minus'"></i>
+              {{ metricas.financieras.nominas.porcentaje }}%
+            </span>
+          </div>
           <div class="fin-value">${{ (metricas?.financieras?.nominas?.valor || 0) | number:'1.2-2' }}</div>
+          <div class="fin-content" *ngIf="metricas?.financieras?.nominas">
+            <span [ngClass]="metricas.financieras.nominas.cambio >= 0 ? 'text-danger' : 'text-success'">
+              {{ metricas.financieras.nominas.cambio >= 0 ? '+' : '' }}${{ metricas.financieras.nominas.cambio | number:'1.2-2' }}
+            </span>
+            vs periodo anterior
+          </div>
         </div>
       </div>
 

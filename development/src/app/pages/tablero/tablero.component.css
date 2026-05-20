@@ -493,3 +493,301 @@
 .tb-grid {
   
 }
+
+/* Barra controles compacta */
+.tb-controls-bar {
+  background: #181b22;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+}
+.tb-controls-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.tb-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tb-control-label {
+  font-size: 0.72rem;
+  color: #8a8f9e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Barra controles full width */
+.tb-controls-bar {
+  margin: 0 -10px 0 -12px !important;
+  padding: 8px 20px !important;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.3s;
+}
+
+.tb-toggle-btn {
+  display: flex; align-items: center; gap: 4px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: #8a8f9e;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tb-toggle-btn:hover {
+  border-color: #e91e8c;
+  color: #e91e8c;
+}
+.tb-toggle-btn .pi { font-size: 0.8rem; }
+
+/* FAB filtros */
+.tb-fab-filtros {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #181b22;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #8a8f9e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.tb-fab-filtros:hover {
+  border-color: #e91e8c;
+  color: #e91e8c;
+  background: rgba(233,30,140,0.1);
+}
+
+/* Fix subtareas en diálogo tablero */
+.subtarea-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Mobile grid automático */
+@media screen and (max-width: 768px) {
+  .tb-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: auto !important;
+    align-items: start !important;
+  }
+}
+
+/* Mobile grid compacto - fix definitivo */
+@media screen and (max-width: 768px) {
+  .tb-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: auto !important;
+    gap: 8px !important;
+  }
+  .tb-widget {
+    grid-column: unset !important;
+    grid-row: unset !important;
+    min-height: unset !important;
+    height: auto !important;
+  }
+  .tb-widget .hoose-chart-card,
+  .tb-widget > div {
+    min-height: unset !important;
+    height: auto !important;
+  }
+}
+
+/* Mobile responsivo sin scroll horizontal */
+@media screen and (max-width: 768px) {
+  .tb-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: auto !important;
+    gap: 6px !important;
+    overflow-x: hidden !important;
+  }
+  .tb-widget {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .tb-widget .hoose-chart-card {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  /* Textos más compactos en móvil */
+  .tb-widget .chart-card-title { font-size: 0.65rem !important; }
+  .tb-widget .chart-value { font-size: 1.1rem !important; }
+  .tb-widget .chart-sub { font-size: 0.6rem !important; }
+  .tb-widget .chart-label { font-size: 0.58rem !important; }
+  .tb-widget .chart-card-header { padding: 8px 10px !important; }
+  .tb-widget .hoose-chart-card { padding: 0 !important; }
+  /* Números grandes */
+  .tb-widget h2, .tb-widget h3 { font-size: 1.1rem !important; }
+  .tb-widget .display-4 { font-size: 1.2rem !important; }
+  /* Truncar textos largos */
+  .tb-widget * { word-break: break-word; }
+}
+
+/* Solo cards simples compactas en móvil */
+@media screen and (max-width: 768px) {
+  .tb-widget-simple .chart-card-title { font-size: 0.62rem !important; }
+  .tb-widget-simple .chart-value { font-size: 1.1rem !important; }
+  .tb-widget-simple .chart-card-header { padding: 8px 10px !important; }
+}
+
+/* Cards simples compactas en móvil - solo hoose-cat-card */
+@media screen and (max-width: 768px) {
+  .hoose-cat-card .cat-label { font-size: 0.58rem !important; }
+  .hoose-cat-card .cat-value { font-size: 1.3rem !important; }
+  .hoose-cat-card { padding: 10px 12px !important; min-height: unset !important; }
+  .hoose-cat-card .cat-icon { width: 32px !important; height: 32px !important; font-size: 0.9rem !important; }
+}
+
+/* Mobile - grid completamente automático */
+@media screen and (max-width: 768px) {
+  .tb-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    overflow-x: hidden !important;
+  }
+  .tb-widget {
+    width: 100% !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Mobile - auto grid sin scroll */
+@media screen and (max-width: 768px) {
+  .tb-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: auto !important;
+    gap: 8px !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+  .tb-widget {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    width: 100% !important;
+  }
+  /* Cards simples: mitad del ancho */
+  .tb-widget:has(.hoose-cat-card) {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+  /* Todo lo demás: ancho completo */
+  .tb-widget:not(:has(.hoose-cat-card)) {
+    grid-column: span 2 !important;
+    grid-row: span 1 !important;
+  }
+  /* Evitar overflow en contenido */
+  .tb-widget * { max-width: 100% !important; box-sizing: border-box !important; }
+  .tb-widget .hoose-chart-card { overflow: hidden !important; }
+}
+
+/* Métricas operativas también en 2 columnas en móvil */
+@media screen and (max-width: 768px) {
+  .tb-widget:has(.hoose-metrica-card) {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+  .hoose-metrica-card { overflow: hidden !important; min-width: 0 !important; }
+  .hoose-metrica-card .metrica-num { font-size: 1.4rem !important; }
+  .hoose-metrica-card .metrica-sub { font-size: 0.62rem !important; }
+}
+
+/* Badge tendencia abajo derecha en móvil */
+@media screen and (max-width: 768px) {
+  .hoose-metrica-card { position: relative !important; }
+  .hoose-metrica-card .metrica-badge {
+    position: absolute !important;
+    bottom: 8px !important;
+    right: 8px !important;
+    top: auto !important;
+  }
+  .hoose-metrica-card .metrica-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .hoose-cat-card .cat-badge {
+    position: absolute !important;
+    bottom: 8px !important;
+    right: 8px !important;
+  }
+  .hoose-cat-card { position: relative !important; }
+}
+
+/* Mobile - layout compacto cards operativas y simples */
+@media screen and (max-width: 768px) {
+  /* Metrica card: ícono + número en misma fila */
+  .hoose-metrica-card {
+    padding: 10px 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  .hoose-metrica-card .metrica-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-bottom: 0 !important;
+    gap: 8px !important;
+  }
+  .hoose-metrica-card .metrica-icon-wrap {
+    width: 30px !important; height: 30px !important;
+    flex-shrink: 0 !important;
+  }
+  .hoose-metrica-card .metrica-icon { font-size: 0.9rem !important; }
+  .hoose-metrica-card .metrica-title { font-size: 0.6rem !important; }
+  .hoose-metrica-card .metrica-num { font-size: 1.3rem !important; line-height: 1 !important; }
+  .hoose-metrica-card .metrica-sub { font-size: 0.58rem !important; }
+
+  /* Cat card igual */
+  .hoose-cat-card {
+    padding: 10px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .hoose-cat-card .cat-icon {
+    width: 30px !important; height: 30px !important;
+    flex-shrink: 0 !important;
+    font-size: 0.85rem !important;
+  }
+  .hoose-cat-card .cat-body { flex: 1; }
+  .hoose-cat-card .cat-label { font-size: 0.6rem !important; }
+  .hoose-cat-card .cat-value { font-size: 1.3rem !important; }
+}
+
+/* Landscape móvil - 4 columnas para simples y operativas */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  .tb-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .tb-widget:has(.hoose-cat-card),
+  .tb-widget:has(.hoose-metrica-card) {
+    grid-column: span 1 !important;
+  }
+  .tb-widget:not(:has(.hoose-cat-card)):not(:has(.hoose-metrica-card)) {
+    grid-column: span 4 !important;
+  }
+}

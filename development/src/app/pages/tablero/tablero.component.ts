@@ -22,6 +22,7 @@ export class TableroComponent implements OnInit {
   cargando: boolean = false;
   cargandoTareas: boolean = false;
   fechaLimite: Date = new Date();
+  mostrarControles: boolean = false;
   fechaInicial: Date = new Date();
   fechaFinal: Date = new Date();
   hoy: string = new Date().toISOString().split('T')[0];
@@ -174,7 +175,11 @@ export class TableroComponent implements OnInit {
     const isTablet = window.innerWidth > 768 && window.innerWidth <= 1199;
 
     if (isMobile) {
-      return {};
+      const simples = ['condominios', 'edificios', 'unidades', 'propietarios', 'condominos', 'colaboradores', 'areas_comunes', 'avisos', 'quejas', 'asambleas', 'visitas', 'ocupacion', 'proyectos'];
+      if (simples.includes(w.id)) {
+        return { 'grid-column': 'span 1' };
+      }
+      return { 'grid-column': 'span 2' };
     }
 
     if (isTablet) {
@@ -358,7 +363,7 @@ export class TableroComponent implements OnInit {
           prioridad: parseInt(t.prioridad),
         }));
         this.totalTareasPendientes = todas.filter(t => t.fk_id_estatus !== 3).length;
-        this.tareasRecientes = todas.slice(0, 5);
+        this.tareasRecientes = todas;
       })
       .catch(() => {})
       .finally(() => this.cargandoTareas = false);

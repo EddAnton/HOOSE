@@ -6,7 +6,12 @@
       </button>
     </div>
     <div class="navbar-toggler ms-auto">
-      <span class="navbar-brand m-0 ms-auto"><b>{{ getCondominioUsuario() }} </b> | {{ getTitle() }}</span>
+      <span class="navbar-brand m-0 ms-auto">
+        <span class="badge text-bg-primary" style="cursor:pointer"
+          (click)="getIDPerfilUsuario() == 1 && onSeleccionarCondominio()">
+          <i class="bx bxs-buildings bx-xs me-1"></i>{{ getCondominioUsuario() }}
+        </span>
+      </span>
       <button class="navbar-toggler" type="button" (click)="collapse()" [attr.aria-expanded]="!isCollapsed"
         aria-controls="navbarToggler">
         <i class="bx bx-dots-vertical-rounded bx-sm"></i>
