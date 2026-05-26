@@ -1,27 +1,21 @@
 <!-- ASAMBLEAS -->
 <div class="asm-wrapper">
 
-  <!-- HEADER -->
-  <div class="asm-header">
-    <span class="asm-header-title">
-      <i class="pi pi-calendar me-2" style="color:#e91e8c"></i>Asambleas
-    </span>
-    <div class="asm-header-actions">
-      <button pButton type="button" icon="pi pi-plus"
-        class="p-button-rounded p-button-raised p-button-success"
-        pTooltip="Agregar asamblea" tooltipPosition="left"
-        (click)="onConvocatoriaEditar()">
-      </button>
-      <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
-        class="p-button-rounded p-button-text p-button-secondary"
-        pTooltip="Actualizar" tooltipPosition="left"
-        (click)="onActualizarInformacion()">
-      </button>
-    </div>
-  </div>
+  <!-- FAB -->
+  <button pButton type="button" icon="pi pi-plus"
+    class="p-button-rounded p-button-raised p-button-success asm-fab"
+    pTooltip="Nueva asamblea" tooltipPosition="left"
+    (click)="onConvocatoriaEditar()">
+  </button>
+
+  <!-- FAB FILTROS -->
+  <button class="asm-fab-filtros" (click)="mostrarFiltros = !mostrarFiltros"
+    [pTooltip]="mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros'" tooltipPosition="left">
+    <i class="pi" [ngClass]="mostrarFiltros ? 'pi-times' : 'pi-sliders-h'"></i>
+  </button>
 
   <!-- FILTROS -->
-  <div class="asm-filtros">
+  <div class="asm-filtros" *ngIf="mostrarFiltros">
     <div class="asm-filtro-group">
       <label class="asm-filtro-label">Año</label>
       <p-dropdown [options]="aniosDisponibles" [(ngModel)]="filtroAnio"

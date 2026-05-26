@@ -335,6 +335,46 @@ export class CatalogoCondominiosComponent implements OnInit {
     return visibles.includes(i);
   }
 
+  // Panel asignación administrador
+  mostrarPanelAdmin: boolean = false;
+  AdminsSinAsignar: any[] = [];
+  adminSeleccionado: number = null;
+
+  onAbrirPanelAdmin() {
+    this.adminSeleccionado = null;
+    this.administradoresService.ListarTodos().toPromise()
+      .then((r: any) => {
+        this.AdminsSinAsignar = (r['administradores'] || []).map((a: any) => ({
+          label: a.nombre + (a.email ? ' — ' + a.email : ''),
+          value: a.id_usuario
+        }));
+        this.mostrarPanelAdmin = true;
+      }).catch(async (e) => await hlpSwal.Error(e));
+  }
+
+  onAsignarAdministrador() {
+    if (!this.adminSeleccionado || !this.CondominioSeleccionado) return;
+    hlpSwal.Pregunta({
+      html: '¿Asignar este administrador al condominio?',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        try {
+          return await this.administradoresService.Actualizar(
+            this.adminSeleccionado,
+            { fk_id_condominio: this.CondominioSeleccionado.id_condominio }
+          ).toPromise();
+        } catch(e) { return hlpSwal.Error(e).then(() => ({ err: true })); }
+      },
+      allowOutsideClick: () => !hlpSwal.estaCargando,
+    }).then((r: any) => {
+      if (r.value && !r.value.err) {
+        hlpSwal.ExitoToast('Administrador asignado correctamente.');
+        this.mostrarPanelAdmin = false;
+        this.cargarAdministradores(this.CondominioSeleccionado.id_condominio);
+      }
+    });
+  }
+
   onIrAdministradores() {
     this.router.navigateByUrl('/catalogos/administradores');
   }

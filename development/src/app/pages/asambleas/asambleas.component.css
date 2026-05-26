@@ -361,3 +361,82 @@
 .asm-kpi-value--sm { font-size: 0.95rem !important; }
 .asm-kpi-sub { font-size: 0.72rem; color: var(--asm-muted); margin-top: 2px; }
 .asm-kpi-sub b { color: var(--asm-text); font-weight: 600; }
+
+/* FAB */
+.asm-fab {
+  position: fixed !important;
+  bottom: 32px !important;
+  right: 32px !important;
+  width: 52px !important;
+  height: 52px !important;
+  z-index: 200 !important;
+  background: #e91e8c !important;
+  border-color: #e91e8c !important;
+  box-shadow: 0 8px 24px rgba(233,30,140,0.4) !important;
+}
+
+/* FAB filtros */
+.asm-fab-filtros {
+  position: fixed !important;
+  top: 60px !important;
+  right: 16px !important;
+  z-index: 200 !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: #181b22 !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  color: #8a8f9e !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  font-size: 0.9rem !important;
+}
+.asm-fab-filtros:hover {
+  border-color: #e91e8c !important;
+  color: #e91e8c !important;
+  background: rgba(233,30,140,0.1) !important;
+}
+
+/* Editor Quill oscuro */
+:host ::ng-deep .ql-toolbar {
+  background: #21242d !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+:host ::ng-deep .ql-toolbar .ql-stroke { stroke: #8a8f9e !important; }
+:host ::ng-deep .ql-toolbar .ql-fill { fill: #8a8f9e !important; }
+:host ::ng-deep .ql-toolbar .ql-picker-label { color: #8a8f9e !important; }
+:host ::ng-deep .ql-toolbar button:hover .ql-stroke { stroke: #e91e8c !important; }
+:host ::ng-deep .ql-container {
+  background: #1a1d24 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+}
+:host ::ng-deep .ql-editor { color: #f0f0f0 !important; }
+:host ::ng-deep .ql-editor.ql-blank::before { color: #555a6a !important; }
+:host ::ng-deep .ql-picker-options {
+  background: #1a1d24 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+}
+
+/* Botón + orden del día → pink */
+:host ::ng-deep .p-button-success.p-button-rounded[icon="pi pi-plus"] {
+  background: #e91e8c !important;
+  border-color: #e91e8c !important;
+}
+
+/* Fix editor fondo oscuro */
+:host ::ng-deep .p-editor-container .p-editor-content { background: #1a1d24 !important; }
+:host ::ng-deep .p-editor-container .p-editor-content .ql-editor { background: #1a1d24 !important; color: #f0f0f0 !important; }
+:host ::ng-deep .p-editor-container .p-editor-toolbar { background: #21242d !important; }
+:host ::ng-deep .ql-snow .ql-editor { background: #1a1d24 !important; }
+
+/* Header tabla orden del día */
+:host ::ng-deep .p-datatable .p-datatable-header {
+  background: #21242d !important;
+  border-color: rgba(255,255,255,0.07) !important;
+  color: #f0f0f0 !important;
+}

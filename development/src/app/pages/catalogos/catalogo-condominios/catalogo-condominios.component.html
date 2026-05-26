@@ -159,10 +159,18 @@
         <div class="cond-no-admins" *ngIf="Administradores.length === 0">
           <i class="pi pi-info-circle me-1"></i> Sin administradores asignados
         </div>
-        <button pButton type="button" icon="pi pi-external-link" label="Ir a Administradores"
-          class="p-button-text p-button-primary cond-btn-link mt-3"
-          (click)="onIrAdministradores()">
-        </button>
+        <div class="d-flex gap-2 mt-3 flex-wrap">
+          <button pButton type="button" icon="pi pi-user-plus"
+            label="Asignar Administrador"
+            class="p-button-text p-button-success cond-btn-link"
+            (click)="onAbrirPanelAdmin()">
+          </button>
+          <button pButton type="button" icon="pi pi-external-link"
+            label="Ver módulo"
+            class="p-button-text p-button-secondary cond-btn-link"
+            (click)="onIrAdministradores()">
+          </button>
+        </div>
 
         <div class="cond-divider"></div>
         <div class="cond-card-title"><i class="pi pi-building"></i> Constructora</div>
@@ -395,6 +403,41 @@
     </button>
     <button pButton type="button" icon="pi pi-check" label="Guardar"
       class="hoose-btn-guardar" (click)="onCondominioGuardar()">
+    </button>
+  </ng-template>
+</p-dialog>
+
+<!-- DIÁLOGO ASIGNAR ADMINISTRADOR -->
+<p-dialog [(visible)]="mostrarPanelAdmin" [modal]="true" [draggable]="false"
+  [style]="{ width: '420px' }" styleClass="hoose-dialogo"
+  header="Asignar Administrador">
+  <div *ngIf="AdminsSinAsignar.length > 0">
+    <p style="font-size:0.8rem;color:#8a8f9e;margin-bottom:12px">
+      Selecciona un administrador sin condominio asignado para vincularlo a
+      <b style="color:#f0f0f0">{{ CondominioSeleccionado?.condominio }}</b>.
+    </p>
+    <label class="frm-label">Administrador</label>
+    <p-dropdown [options]="AdminsSinAsignar" [(ngModel)]="adminSeleccionado"
+      placeholder="Selecciona un administrador" [filter]="true"
+      filterBy="label" styleClass="w-100" [showClear]="true">
+    </p-dropdown>
+  </div>
+  <div *ngIf="AdminsSinAsignar.length === 0" style="text-align:center;padding:20px 0">
+    <i class="pi pi-info-circle" style="font-size:2rem;color:#8a8f9e"></i>
+    <p style="color:#8a8f9e;margin-top:8px;font-size:0.85rem">
+      No hay administradores disponibles sin condominio asignado.
+    </p>
+    <button pButton type="button" icon="pi pi-plus" label="Crear administrador"
+      class="p-button-text p-button-primary" (click)="onIrAdministradores(); mostrarPanelAdmin=false">
+    </button>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Cancelar"
+      class="p-button-text hoose-btn-cancelar" (click)="mostrarPanelAdmin=false">
+    </button>
+    <button pButton type="button" icon="pi pi-check" label="Asignar"
+      class="hoose-btn-guardar" [disabled]="!adminSeleccionado"
+      (click)="onAsignarAdministrador()">
     </button>
   </ng-template>
 </p-dialog>

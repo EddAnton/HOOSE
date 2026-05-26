@@ -6,6 +6,8 @@ import * as hlpApp from '../../../helpers/app-helper';
 import * as hlpSwal from '../../../helpers/sweetalert2-helper';
 import * as hlpPrimeNGTable from '../../../helpers/primeng-table-helper';
 import { UsuariosService } from '../../../services/usuarios.service';
+import { CondominiosService } from '../../../services/condominios.service';
+import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
 import { AdministradorModel, AdministradorResumenModel } from '../../../models/usuario-administrador.model';
 import { UsuariosAdministradoresService } from '../../../services/usuarios-administradores.service';
 
@@ -29,19 +31,21 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		{ header: 'Email' },
 		{ header: 'Contacto' },
 		{ header: 'Domicilio' },
+		{ header: 'Condominio' },
 		{ header: 'Estatus', width: '70px' },
-		// Botones de acción
 		{ textAlign: 'center', width: '90px' },
 	];
 	AdministradoresFilter: any[] = ['nombre', 'usuario', 'email', 'domicilio'];
-
 	Administradores: AdministradorResumenModel[] = [];
 	Administrador: AdministradorModel;
+	Condominios: any[] = [];
+	opcionesCondominios: any[] = [];
 
 	frmAdministrador: FormGroup;
 	mostrarDialogoEdicionAdministrador: boolean = false;
 	mostrarDialogoImagenAdministrador: boolean = false;
 	mostrarDialogoDetallesAdministrador: boolean = false;
+	mostrarFiltros: boolean = false;
 
 	// Tipo de administración
 	tipoAdministracion: string = 'UNICO';
@@ -86,10 +90,16 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private administradoresService: UsuariosAdministradoresService,
 		private usuariosService: UsuariosService,
+		private condominiosService: CondominiosService,
+		private sesionUsuarioService: SesionUsuarioService,
 	) {}
 
 	ngOnInit(): void {
 		this.onActualizarInformacion();
+		this.condominiosService.Listar().toPromise().then((r: any) => {
+			this.Condominios = r['condominios'] || [];
+			this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+		}).catch(() => {});
 	}
 
 	private OrdenarAdministradores(administradores: AdministradorResumenModel[]) {
@@ -148,7 +158,30 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				  '/' +
 				  this.Administrador.identificacion_reverso
 				: null;
-			this.frmAdministrador = this.formBuilder.group(this.Administrador);
+			const idCond = +this.Administrador.fk_id_condominio || null;
+			if (!idCond) {
+				const idCondActivo = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+				if (idCondActivo) this.Administrador.fk_id_condominio = +idCondActivo;
+			}
+			const a = this.Administrador;
+			this.frmAdministrador = this.formBuilder.group({
+				id_usuario: [a.id_usuario],
+				usuario: [a.usuario],
+				nombre: [a.nombre],
+				email: [a.email],
+				telefono: [a.telefono],
+				domicilio: [a.domicilio],
+				identificacion_folio: [a.identificacion_folio],
+				identificacion_domicilio: [a.identificacion_domicilio],
+				imagen: [a.imagen],
+				identificacion_anverso: [a.identificacion_anverso],
+				identificacion_reverso: [a.identificacion_reverso],
+				fk_id_condominio: [+a.fk_id_condominio || null],
+				estatus: [a.estatus],
+				archivo_imagen: [null],
+				archivo_identificacion_anverso: [null],
+				archivo_identificacion_reverso: [null],
+			});
 			this.frmAdministrador
 				.get('nombre')
 				.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(255)]);
@@ -170,9 +203,6 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			this.frmAdministrador.get('identificacion_folio').setValidators([Validators.maxLength(50)]);
 			this.frmAdministrador.get('identificacion_domicilio').setValidators([Validators.maxLength(255)]);
 
-			this.frmAdministrador.addControl('archivo_imagen', new FormControl());
-			this.frmAdministrador.addControl('archivo_identificacion_anverso', new FormControl());
-			this.frmAdministrador.addControl('archivo_identificacion_reverso', new FormControl());
 			this.frmAdministrador.updateValueAndValidity();
 
 			this.bImagenBorrar = false;

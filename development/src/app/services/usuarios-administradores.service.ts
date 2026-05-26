@@ -5,63 +5,48 @@ import { environment } from '../../environments/environment';
 import { AdministradorModel } from '../models/usuario-administrador.model';
 import { SesionUsuarioService } from './sesion-usuario.service';
 
-@Injectable({
-	providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class UsuariosAdministradoresService {
-	constructor(private http: HttpClient, private sesionUsuarioService: SesionUsuarioService) {}
+  constructor(private http: HttpClient, private sesionUsuarioService: SesionUsuarioService) {}
 
-	Listar(soloActivos: boolean = false) {
-		const url = 'administradores' + (soloActivos ? '/activos' : '');
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
+  private get headers() {
+    return new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+  }
 
-		return this.http.get(environment.urlBackend + `${url}`, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
+  Listar(soloActivos: boolean = false) {
+    const url = 'administradores' + (soloActivos ? '/activos' : '');
+    return this.http.get(environment.urlBackend + url, { headers: this.headers }).pipe(map(r => r));
+  }
 
-	ListarActivos() {
-		return this.Listar(true);
-	}
+  ListarActivos() { return this.Listar(true); }
 
-	ListarAdministrador(idUsuario: number = 0) {
-		const url = 'administradores/' + idUsuario;
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
+  ListarAdministrador(idUsuario: number = 0) {
+    return this.http.get(environment.urlBackend + 'administradores/' + idUsuario, { headers: this.headers }).pipe(map(r => r));
+  }
 
-		return this.http.get(environment.urlBackend + `${url}`, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
+  ListarTodos() {
+    return this.http.get(environment.urlBackend + 'administradores', { headers: this.headers }).pipe(map(r => r));
+  }
 
-	Guardar(data: AdministradorModel) {
-		let url = 'administradores/' + (data.id_usuario == 0 ? 'insertar' : 'actualizar/' + data.id_usuario);
+  ListarSinAsignar() {
+    return this.http.get(environment.urlBackend + 'administradores/sin-asignar', { headers: this.headers }).pipe(map(r => r));
+  }
 
-		const headers = new HttpHeaders({
-			'X-API-KEY': environment.appKey,
-			Authorization: this.sesionUsuarioService.obtenerToken(),
-		});
+  Guardar(data: AdministradorModel) {
+    const url = 'administradores/' + (data.id_usuario == 0 ? 'insertar' : 'actualizar/' + data.id_usuario);
+    const params: any = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      if (value != null) params.append(key, value);
+    }
+    return this.http.post(environment.urlBackend + url, params, { headers: this.headers }).pipe(map(r => r));
+  }
 
-		const params: any = new FormData();
-		for (var [key, value] of Object.entries(data)) {
-			if (value != null) {
-				params.append(key, value);
-			}
-		}
-
-		return this.http.post(environment.urlBackend + `${url}`, params, { headers }).pipe(
-			map((respuesta) => {
-				return respuesta;
-			}),
-		);
-	}
+  Actualizar(idUsuario: number, data: any) {
+    const params = new FormData();
+    Object.keys(data).forEach(k => { if (data[k] !== null) params.append(k, data[k]); });
+    return this.http.post(environment.urlBackend + `administradores/actualizar/${idUsuario}`, params, { headers: this.headers }).pipe(map(r => r));
+  }
 }

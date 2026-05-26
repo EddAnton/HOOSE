@@ -465,3 +465,11 @@
   pointer-events: none;
   z-index: 0;
 }
+
+/* Mobile - panel una columna */
+@media screen and (max-width: 768px) {
+  .cond-panel-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .cond-panel { padding: 0 12px 20px !important; }
+}

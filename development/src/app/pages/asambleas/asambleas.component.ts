@@ -80,6 +80,7 @@ export class AsambleasComponent implements OnInit {
   ConvocatoriasFiltradas: ConvocatoriaResumenModel[] = [];
 
   // Filtros tabla
+  mostrarFiltros: boolean = false;
   filtroAnio: number = null;
   filtroTipo: number = null;
   filtroEstatus: number = null;
