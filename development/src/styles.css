@@ -707,3 +707,32 @@ label { color: #8a8f9e !important; }
 }
 .nav-cond-dot-active { background: #e91e8c; width: 18px; border-radius: 3px; }
 
+
+/* Dropdown panel buscador oscuro */
+.p-dropdown-panel .p-dropdown-filter {
+  background: #1a1d24 !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #f0f0f0 !important;
+}
+.p-dropdown-panel .p-dropdown-filter:focus {
+  border-color: #e91e8c !important;
+}
+.p-dropdown-panel {
+  background: #1a1d24 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+.p-dropdown-panel .p-dropdown-filter-container {
+  background: #181b22 !important;
+  padding: 8px !important;
+}
+
+/* Fix fondo blanco buscador dropdown */
+.p-dropdown-panel .p-dropdown-filter-container {
+  background: #1a1d24 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+.p-dropdown-panel .p-dropdown-items-wrapper {
+  background: #1a1d24 !important;
+}
+
+.p-dropdown-panel .p-dropdown-header { background: #1a1d24 !important; border-color: rgba(255,255,255,0.07) !important; }

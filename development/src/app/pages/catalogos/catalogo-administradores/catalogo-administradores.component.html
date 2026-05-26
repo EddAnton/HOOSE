@@ -1,17 +1,4 @@
-<!-- FAB nuevo administrador -->
-<button pButton type="button" icon="pi pi-plus"
-  class="p-button-rounded p-button-raised admin-fab"
-  pTooltip="Nuevo administrador" tooltipPosition="left"
-  (click)="onAdministradorEditar()">
-</button>
-
-<!-- FAB filtros -->
-<button class="admin-fab-filtros" (click)="mostrarFiltros = !mostrarFiltros"
-  [pTooltip]="mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros'" tooltipPosition="left">
-  <i class="pi" [ngClass]="mostrarFiltros ? 'pi-times' : 'pi-sliders-h'"></i>
-</button>
-
-<div class="hoose-wrapper">
+<div class="card shadow-sm">
 	<p-table
 		#ptAdministradores
 		[responsive]="true"
@@ -23,24 +10,62 @@
 		[paginator]="Administradores.length > 0"
 		[rows]="50"
 		dataKey="id_usuario"
-		styleClass="admin-table"
+		styleClass="p-datatable-striped"
 		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
 	>
 		<ng-template pTemplate="caption">
-  <div class="hoose-table-caption" *ngIf="mostrarFiltros">
-    <div class="hoose-search-wrap">
-      <i class="pi pi-search"></i>
-      <input type="text" class="hoose-search-input"
-        (input)="ptAdministradores.filterGlobal($event.target.value, 'contains')"
-        placeholder="Buscar administrador..."/>
-    </div>
-    <button pButton pRipple type="button" icon="pi pi-times"
-      class="p-button-rounded p-button-text p-button-danger"
-      pTooltip="Limpiar búsqueda" tooltipPosition="left"
-      (click)="hlpPrimeNGTable.reset(ptAdministradores)">
-    </button>
-  </div>
-</ng-template>
+			<div class="d-flex align-items-center p-1">
+				<div class="me-auto">
+					<!-- Botón Nuevo -->
+					<button
+						pButton
+						type="button"
+						icon="pi pi-plus"
+						class="p-button-rounded p-button-raised p-button-success ms-1"
+						pTooltip="Agregar administrador"
+						tooltipPosition="right"
+						(click)="onAdministradorEditar()"
+					></button>
+				</div>
+				<!-- Opciones Filtrado -->
+				<div class="ms-auto">
+					<!-- Botón Actualizar -->
+					<button
+						*ngIf="isDevelopment"
+						pButton
+						type="button"
+						icon="pi pi-refresh"
+						class="p-button-rounded p-button-text p-button-secondary me-2"
+						pTooltip="Actualizar información"
+						tooltipPosition="right"
+						(click)="onActualizarInformacion()"
+					></button>
+					<span class="p-input-icon-left">
+						<i class="pi pi-search"></i>
+						<input
+							type="text"
+							id="txtGlobalFilter"
+							class="form-control ms-1 ps-4"
+							(input)="ptAdministradores.filterGlobal($event.target.value, 'contains')"
+							placeholder="Filtrar"
+						/>
+					</span>
+				</div>
+				<div>
+					<button
+						pButton
+						pRipple
+						type="button"
+						id="btnLimpiarFiltro"
+						icon="pi pi-times"
+						class="p-button-rounded p-button-text p-button-danger ms-3"
+						pTooltip="Limpiar filtro"
+						tooltipPosition="left"
+						(click)="hlpPrimeNGTable.reset(ptAdministradores)"
+					></button>
+				</div>
+			</div>
+		</ng-template>
 		<ng-template pTemplate="header" let-columns>
 			<tr>
 				<th
@@ -76,12 +101,8 @@
 					<span class="p-column-title">Contacto</span>{{ Administrador.telefono | phoneFormat }}
 				</td>
 				<td class="carriage-return"><span class="p-column-title">Domicilio</span>{{ Administrador.domicilio }}</td>
-				<td>
-					<span class="p-column-title">Condominio</span>
-					<span *ngIf="Administrador.condominio_nombre" class="hoose-badge-blue">{{ Administrador.condominio_nombre }}</span>
-					<span *ngIf="!Administrador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span>
-				</td>
 				<td class="text-md-center">
+					<span class="p-column-title">Estatus</span>
 					<span style="cursor: pointer">
 						<p-tag
 							severity="{{ Administrador.estatus == 1 ? 'success' : 'danger' }}"
@@ -127,72 +148,62 @@
 
 <!-- Diálogo de inserción y edición -->
 <p-dialog
-	[(visible)]="mostrarDialogoEdicionAdministrador"
-	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
-	[style]="{ width: '50vw' }"
+	*ngIf="mostrarDialogoEdicionAdministrador" [(visible)]="mostrarDialogoEdicionAdministrador"
+	[breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
+	[style]="{ width: '60vw', maxWidth: '800px' }"
 	[modal]="true"
-	[closable]="false"
-	header="Detalles del Administrador {{ Administrador && Administrador.id_usuario == 0 ? ' Nuevo' : '' }}"
-	styleClass="p-fluid"
+	[closable]="true"
+	header="Detalles del Administrador"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
-		<form id="frmAdministrador" class="mt-1" [formGroup]="frmAdministrador" autocomplete="off">
+		<form id="frmAdministrador" *ngIf="frmAdministrador" [formGroup]="frmAdministrador" autocomplete="off">
 
-		<!-- Selector tipo de administración -->
-		<!-- Condominio asignado -->
-<div class="row py-1 mb-2">
-  <div class="col-12">
-    <label class="fw-bold">Condominio asignado <span class="text-danger">*</span></label>
-    <p-dropdown [options]="opcionesCondominios" formControlName="fk_id_condominio"
-      placeholder="Selecciona el condominio" [showClear]="true" [filter]="true"
-      filterBy="label" styleClass="w-100">
-    </p-dropdown>
-    <small class="text-muted">Condominio al que pertenece este administrador.</small>
-  </div>
-<div class="row py-1 mb-2 border-bottom pb-3">
-			<div class="col-12 col-md-6 py-1">
-				<label class="fw-bold">Tipo de Administración</label>
-				<p-dropdown [options]="opcionesTipoAdmin" [(ngModel)]="tipoAdministracion"
-					[ngModelOptions]="{standalone: true}"
-					optionLabel="label" optionValue="value"
-					(onChange)="onTipoAdminChange($event.value)"
-					styleClass="w-100">
-				</p-dropdown>
-			</div>
-			<div class="col-12 col-md-6 py-1" *ngIf="tipoAdministracion === 'UNICO'">
-				<label class="fw-bold">Tipo de Acceso</label>
-				<p-dropdown [options]="opcionesTipoAcceso" [(ngModel)]="tipoAcceso"
-					[ngModelOptions]="{standalone: true}"
-					optionLabel="label" optionValue="value"
-					(onChange)="onTipoAccesoChange($event.value)"
-					styleClass="w-100">
-				</p-dropdown>
+		<!-- Sección 1: Clasificación -->
+		<div class="hoose-form-section">
+			<div class="hoose-form-grid">
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Tipo de Administrador <span class="text-danger">*</span></label>
+					<p-dropdown [options]="opcionesTipoAcceso" [(ngModel)]="tipoAcceso"
+						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
+						(onChange)="onTipoAccesoChange($event.value)" styleClass="w-100">
+					</p-dropdown>
+				</div>
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Condominio <span *ngIf="tipoAcceso==='INTERNO'" class="text-danger">*</span></label>
+					<p-dropdown [options]="opcionesCondominios" formControlName="fk_id_condominio"
+						placeholder="Selecciona el condominio" [showClear]="tipoAcceso==='EXTERNO'"
+						[filter]="true" filterBy="label" styleClass="w-100"
+						(onChange)="onCondominioAdminChange($event.value)">
+					</p-dropdown>
+				</div>
+				<div class="hoose-form-field" *ngIf="tipoAcceso==='INTERNO'">
+					<label class="hoose-form-label">Estructura <span class="text-danger">*</span></label>
+					<p-dropdown [options]="opcionesTipoAdmin" [(ngModel)]="tipoAdministracion"
+						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
+						(onChange)="onTipoAdminChange($event.value)" styleClass="w-100">
+					</p-dropdown>
+				</div>
+				<div class="hoose-form-field" *ngIf="tipoAcceso==='EXTERNO'">
+					<label class="hoose-form-label">Personalidad Jurídica <span class="text-danger">*</span></label>
+					<p-dropdown [options]="opcionesTipoPersona" [(ngModel)]="tipoPersona"
+						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
+						(onChange)="onTipoPersonaChange($event.value)" styleClass="w-100">
+					</p-dropdown>
+				</div>
 			</div>
 		</div>
 
-		<!-- ÚNICO INTERNO -->
-		<div *ngIf="tipoAdministracion === 'UNICO' && tipoAcceso === 'INTERNO'" class="row py-1 mb-2">
+		<!-- INTERNO: Administrador Único -->
+		<div *ngIf="tipoAcceso==='INTERNO' && tipoAdministracion==='UNICO'" class="row py-1 mb-2">
 			<div class="col-12">
 				<label class="fw-bold">Propietario / Condómino <span class="text-danger">*</span></label>
 				<p-dropdown [options]="UsuariosInternos" [(ngModel)]="frmMiembroComite"
 					[ngModelOptions]="{standalone: true}"
-					optionLabel="label" placeholder="Buscar..." [filter]="true" filterBy="label"
+					optionLabel="label" placeholder="Buscar propietario o condómino..." [filter]="true" filterBy="label"
 					[showClear]="true" styleClass="w-100">
 				</p-dropdown>
-				<small class="text-muted">Este usuario tendrá acceso como Administrador al sistema.</small>
-			</div>
-		</div>
-
-		<!-- ÚNICO EXTERNO: tipo persona -->
-		<div *ngIf="tipoAdministracion === 'UNICO' && tipoAcceso === 'EXTERNO'" class="row py-1 mb-2">
-			<div class="col-12 col-md-6">
-				<label class="fw-bold">Tipo de Persona</label>
-				<p-dropdown [options]="opcionesTipoPersona" [(ngModel)]="tipoPersona"
-					[ngModelOptions]="{standalone: true}"
-					optionLabel="label" optionValue="value"
-					(onChange)="onTipoPersonaChange($event.value)"
-					styleClass="w-100">
-				</p-dropdown>
+				<small class="text-muted">Solo se muestran propietarios y condóminos del condominio seleccionado.</small>
 			</div>
 		</div>
 
@@ -269,31 +280,20 @@
 			</p-table>
 		</div>
 
+		<!-- EXTERNO: campos de información -->
+		<div *ngIf="tipoAcceso==='EXTERNO'">
 			<div class="row py-1">
 				<!-- Nombre -->
 				<div class="col-12 col-md-8">
-					<label for="txtNombre">Nombre</label>
-					<input
-						type="text"
-						pInputText
-						id="txtNombre"
-						formControlName="nombre"
-						class="uppercase"
-						autofocus
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
+					<label for="txtNombre">Nombre <span class="text-danger">*</span></label>
+					<input type="text" pInputText id="txtNombre" formControlName="nombre"
+						class="uppercase" autofocus (focus)="hlpApp.selectAllContent($event)"/>
 				</div>
 				<!-- Usuario -->
 				<div class="col-12 col-md-4">
-					<label for="txtUsuario">Usuario</label>
-					<input
-						type="text"
-						pInputText
-						id="txtUsuario"
-						formControlName="usuario"
-						class="lowercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
+					<label for="txtUsuario">Usuario <span class="text-danger">*</span></label>
+					<input type="text" pInputText id="txtUsuario" formControlName="usuario"
+						class="lowercase" (focus)="hlpApp.selectAllContent($event)"/>
 				</div>
 			</div>
 
@@ -394,6 +394,7 @@
 					</div>
 				</div>
 			</div>
+		</div><!-- /EXTERNO -->
 		</form>
 	</ng-template>
 	<ng-template pTemplate="footer">
@@ -444,7 +445,7 @@
 <p-dialog
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '60vw' }"
-	[(visible)]="mostrarDialogoDetallesAdministrador"
+	*ngIf="mostrarDialogoDetallesAdministrador" [(visible)]="mostrarDialogoDetallesAdministrador"
 	modal="true"
 	header="Detalles del Administrador"
 >

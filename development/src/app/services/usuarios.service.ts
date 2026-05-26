@@ -134,4 +134,16 @@ export class UsuariosService {
       }),
     );
   }
+
+  ListarPerfilCondominio(idCondominio: number) {
+    const headers = new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+    return this.http.get(
+      environment.urlBackend + 'usuarios/perfil-condominio/' + idCondominio,
+      { headers }
+    ).pipe(map(r => r));
+  }
+
 }

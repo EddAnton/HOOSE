@@ -31,21 +31,19 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		{ header: 'Email' },
 		{ header: 'Contacto' },
 		{ header: 'Domicilio' },
-		{ header: 'Condominio' },
 		{ header: 'Estatus', width: '70px' },
+		// Botones de acción
 		{ textAlign: 'center', width: '90px' },
 	];
 	AdministradoresFilter: any[] = ['nombre', 'usuario', 'email', 'domicilio'];
+
 	Administradores: AdministradorResumenModel[] = [];
 	Administrador: AdministradorModel;
-	Condominios: any[] = [];
-	opcionesCondominios: any[] = [];
 
 	frmAdministrador: FormGroup;
 	mostrarDialogoEdicionAdministrador: boolean = false;
 	mostrarDialogoImagenAdministrador: boolean = false;
 	mostrarDialogoDetallesAdministrador: boolean = false;
-	mostrarFiltros: boolean = false;
 
 	// Tipo de administración
 	tipoAdministracion: string = 'UNICO';
@@ -85,6 +83,9 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	bImagenBorrar: boolean = false;
 	bIdentificacionAnversoBorrar: boolean = false;
 	bIdentificacionReversoBorrar: boolean = false;
+	Condominios: any[] = [];
+	opcionesCondominios: any[] = [];
+	mostrarFiltros: boolean = false;
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -95,6 +96,24 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.frmAdministrador = this.formBuilder.group({
+			id_usuario: [0],
+			usuario: [null],
+			nombre: [null],
+			email: [null],
+			telefono: [null],
+			domicilio: [null],
+			identificacion_folio: [null],
+			identificacion_domicilio: [null],
+			imagen: [null],
+			identificacion_anverso: [null],
+			identificacion_reverso: [null],
+			fk_id_condominio: [null],
+			estatus: [0],
+			archivo_imagen: [null],
+			archivo_identificacion_anverso: [null],
+			archivo_identificacion_reverso: [null],
+		});
 		this.onActualizarInformacion();
 		this.condominiosService.Listar().toPromise().then((r: any) => {
 			this.Condominios = r['condominios'] || [];
@@ -107,10 +126,6 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	}
 
 	public onActualizarInformacion() {
-		this.Administradores = [];
-
-		hlpSwal.Cargando();
-
 		this.administradoresService
 			.Listar()
 			.toPromise()
@@ -158,11 +173,6 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				  '/' +
 				  this.Administrador.identificacion_reverso
 				: null;
-			const idCond = +this.Administrador.fk_id_condominio || null;
-			if (!idCond) {
-				const idCondActivo = this.sesionUsuarioService.obtenerIDCondominioUsuario();
-				if (idCondActivo) this.Administrador.fk_id_condominio = +idCondActivo;
-			}
 			const a = this.Administrador;
 			this.frmAdministrador = this.formBuilder.group({
 				id_usuario: [a.id_usuario],
@@ -227,9 +237,32 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				}).catch(() => {});
 
 			this.mostrarDialogoEdicionAdministrador = true;
+			// Cargar usuarios internos si hay condominio y es interno
+			setTimeout(() => {
+				const idCond = this.frmAdministrador?.get('fk_id_condominio')?.value;
+				if (idCond && this.tipoAcceso === 'INTERNO') {
+					this.onCondominioAdminChange(idCond);
+				}
+			}, 200);
 		} catch (e) {
 			hlpSwal.Error(e);
 		}
+	}
+
+	onCondominioAdminChange(idCondominio: number) {
+		if (!idCondominio || this.tipoAcceso !== 'INTERNO') {
+			this.UsuariosInternos = [];
+			return;
+		}
+		this.usuariosService.ListarPerfilCondominio(idCondominio).toPromise()
+			.then((r: any) => {
+				const usuarios = r['usuarios'] || [];
+				this.UsuariosInternos = usuarios.map((u: any) => ({
+					label: u.nombre + ' (' + u.perfil_usuario + ')',
+					value: u.id_usuario,
+					...u
+				}));
+			}).catch(() => {});
 	}
 
 	onTipoAdminChange(val: string) {
