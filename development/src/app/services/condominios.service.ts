@@ -44,4 +44,13 @@ export class CondominiosService {
   AlternarEstatus(idCondominio: number = 0) {
     return this.http.post(environment.urlBackend + 'condominios/alternar-estatus/' + idCondominio, null, { headers: this.headers }).pipe(map(r => r));
   }
+
+  ListarSinAdministrador() {
+    const headers = new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+    return this.http.get(environment.urlBackend + 'condominios/sin-administrador', { headers }).pipe(map(r => r));
+  }
+
 }

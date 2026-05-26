@@ -115,7 +115,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			archivo_identificacion_reverso: [null],
 		});
 		this.onActualizarInformacion();
-		this.condominiosService.Listar().toPromise().then((r: any) => {
+		this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => {
 			this.Condominios = r['condominios'] || [];
 			this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
 		}).catch(() => {});
