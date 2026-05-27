@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -55,10 +55,17 @@ export class CatalogoCondominiosComponent implements OnInit {
     private administradoresService: UsuariosAdministradoresService,
     private formBuilder: FormBuilder,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.onActualizarInformacion();
+    this.administradoresService.ListarSinAsignar().toPromise().then((r: any) => {
+      this.AdminsSinAsignar = (r['administradores'] || []).map((a: any) => ({
+        label: a.nombre + (a.email ? ' — ' + a.email : ''),
+        value: +a.id_usuario
+      }));
+    }).catch(() => {});
   }
 
   private OrdenarCondominios(condominios: CondominioResumenModel[]) {
@@ -339,17 +346,18 @@ export class CatalogoCondominiosComponent implements OnInit {
   mostrarPanelAdmin: boolean = false;
   AdminsSinAsignar: any[] = [];
   adminSeleccionado: number = null;
+  cargandoAdmins: boolean = false;
 
   onAbrirPanelAdmin() {
     this.adminSeleccionado = null;
-    this.administradoresService.ListarTodos().toPromise()
-      .then((r: any) => {
-        this.AdminsSinAsignar = (r['administradores'] || []).map((a: any) => ({
-          label: a.nombre + (a.email ? ' — ' + a.email : ''),
-          value: a.id_usuario
-        }));
-        this.mostrarPanelAdmin = true;
-      }).catch(async (e) => await hlpSwal.Error(e));
+    this.administradoresService.ListarSinAsignar().toPromise().then((r: any) => {
+      this.AdminsSinAsignar = (r['administradores'] || []).map((a: any) => ({
+        label: a.nombre + (a.email ? ' — ' + a.email : ''),
+        value: +a.id_usuario
+      }));
+      console.log('ADMINS ANTES DE ABRIR:', JSON.stringify(this.AdminsSinAsignar));
+      this.mostrarPanelAdmin = true;
+    }).catch(async (e) => await hlpSwal.Error(e));
   }
 
   onAsignarAdministrador() {
@@ -359,9 +367,9 @@ export class CatalogoCondominiosComponent implements OnInit {
       showLoaderOnConfirm: true,
       preConfirm: async () => {
         try {
-          return await this.administradoresService.Actualizar(
+          return await this.administradoresService.AsignarCondominio(
             this.adminSeleccionado,
-            { fk_id_condominio: this.CondominioSeleccionado.id_condominio }
+            this.CondominioSeleccionado.id_condominio
           ).toPromise();
         } catch(e) { return hlpSwal.Error(e).then(() => ({ err: true })); }
       },
@@ -374,7 +382,6 @@ export class CatalogoCondominiosComponent implements OnInit {
       }
     });
   }
-
   onIrAdministradores() {
     this.router.navigateByUrl('/catalogos/administradores');
   }

@@ -49,4 +49,15 @@ export class UsuariosAdministradoresService {
     Object.keys(data).forEach(k => { if (data[k] !== null) params.append(k, data[k]); });
     return this.http.post(environment.urlBackend + `administradores/actualizar/${idUsuario}`, params, { headers: this.headers }).pipe(map(r => r));
   }
+
+  AsignarCondominio(idUsuario: number, idCondominio: number) {
+    const params = new FormData();
+    params.append('fk_id_condominio', idCondominio.toString());
+    return this.http.post(
+      environment.urlBackend + 'administradores/asignar-condominio/' + idUsuario,
+      params,
+      { headers: this.headers }
+    ).pipe(map(r => r));
+  }
+
 }
