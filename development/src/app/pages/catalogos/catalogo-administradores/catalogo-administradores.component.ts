@@ -125,6 +125,20 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		return administradores.sort((a, b) => (a.nombre > b.nombre ? 1 : -1));
 	}
 
+	get kpiTotal() { return this.Administradores.length; }
+	get kpiAsignados() { return this.Administradores.filter((a: any) => a.fk_id_condominio).length; }
+	get kpiSinAsignar() { return this.Administradores.filter((a: any) => !a.fk_id_condominio).length; }
+	get kpiPctAsignados() {
+		if (!this.Administradores.length) return 0;
+		return Math.round((this.kpiAsignados / this.kpiTotal) * 100);
+	}
+	get kpiInternos() { return this.Administradores.filter((a: any) => a.tipo_administrador === 'INTERNO').length; }
+	get kpiUnicos() { return this.Administradores.filter((a: any) => a.estructura_administracion === 'UNICO').length; }
+	get kpiComites() { return this.Administradores.filter((a: any) => a.estructura_administracion === 'COMITE').length; }
+	get kpiExternos() { return this.Administradores.filter((a: any) => a.tipo_administrador === 'EXTERNO').length; }
+	get kpiFisicas() { return this.Administradores.filter((a: any) => a.tipo_persona === 'FISICA').length; }
+	get kpiMorales() { return this.Administradores.filter((a: any) => a.tipo_persona === 'MORAL').length; }
+
 	public onActualizarInformacion() {
 		this.administradoresService
 			.Listar()

@@ -1,4 +1,63 @@
-<div class="card shadow-sm">
+<!-- ADMINISTRADORES -->
+<div class="admin-wrapper">
+
+  <!-- FAB -->
+  <button pButton type="button" icon="pi pi-plus"
+    class="p-button-rounded p-button-raised p-button-success admin-fab"
+    pTooltip="Nuevo administrador" tooltipPosition="left"
+    (click)="onAdministradorEditar()">
+  </button>
+
+  <!-- FAB FILTROS -->
+  <button class="admin-fab-filtros" (click)="mostrarFiltros = !mostrarFiltros"
+    [pTooltip]="mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros'" tooltipPosition="left">
+    <i class="pi" [ngClass]="mostrarFiltros ? 'pi-times' : 'pi-sliders-h'"></i>
+  </button>
+
+  <!-- FILTROS -->
+  <div class="admin-filtros" *ngIf="mostrarFiltros">
+    <div class="admin-search-wrap">
+      <i class="pi pi-search"></i>
+      <input type="text" class="admin-search-input"
+        (input)="ptAdministradores.filterGlobal($event.target.value, 'contains')"
+        placeholder="Buscar administrador..."/>
+    </div>
+    <button pButton pRipple type="button" icon="pi pi-times"
+      class="p-button-rounded p-button-text p-button-danger"
+      pTooltip="Limpiar búsqueda" tooltipPosition="left"
+      (click)="hlpPrimeNGTable.reset(ptAdministradores)">
+    </button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="admin-kpis">
+    <div class="admin-kpi admin-kpi--pink">
+      <div class="admin-kpi-icon"><i class="pi pi-users"></i></div>
+      <div class="admin-kpi-body">
+        <span class="admin-kpi-label">Total Administradores</span>
+        <span class="admin-kpi-value">{{ kpiTotal }}</span>
+        <span class="admin-kpi-sub">Asig: <b>{{ kpiAsignados }}</b> &nbsp;|&nbsp; S/Asig: <b>{{ kpiSinAsignar }}</b> &nbsp;|&nbsp; <b>{{ kpiPctAsignados }}%</b></span>
+      </div>
+    </div>
+    <div class="admin-kpi admin-kpi--blue">
+      <div class="admin-kpi-icon"><i class="pi pi-home"></i></div>
+      <div class="admin-kpi-body">
+        <span class="admin-kpi-label">Internos</span>
+        <span class="admin-kpi-value">{{ kpiInternos }}</span>
+        <span class="admin-kpi-sub">Únicos: <b>{{ kpiUnicos }}</b> &nbsp;|&nbsp; Comités: <b>{{ kpiComites }}</b></span>
+      </div>
+    </div>
+    <div class="admin-kpi admin-kpi--green">
+      <div class="admin-kpi-icon"><i class="pi pi-briefcase"></i></div>
+      <div class="admin-kpi-body">
+        <span class="admin-kpi-label">Externos</span>
+        <span class="admin-kpi-value">{{ kpiExternos }}</span>
+        <span class="admin-kpi-sub">P. Físicas: <b>{{ kpiFisicas }}</b> &nbsp;|&nbsp; P. Morales: <b>{{ kpiMorales }}</b></span>
+      </div>
+    </div>
+  </div>
+
+<div class="admin-table-wrap">
 	<p-table
 		#ptAdministradores
 		[responsive]="true"
@@ -10,62 +69,10 @@
 		[paginator]="Administradores.length > 0"
 		[rows]="50"
 		dataKey="id_usuario"
-		styleClass="p-datatable-striped"
+		styleClass="admin-table"
 		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
 	>
-		<ng-template pTemplate="caption">
-			<div class="d-flex align-items-center p-1">
-				<div class="me-auto">
-					<!-- Botón Nuevo -->
-					<button
-						pButton
-						type="button"
-						icon="pi pi-plus"
-						class="p-button-rounded p-button-raised p-button-success ms-1"
-						pTooltip="Agregar administrador"
-						tooltipPosition="right"
-						(click)="onAdministradorEditar()"
-					></button>
-				</div>
-				<!-- Opciones Filtrado -->
-				<div class="ms-auto">
-					<!-- Botón Actualizar -->
-					<button
-						*ngIf="isDevelopment"
-						pButton
-						type="button"
-						icon="pi pi-refresh"
-						class="p-button-rounded p-button-text p-button-secondary me-2"
-						pTooltip="Actualizar información"
-						tooltipPosition="right"
-						(click)="onActualizarInformacion()"
-					></button>
-					<span class="p-input-icon-left">
-						<i class="pi pi-search"></i>
-						<input
-							type="text"
-							id="txtGlobalFilter"
-							class="form-control ms-1 ps-4"
-							(input)="ptAdministradores.filterGlobal($event.target.value, 'contains')"
-							placeholder="Filtrar"
-						/>
-					</span>
-				</div>
-				<div>
-					<button
-						pButton
-						pRipple
-						type="button"
-						id="btnLimpiarFiltro"
-						icon="pi pi-times"
-						class="p-button-rounded p-button-text p-button-danger ms-3"
-						pTooltip="Limpiar filtro"
-						tooltipPosition="left"
-						(click)="hlpPrimeNGTable.reset(ptAdministradores)"
-					></button>
-				</div>
-			</div>
-		</ng-template>
+		
 		<ng-template pTemplate="header" let-columns>
 			<tr>
 				<th
