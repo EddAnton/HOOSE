@@ -27,23 +27,24 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	AdministradoresCols: any[] = [
 		{ header: '', width: '80px' },
 		{ header: 'Nombre' },
-		{ header: 'Usuario' },
+		{ header: 'Condominio' },
+		{ header: 'Tipo' },
+		{ header: 'Estructura' },
 		{ header: 'Email' },
 		{ header: 'Contacto' },
-		{ header: 'Domicilio' },
 		{ header: 'Estatus', width: '70px' },
-		// Botones de acción
 		{ textAlign: 'center', width: '90px' },
 	];
-	AdministradoresFilter: any[] = ['nombre', 'usuario', 'email', 'domicilio'];
-
+	AdministradoresFilter: any[] = ['nombre', 'email', 'condominio_nombre'];
 	Administradores: AdministradorResumenModel[] = [];
 	Administrador: AdministradorModel;
+
 
 	frmAdministrador: FormGroup;
 	mostrarDialogoEdicionAdministrador: boolean = false;
 	mostrarDialogoImagenAdministrador: boolean = false;
 	mostrarDialogoDetallesAdministrador: boolean = false;
+	mostrarFiltros: boolean = false;
 
 	// Tipo de administración
 	tipoAdministracion: string = 'UNICO';
@@ -85,7 +86,6 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	bIdentificacionReversoBorrar: boolean = false;
 	Condominios: any[] = [];
 	opcionesCondominios: any[] = [];
-	mostrarFiltros: boolean = false;
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -171,6 +171,18 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		}
 		hlpSwal.Cerrar();
 
+		// Si el admin tiene condominio asignado, agregarlo a las opciones si no está
+		if (idUsuario > 0 && this.Administrador['fk_id_condominio'] && this.Administrador['condominio_nombre']) {
+			const idCond = +this.Administrador['fk_id_condominio'];
+			const existe = this.opcionesCondominios.find((o: any) => o.value === idCond);
+			if (!existe) {
+				this.opcionesCondominios = [
+					{ label: this.Administrador['condominio_nombre'], value: idCond },
+					...this.opcionesCondominios
+				];
+			}
+		}
+
 		try {
 			this.srcImagen = this.Administrador.imagen
 				? environment.urlBackendUsuariosFiles + this.Administrador.id_usuario + '/' + this.Administrador.imagen
@@ -233,10 +245,10 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			this.bIdentificacionAnversoBorrar = false;
 			this.bIdentificacionReversoBorrar = false;
 
-			// Reset tipo administración
-			this.tipoAdministracion = 'UNICO';
-			this.tipoAcceso = 'EXTERNO';
-			this.tipoPersona = 'FISICA';
+			// Inicializar tipo administración desde datos del administrador
+			this.tipoAdministracion = this.Administrador['estructura_administracion'] || 'UNICO';
+			this.tipoAcceso = this.Administrador['tipo_administrador'] || 'EXTERNO';
+			this.tipoPersona = this.Administrador['tipo_persona'] || 'FISICA';
 			this.MiembrosComite = [];
 			this.mostrarFrmMiembro = false;
 

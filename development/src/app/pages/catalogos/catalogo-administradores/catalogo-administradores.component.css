@@ -168,3 +168,9 @@
   .admin-kpis { grid-template-columns: 1fr; }
   .hoose-form-grid { grid-template-columns: 1fr; }
 }
+
+/* Inputs ancho completo en formulario */
+:host ::ng-deep .hoose-dialogo .p-inputtext { width: 100% !important; }
+:host ::ng-deep .hoose-dialogo .p-inputmask { width: 100% !important; }
+:host ::ng-deep .hoose-dialogo textarea { width: 100% !important; }
+:host ::ng-deep .hoose-dialogo .p-dropdown { width: 100% !important; }

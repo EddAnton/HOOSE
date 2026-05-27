@@ -10,7 +10,7 @@ export const environment = {
   appVersion: require('../../package.json').version,
   appTitle: 'Software de Gestión de Condominios',
   urlBackend: urlBackend,
-  urlBackendUsuariosFiles: urlBackend + 'uploads/usuarios/',
+  urlBackendUsuariosFiles: urlBackendStatic + 'uploads/usuarios/',
   urlBackendCondominiosFiles: urlBackendStatic + 'uploads/condominios/',
   urlBackendUnidadesFiles: urlBackend + 'uploads/unidades/',
   urlBackendMiembrosComiteFiles: urlBackend + 'uploads/miembros_comites_administracion/',

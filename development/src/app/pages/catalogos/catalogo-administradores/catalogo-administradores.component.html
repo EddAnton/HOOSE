@@ -102,14 +102,26 @@
 					</div>
 				</td>
 				<td><span class="p-column-title">Nombre</span>{{ Administrador.nombre }}</td>
-				<td><span class="p-column-title">Usuario</span>{{ Administrador.usuario }}</td>
-				<td><span class="p-column-title">Email</span>{{ Administrador.email }}</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Contacto</span>{{ Administrador.telefono | phoneFormat }}
+				<td>
+					<span class="p-column-title">Condominio</span>
+					<span *ngIf="Administrador.condominio_nombre" class="hoose-badge-blue">{{ Administrador.condominio_nombre }}</span>
+					<span *ngIf="!Administrador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span>
 				</td>
-				<td class="carriage-return"><span class="p-column-title">Domicilio</span>{{ Administrador.domicilio }}</td>
+				<td>
+					<span class="p-column-title">Tipo</span>
+					<span *ngIf="Administrador.tipo_administrador==='INTERNO'" style="color:#3b82f6;font-size:0.75rem;font-weight:600">INTERNO</span>
+					<span *ngIf="Administrador.tipo_administrador==='EXTERNO'" style="color:#e91e8c;font-size:0.75rem;font-weight:600">EXTERNO</span>
+					<span *ngIf="!Administrador.tipo_administrador" style="color:#8a8f9e;font-size:0.75rem">—</span>
+				</td>
+				<td>
+					<span class="p-column-title">Estructura</span>
+					<span *ngIf="Administrador.estructura_administracion==='UNICO'" style="font-size:0.75rem">Único</span>
+					<span *ngIf="Administrador.estructura_administracion==='COMITE'" style="font-size:0.75rem">Comité</span>
+					<span *ngIf="!Administrador.estructura_administracion" style="color:#8a8f9e;font-size:0.75rem">—</span>
+				</td>
+				<td><span class="p-column-title">Email</span>{{ Administrador.email }}</td>
+				<td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Administrador.telefono | phoneFormat }}</td>
 				<td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
 					<span style="cursor: pointer">
 						<p-tag
 							severity="{{ Administrador.estatus == 1 ? 'success' : 'danger' }}"
@@ -289,18 +301,16 @@
 
 		<!-- EXTERNO: campos de información -->
 		<div *ngIf="tipoAcceso==='EXTERNO'">
-			<div class="row py-1">
-				<!-- Nombre -->
-				<div class="col-12 col-md-8">
-					<label for="txtNombre">Nombre <span class="text-danger">*</span></label>
-					<input type="text" pInputText id="txtNombre" formControlName="nombre"
-						class="uppercase" autofocus (focus)="hlpApp.selectAllContent($event)"/>
-				</div>
-				<!-- Usuario -->
-				<div class="col-12 col-md-4">
-					<label for="txtUsuario">Usuario <span class="text-danger">*</span></label>
-					<input type="text" pInputText id="txtUsuario" formControlName="usuario"
-						class="lowercase" (focus)="hlpApp.selectAllContent($event)"/>
+			<div class="hoose-form-section">
+				<div class="hoose-form-grid">
+					<div class="hoose-form-field">
+						<label class="hoose-form-label">Nombre <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="nombre" class="w-100 uppercase" (focus)="hlpApp.selectAllContent($event)"/>
+					</div>
+					<div class="hoose-form-field">
+						<label class="hoose-form-label">Usuario <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="usuario" class="w-100 lowercase" (focus)="hlpApp.selectAllContent($event)"/>
+					</div>
 				</div>
 			</div>
 
@@ -357,48 +367,30 @@
 						formControlName="identificacion_folio"
 						class="uppercase"
 						(focus)="hlpApp.selectAllContent($event)"
-					/>
+				/>
 				</div>
-				<!-- Identificación Domicilio -->
-				<div class="col-12">
-					<label for="txtIdentificacionDomicilio">Domicilio Identificación</label>
-					<textarea
-						pInputTextarea
-						id="txtIdentificacionDomicilio"
-						formControlName="identificacion_domicilio"
-						rows="3"
-						class="uppercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					></textarea>
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Domicilio Identificación</label>
+					<textarea pInputTextarea formControlName="identificacion_domicilio" rows="3" class="w-100 uppercase" (focus)="hlpApp.selectAllContent($event)"></textarea>
 				</div>
 			</div>
-
-			<!-- Imagen e Identificación -->
-			<hr />
-			<div class="row py-1">
-				<div class="col-12 col-md-6 py-1">
-					<label class="fw-bold">Imagen</label>
-					<input type="file" class="form-control form-control-sm"
-						(change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg" />
-					<div *ngIf="srcImagen" class="mt-1">
-						<img [src]="srcImagen" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcImagen)" />
-					</div>
+		</div>
+		<div class="hoose-form-section mt-3">
+			<div class="hoose-form-grid">
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Imagen de perfil</label>
+					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg" />
+					<div *ngIf="srcImagen" class="mt-1"><img [src]="srcImagen" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcImagen)" /></div>
 				</div>
-				<div class="col-12 col-md-6 py-1">
-					<label class="fw-bold">Identificación (Anverso)</label>
-					<input type="file" class="form-control form-control-sm"
-						(change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg,.pdf" />
-					<div *ngIf="srcIdentificacionAnverso" class="mt-1">
-						<img [src]="srcIdentificacionAnverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
-					</div>
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Identificación (Anverso)</label>
+					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg,.pdf" />
+					<div *ngIf="srcIdentificacionAnverso" class="mt-1"><img [src]="srcIdentificacionAnverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionAnverso)" /></div>
 				</div>
-				<div class="col-12 col-md-6 py-1">
-					<label class="fw-bold">Identificación (Reverso)</label>
-					<input type="file" class="form-control form-control-sm"
-						(change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg,.pdf" />
-					<div *ngIf="srcIdentificacionReverso" class="mt-1">
-						<img [src]="srcIdentificacionReverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionReverso)" />
-					</div>
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Identificación (Reverso)</label>
+					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg,.pdf" />
+					<div *ngIf="srcIdentificacionReverso" class="mt-1"><img [src]="srcIdentificacionReverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionReverso)" /></div>
 				</div>
 			</div>
 		</div><!-- /EXTERNO -->
