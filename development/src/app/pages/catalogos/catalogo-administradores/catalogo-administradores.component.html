@@ -220,9 +220,9 @@
 				<p-dropdown [options]="UsuariosInternos" [(ngModel)]="frmMiembroComite"
 					[ngModelOptions]="{standalone: true}"
 					optionLabel="label" placeholder="Buscar propietario o condómino..." [filter]="true" filterBy="label"
-					[showClear]="true" styleClass="w-100">
+					[showClear]="true" styleClass="w-100" appendTo="body"
+					emptyMessage="Selecciona primero un condominio">
 				</p-dropdown>
-				<small class="text-muted">Solo se muestran propietarios y condóminos del condominio seleccionado.</small>
 			</div>
 		</div>
 
@@ -268,17 +268,15 @@
 					<div class="col-12 col-md-6 py-1">
 						<label class="fw-bold">Propietario / Condómino</label>
 						<p-dropdown [options]="UsuariosInternos" [(ngModel)]="frmMiembroComite.usuario"
-							[ngModelOptions]="{standalone: true}"
-							optionLabel="label" placeholder="Buscar..." [filter]="true" filterBy="label"
-							[showClear]="true" styleClass="w-100">
+							[ngModelOptions]="{standalone: true}" optionLabel="label" placeholder="Buscar..."
+							[filter]="true" filterBy="label" [showClear]="true" styleClass="w-100" appendTo="body">
 						</p-dropdown>
 					</div>
 					<div class="col-12 col-md-4 py-1">
 						<label class="fw-bold">Cargo</label>
-						<p-dropdown [options]="opcionesCargos" [(ngModel)]="frmMiembroComite.id_cargo"
-							[ngModelOptions]="{standalone: true}"
-							optionLabel="label" optionValue="value"
-							placeholder="Cargo" styleClass="w-100">
+						<p-dropdown [options]="opcionesCargosDisponibles" [(ngModel)]="frmMiembroComite.id_cargo"
+							[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
+							placeholder="Cargo" styleClass="w-100" appendTo="body">
 						</p-dropdown>
 					</div>
 					<div class="col-12 col-md-2 py-1 d-flex align-items-end">
@@ -297,6 +295,15 @@
 				</ng-template>
 				<ng-template pTemplate="emptymessage"><tr><td colspan="4" class="text-center text-muted">Sin miembros</td></tr></ng-template>
 			</p-table>
+		</div>
+
+		<!-- INTERNO: nombre autollenado (solo lectura) -->
+		<div *ngIf="tipoAcceso==='INTERNO'" class="hoose-form-section">
+			<div class="hoose-form-field">
+				<label class="hoose-form-label">Nombre <span class="text-danger">*</span></label>
+				<input type="text" pInputText formControlName="nombre" class="w-100 uppercase" readonly style="opacity:0.7"/>
+				<small class="text-muted">Se genera automáticamente al seleccionar el condominio.</small>
+			</div>
 		</div>
 
 		<!-- EXTERNO: campos de información -->
@@ -382,17 +389,17 @@
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg" />
 					<div *ngIf="srcImagen" class="mt-1"><img [src]="srcImagen" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcImagen)" /></div>
 				</div>
-				<div class="hoose-form-field">
+				</div>
+				<div class="hoose-form-field" *ngIf="tipoAcceso==='EXTERNO'">
 					<label class="hoose-form-label">Identificación (Anverso)</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg,.pdf" />
 					<div *ngIf="srcIdentificacionAnverso" class="mt-1"><img [src]="srcIdentificacionAnverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionAnverso)" /></div>
 				</div>
-				<div class="hoose-form-field">
+				<div class="hoose-form-field" *ngIf="tipoAcceso==='EXTERNO'">
 					<label class="hoose-form-label">Identificación (Reverso)</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg,.pdf" />
 					<div *ngIf="srcIdentificacionReverso" class="mt-1"><img [src]="srcIdentificacionReverso" class="img-thumbnail" style="max-height:80px;cursor:pointer" (click)="onImagenMostrar(srcIdentificacionReverso)" /></div>
 				</div>
-			</div>
 		</div><!-- /EXTERNO -->
 		</form>
 	</ng-template>
@@ -406,7 +413,7 @@
 			class="p-button-raised p-button-info me-sm-1"
 			pTooltip="Almacenar la información"
 			tooltipPosition="top"
-			[disabled]="!frmAdministrador.valid"
+			[disabled]="!puedeGuardar"
 			(click)="onAdministradorGuardar()"
 		></button>
 		<!-- Botón Cancelar -->

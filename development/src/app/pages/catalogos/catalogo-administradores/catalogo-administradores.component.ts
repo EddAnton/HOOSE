@@ -125,6 +125,28 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		return administradores.sort((a, b) => (a.nombre > b.nombre ? 1 : -1));
 	}
 
+	get puedeGuardar(): boolean {
+		if (this.tipoAcceso === 'EXTERNO') return this.frmAdministrador.valid;
+		if (this.tipoAcceso === 'INTERNO') {
+			const idCond = this.frmAdministrador?.get('fk_id_condominio')?.value;
+			if (!idCond) return false;
+			if (this.tipoAdministracion === 'UNICO') return !!this.frmMiembroComite;
+			if (this.tipoAdministracion === 'COMITE') {
+				const cargosRequeridos = [1, 2, 3]; // Presidente, Secretario, Tesorero
+				return cargosRequeridos.every(c => this.MiembrosComite.find(m => m.id_cargo === c));
+			}
+		}
+		return false;
+	}
+
+	get opcionesCargosDisponibles() {
+		// Vocal (value=4) puede repetirse, el resto no
+		return this.opcionesCargos.filter((cargo: any) => {
+			if (cargo.value === 4) return true; // Vocal puede repetirse
+			return !this.MiembrosComite.find((m: any) => m.id_cargo === cargo.value);
+		});
+	}
+
 	get kpiTotal() { return this.Administradores.length; }
 	get kpiAsignados() { return this.Administradores.filter((a: any) => a.fk_id_condominio).length; }
 	get kpiSinAsignar() { return this.Administradores.filter((a: any) => !a.fk_id_condominio).length; }
@@ -250,17 +272,11 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			this.tipoAcceso = this.Administrador['tipo_administrador'] || 'EXTERNO';
 			this.tipoPersona = this.Administrador['tipo_persona'] || 'FISICA';
 			this.MiembrosComite = [];
+			this.UsuariosInternos = [];
 			this.mostrarFrmMiembro = false;
 
-			// Cargar usuarios internos
-			this.usuariosService?.ListarUsuariosActaAsambleas().toPromise()
-				.then((r: any) => {
-					const grupos = r['usuarios'] || [];
-					this.UsuariosInternos = grupos.reduce((acc: any[], g: any) =>
-						acc.concat((g.usuarios || []).map((u: any) => ({
-							...u, label: u.usuario + ' — ' + u.perfil_usuario
-						}))), []);
-				}).catch(() => {});
+			// Cargar usuarios internos solo si hay condominio
+			this.UsuariosInternos = [];
 
 			this.mostrarDialogoEdicionAdministrador = true;
 			// Cargar usuarios internos si hay condominio y es interno
@@ -279,6 +295,13 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		if (!idCondominio || this.tipoAcceso !== 'INTERNO') {
 			this.UsuariosInternos = [];
 			return;
+		}
+		// Autollenar nombre si es Comité
+		const cond = this.opcionesCondominios.find((c: any) => c.value === +idCondominio);
+		if (cond && this.tipoAdministracion === 'COMITE') {
+			this.frmAdministrador.patchValue({ nombre: 'COMITÉ DE ADMINISTRACIÓN ' + cond.label });
+		} else if (cond && this.tipoAdministracion === 'UNICO') {
+			this.frmAdministrador.patchValue({ nombre: 'ADMINISTRADOR INTERNO ' + cond.label });
 		}
 		this.usuariosService.ListarPerfilCondominio(idCondominio).toPromise()
 			.then((r: any) => {
@@ -306,15 +329,25 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	onConfirmarMiembro(usuario: any, idCargo: number) {
 		if (!usuario || !idCargo) return;
 		const cargo = this.opcionesCargos.find(c => c.value === idCargo);
-		// Verificar que no esté duplicado
-		const existe = this.MiembrosComite.find(m => m.id_usuario === usuario.id_usuario && m.id_cargo === idCargo);
-		if (existe) { hlpSwal.Advertencia('Este miembro ya tiene ese cargo.'); return; }
-		const cargosUnicos = [1,2,3]; // Presidente, Secretario, Tesorero son únicos
-		if (cargosUnicos.includes(idCargo) && this.MiembrosComite.find(m => m.id_cargo === idCargo)) {
+		// Verificar cargo único
+		if (this.MiembrosComite.find(m => m.id_cargo === idCargo)) {
 			hlpSwal.Advertencia('Ya existe un ' + cargo.label + ' en el comité.'); return;
 		}
-		this.MiembrosComite.push({ id_usuario: usuario.id_usuario, usuario: usuario.usuario, perfil_usuario: usuario.perfil_usuario, id_cargo: idCargo, cargo: cargo.label });
+		// Verificar que el usuario no tenga ya un cargo
+		if (this.MiembrosComite.find(m => m.id_usuario === usuario.value)) {
+			hlpSwal.Advertencia('Este miembro ya tiene un cargo asignado.'); return;
+		}
+		this.MiembrosComite.push({
+			id_usuario: usuario.value,
+			usuario: usuario.label,
+			perfil_usuario: usuario.perfil_usuario || '',
+			id_cargo: idCargo,
+			cargo: cargo.label
+		});
+		// Quitar el usuario de las opciones disponibles
+		this.UsuariosInternos = this.UsuariosInternos.filter((u: any) => u.value !== usuario.value);
 		this.mostrarFrmMiembro = false;
+		this.frmMiembroComite = { id_usuario: null, id_cargo: null, label: '' };
 	}
 
 
@@ -333,6 +366,12 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	}
 
 	onEliminarMiembro(idx: number) {
+		const miembro = this.MiembrosComite[idx];
+		// Devolver el usuario a las opciones
+		if (miembro) {
+			this.UsuariosInternos = [...this.UsuariosInternos, { label: miembro.usuario, value: miembro.id_usuario }]
+				.sort((a, b) => a.label.localeCompare(b.label));
+		}
 		this.MiembrosComite.splice(idx, 1);
 	}
 
@@ -438,14 +477,36 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	}
 
 	onAdministradorGuardar() {
-		if (!this.frmAdministrador.valid) {
-			this.frmAdministrador.markAllAsTouched();
-			hlpSwal.Error('Se detectaron errores en la información solicitada.');
-			return;
+		let administrador: any = {};
+
+		// Si es INTERNO, construir objeto sin requerir campos del form
+		if (this.tipoAcceso === 'INTERNO') {
+			const idCond = this.frmAdministrador.get('fk_id_condominio').value;
+			if (!idCond) { hlpSwal.Error('Debe seleccionar un condominio.'); return; }
+			const condNombre = this.opcionesCondominios.find((c: any) => c.value === +idCond)?.label || '';
+			administrador = {
+				id_usuario: this.frmAdministrador.get('id_usuario').value,
+				nombre: (this.tipoAdministracion === 'COMITE' ? 'COMITÉ DE ADMINISTRACIÓN ' : 'ADMINISTRADOR INTERNO ') + condNombre,
+				usuario: this.frmAdministrador.get('usuario').value || 'interno_' + idCond,
+				email: this.frmAdministrador.get('email').value || 'interno_' + idCond + '@hoose.mx',
+				telefono: this.frmAdministrador.get('telefono').value || '0000000000',
+				fk_id_condominio: idCond,
+				tipo_administrador: 'INTERNO',
+				estructura_administracion: this.tipoAdministracion,
+				tipo_persona: null,
+				miembros_comite: this.MiembrosComite,
+			};
+		} else {
+			if (!this.frmAdministrador.valid) {
+				this.frmAdministrador.markAllAsTouched();
+				hlpSwal.Error('Se detectaron errores en la información solicitada.');
+				return;
+			}
+			administrador = this.frmAdministrador.value;
+			administrador.tipo_administrador = this.tipoAcceso;
+			administrador.estructura_administracion = this.tipoAdministracion;
+			administrador.tipo_persona = this.tipoPersona;
 		}
-
-		let administrador = this.frmAdministrador.value;
-
 		administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		administrador.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;
 		administrador.borrar_identificacion_reverso = this.bIdentificacionReversoBorrar ? 1 : 0;
