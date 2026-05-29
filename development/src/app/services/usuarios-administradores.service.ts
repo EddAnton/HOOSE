@@ -60,4 +60,29 @@ export class UsuariosAdministradoresService {
     ).pipe(map(r => r));
   }
 
+
+  GuardarInterno(data: any) {
+    const params = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      if (value != null) params.append(key, typeof value === 'object' ? JSON.stringify(value) : value as string);
+    }
+    return this.http.post(environment.urlBackend + 'administradores/guardar-interno', params, { headers: this.headers }).pipe(map(r => r));
+  }
+
+
+  Eliminar(data: any) {
+    const params = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      if (value != null) params.append(key, value as string);
+    }
+    return this.http.post(environment.urlBackend + 'administradores/eliminar', params, { headers: this.headers }).pipe(map(r => r));
+  }
+
+
+  EliminarCompleto(idUsuario: number) {
+    const params = new FormData();
+    params.append('id_usuario', idUsuario.toString());
+    return this.http.post(environment.urlBackend + 'administradores/eliminar-completo', params, { headers: this.headers }).pipe(map(r => r));
+  }
+
 }

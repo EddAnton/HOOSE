@@ -485,16 +485,17 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			if (!idCond) { hlpSwal.Error('Debe seleccionar un condominio.'); return; }
 			const condNombre = this.opcionesCondominios.find((c: any) => c.value === +idCond)?.label || '';
 			administrador = {
-				id_usuario: this.frmAdministrador.get('id_usuario').value,
-				nombre: (this.tipoAdministracion === 'COMITE' ? 'COMITÉ DE ADMINISTRACIÓN ' : 'ADMINISTRADOR INTERNO ') + condNombre,
-				usuario: this.frmAdministrador.get('usuario').value || 'interno_' + idCond,
-				email: this.frmAdministrador.get('email').value || 'interno_' + idCond + '@hoose.mx',
-				telefono: this.frmAdministrador.get('telefono').value || '0000000000',
+				id_usuario: this.tipoAdministracion === 'UNICO' && this.frmMiembroComite ? this.frmMiembroComite.value : this.frmAdministrador.get('id_usuario').value,
+				nombre: this.tipoAdministracion === 'COMITE' ? 'COMITÉ DE ADMINISTRACIÓN ' + condNombre : null,
+				usuario: this.tipoAdministracion === 'COMITE' ? 'comite_' + idCond : null,
+				email: this.tipoAdministracion === 'COMITE' ? 'comite_' + idCond + '@hoose.mx' : null,
+				telefono: this.tipoAdministracion === 'COMITE' ? '0000000000' : null,
 				fk_id_condominio: idCond,
+				fk_id_usuario_interno: this.tipoAdministracion === 'UNICO' && this.frmMiembroComite ? this.frmMiembroComite.value : null,
 				tipo_administrador: 'INTERNO',
 				estructura_administracion: this.tipoAdministracion,
 				tipo_persona: null,
-				miembros_comite: this.MiembrosComite,
+				miembros_comite: this.tipoAdministracion === 'COMITE' ? this.MiembrosComite : null,
 			};
 		} else {
 			if (!this.frmAdministrador.valid) {
@@ -514,7 +515,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		delete administrador.identificacion_anverso;
 		delete administrador.identificacion_reverso;
 
-		console.log(administrador);
+		console.log('GUARDANDO:', JSON.stringify(administrador));
+		console.log('GUARDANDO:', JSON.stringify(administrador));
 
 		hlpSwal
 			.Pregunta({
@@ -522,7 +524,9 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				showLoaderOnConfirm: true,
 				preConfirm: async () => {
 					try {
-						return await this.administradoresService.Guardar(administrador).toPromise();
+						const resp = await this.administradoresService.Guardar(administrador).toPromise();
+						console.log('RESPUESTA:', JSON.stringify(resp));
+						return resp;
 					} catch (e) {
 						return hlpSwal.Error(e).then(() => ({ err: true }));
 					}
@@ -530,25 +534,59 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				allowOutsideClick: () => !hlpSwal.estaCargando,
 			})
 			.then((r) => {
-				if (r.value && !r.value.err && r.value.administrador) {
-					const c = r.value.administrador;
-					if (administrador.id_usuario == 0) {
-						this.Administradores.push(c);
-					} else {
-						this.Administradores = this.Administradores.map((C) => (C.id_usuario === c.id_usuario ? c : C));
-					}
-					this.Administradores = this.OrdenarAdministradores(this.Administradores);
+				if (r.value && !r.value.err && !r.value.error) {
 					hlpSwal.ExitoToast(r.value.msg);
 					this.mostrarDialogoEdicionAdministrador = false;
+					this.onActualizarInformacion();
 				}
 			});
 	}
 
-	onAdministradorCancelar() {
-		this.srcImagen = null;
-		this.srcIdentificacionAnverso = null;
-		this.srcIdentificacionReverso = null;
-		this.mostrarDialogoEdicionAdministrador = false;
+
+
+
+	onAdministradorDesvincular(administrador: any) {
+		hlpSwal.Pregunta({
+			html: '¿Deseas desvincular a <b>' + administrador.nombre + '</b> del condominio <b>' + administrador.condominio_nombre + '</b>?',
+			showLoaderOnConfirm: true,
+			preConfirm: async () => {
+				try {
+					return await this.administradoresService.Eliminar({
+						id_usuario: administrador.id_usuario,
+						tipo_administrador: administrador.tipo_administrador,
+						fk_id_condominio: administrador.fk_id_condominio,
+					}).toPromise();
+				} catch (e) {
+					return hlpSwal.Error(e).then(() => ({ err: true }));
+				}
+			},
+			allowOutsideClick: () => !hlpSwal.estaCargando,
+		}).then((r: any) => {
+			if (r.value && !r.value.err && !r.value.error) {
+				hlpSwal.ExitoToast('Administrador desvinculado correctamente.');
+				this.onActualizarInformacion();
+			}
+		});
+	}
+
+	onAdministradorEliminar(administrador: any) {
+		hlpSwal.Pregunta({
+			html: '¿Deseas eliminar a <b>' + administrador.nombre + '</b> como administrador?',
+			showLoaderOnConfirm: true,
+			preConfirm: async () => {
+				try {
+					return await this.administradoresService.EliminarCompleto(administrador.id_usuario).toPromise();
+				} catch (e) {
+					return hlpSwal.Error(e).then(() => ({ err: true }));
+				}
+			},
+			allowOutsideClick: () => !hlpSwal.estaCargando,
+		}).then((r: any) => {
+			if (r.value && !r.value.err && !r.value.error) {
+				hlpSwal.ExitoToast('Administrador eliminado correctamente.');
+				this.onActualizarInformacion();
+			}
+		});
 	}
 
 	async onAdministradorDetalles(idUsuario: number = 0) {
