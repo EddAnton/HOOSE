@@ -39,6 +39,7 @@ export class PropietarioModel {
 	identificacion_anverso: string;
 	identificacion_reverso: string;
 	imagen: string;
+	contrasenia: string;
 	estatus: number;
 	unidades: UnidadesEdificioModel[];
 
@@ -56,6 +57,7 @@ export class PropietarioModel {
 			identificacion_reverso: null,
 			imagen: null,
 			estatus: 0,
+			contrasenia: null,
 			unidades: [],
 		};
 	}

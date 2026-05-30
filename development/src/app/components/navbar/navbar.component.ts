@@ -79,6 +79,12 @@ export class NavbarComponent implements OnInit {
 		this.router.events.subscribe((event) => {
 			if (this.sidebarVisible) this.sidebarClose();
 		});
+		// Forzar cambio de contraseña si es primer ingreso
+		setTimeout(() => {
+			if (this.getDebeCambiarContraseniaUsuario()) {
+				this.onCambiarContrasenia();
+			}
+		}, 500);
 	}
 
 	getTitle() {

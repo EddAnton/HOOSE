@@ -197,6 +197,11 @@
 						(focus)="hlpApp.selectAllContent($event)"
 					/>
 				</div>
+				<div class="col-12 col-md-6" *ngIf="frmPropietario.get('id_usuario').value == 0">
+					<label for="txtContrasenia">Contraseña inicial</label>
+					<input type="text" pInputText id="txtContrasenia" formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo del usuario"/>
+					<small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+				</div>
 			</div>
 
 			<div class="row py-1">

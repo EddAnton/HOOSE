@@ -46,6 +46,7 @@ export class CondominoModel {
 	imagen: string;
 	identificacion_anverso: string;
 	identificacion_reverso: string;
+	contrasenia: string;
 	contrato: string;
 	estatus: number;
 	edificio: string;
@@ -71,6 +72,7 @@ export class CondominoModel {
 			imagen: null,
 			identificacion_anverso: null,
 			identificacion_reverso: null,
+		contrasenia: null,
 			contrato: null,
 			estatus: 0,
 			edificio: null,

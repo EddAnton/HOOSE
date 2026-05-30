@@ -169,7 +169,16 @@
 				</td>
 			</tr>
 		</ng-template>
-	header="Detalles del Administrador"
+	</p-table>
+</div>
+
+<!-- Diálogo Edición del Administrador -->
+<p-dialog
+	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+	[style]="{ width: '75vw' }"
+	[(visible)]="mostrarDialogoEdicionAdministrador"
+	modal="true"
+	header="Nuevo / Editar Administrador"
 	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
@@ -315,6 +324,11 @@
 						<label class="hoose-form-label">Usuario <span class="text-danger">*</span></label>
 						<input type="text" pInputText formControlName="usuario" class="w-100 lowercase" (focus)="hlpApp.selectAllContent($event)"/>
 					</div>
+					<div class="hoose-form-field" *ngIf="frmAdministrador.get('id_usuario').value == 0">
+						<label class="hoose-form-label">Contraseña inicial <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo del usuario"/>
+						<small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+					</div>
 				</div>
 			</div>
 
@@ -401,7 +415,6 @@
 		</form>
 	</ng-template>
 	<ng-template pTemplate="footer">
-	<ng-template pTemplate="footer">
 		<button
 			pButton
 			type="button"
@@ -424,6 +437,9 @@
 			tooltipPosition="top"
 			(click)="onAdministradorCancelar()"
 		></button>
+	</ng-template>
+</p-dialog>
+
 <!-- Diálogo Imagen del Administrador -->
 <p-dialog
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
@@ -532,3 +548,5 @@
 		</div>
 	</ng-template>
 </p-dialog>
+
+</div><!-- /admin-wrapper -->

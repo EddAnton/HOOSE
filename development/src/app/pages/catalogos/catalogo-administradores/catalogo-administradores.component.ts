@@ -113,6 +113,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			archivo_imagen: [null],
 			archivo_identificacion_anverso: [null],
 			archivo_identificacion_reverso: [null],
+			contrasenia: [null],
 		});
 		this.onActualizarInformacion();
 		this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => {
@@ -239,6 +240,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				archivo_imagen: [null],
 				archivo_identificacion_anverso: [null],
 				archivo_identificacion_reverso: [null],
+			contrasenia: [null],
 			});
 			this.frmAdministrador
 				.get('nombre')
@@ -644,4 +646,9 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				}
 			});
 	}
+
+	onAdministradorCancelar() {
+		this.mostrarDialogoEdicionAdministrador = false;
+	}
+
 }

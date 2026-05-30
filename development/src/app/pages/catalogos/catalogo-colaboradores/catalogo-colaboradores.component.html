@@ -236,6 +236,11 @@
 					/>
 				</div>
 			</div>
+				<div *ngIf="frmColaborador.get('id_usuario').value == 0">
+					<label>Contraseña inicial</label>
+					<input type="text" pInputText formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo"/>
+					<small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+				</div>
 
 			<div class="row py-1">
 				<!-- Email  -->

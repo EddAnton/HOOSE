@@ -42,6 +42,7 @@ export class ColaboradorModel {
 	imagen: string;
 	identificacion_anverso: string;
 	identificacion_reverso: string;
+	contrasenia: string;
 	fecha_inicio: Date;
 	fecha_fin: Date;
 	salario: number;
@@ -63,6 +64,7 @@ export class ColaboradorModel {
 			imagen: null,
 			identificacion_anverso: null,
 			identificacion_reverso: null,
+		contrasenia: null,
 			fecha_inicio: new Date(),
 			fecha_fin: new Date(),
 			salario: 0,
