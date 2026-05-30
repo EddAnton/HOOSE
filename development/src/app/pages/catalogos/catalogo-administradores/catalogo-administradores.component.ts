@@ -113,6 +113,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			archivo_imagen: [null],
 			archivo_identificacion_anverso: [null],
 			archivo_identificacion_reverso: [null],
+			fecha_inicio: [null],
+			fecha_fin: [null],
 			contrasenia: [null],
 		});
 		this.onActualizarInformacion();
@@ -240,6 +242,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				archivo_imagen: [null],
 				archivo_identificacion_anverso: [null],
 				archivo_identificacion_reverso: [null],
+			fecha_inicio: [null],
+			fecha_fin: [null],
 			contrasenia: [null],
 			});
 			this.frmAdministrador
@@ -262,6 +266,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			this.frmAdministrador.get('domicilio').setValidators([Validators.maxLength(255)]);
 			this.frmAdministrador.get('identificacion_folio').setValidators([Validators.maxLength(50)]);
 			this.frmAdministrador.get('identificacion_domicilio').setValidators([Validators.maxLength(255)]);
+			this.frmAdministrador.get('fecha_inicio').setValidators([Validators.required]);
+			this.frmAdministrador.get('fecha_fin').setValidators([Validators.required]);
 
 			this.frmAdministrador.updateValueAndValidity();
 
@@ -498,6 +504,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				estructura_administracion: this.tipoAdministracion,
 				tipo_persona: null,
 				miembros_comite: this.tipoAdministracion === 'COMITE' ? this.MiembrosComite : null,
+			fecha_inicio: this.frmAdministrador.get('fecha_inicio').value ? this.formatFecha(this.frmAdministrador.get('fecha_inicio').value) : null,
+			fecha_fin: this.frmAdministrador.get('fecha_fin').value ? this.formatFecha(this.frmAdministrador.get('fecha_fin').value) : null,
 			};
 		} else {
 			if (!this.frmAdministrador.valid) {
@@ -645,6 +653,16 @@ export class CatalogoAdministradoresComponent implements OnInit {
 					hlpSwal.ExitoToast(r.value.msg);
 				}
 			});
+	}
+
+
+	formatFecha(fecha: any): string {
+		if (!fecha) return null;
+		const d = new Date(fecha);
+		const y = d.getFullYear();
+		const m = String(d.getMonth() + 1).padStart(2, '0');
+		const day = String(d.getDate()).padStart(2, '0');
+		return y + '-' + m + '-' + day;
 	}
 
 	onAdministradorCancelar() {

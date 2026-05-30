@@ -174,3 +174,133 @@
 :host ::ng-deep .hoose-dialogo .p-inputmask { width: 100% !important; }
 :host ::ng-deep .hoose-dialogo textarea { width: 100% !important; }
 :host ::ng-deep .hoose-dialogo .p-dropdown { width: 100% !important; }
+
+/* ── Diálogo mejorado ───────────────────────────────────────── */
+:host ::ng-deep .hoose-dialogo .p-dialog-header {
+  background: linear-gradient(135deg, #1a1d24 60%, #21242d) !important;
+  border-bottom: 1px solid rgba(233,30,140,0.25) !important;
+  padding: 20px 24px !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-header .p-dialog-title {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: #f0f0f0 !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-content {
+  background: #13161e !important;
+  padding: 24px !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-footer {
+  background: #1a1d24 !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+  padding: 14px 24px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+/* Secciones del formulario */
+.hoose-form-section {
+  background: #1a1d24;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.hoose-form-section:last-child { margin-bottom: 0; }
+.hoose-form-label {
+  font-size: 0.68rem !important;
+  color: #8a8f9e !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  font-weight: 700 !important;
+  margin-bottom: 4px !important;
+}
+
+/* Inputs dentro del diálogo */
+:host ::ng-deep .hoose-dialogo .p-inputtext {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 0.88rem !important;
+  transition: border-color 0.2s !important;
+}
+:host ::ng-deep .hoose-dialogo .p-inputtext:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dropdown {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dropdown:not(.p-disabled).p-focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+}
+:host ::ng-deep .hoose-dialogo .p-calendar .p-inputtext {
+  border-radius: 8px 0 0 8px !important;
+}
+:host ::ng-deep .hoose-dialogo .p-datepicker-trigger {
+  background: #e91e8c !important;
+  border-color: #e91e8c !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+:host ::ng-deep .hoose-dialogo textarea.p-inputtextarea {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+}
+
+/* Botón Guardar — verde */
+:host ::ng-deep .hoose-dialogo .p-dialog-footer .p-button-info {
+  background: linear-gradient(135deg, #e91e8c, #c4186f) !important;
+  border-color: #e91e8c !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  box-shadow: 0 4px 14px rgba(233,30,140,0.3) !important;
+  transition: all 0.2s !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-footer .p-button-info:hover {
+  background: linear-gradient(135deg, #f72fa0, #e91e8c) !important;
+  box-shadow: 0 6px 20px rgba(233,30,140,0.45) !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-footer .p-button-info:disabled {
+  background: #2a2d36 !important;
+  border-color: #2a2d36 !important;
+  box-shadow: none !important;
+  color: #555a6a !important;
+}
+
+/* Botón Cancelar — gris oscuro con borde */
+:host ::ng-deep .hoose-dialogo .p-dialog-footer .p-button-warning {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  color: #8a8f9e !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  transition: all 0.2s !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-footer .p-button-warning:hover {
+  border-color: rgba(233,30,140,0.4) !important;
+  color: #e91e8c !important;
+  background: rgba(233,30,140,0.06) !important;
+}
+
+/* Badge de cargo en comité */
+.badge.bg-primary {
+  background: linear-gradient(135deg, #3B82F6, #2563eb) !important;
+  border-radius: 6px !important;
+  font-size: 0.68rem !important;
+  padding: 3px 8px !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* small muted */
+small.text-muted { color: #555a6a !important; font-size: 0.7rem !important; }

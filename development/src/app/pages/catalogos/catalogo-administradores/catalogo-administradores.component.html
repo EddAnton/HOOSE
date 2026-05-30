@@ -219,6 +219,20 @@
 			</div>
 		</div>
 
+		<!-- Fechas de mandato -->
+		<div class="hoose-form-section">
+			<div class="hoose-form-grid">
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Inicio de mandato</label>
+					<p-calendar formControlName="fecha_inicio" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-100" placeholder="dd/mm/aaaa"></p-calendar>
+				</div>
+				<div class="hoose-form-field">
+					<label class="hoose-form-label">Fin de mandato</label>
+					<p-calendar formControlName="fecha_fin" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-100" placeholder="dd/mm/aaaa"></p-calendar>
+				</div>
+			</div>
+		</div>
+
 		<!-- INTERNO: Administrador Único -->
 		<div *ngIf="tipoAcceso==='INTERNO' && tipoAdministracion==='UNICO'" class="row py-1 mb-2">
 			<div class="col-12">
@@ -332,6 +346,7 @@
 				</div>
 			</div>
 
+		<div class="hoose-form-section">
 			<div class="row py-1">
 				<!-- Email  -->
 				<div class="col-12 col-md-6">
@@ -393,6 +408,7 @@
 				</div>
 			</div>
 		</div>
+		</div><!-- /hoose-form-section contacto -->
 		<div class="hoose-form-section mt-3" *ngIf="tipoAcceso==='EXTERNO'">
 			<div class="hoose-form-grid">
 				<div class="hoose-form-field">
