@@ -135,8 +135,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			if (!idCond) return false;
 			if (this.tipoAdministracion === 'UNICO') return !!this.frmMiembroComite;
 			if (this.tipoAdministracion === 'COMITE') {
-				const cargosRequeridos = [1, 2, 3]; // Presidente, Secretario, Tesorero
-				return cargosRequeridos.every(c => this.MiembrosComite.find(m => m.id_cargo === c));
+				// Al menos Presidente requerido
+				return this.MiembrosComite.length > 0 && !!this.MiembrosComite.find(m => m.id_cargo === 1);
 			}
 		}
 		return false;
@@ -165,6 +165,11 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	get kpiMorales() { return this.Administradores.filter((a: any) => a.tipo_persona === 'MORAL').length; }
 
 	public onActualizarInformacion() {
+		// Recargar condominios sin administrador
+		this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => {
+			this.Condominios = r['condominios'] || [];
+			this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+		}).catch(() => {});
 		this.administradoresService
 			.Listar()
 			.toPromise()
@@ -314,11 +319,15 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		this.usuariosService.ListarPerfilCondominio(idCondominio).toPromise()
 			.then((r: any) => {
 				const usuarios = r['usuarios'] || [];
-				this.UsuariosInternos = usuarios.map((u: any) => ({
-					label: u.nombre + ' (' + u.perfil_usuario + ')',
-					value: u.id_usuario,
-					...u
-				}));
+				// Filtrar usuarios ya asignados como miembros del comité actual
+				const idsEnComite = this.MiembrosComite.map((m: any) => m.id_usuario);
+				this.UsuariosInternos = usuarios
+					.filter((u: any) => !idsEnComite.includes(u.id_usuario))
+					.map((u: any) => ({
+						label: u.nombre + ' (' + u.perfil_usuario + ')',
+						value: u.id_usuario,
+						...u
+					}));
 			}).catch(() => {});
 	}
 
@@ -534,7 +543,9 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				showLoaderOnConfirm: true,
 				preConfirm: async () => {
 					try {
-						const resp = await this.administradoresService.Guardar(administrador).toPromise();
+						const resp = this.tipoAcceso === 'INTERNO'
+							? await this.administradoresService.GuardarInterno(administrador).toPromise()
+							: await this.administradoresService.Guardar(administrador).toPromise();
 						console.log('RESPUESTA:', JSON.stringify(resp));
 						return resp;
 					} catch (e) {

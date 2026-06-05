@@ -9,6 +9,7 @@ export class PropietarioResumenModel {
 	telefono: string;
 	domicilio: string;
 	imagen: string;
+	condominio_nombre: string;
 	estatus: number;
 	unidades: UnidadesPropietarioResumenModel[];
 
@@ -21,6 +22,7 @@ export class PropietarioResumenModel {
 			telefono: null,
 			domicilio: null,
 			imagen: null,
+			condominio_nombre: null,
 			estatus: 0,
 			unidades: [],
 		};

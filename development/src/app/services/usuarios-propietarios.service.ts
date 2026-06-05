@@ -13,6 +13,7 @@ export class UsuariosPropietariosService {
 
 	Listar(soloActivos: boolean = false) {
 		const url = 'propietarios' + (soloActivos ? '/activos' : '');
+		console.log('TOKEN PROPIETARIOS:', this.sesionUsuarioService.obtenerToken());
 		const headers = new HttpHeaders({
 			'X-API-KEY': environment.appKey,
 			Authorization: this.sesionUsuarioService.obtenerToken(),

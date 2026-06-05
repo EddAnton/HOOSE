@@ -113,6 +113,7 @@
 						<p-tag *ngIf="Propietario.estatus != 1" severity="danger" value="Inactivo"></p-tag>
 					</div>
 				</td> -->
+				<td class="text-center"><span *ngIf="Propietario.condominio_nombre" [style.color]="getCondominioColor(Propietario.condominio_nombre)" style="font-weight:600;font-size:0.78rem">{{ Propietario.condominio_nombre }}</span><span *ngIf="!Propietario.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
 				<td class="text-md-center">
 					<span class="p-column-title">Estatus</span>
 					<span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
