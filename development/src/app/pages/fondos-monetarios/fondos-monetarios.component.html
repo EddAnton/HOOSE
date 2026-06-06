@@ -340,7 +340,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Fondo {{ FondoMonetario && FondoMonetario.id_fondo_monetario == 0 ? ' Nuevo' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmFondoMonetario" class="mt-1" [formGroup]="frmFondoMonetario" autocomplete="off">
@@ -450,7 +450,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles del Traspaso Nuevo"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmFondoMonetarioTraspaso" class="mt-1" [formGroup]="frmFondoMonetarioTraspaso" autocomplete="off">
@@ -603,7 +603,7 @@
 	header="Detalles del Movimiento {{
 		FondoMonetarioMovimiento && FondoMonetarioMovimiento.id_fondo_monetario_movimiento == 0 ? ' Nuevo' : ''
 	}}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmFondoMonetarioMovimiento" class="mt-1" [formGroup]="frmFondoMonetarioMovimiento" autocomplete="off">
@@ -769,6 +769,7 @@
 
 <!-- Diálogo Comprobante -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoComprobante"

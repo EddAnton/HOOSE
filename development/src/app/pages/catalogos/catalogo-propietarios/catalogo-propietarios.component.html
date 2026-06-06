@@ -152,11 +152,7 @@
 				</td>
 			</tr>
 		</ng-template>
-		<ng-template pTemplate="emptymessage"
-			><tr class="no-records">
-				<td colspan="3">Sin registros.</td>
-			</tr></ng-template
-		>
+		<ng-template pTemplate="emptymessage"><tr class="no-records"><td colspan="3">Sin registros.</td></tr></ng-template>
 	</p-table>
 </div>
 
@@ -168,14 +164,14 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles del Propietario {{ Propietario && Propietario.id_usuario == 0 ? ' Nuevo' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmPropietario" class="mt-1" [formGroup]="frmPropietario" autocomplete="off">
 			<div class="row py-1">
 				<!-- Nombre -->
 				<div class="col-12 col-md-8">
-					<label for="txtNombre">Nombre</label>
+					<label for="txtNombre">Nombre <span class="text-danger">*</span></label>
 					<input
 						type="text"
 						pInputText
@@ -184,11 +180,12 @@
 						class="uppercase"
 						autofocus
 						(focus)="hlpApp.selectAllContent($event)"
+						(input)="onGenerarUsuario()"
 					/>
 				</div>
 				<!-- Usuario -->
 				<div class="col-12 col-md-4">
-					<label for="txtUsuario">Usuario</label>
+					<label for="txtUsuario">Usuario <span class="text-danger">*</span></label>
 					<input
 						type="text"
 						pInputText
@@ -198,17 +195,15 @@
 						(focus)="hlpApp.selectAllContent($event)"
 					/>
 				</div>
-				<div class="col-12 col-md-6" *ngIf="frmPropietario.get('id_usuario').value == 0">
-					<label for="txtContrasenia">Contraseña inicial</label>
-					<input type="text" pInputText id="txtContrasenia" formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo del usuario"/>
-					<small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+				<div class="col-12" *ngIf="frmPropietario.get('id_usuario').value == 0">
+					<app-password-input [control]="frmPropietario.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
 				</div>
 			</div>
 
 			<div class="row py-1">
 				<!-- Email  -->
 				<div class="col-12 col-md-6">
-					<label for="txtEmail">Email</label>
+					<label for="txtEmail">Email <span class="text-danger">*</span></label>
 					<input
 						type="text"
 						pInputText
@@ -220,7 +215,7 @@
 				</div>
 				<!-- Teléfono -->
 				<div class="col-12 col-md-6">
-					<label for="txtTelefono">Teléfono</label>
+					<label for="txtTelefono">Teléfono <span class="text-danger">*</span></label>
 					<p-inputMask
 						id="txtTelefono"
 						formControlName="telefono"
@@ -540,6 +535,7 @@
 
 <!-- Diálogo Imagen del Propietario -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoImagenPropietario"
@@ -557,6 +553,7 @@
 
 <!-- Diálogo Detalles del Propietario -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '60vw' }"
 	[(visible)]="mostrarDialogoDetallesPropietario"
@@ -601,7 +598,7 @@
 			</div>
 			<div class="col-6">
 				<p class="m-0">
-					<b>Unidades</b>
+					<b>Unidades <span class="text-danger">*</span></b>
 				</p>
 				<ol>
 					<li *ngFor="let unidad of Propietario.unidades" class="m-0">

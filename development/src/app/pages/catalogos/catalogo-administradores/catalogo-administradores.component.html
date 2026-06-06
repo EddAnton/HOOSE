@@ -332,16 +332,14 @@
 				<div class="hoose-form-grid">
 					<div class="hoose-form-field">
 						<label class="hoose-form-label">Nombre <span class="text-danger">*</span></label>
-						<input type="text" pInputText formControlName="nombre" class="w-100 uppercase" (focus)="hlpApp.selectAllContent($event)"/>
+						<input type="text" pInputText formControlName="nombre" class="w-100 uppercase" (focus)="hlpApp.selectAllContent($event)" (input)="onGenerarUsuario()"/>
 					</div>
 					<div class="hoose-form-field">
 						<label class="hoose-form-label">Usuario <span class="text-danger">*</span></label>
 						<input type="text" pInputText formControlName="usuario" class="w-100 lowercase" (focus)="hlpApp.selectAllContent($event)"/>
 					</div>
-					<div class="hoose-form-field" *ngIf="frmAdministrador.get('id_usuario').value == 0">
-						<label class="hoose-form-label">Contraseña inicial <span class="text-danger">*</span></label>
-						<input type="text" pInputText formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo del usuario"/>
-						<small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+					<div *ngIf="frmAdministrador.get('id_usuario').value == 0">
+						<app-password-input [control]="frmAdministrador.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
 					</div>
 				</div>
 			</div>
@@ -458,6 +456,7 @@
 
 <!-- Diálogo Imagen del Administrador -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoImagenAdministrador"
@@ -475,6 +474,7 @@
 
 <!-- Diálogo Detalles del Administrador -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '60vw' }"
 	*ngIf="mostrarDialogoDetallesAdministrador" [(visible)]="mostrarDialogoDetallesAdministrador"

@@ -6,6 +6,7 @@
 
 <!-- Diálogo Detalles del Reservacion -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '50vw' }"
 	[(visible)]="mostrarDialogoDetallesReservacion"
@@ -110,7 +111,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Reservación {{ Reservacion && Reservacion.id_area_comun_reservacion == 0 ? 'Nueva' : 'Modificando' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmReservacion" class="mt-1" [formGroup]="frmReservacion" autocomplete="off">

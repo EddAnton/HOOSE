@@ -161,7 +161,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles de la Unidad {{ Unidad && Unidad.id_unidad == 0 ? ' Nueva' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmUnidad" class="mt-1" [formGroup]="frmUnidad" autocomplete="off">
@@ -286,6 +286,7 @@
 
 <!-- Diálogo Escrituras -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoEscriturasUnidad"

@@ -108,39 +108,37 @@
 <!-- Diálogo de inserción y edición -->
 <p-dialog #dlgCondomino [(visible)]="mostrarDialogoEdicionCondomino"
   [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '50vw' }" [modal]="true" [closable]="false"
-  header="Detalles del Condomino {{ Condomino && Condomino.id_usuario == 0 ? ' Nuevo' : '' }}" styleClass="p-fluid">
+  header="Detalles del Condomino {{ Condomino && Condomino.id_usuario == 0 ? ' Nuevo' : '' }}" styleClass="hoose-dialogo">
   <ng-template pTemplate="content">
     <form id="frmCondomino" class="mt-1" [formGroup]="frmCondomino" autocomplete="off">
       <div class="row py-1">
         <!-- Nombre -->
         <div class="col-12 col-md-8">
-          <label for="txtNombre">Nombre</label>
-          <input type="text" pInputText id="txtNombre" formControlName="nombre" class="uppercase" autofocus
+          <label for="txtNombre">Nombre <span class="text-danger">*</span></label>
+          <input type="text" pInputText id="txtNombre" formControlName="nombre" class="uppercase" autofocus (input)="onGenerarUsuario()"
             (focus)="hlpApp.selectAllContent($event)" />
         </div>
         <!-- Usuario -->
         <div class="col-12 col-md-4">
-          <label for="txtUsuario">Usuario</label>
+          <label for="txtUsuario">Usuario <span class="text-danger">*</span></label>
           <input type="text" pInputText id="txtUsuario" formControlName="usuario" class="lowercase"
             (focus)="hlpApp.selectAllContent($event)" />
         </div>
       </div>
-        <div class="col-12 col-md-4" *ngIf="frmCondomino.get('id_usuario').value == 0">
-          <label for="txtContrasenia">Contraseña inicial</label>
-          <input type="text" pInputText id="txtContrasenia" formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo"/>
-          <small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+        <div class="col-12" *ngIf="frmCondomino.get('id_usuario').value == 0">
+          <app-password-input [control]="frmCondomino.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
         </div>
 
       <div class="row py-1">
         <!-- Email  -->
         <div class="col-12 col-md-6">
-          <label for="txtEmail">Email</label>
+          <label for="txtEmail">Email <span class="text-danger">*</span></label>
           <input type="text" pInputText id="txtEmail" formControlName="email" class="lowercase"
             (focus)="hlpApp.selectAllContent($event)" />
         </div>
         <!-- Teléfono -->
         <div class="col-12 col-md-6">
-          <label for="txtTelefono">Teléfono</label>
+          <label for="txtTelefono">Tel <span class="text-danger">*</span>éfono</label>
           <p-inputMask id="txtTelefono" formControlName="telefono" mask="(9999) 99-9999" unmask="true"
             placeholder="(9999) 99-9999" (focus)="hlpApp.selectAllContent($event)"></p-inputMask>
         </div>
@@ -383,7 +381,7 @@
 
 <!-- Diálogo de deshabilitar -->
 <p-dialog #dlgCondominoDeshabilitar [(visible)]="mostrarDialogoDeshabilitarCondomino" [style]="{ width: '350px' }"
-  [modal]="true" [closable]="false" header="Deshabilitar Condómino" styleClass="p-fluid">
+  [modal]="true" [closable]="false" header="Deshabilitar Condómino" styleClass="hoose-dialogo">
   <ng-template pTemplate="content">
     <form id="frmCondominoDeshabilitar" class="mt-1" [formGroup]="frmCondominoDeshabilitar" autocomplete="off">
       <div class="row py-1">
@@ -409,7 +407,8 @@
 </p-dialog>
 
 <!-- Diálogo Imagen del Condomino -->
-<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '75vw' }"
+<p-dialog
+	styleClass="hoose-dialogo" [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '75vw' }"
   [(visible)]="mostrarDialogoImagenCondomino" [contentStyle]="{ display: 'flex' }" modal="true"
   header="Imagen del Condomino" baseZIndex="99">
   <ng-template pTemplate="content">
@@ -420,7 +419,8 @@
 </p-dialog>
 
 <!-- Diálogo Contrato -->
-<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '75vw' }"
+<p-dialog
+	styleClass="hoose-dialogo" [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '75vw' }"
   [(visible)]="mostrarDialogoContratoCondomino" [contentStyle]="{ display: 'flex', height: '90vh' }" modal="true"
   header="Contrato de arrendamiento del Condómino">
   <ng-template pTemplate="content">
@@ -431,7 +431,8 @@
 </p-dialog>
 
 <!-- Diálogo Detalles del Condomino -->
-<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '60vw' }"
+<p-dialog
+	styleClass="hoose-dialogo" [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '60vw' }"
   [(visible)]="mostrarDialogoDetallesCondomino" modal="true" header="Detalles del Condomino">
   <ng-template pTemplate="content">
     <div class="row pt-4">

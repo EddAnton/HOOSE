@@ -179,7 +179,7 @@
 	header="{{
 		ElementoRenombrar == null ? 'Nueva carpeta' : 'Renombrar ' + (ElementoRenombrar.tipo == 1 ? 'carpeta' : 'archivo')
 	}}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmRenombrar" class="mt-1" [formGroup]="frmRenombrar" autocomplete="off">
@@ -239,7 +239,7 @@
 	[(visible)]="mostrarDlgSubirArchivo"
 	[modal]="true"
 	[closable]="false"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 	header="Subir archivo en la carpeta actual"
 >
 	<ng-template pTemplate="content">

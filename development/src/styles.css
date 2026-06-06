@@ -871,3 +871,306 @@ label { color: #8a8f9e !important; }
   font-weight: 700 !important;
   margin-bottom: 4px !important;
 }
+
+/* ══════════════════════════════════════════════════════
+   HOOSE — Estilos globales de tablas y layouts
+   ══════════════════════════════════════════════════════ */
+
+/* Variables globales */
+:root {
+  --hoose-bg: #111318;
+  --hoose-card: #1a1d24;
+  --hoose-card2: #21242d;
+  --hoose-border: rgba(255,255,255,0.07);
+  --hoose-pink: #e91e8c;
+  --hoose-green: #1BC99A;
+  --hoose-blue: #3B82F6;
+  --hoose-text: #f0f0f0;
+  --hoose-muted: #8a8f9e;
+  --hoose-dim: #555a6a;
+  --hoose-radius: 12px;
+}
+
+/* Wrapper general de páginas */
+.card.shadow-sm {
+  background: var(--hoose-bg) !important;
+  border: none !important;
+  border-radius: var(--hoose-radius) !important;
+  box-shadow: none !important;
+}
+
+/* Tabla general */
+.p-datatable .p-datatable-thead > tr > th {
+  background: #181b22 !important;
+  color: var(--hoose-muted) !important;
+  border-bottom: 2px solid var(--hoose-border) !important;
+  border-right: none !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 10px 12px !important;
+}
+.p-datatable .p-datatable-tbody > tr {
+  background: var(--hoose-card) !important;
+  border-bottom: 1px solid var(--hoose-border) !important;
+  transition: background 0.15s !important;
+}
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: var(--hoose-card2) !important;
+}
+.p-datatable .p-datatable-tbody > tr > td {
+  color: var(--hoose-text) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--hoose-border) !important;
+  padding: 10px 12px !important;
+  font-size: 0.82rem !important;
+}
+.p-datatable .p-paginator {
+  background: #181b22 !important;
+  border-top: 1px solid var(--hoose-border) !important;
+  color: var(--hoose-muted) !important;
+  font-size: 0.78rem !important;
+}
+.p-datatable .p-paginator .p-paginator-page.p-highlight {
+  background: var(--hoose-pink) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
+.p-datatable .p-datatable-caption {
+  background: #181b22 !important;
+  border-bottom: 1px solid var(--hoose-border) !important;
+  padding: 10px 16px !important;
+  border-radius: var(--hoose-radius) var(--hoose-radius) 0 0 !important;
+}
+
+/* Botón + en caption */
+.p-datatable .p-datatable-caption .p-button-success {
+  background: var(--hoose-pink) !important;
+  border-color: var(--hoose-pink) !important;
+  box-shadow: 0 4px 14px rgba(233,30,140,0.3) !important;
+}
+
+/* Input de filtro en caption */
+.p-datatable .p-datatable-caption .form-control {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: var(--hoose-text) !important;
+  font-size: 0.85rem !important;
+}
+.p-datatable .p-datatable-caption .form-control:focus {
+  border-color: var(--hoose-pink) !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+  outline: none !important;
+}
+.p-datatable .p-datatable-caption .form-control::placeholder {
+  color: var(--hoose-dim) !important;
+}
+
+/* Tags de estatus */
+.p-tag.p-tag-success { background: rgba(27,201,154,0.15) !important; color: var(--hoose-green) !important; }
+.p-tag.p-tag-danger { background: rgba(239,68,68,0.15) !important; color: #ef4444 !important; }
+.p-tag.p-tag-warning { background: rgba(245,158,11,0.15) !important; color: #f59e0b !important; }
+
+/* Hoose badge */
+.hoose-badge-blue {
+  background: rgba(59,130,246,0.15);
+  color: var(--hoose-blue);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ── Login — excepción al tema oscuro global ── */
+app-login .card.shadow-sm,
+.login-contaniner {
+  background-color: rgb(240, 240, 240) !important;
+  border: 1px solid rgb(210, 210, 210) !important;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+}
+app-login .p-inputtext {
+  background: #fff !important;
+  border: 1px solid #ced4da !important;
+  color: #333 !important;
+  border-radius: 4px !important;
+}
+app-login .p-inputtext:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+}
+
+/* Login card interior */
+app-login .card {
+  background-color: #fff !important;
+  border-color: #ced4da !important;
+}
+app-login .p-inputtext {
+  background: #fff !important;
+  border: 1px solid #ced4da !important;
+  color: #333 !important;
+}
+
+/* ── Formularios dentro de diálogos — mejoras generales ── */
+.hoose-dialogo .p-dialog-content label,
+.hoose-dialogo .p-dialog-content .fw-bold {
+  font-size: 0.72rem !important;
+  color: #8a8f9e !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 700 !important;
+  display: block !important;
+  margin-bottom: 4px !important;
+}
+.hoose-dialogo .p-dialog-content .row {
+  background: #1a1d24;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 12px 8px;
+  margin: 0 0 12px 0 !important;
+}
+.hoose-dialogo .p-dialog-content .col-12,
+.hoose-dialogo .p-dialog-content .col-md-6,
+.hoose-dialogo .p-dialog-content .col-md-4,
+.hoose-dialogo .p-dialog-content .col-md-3 {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+.hoose-dialogo .p-dialog-content .p-inputnumber input,
+.hoose-dialogo .p-dialog-content .p-inputnumber-input {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  width: 100% !important;
+}
+.hoose-dialogo .p-dialog-content .p-inputnumber input:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+}
+.hoose-dialogo .p-dialog-content select,
+.hoose-dialogo .p-dialog-content .form-control,
+.hoose-dialogo .p-dialog-content .form-select {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-dialog-content select:focus,
+.hoose-dialogo .p-dialog-content .form-control:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+}
+
+/* ── Unificar color de todos los campos en diálogos ── */
+.hoose-dialogo .p-dialog-content .p-dropdown,
+.hoose-dialogo .p-dialog-content .p-dropdown .p-dropdown-label,
+.hoose-dialogo .p-dialog-content .p-inputtext,
+.hoose-dialogo .p-dialog-content textarea,
+.hoose-dialogo .p-dialog-content .p-inputmask,
+.hoose-dialogo .p-dialog-content .p-inputnumber-input,
+.hoose-dialogo .p-dialog-content .form-control,
+.hoose-dialogo .p-dialog-content input[type="text"],
+.hoose-dialogo .p-dialog-content input[type="number"] {
+  background-color: #0e1016 !important;
+  color: #f0f0f0 !important;
+}
+
+/* ── Campos de archivo y otros elementos en diálogos ── */
+.hoose-dialogo .p-dialog-content input[type="file"],
+.hoose-dialogo .p-dialog-content .p-fileupload,
+.hoose-dialogo .p-dialog-content .p-fileupload-content,
+.hoose-dialogo .p-dialog-content .p-fileupload-buttonbar {
+  background-color: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-dialog-content input[type="file"]::file-selector-button {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 6px !important;
+  color: #8a8f9e !important;
+  padding: 4px 10px !important;
+  cursor: pointer !important;
+}
+.hoose-dialogo .p-dialog-content .form-control-sm {
+  background-color: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-dialog-content .p-inputnumber {
+  background-color: #0e1016 !important;
+  border-radius: 8px !important;
+}
+/* Quitar borde rojo/rosa de validación en campos no tocados */
+.hoose-dialogo .p-dialog-content .ng-invalid:not(.ng-touched) {
+  border-color: rgba(255,255,255,0.1) !important;
+}
+.hoose-dialogo .p-dialog-content .p-dropdown.ng-invalid:not(.ng-touched) {
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* ── Botones de carga de archivos en diálogos ── */
+.hoose-dialogo .p-dialog-content .btn-dark {
+  background-color: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #8a8f9e !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+.hoose-dialogo .p-dialog-content .btn-dark:hover {
+  background-color: #1a1d24 !important;
+  border-color: #e91e8c !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-dialog-content .input-group {
+  background-color: transparent !important;
+}
+
+/* ── PickList (asignación de unidades) en diálogos ── */
+.hoose-dialogo .p-picklist-list-wrapper {
+  background: #1a1d24 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+}
+.hoose-dialogo .p-picklist-header {
+  background: #181b22 !important;
+  color: #f0f0f0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+.hoose-dialogo .p-picklist-filter-container {
+  background: #181b22 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+.hoose-dialogo .p-picklist-filter-container .p-picklist-filter {
+  background: #0e1016 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+  border-radius: 8px !important;
+}
+.hoose-dialogo .p-picklist-list {
+  background: #1a1d24 !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-picklist-item {
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-picklist-item:hover {
+  background: #21242d !important;
+}
+.hoose-dialogo .p-picklist-item.p-highlight {
+  background: rgba(233,30,140,0.15) !important;
+  color: #e91e8c !important;
+}
+.hoose-dialogo .p-picklist-buttons .p-button {
+  background: var(--hoose-pink) !important;
+  border-color: var(--hoose-pink) !important;
+}
+.hoose-dialogo .p-picklist-filter-icon {
+  color: #8a8f9e !important;
+}

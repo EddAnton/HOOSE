@@ -181,7 +181,7 @@
 <!-- (onShow)="onMostrarEdicionActa()" -->
 <p-dialog #dlgActa [(visible)]="mostrarDialogoEdicionActa" [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
   [style]="{ width: '80vw' }" [modal]="true" [closable]="false" position="top"
-  header="Detalles de la Acta {{ Acta && Acta.id_acta == 0 ? ' Nueva' : '' }}" styleClass="p-fluid">
+  header="Detalles de la Acta {{ Acta && Acta.id_acta == 0 ? ' Nueva' : '' }}" styleClass="hoose-dialogo">
   <ng-template pTemplate="content">
     <form id="frmActa" class="mt-1" [formGroup]="frmActa" autocomplete="off">
 
@@ -647,7 +647,7 @@
 <p-dialog #dlgConvocatoria [(visible)]="mostrarDialogoConvocatoria" [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
   [style]="{ width: '80vw' }" [modal]="true" [closable]="false"
   header="Detalles de la Convocatoria {{ Convocatoria && Convocatoria.id_asamblea == 0 ? ' Nueva' : '' }}"
-  styleClass="p-fluid">
+  styleClass="hoose-dialogo">
   <ng-template pTemplate="content">
     <form id="frmConvocatoria" class="mt-1" [formGroup]="frmConvocatoria" autocomplete="off">
 
@@ -940,7 +940,7 @@
 <p-dialog #dlgOrdenDia [(visible)]="mostrarDialogoOrdenDelDia" [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
   [style]="{ width: '50vw' }" [modal]="true" [closable]="false"
   header="{{ OrdenDelDia && OrdenDelDia.id_asamblea_orden_dia == 0 ? ' Agregando' : 'Editando' }} orden del día"
-  styleClass="p-fluid">
+  styleClass="hoose-dialogo">
   <ng-template pTemplate="content">
     <form id="frmOrdenDelDia" [formGroup]="frmOrdenDelDia" autocomplete="off">
       <div class="row pt-4">
@@ -985,7 +985,8 @@
 </p-dialog>
 
 <!-- Diálogo Emision del acta -->
-<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '50vw' }"
+<p-dialog
+	styleClass="hoose-dialogo" [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '50vw' }"
   [(visible)]="mostrarDialogoEmisionActa" modal="true" dismissableMask="true" header="Acta de asamblea">
   <ng-template pTemplate="content">
     <div class="d-print-none" style="position: absolute; top: 70px; right: 50px">

@@ -134,7 +134,8 @@
   </div>
 </div>
 
-<p-dialog [(visible)]="mostrarDialogo" [modal]="true" [draggable]="false"
+<p-dialog
+	styleClass="hoose-dialogo" [(visible)]="mostrarDialogo" [modal]="true" [draggable]="false"
   [style]="{ width: '580px' }"
   [header]="tareaEditando?.id_tarea > 0 ? 'Editar tarea' : 'Nueva tarea'"
   styleClass="tareas-dialogo">

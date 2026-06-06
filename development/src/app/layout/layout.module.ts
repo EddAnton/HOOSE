@@ -62,6 +62,8 @@ import { CatalogoCondominiosComponent } from '../pages/catalogos/catalogo-condom
 import { CatalogoEdificiosComponent } from '../pages/catalogos/catalogo-edificios/catalogo-edificios.component';
 import { CatalogoUnidadesComponent } from '../pages/catalogos/catalogo-unidades/catalogo-unidades.component';
 import { CatalogoPropietariosComponent } from '../pages/catalogos/catalogo-propietarios/catalogo-propietarios.component';
+import { PasswordInputComponent } from '../components/password-input/password-input.component';
+
 import { CatalogoCondominosComponent } from '../pages/catalogos/catalogo-condominos/catalogo-condominos.component';
 import { CatalogoColaboradoresComponent } from '../pages/catalogos/catalogo-colaboradores/catalogo-colaboradores.component';
 import { CatalogoAdministradoresComponent } from '../pages/catalogos/catalogo-administradores/catalogo-administradores.component';
@@ -135,6 +137,7 @@ import { ComitesService } from '../services/comites.service';
     CatalogoEdificiosComponent,
     CatalogoUnidadesComponent,
     CatalogoPropietariosComponent,
+    PasswordInputComponent,
     CatalogoCondominosComponent,
     CatalogoColaboradoresComponent,
     CatalogoAdministradoresComponent,

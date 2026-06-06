@@ -222,7 +222,7 @@
   [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
   [style]="{ width: '60vw' }"
   [modal]="true" [closable]="false"
-  styleClass="cm-dialog"
+  styleClass="hoose-dialogo"
   header="Cuota de Mantenimiento {{ CuotaMantenimiento?.id_cuota_mantenimiento == 0 ? '— Nueva' : '' }}">
   <ng-template pTemplate="content">
     <form [formGroup]="frmCuotaMantenimiento" autocomplete="off">
@@ -370,7 +370,7 @@
 
 <p-dialog #dlgCuotaMantenimientoMasiva
   [(visible)]="mostrarDialogoCuotaMantenimientoMasiva"
-  [modal]="true" styleClass="cm-dialog" header="Generación masiva de cuotas">
+  [modal]="true" styleClass="hoose-dialogo" header="Generación masiva de cuotas">
   <ng-template pTemplate="content">
     <form [formGroup]="frmCuotaMantenimientoMasiva" autocomplete="off">
       <div class="row g-3">
@@ -410,7 +410,7 @@
   [breakpoints]="{ '991px': '90vw', '640px': '96vw' }"
   [style]="{ width: '60vw' }"
   [modal]="true" [closable]="false" position="top"
-  styleClass="cm-dialog" header="Registrar pago">
+  styleClass="hoose-dialogo" header="Registrar pago">
   <ng-template pTemplate="content">
     <form [formGroup]="frmCuotaMantenimientoRegistrarPago" autocomplete="off">
       <div class="row g-3">
@@ -532,7 +532,8 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog [breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
+<p-dialog
+	styleClass="hoose-dialogo" [breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
   [style]="{ width: '50vw' }"
   [(visible)]="mostrarDialogoReciboPagoCuotaMantenimiento"
   modal="true" dismissableMask="true"

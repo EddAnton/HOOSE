@@ -186,7 +186,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="{{ Queja?.id_queja == 0 ? 'Agregar' : 'Editar' }} Queja"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmQueja" class="mt-1" [formGroup]="frmQueja" autocomplete="off">
@@ -317,7 +317,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Asignar colaborador que atenderá la queja"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmQuejaAsignarColaborador" class="mt-1" [formGroup]="frmQuejaAsignarColaborador" autocomplete="off">
@@ -379,7 +379,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Actualizar estatus de la queja"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmQuejaActualizarEstatus" class="mt-1" [formGroup]="frmQuejaActualizarEstatus" autocomplete="off">
@@ -448,6 +448,7 @@
 
 <!-- Diálogo Detalles de la queja -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoDetalleQueja"
@@ -620,6 +621,7 @@
 
 <!-- Diálogo Imagen -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoArchivoQueja"
@@ -644,7 +646,7 @@
 	[closable]="true"
 	position="top"
 	header="Seguimiento de la Queja"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 	contentStyleClass="px-4 py-2"
 >
 	<ng-template pTemplate="content">
@@ -760,7 +762,7 @@
 	[closable]="false"
 	position="top"
 	header="{{ Seguimiento?.id_queja_seguimiento == 0 ? 'Agregar' : 'Editar' }} Seguimiento"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmSeguimiento" class="mt-1" [formGroup]="frmSeguimiento" autocomplete="off">

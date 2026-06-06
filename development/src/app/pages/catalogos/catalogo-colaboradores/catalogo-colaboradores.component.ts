@@ -536,4 +536,21 @@ export class CatalogoColaboradoresComponent implements OnInit {
 		return colores[Math.abs(hash) % colores.length];
 	}
 
+
+	onGenerarUsuario() {
+		const nombre = this.frmColaborador.get('nombre').value || '';
+		if (!nombre || nombre.length < 3) return;
+		const partes = nombre.toLowerCase().trim().split(/\s+/);
+		let usuario = '';
+		if (partes.length >= 2) {
+			usuario = partes[0] + '.' + partes[partes.length - 1];
+		} else {
+			usuario = partes[0];
+		}
+		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+		if (this.frmColaborador.get('id_usuario').value == 0) {
+			this.frmColaborador.patchValue({ usuario: usuario });
+		}
+	}
+
 }

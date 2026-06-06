@@ -170,7 +170,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles del Miembro {{ Miembro && Miembro.id_miembro == 0 ? ' Nuevo' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmMiembro" class="mt-1" [formGroup]="frmMiembro" autocomplete="off">
@@ -513,6 +513,7 @@
 
 <!-- Diálogo Imagen del Miembro -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoImagenMiembro"
@@ -530,6 +531,7 @@
 
 <!-- Diálogo Detalles del Miembro -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '60vw' }"
 	[(visible)]="mostrarDialogoDetallesMiembro"

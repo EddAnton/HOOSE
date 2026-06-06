@@ -68,7 +68,7 @@
 <!-- Diálogo gestionar tipos de comité -->
 <p-dialog [(visible)]="mostrarDialogoTipo" [modal]="true" [closable]="false"
   [style]="{width: '400px'}" header="{{ TipoSeleccionado ? 'Editar tipo de comité' : 'Nuevo tipo de comité' }}"
-  styleClass="p-fluid" position="top">
+  styleClass="hoose-dialogo" position="top">
   <ng-template pTemplate="content">
     <form *ngIf="frmTipo" [formGroup]="frmTipo" autocomplete="off">
       <div class="py-1">
@@ -115,7 +115,7 @@
 <!-- Diálogo agregar/editar miembro -->
 <p-dialog [(visible)]="mostrarDialogo" [modal]="true" [closable]="false"
   [style]="{width: '500px'}" header="{{ MiembroSeleccionado ? 'Editar miembro' : 'Agregar miembro al comité' }}"
-  styleClass="p-fluid" position="top">
+  styleClass="hoose-dialogo" position="top">
   <ng-template pTemplate="content">
     <form *ngIf="frmMiembro" [formGroup]="frmMiembro" autocomplete="off">
       <div class="row">

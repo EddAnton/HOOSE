@@ -173,7 +173,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles de la Recaudación {{ Recaudacion && Recaudacion.id_recaudacion == 0 ? ' Nueva' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmRecaudacion" class="mt-1" [formGroup]="frmRecaudacion" autocomplete="off">
@@ -524,7 +524,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Registrar pago"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmRecaudacionRegistrarPago" class="mt-1" [formGroup]="frmRecaudacionRegistrarPago" autocomplete="off">
@@ -602,6 +602,7 @@
 
 <!-- Diálogo Recibo de pago -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '50vw' }"
 	[(visible)]="mostrarDialogoReciboPagoRecaudacion"

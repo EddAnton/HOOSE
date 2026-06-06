@@ -160,7 +160,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Proyecto {{ Proyecto && Proyecto.id_proyecto == 0 ? 'Nuevo' : 'Modificando' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmProyecto" class="mt-1" [formGroup]="frmProyecto" autocomplete="off">
@@ -344,6 +344,7 @@
 
 <!-- Diálogo Imagen -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoImagen"
@@ -361,6 +362,7 @@
 
 <!-- Diálogo Detalles del Proyecto -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '50vw' }"
 	[(visible)]="mostrarDialogoDetallesProyecto"

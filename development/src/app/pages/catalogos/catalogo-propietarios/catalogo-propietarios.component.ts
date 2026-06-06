@@ -284,6 +284,10 @@ export class CatalogoPropietariosComponent implements OnInit {
 			hlpSwal.Error('Se detectaron errores en la información solicitada.');
 			return;
 		}
+		if (!this.Propietario.unidades || this.Propietario.unidades.length === 0) {
+			hlpSwal.Error('Debe asignar al menos una unidad al propietario.');
+			return;
+		}
 
 		let propietario = this.frmPropietario.value;
 
@@ -428,6 +432,23 @@ export class CatalogoPropietariosComponent implements OnInit {
 			hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
 		}
 		return colores[Math.abs(hash) % colores.length];
+	}
+
+
+	onGenerarUsuario() {
+		const nombre = this.frmPropietario.get('nombre').value || '';
+		if (!nombre || nombre.length < 3) return;
+		const partes = nombre.toLowerCase().trim().split(/\s+/);
+		let usuario = '';
+		if (partes.length >= 2) {
+			usuario = partes[0] + '.' + partes[partes.length - 1];
+		} else {
+			usuario = partes[0];
+		}
+		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+		if (this.frmPropietario.get('id_usuario').value == 0) {
+			this.frmPropietario.patchValue({ usuario: usuario });
+		}
 	}
 
 }

@@ -163,7 +163,7 @@
 	header="Detalles del Gasto de Mantenimiento {{
 		GastoMantenimiento && GastoMantenimiento.id_gasto_mantenimiento == 0 ? ' Nuevo' : ''
 	}}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmGastoMantenimiento" class="mt-1" [formGroup]="frmGastoMantenimiento" autocomplete="off">
@@ -372,6 +372,7 @@
 
 <!-- Diálogo Comprobante -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoComprobanteGastoMantenimiento"
@@ -389,6 +390,7 @@
 
 <!-- Diálogo Detalles del Gasto de Mantenimiento -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '50vw' }"
 	[(visible)]="mostrarDialogoDetallesGastoMantenimiento"

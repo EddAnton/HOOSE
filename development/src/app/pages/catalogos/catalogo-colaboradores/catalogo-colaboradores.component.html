@@ -206,7 +206,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles del Colaborador {{ Colaborador && Colaborador.id_usuario == 0 ? ' Nuevo' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmColaborador" class="mt-1" [formGroup]="frmColaborador" autocomplete="off">
@@ -220,6 +220,7 @@
 						id="txtNombre"
 						formControlName="nombre"
 						class="uppercase"
+						(input)="onGenerarUsuario()"
 						autofocus
 						(focus)="hlpApp.selectAllContent($event)"
 					/>
@@ -238,9 +239,7 @@
 				</div>
 			</div>
 				<div *ngIf="frmColaborador.get('id_usuario').value == 0">
-					<label>Contraseña inicial</label>
-					<input type="text" pInputText formControlName="contrasenia" class="w-100" (focus)="hlpApp.selectAllContent($event)" placeholder="Se enviará al correo"/>
-					<small class="text-muted">El usuario deberá cambiarla en su primer ingreso.</small>
+					<app-password-input [control]="frmColaborador.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
 				</div>
 
 			<div class="row py-1">
@@ -651,6 +650,7 @@
 
 <!-- Diálogo Imagen del Colaborador -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoImagenColaborador"
@@ -668,6 +668,7 @@
 
 <!-- Diálogo Contrato -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '75vw' }"
 	[(visible)]="mostrarDialogoContratoColaborador"
@@ -684,6 +685,7 @@
 
 <!-- Diálogo Detalles del Colaborador -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '60vw' }"
 	[(visible)]="mostrarDialogoDetallesColaborador"

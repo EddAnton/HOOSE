@@ -159,7 +159,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles de la Notificación {{ Notificacion && Notificacion.id_notificacion == 0 ? ' Nueva' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmNotificacion" class="mt-1" [formGroup]="frmNotificacion" autocomplete="off">
@@ -351,6 +351,7 @@
 
 <!-- Diálogo Detalle -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	#dlgNotificacionDetalle
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '70vw' }"

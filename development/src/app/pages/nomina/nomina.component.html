@@ -153,7 +153,7 @@
 	[modal]="true"
 	[closable]="false"
 	header="Detalles del Pago de Nómina {{ NominaPago && NominaPago.id_colaborador_nomina == 0 ? ' Nuevo' : '' }}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmNominaPago" class="mt-1" [formGroup]="frmNominaPago" autocomplete="off">
@@ -273,6 +273,7 @@
 
 <!-- Diálogo Detalles del Gasto de Mantenimiento -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
 	[style]="{ width: '50vw' }"
 	[(visible)]="mostrarDialogoDetallesNominaPago"

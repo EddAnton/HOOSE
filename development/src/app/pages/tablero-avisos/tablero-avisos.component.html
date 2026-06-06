@@ -179,7 +179,7 @@
 	header="Detalles del Aviso {{ Aviso && Aviso.id_aviso == 0 ? ' Nuevo' : '' }} para el {{
 		PerfilUsuarioSeleccionado.perfil_usuario
 	}}"
-	styleClass="p-fluid"
+	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmAviso" class="mt-1" [formGroup]="frmAviso" autocomplete="off">
@@ -291,6 +291,7 @@
 
 <!-- Diálogo Detalle -->
 <p-dialog
+	styleClass="hoose-dialogo"
 	#dlgAvisoDetalle
 	[style]="{ width: '80vw' }"
 	[(visible)]="mostrarDialogoDetalleAviso"
