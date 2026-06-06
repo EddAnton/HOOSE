@@ -11,8 +11,9 @@ import { FileUpload } from 'primeng/fileupload';
 import { UnidadesService } from '../../../services/unidades.service';
 import { UnidadModel } from '../../../models/unidad.model';
 import { EdificiosService } from '../../../services/edificios.service';
-import { EdificioModel } from '../../../models/edificio.model';
+import { CondominiosService } from '../../../services/condominios.service';
 import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
+import { EdificioModel } from '../../../models/edificio.model';
 
 @Component({
 	selector: 'app-catalogo-unidades',
@@ -30,7 +31,9 @@ export class CatalogoUnidadesComponent implements OnInit {
 	// Columnas de la tabla
 	UnidadesCols: any[] = [
 		{ header: 'Unidad' },
-		{ header: 'Edificio' },
+		{ header: 'Torre/Edificio' },
+		{ header: 'Tipo', width: '120px' },
+		{ header: 'Nivel', width: '70px' },
 		{ header: 'Escrituras', width: '70px' },
 		{ header: 'Estatus', width: '70px' },
 		// Botones de acción
@@ -43,17 +46,21 @@ export class CatalogoUnidadesComponent implements OnInit {
 	Edificios: EdificioModel[] = [];
 
 	frmUnidad: FormGroup;
+	esSuperAdminSinCondominio: boolean = false;
+	condominiosLista: any[] = [];
+	permitirAgregarEditar: boolean = false;
+	tiposUnidad: string[] = ['Departamento', 'Casa', 'Town House', 'Pent House', 'Local Comercial', 'Oficina', 'Loft', 'Estudio'];
 	mostrarDialogoEdicionUnidad: boolean = false;
 	mostrarDialogoImagenUnidad: boolean = false;
 	mostrarDialogoEscriturasUnidad: boolean = false;
 	srcEscrituras: string = null;
 	bEscriturasBorrar: boolean = false;
-	permitirAgregarEditar: boolean = false;
-
+	
 	constructor(
 		private sesionUsuarioService: SesionUsuarioService,
 		private unidadesService: UnidadesService,
 		private edificiosService: EdificiosService,
+		private condominiosService: CondominiosService,
 		private formBuilder: FormBuilder,
 		private sanitizer: DomSanitizer,
 	) {}
@@ -70,6 +77,15 @@ export class CatalogoUnidadesComponent implements OnInit {
 
 	public onActualizarInformacion() {
 		this.Unidades = [];
+		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
+		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+		this.permitirAgregarEditar = [1, 2].includes(perfil);
+		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+		if (this.esSuperAdminSinCondominio) {
+			this.condominiosService.Listar(true).toPromise().then((r: any) => {
+				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+			});
+		}
 		this.Edificios = [];
 
 		hlpSwal.Cargando();
@@ -113,7 +129,9 @@ export class CatalogoUnidadesComponent implements OnInit {
 				.get('unidad')
 				.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(150)]);
 			this.frmUnidad.get('id_edificio').setValidators([Validators.required, Validators.min(1)]);
+			this.frmUnidad.addControl('fk_id_condominio', new FormControl(null));
 			this.frmUnidad.addControl('archivo_escrituras', new FormControl());
+			this.frmUnidad.addControl('archivo_plano', new FormControl());
 			this.frmUnidad.updateValueAndValidity();
 			this.bEscriturasBorrar = false;
 
@@ -269,4 +287,12 @@ export class CatalogoUnidadesComponent implements OnInit {
 				}
 			});
 	} */
+
+	onPlanoSeleccionado(event: any) {
+		if (event.target.files.length !== 1) return;
+		const file = event.target.files[0];
+		this.frmUnidad.patchValue({ archivo_plano: file });
+		this.frmUnidad.get('archivo_plano').updateValueAndValidity();
+	}
+
 }

@@ -10,6 +10,7 @@ import * as hlpPrimeNGTable from '../../../helpers/primeng-table-helper';
 import { CondominoResumenModel, CondominoModel } from '../../../models/usuario-condomino.model';
 import { UsuariosCondominosService } from '../../../services/usuarios-condominos.service';
 import { UnidadesService } from '../../../services/unidades.service';
+import { CondominiosService } from '../../../services/condominios.service';
 import { UnidadesEdificioModel } from '../../../models/unidad.model';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
@@ -64,12 +65,15 @@ export class CatalogoCondominosComponent implements OnInit {
   bIdentificacionReversoBorrar: boolean = false;
   bContratoBorrar: boolean = false;
   permitirAgregarEditar: boolean = false;
+	esSuperAdminSinCondominio: boolean = false;
+	condominiosLista: any[] = [];
   esUsuarioAdministrador: boolean = false;
 
   constructor(
     private sesionUsuarioService: SesionUsuarioService,
     private condominosService: UsuariosCondominosService,
     private unidadesService: UnidadesService,
+		private condominiosService: CondominiosService,
     private formBuilder: FormBuilder,
     private usuariosService: UsuariosService,
     private sanitizer: DomSanitizer,
@@ -77,6 +81,14 @@ export class CatalogoCondominosComponent implements OnInit {
 
   ngOnInit(): void {
     this.permitirAgregarEditar = [1, 2, 4].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
+		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
+		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+		if (this.esSuperAdminSinCondominio) {
+			this.condominiosService.Listar(true).toPromise().then((r: any) => {
+				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+			});
+		}
     this.esUsuarioAdministrador = [1, 2].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
     this.onActualizarInformacion();
   }
@@ -182,7 +194,8 @@ export class CatalogoCondominosComponent implements OnInit {
       this.frmCondomino.get('renta').setValidators([Validators.required, Validators.min(0.01)]);
       this.frmCondomino.get('fecha_inicio').setValidators([Validators.required]);
 
-      this.frmCondomino.addControl('archivo_imagen', new FormControl());
+      this.frmCondomino.addControl('fk_id_condominio', new FormControl(null));
+			this.frmCondomino.addControl('archivo_imagen', new FormControl());
       this.frmCondomino.addControl('archivo_identificacion_anverso', new FormControl());
       this.frmCondomino.addControl('archivo_identificacion_reverso', new FormControl());
       this.frmCondomino.addControl('archivo_contrato', new FormControl());
@@ -294,7 +307,8 @@ export class CatalogoCondominosComponent implements OnInit {
       this.frmCondomino.get('renta').setValidators([Validators.required, Validators.min(0.01)]);
       this.frmCondomino.get('fecha_inicio').setValidators([Validators.required]);
 
-      this.frmCondomino.addControl('archivo_imagen', new FormControl());
+      this.frmCondomino.addControl('fk_id_condominio', new FormControl(null));
+			this.frmCondomino.addControl('archivo_imagen', new FormControl());
       this.frmCondomino.addControl('archivo_identificacion_anverso', new FormControl());
       this.frmCondomino.addControl('archivo_identificacion_reverso', new FormControl());
       this.frmCondomino.addControl('archivo_contrato', new FormControl());
@@ -450,6 +464,9 @@ export class CatalogoCondominosComponent implements OnInit {
     }
 
     let condomino = this.frmCondomino.value;
+		if (this.esSuperAdminSinCondominio && this.frmCondomino.get('fk_id_condominio')) {
+			condomino.fk_id_condominio = this.frmCondomino.get('fk_id_condominio').value;
+		}
 
     condomino.borrar_imagen = this.bImagenBorrar ? 1 : 0;
     condomino.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;

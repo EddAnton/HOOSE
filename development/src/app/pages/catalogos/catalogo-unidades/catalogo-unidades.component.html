@@ -83,7 +83,9 @@
 		<ng-template pTemplate="body" let-Unidad>
 			<tr>
 				<td><span class="p-column-title">Unidad</span>{{ Unidad.unidad }}</td>
-				<td><span class="p-column-title">Edificio</span>{{ Unidad.edificio }}</td>
+				<td><span class="p-column-title">Torre/Edificio</span>{{ Unidad.edificio }}</td>
+				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Unidad.tipo_unidad || 'Departamento' }}</span></td>
+				<td class="text-center"><span class="p-column-title">Nivel</span>{{ Unidad.nivel || '-' }}</td>
 				<td class="text-md-center">
 					<span class="p-column-title">Escrituras</span>
 					<i
@@ -160,99 +162,90 @@
 	[style]="{ width: '50vw' }"
 	[modal]="true"
 	[closable]="false"
-	header="Detalles de la Unidad {{ Unidad && Unidad.id_unidad == 0 ? ' Nueva' : '' }}"
+	header="{{ Unidad && Unidad.id_unidad == 0 ? 'Nueva Unidad' : 'Editar Unidad' }}"
 	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmUnidad" class="mt-1" [formGroup]="frmUnidad" autocomplete="off">
-			<!-- Edificio -->
-			<div class="row py-1">
-				<div class="col-12 form-label-group">
-					<label for="cmbEdificio">Edificio</label>
-					<select #cmbEdificio id="cmbEdificio" formControlName="id_edificio" class="form-select" autofocus>
-						<option [value]="0" disabled selected>Selecciona una opción...</option>
-						<option *ngFor="let edificio of Edificios" [value]="edificio.id_edificio">
-							{{ edificio.edificio }}
-						</option>
+			<!-- Condominio (solo SuperAdmin sin selección) -->
+			<div class="row py-1" *ngIf="esSuperAdminSinCondominio">
+				<div class="col-12 col-md-6">
+					<label>Condominio <span class="text-danger">*</span></label>
+					<select class="form-control" formControlName="fk_id_condominio">
+						<option [value]="null" disabled>Selecciona el condominio</option>
+						<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
 					</select>
 				</div>
 			</div>
-			<!-- Unidad -->
+			<!-- Edificio y Unidad -->
 			<div class="row py-1">
-				<div class="col-12">
-					<label for="unidad">Unidad</label>
-					<input
-						type="text"
-						pInputText
-						id="txtUnidad"
-						formControlName="unidad"
-						class="uppercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
+				<div class="col-12 col-md-6">
+					<label>Torre / Edificio <span class="text-danger">*</span></label>
+					<select formControlName="id_edificio" class="form-select" autofocus>
+						<option [value]="0" disabled>Selecciona...</option>
+						<option *ngFor="let e of Edificios" [value]="e.id_edificio">{{ e.tipo || 'Edificio' }}: {{ e.edificio }}</option>
+					</select>
+				</div>
+				<div class="col-12 col-md-6">
+					<label>Nombre de la Unidad <span class="text-danger">*</span></label>
+					<input pInputText type="text" formControlName="unidad" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" />
 				</div>
 			</div>
-
-			<!-- Escrituras -->
-			<hr />
-			Escrituras
+			<!-- Tipo, Nivel, Número Interior -->
 			<div class="row py-1">
-				<!-- Escrituras de la Unidad -->
-				<div *ngIf="srcEscrituras != null" class="col-12 text-center pb-3">
-					<i
-						class="pi pi-file-pdf img-thumbnail text-danger p-3"
-						style="font-size: 7rem; cursor: pointer"
-						pTooltip="Visualizar las escrituras de la Unidad"
-						tooltipPosition="top"
-						(click)="onUnidadEscriturasMostrar()"
-					></i>
+				<div class="col-12 col-md-4">
+					<label>Tipo de Unidad</label>
+					<select class="form-select" formControlName="tipo_unidad">
+						<option *ngFor="let t of tiposUnidad" [value]="t">{{ t }}</option>
+					</select>
 				</div>
-				<div class="col-12 text-center">
-					<div class="input-group" style="display: unset">
-						<!-- Botón Seleccionar escrituras -->
-						<label
-							for="txtEscriturasArchivo"
-							class="btn btn-dark"
-							pTooltip="{{ (!Unidad.escrituras_archivo ? 'Establecer' : 'Actualizar') + ' escrituras' }}"
-							tooltipPosition="top"
-							><i class="pi pi-folder-open"></i>
-						</label>
-						<input
-							type="file"
-							id="txtEscriturasArchivo"
-							class="form-control d-none"
-							accept=".pdf"
-							aria-describedby="btnClearEscrituras"
-							pTooltip="Selecciona escrituras de la unidad"
-							tooltipPosition="top"
-							(change)="onEscriturasSeleccionadas($event)"
-						/>
-						<!-- Botón Eliminar escrituras seleccionada -->
-						<button
-							*ngIf="frmUnidad.get('archivo_escrituras').value"
-							type="button"
-							id="btnClearEscrituras"
-							class="btn btn-secondary"
-							pTooltip="Anular la elección de nuevo archivo con las  escrituras"
-							tooltipPosition="left"
-							[disabled]="!frmUnidad.get('archivo_escrituras').value"
-							(click)="onEscriturasSeleccionadasCancelar()"
-						>
-							<i class="pi pi-undo"></i>
-						</button>
-						<!-- Botón Eliminar escrituras -->
-						<button
-							*ngIf="frmUnidad.get('escrituras_archivo').value"
-							type="button"
-							icon="pi pi-trash"
-							class="btn btn-danger"
-							pTooltip="Borrar el archivo con las escrituras ya almacenado"
-							tooltipPosition="left"
-							[disabled]="!frmUnidad.get('escrituras_archivo').value"
-							(click)="onEscriturasEliminadas()"
-						>
-							<i class="pi pi-trash"></i>
-						</button>
+				<div class="col-12 col-md-4">
+					<label>Nivel / Piso</label>
+					<input pInputText type="number" formControlName="nivel" class="w-100" min="0" />
+				</div>
+				<div class="col-12 col-md-4">
+					<label>Número interior</label>
+					<input pInputText type="text" formControlName="numero_interior" class="w-100" />
+				</div>
+			</div>
+			<!-- Indiviso, M2, Cuota -->
+			<div class="row py-1">
+				<div class="col-12 col-md-4">
+					<label>% Indiviso</label>
+					<input pInputText type="number" formControlName="porcentaje_indiviso" class="w-100" min="0" step="0.0001" />
+				</div>
+				<div class="col-12 col-md-4">
+					<label>M²</label>
+					<input pInputText type="number" formControlName="metros_cuadrados" class="w-100" min="0" step="0.01" />
+				</div>
+				<div class="col-12 col-md-4">
+					<label>Cuota Mtto. Ordinaria</label>
+					<input pInputText type="number" formControlName="cuota_mantenimiento" class="w-100" min="0" step="0.01" />
+				</div>
+			</div>
+			<!-- Estacionamiento y Bodega -->
+			<div class="row py-1">
+				<div class="col-12 col-md-6">
+					<label>Estacionamiento(s)</label>
+					<input pInputText type="text" formControlName="estacionamiento" class="w-100" placeholder="Ej: E-15, E-16" />
+				</div>
+				<div class="col-12 col-md-6">
+					<label>Bodega</label>
+					<input pInputText type="text" formControlName="bodega" class="w-100" placeholder="Ej: B-03" />
+				</div>
+			</div>
+			<!-- Escrituras -->
+			<div class="row py-1">
+				<div class="col-12 col-md-6">
+					<label>Escrituras (PDF)</label>
+					<div *ngIf="srcEscrituras" class="text-center mb-2">
+						<i class="pi pi-file-pdf text-danger" style="font-size:3rem;cursor:pointer" (click)="onUnidadEscriturasMostrar()"></i>
 					</div>
+					<input type="file" class="form-control form-control-sm" accept=".pdf" (change)="onEscriturasSeleccionadas($event)" />
+				</div>
+				<div class="col-12 col-md-6">
+					<label>Plano de Distribución</label>
+					<input type="file" class="form-control form-control-sm" accept=".pdf,.png,.jpg,.jpeg" (change)="onPlanoSeleccionado($event)" />
 				</div>
 			</div>
 		</form>

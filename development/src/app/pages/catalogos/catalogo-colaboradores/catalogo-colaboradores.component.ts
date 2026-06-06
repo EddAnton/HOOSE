@@ -13,6 +13,7 @@ import { UsuariosColaboradoresService } from '../../../services/usuarios-colabor
 import { TiposMiembrosService } from '../../../services/tipos-miembros.service';
 import { TipoMiembroModel } from '../../../models/tipo-miembro.model';
 import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
+import { CondominiosService } from '../../../services/condominios.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -66,9 +67,12 @@ export class CatalogoColaboradoresComponent implements OnInit {
 	bIdentificacionReversoBorrar: boolean = false;
 	bContratoBorrar: boolean = false;
 	permitirAgregarEditar: boolean = false;
+	esSuperAdminSinCondominio: boolean = false;
+	condominiosLista: any[] = [];
 
 	constructor(
 		private sesionUsuarioService: SesionUsuarioService,
+		private condominiosService: CondominiosService,
 		private colaboradoresService: UsuariosColaboradoresService,
 		private tiposMiembrosService: TiposMiembrosService,
 		private formBuilder: FormBuilder,
@@ -78,6 +82,14 @@ export class CatalogoColaboradoresComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.permitirAgregarEditar = [1, 2].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
+		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
+		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+		if (this.esSuperAdminSinCondominio) {
+			this.condominiosService.Listar(true).toPromise().then((r: any) => {
+				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+			});
+		}
 		this.onActualizarInformacion();
 	}
 
@@ -213,7 +225,8 @@ export class CatalogoColaboradoresComponent implements OnInit {
 			this.frmColaborador.get('salario').setValidators([Validators.required, Validators.min(0.01)]);
 			this.frmColaborador.get('fecha_inicio').setValidators([Validators.required]);
 
-			this.frmColaborador.addControl('archivo_imagen', new FormControl());
+			this.frmColaborador.addControl('fk_id_condominio', new FormControl(null));
+		this.frmColaborador.addControl('archivo_imagen', new FormControl());
 			this.frmColaborador.addControl('archivo_identificacion_anverso', new FormControl());
 			this.frmColaborador.addControl('archivo_identificacion_reverso', new FormControl());
 			this.frmColaborador.addControl('archivo_contrato', new FormControl());
@@ -369,6 +382,9 @@ export class CatalogoColaboradoresComponent implements OnInit {
 		}
 
 		let colaborador = this.frmColaborador.value;
+		if (this.esSuperAdminSinCondominio && this.frmColaborador.get('fk_id_condominio')) {
+			colaborador.fk_id_condominio = this.frmColaborador.get('fk_id_condominio').value;
+		}
 
 		colaborador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		colaborador.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;

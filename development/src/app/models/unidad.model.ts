@@ -1,29 +1,41 @@
 export class UnidadModel {
-	id_unidad: number;
-	unidad: string;
-	id_edificio: number;
-	edificio: string;
-	escrituras_archivo: string;
-	estatus: number;
-	/* ocupada: number;
-	condomino: string;
-	id_condomino_contrato: number;
-	renta: number; */
+  id_unidad: number;
+  unidad: string;
+  nivel: number;
+  tipo_unidad: string;
+  numero_interior: string;
+  porcentaje_indiviso: number;
+  metros_cuadrados: number;
+  cuota_mantenimiento: number;
+  estacionamiento: string;
+  bodega: string;
+  id_edificio: number;
+  edificio: string;
+  escrituras_archivo: string;
+  plano_archivo: string;
+  estatus: number;
+  condominio_nombre: string;
 
-	constructor() {
-		return {
-			id_unidad: 0,
-			unidad: null,
-			id_edificio: 0,
-			edificio: null,
-			escrituras_archivo: null,
-			estatus: 0,
-			/* ocupada: 0,
-			condomino: null,
-			id_condomino_contrato: 0,
-			renta: 0, */
-		};
-	}
+  constructor() {
+    return {
+      id_unidad: 0,
+      unidad: null,
+      nivel: 0,
+      tipo_unidad: 'Departamento',
+      numero_interior: null,
+      porcentaje_indiviso: 0,
+      metros_cuadrados: 0,
+      cuota_mantenimiento: 0,
+      estacionamiento: null,
+      bodega: null,
+      id_edificio: 0,
+      edificio: null,
+      escrituras_archivo: null,
+      plano_archivo: null,
+      estatus: 0,
+      condominio_nombre: null,
+    };
+  }
 }
 
 export class UnidadesPropietarioResumenModel {

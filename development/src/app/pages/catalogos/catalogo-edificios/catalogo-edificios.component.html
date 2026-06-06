@@ -81,7 +81,8 @@
 		</ng-template>
 		<ng-template pTemplate="body" let-Edificio>
 			<tr>
-				<td><span class="p-column-title">Edificio</span>{{ Edificio.edificio }}</td>
+				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Edificio.tipo || 'Edificio' }}</span></td>
+				<td><span class="p-column-title">Nombre</span>{{ Edificio.edificio }}</td>
 				<td class="text-md-center">
 					<span class="p-column-title">Estatus</span>
 					<span style="cursor: pointer">
@@ -133,24 +134,64 @@
 	[style]="{ width: '50vw' }"
 	[modal]="true"
 	[closable]="false"
-	header="Detalles del Edificio {{ Edificio && Edificio.id_edificio == 0 ? ' Nuevo' : '' }}"
+	header="{{ Edificio && Edificio.id_edificio == 0 ? 'Nuevo Torre / Edificio' : 'Editar Torre / Edificio' }}"
 	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
 		<form id="frmEdificio" class="mt-1" [formGroup]="frmEdificio" autocomplete="off">
-			<!-- Edificio -->
+			<!-- Condominio (solo SuperAdmin sin selección) -->
+			<div class="row py-1" *ngIf="esSuperAdminSinCondominio">
+				<div class="col-12 col-md-6">
+					<label>Condominio <span class="text-danger">*</span></label>
+					<select class="form-control" formControlName="fk_id_condominio">
+						<option [value]="null" disabled>Selecciona el condominio</option>
+						<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
+					</select>
+				</div>
+			</div>
+			<!-- Tipo y Nombre -->
+			<div class="row py-1">
+				<div class="col-12 col-md-4">
+					<label>Tipo <span class="text-danger">*</span></label>
+					<select class="form-control" formControlName="tipo">
+						<option *ngFor="let t of tiposEdificio" [value]="t">{{ t }}</option>
+					</select>
+				</div>
+				<div class="col-12 col-md-8">
+					<label>Nombre <span class="text-danger">*</span></label>
+					<input pInputText type="text" formControlName="edificio" class="uppercase w-100" autofocus (focus)="hlpApp.selectAllContent($event)" />
+				</div>
+			</div>
+			<!-- Niveles y Unidades -->
+			<div class="row py-1">
+				<div class="col-12 col-md-6">
+					<label>Número de niveles/pisos</label>
+					<input pInputText type="number" formControlName="numero_niveles" class="w-100" min="0" />
+				</div>
+				<div class="col-12 col-md-6">
+					<label>Número de unidades</label>
+					<input pInputText type="number" formControlName="numero_unidades" class="w-100" min="0" />
+				</div>
+			</div>
+			<!-- Dirección -->
 			<div class="row py-1">
 				<div class="col-12">
-					<label for="edificio">Edificio</label>
-					<input
-						pInputText
-						type="text"
-						id="txtEdificio"
-						formControlName="edificio"
-						class="uppercase"
-						autofocus
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
+					<label>Dirección o ubicación</label>
+					<textarea pInputTextarea formControlName="direccion" class="w-100" rows="2"></textarea>
+				</div>
+			</div>
+			<!-- Descripción -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label>Descripción / Notas</label>
+					<textarea pInputTextarea formControlName="descripcion" class="w-100" rows="2"></textarea>
+				</div>
+			</div>
+			<!-- Plano -->
+			<div class="row py-1">
+				<div class="col-12">
+					<label>Plano del edificio</label>
+					<input type="file" class="form-control form-control-sm" accept=".pdf,.png,.jpg,.jpeg" (change)="onPlanoSeleccionado($event)" />
 				</div>
 			</div>
 		</form>

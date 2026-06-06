@@ -6,6 +6,8 @@ import * as hlpApp from '../../../helpers/app-helper';
 import * as hlpPrimeNGTable from '../../../helpers/primeng-table-helper';
 import { EdificioModel } from '../../../models/edificio.model';
 import { EdificiosService } from '../../../services/edificios.service';
+import { CondominiosService } from '../../../services/condominios.service';
+import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
 
 @Component({
 	selector: 'app-catalogo-edificios',
@@ -20,7 +22,8 @@ export class CatalogoEdificiosComponent implements OnInit {
 	// Tabla Edificio
 	// Columnas de la tabla
 	EdificiosCols: any[] = [
-		{ header: 'Edificio' },
+		{ header: 'Tipo', width: '120px' },
+		{ header: 'Nombre' },
 		{ header: 'Estatus', width: '70px' },
 		// Botones de acción
 		{ textAlign: 'center', width: '50px' },
@@ -31,10 +34,25 @@ export class CatalogoEdificiosComponent implements OnInit {
 	Edificio: EdificioModel;
 	frmEdificio: FormGroup;
 	mostrarDialogoEdicionEdificio: boolean = false;
+	esSuperAdminSinCondominio: boolean = false;
+	condominiosLista: any[] = [];
+	tiposEdificio: string[] = ['Torre', 'Edificio', 'Sección', 'Etapa', 'Manzana'];
+	permitirAgregarEditar: boolean = false;
 
-	constructor(private formBuilder: FormBuilder, private edificiosService: EdificiosService) {}
+	constructor(private formBuilder: FormBuilder, private edificiosService: EdificiosService,
+		private condominiosService: CondominiosService,
+		private sesionUsuarioService: SesionUsuarioService) {}
 
 	ngOnInit(): void {
+		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
+		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+		this.permitirAgregarEditar = [1, 2].includes(perfil);
+		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+		if (this.esSuperAdminSinCondominio) {
+			this.condominiosService.Listar(true).toPromise().then((r: any) => {
+				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+			});
+		}
 		this.onActualizarInformacion();
 	}
 
@@ -182,4 +200,11 @@ export class CatalogoEdificiosComponent implements OnInit {
 				}
 			});
 	}
+
+	onPlanoSeleccionado(event: any) {
+		if (event.target.files.length !== 1) return;
+		const file = event.target.files[0];
+		this.frmEdificio.patchValue({ archivo_plano: file });
+	}
+
 }

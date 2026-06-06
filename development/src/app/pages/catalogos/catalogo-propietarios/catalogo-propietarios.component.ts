@@ -10,6 +10,7 @@ import { PropietarioModel, PropietarioResumenModel } from '../../../models/usuar
 import { UnidadesEdificioModel } from '../../../models/unidad.model';
 import { UsuariosPropietariosService } from '../../../services/usuarios-propietarios.service';
 import { UnidadesService } from '../../../services/unidades.service';
+import { CondominiosService } from '../../../services/condominios.service';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
 
@@ -57,17 +58,28 @@ export class CatalogoPropietariosComponent implements OnInit {
 	bIdentificacionAnversoBorrar: boolean = false;
 	bIdentificacionReversoBorrar: boolean = false;
 	permitirAgregarEditar: boolean = false;
+	esSuperAdminSinCondominio: boolean = false;
+	condominiosLista: any[] = [];
 
 	constructor(
 		private formBuilder: FormBuilder,
 		private sesionUsuarioService: SesionUsuarioService,
 		private propietariosService: UsuariosPropietariosService,
 		private unidadesService: UnidadesService,
+		private condominiosService: CondominiosService,
 		private usuariosService: UsuariosService,
 	) {}
 
 	ngOnInit(): void {
 		this.permitirAgregarEditar = [1, 2].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
+		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
+		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
+		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+		if (this.esSuperAdminSinCondominio) {
+			this.condominiosService.Listar(true).toPromise().then((r: any) => {
+				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+			});
+		}
 		this.onActualizarInformacion();
 	}
 
@@ -164,7 +176,8 @@ export class CatalogoPropietariosComponent implements OnInit {
 			this.frmPropietario.get('identificacion_folio').setValidators([Validators.maxLength(50)]);
 			this.frmPropietario.get('identificacion_domicilio').setValidators([Validators.maxLength(255)]);
 
-			this.frmPropietario.addControl('archivo_imagen', new FormControl());
+			this.frmPropietario.addControl('fk_id_condominio', new FormControl(null));
+		this.frmPropietario.addControl('archivo_imagen', new FormControl());
 			this.frmPropietario.addControl('archivo_identificacion_anverso', new FormControl());
 			this.frmPropietario.addControl('archivo_identificacion_reverso', new FormControl());
 			this.frmPropietario.updateValueAndValidity();
@@ -292,6 +305,9 @@ export class CatalogoPropietariosComponent implements OnInit {
 		let propietario = this.frmPropietario.value;
 
 		propietario.unidades = JSON.stringify(this.Propietario.unidades.map((u) => ({ id_unidad: u.id_unidad })));
+		if (this.esSuperAdminSinCondominio && this.frmPropietario.get('fk_id_condominio')) {
+			propietario.fk_id_condominio = this.frmPropietario.get('fk_id_condominio').value;
+		}
 		propietario.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		propietario.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;
 		propietario.borrar_identificacion_reverso = this.bIdentificacionReversoBorrar ? 1 : 0;

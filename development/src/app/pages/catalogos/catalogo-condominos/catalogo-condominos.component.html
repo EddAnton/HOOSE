@@ -129,7 +129,18 @@
           <app-password-input [control]="frmCondomino.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
         </div>
 
-      <div class="row py-1">
+      
+      <div class="row py-1" *ngIf="esSuperAdminSinCondominio">
+        <div class="col-12 col-md-6">
+          <label>Condominio <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="fk_id_condominio">
+            <option [value]="null" disabled>Selecciona el condominio</option>
+            <option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
+          </select>
+        </div>
+      </div>
+
+<div class="row py-1">
         <!-- Email  -->
         <div class="col-12 col-md-6">
           <label for="txtEmail">Email <span class="text-danger">*</span></label>

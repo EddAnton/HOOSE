@@ -15,7 +15,8 @@ export class AppAuthGuard implements CanActivate {
 	canActivate(route: ActivatedRouteSnapshot): boolean {
 		if (
 			!this.routesNotToValidate.includes(route.routeConfig.path) &&
-			!this.sesionUsuarioService.condominioSeleccionado()
+			!this.sesionUsuarioService.condominioSeleccionado() &&
+this.sesionUsuarioService.obtenerIDPerfilUsuario() !== 1
     ) {
 			this.sesionUsuarioService.redireccionar('/tablero');
       Swal.Error('Debe seleccionar un condominio.');
