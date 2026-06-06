@@ -333,7 +333,7 @@ export class TableroComponent implements OnInit {
     const cards = this.data.cards;
 
     // Cards catálogo
-    const catalogoSubtitles = ['Condominios', 'Edificios / Pisos', 'Unidades', 'Propietarios', 'Condóminos', 'Colaboradores', 'Áreas comunes', 'Avisos'];
+    const catalogoSubtitles = ['Condominios', 'Edificios / Torres', 'Unidades', 'Propietarios', 'Condóminos', 'Colaboradores', 'Áreas comunes', 'Avisos'];
     this.catalogoCards = catalogoSubtitles.map(s => cards.find(c => c.subtitle === s)).filter(c => c !== undefined);
 
     // Cards financieras — orden y selección exacta

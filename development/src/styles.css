@@ -1174,3 +1174,29 @@ app-login .p-inputtext {
 .hoose-dialogo .p-picklist-filter-icon {
   color: #8a8f9e !important;
 }
+
+/* ── Secciones agrupadas en formularios ── */
+.hoose-dialogo .hoose-section {
+  background: #1a1d24;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 16px 18px 8px;
+  margin-bottom: 14px;
+}
+.hoose-dialogo .hoose-section .row {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 8px 0 !important;
+}
+.hoose-section-title {
+  color: #f0f0f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}

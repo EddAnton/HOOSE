@@ -34,7 +34,7 @@ export class SidebarComponent implements OnInit {
       },
       {
         path: '/catalogos/edificios',
-        title: 'Edificios / Pisos',
+        title: 'Edificios / Torres',
         visiblePerfilUsuario: [1, 2],
         visible: true,
         icon: 'bx bxs-building-house',

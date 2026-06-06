@@ -83,7 +83,7 @@
 		<ng-template pTemplate="body" let-Unidad>
 			<tr>
 				<td><span class="p-column-title">Unidad</span>{{ Unidad.unidad }}</td>
-				<td><span class="p-column-title">Torre/Edificio</span>{{ Unidad.edificio }}</td>
+				<td><span class="p-column-title">Edificio / Torre</span>{{ Unidad.edificio }}</td>
 				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Unidad.tipo_unidad || 'Departamento' }}</span></td>
 				<td class="text-center"><span class="p-column-title">Nivel</span>{{ Unidad.nivel || '-' }}</td>
 				<td class="text-md-center">
@@ -166,86 +166,99 @@
 	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
-		<form id="frmUnidad" class="mt-1" [formGroup]="frmUnidad" autocomplete="off">
-			<!-- Condominio (solo SuperAdmin sin selección) -->
-			<div class="row py-1" *ngIf="esSuperAdminSinCondominio">
-				<div class="col-12 col-md-6">
-					<label>Condominio <span class="text-danger">*</span></label>
-					<select class="form-control" formControlName="fk_id_condominio">
-						<option [value]="null" disabled>Selecciona el condominio</option>
-						<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
-					</select>
-				</div>
-			</div>
-			<!-- Edificio y Unidad -->
-			<div class="row py-1">
-				<div class="col-12 col-md-6">
-					<label>Torre / Edificio <span class="text-danger">*</span></label>
-					<select formControlName="id_edificio" class="form-select" autofocus>
-						<option [value]="0" disabled>Selecciona...</option>
-						<option *ngFor="let e of Edificios" [value]="e.id_edificio">{{ e.tipo || 'Edificio' }}: {{ e.edificio }}</option>
-					</select>
-				</div>
-				<div class="col-12 col-md-6">
-					<label>Nombre de la Unidad <span class="text-danger">*</span></label>
-					<input pInputText type="text" formControlName="unidad" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" />
-				</div>
-			</div>
-			<!-- Tipo, Nivel, Número Interior -->
-			<div class="row py-1">
-				<div class="col-12 col-md-4">
-					<label>Tipo de Unidad</label>
-					<select class="form-select" formControlName="tipo_unidad">
-						<option *ngFor="let t of tiposUnidad" [value]="t">{{ t }}</option>
-					</select>
-				</div>
-				<div class="col-12 col-md-4">
-					<label>Nivel / Piso</label>
-					<input pInputText type="number" formControlName="nivel" class="w-100" min="0" />
-				</div>
-				<div class="col-12 col-md-4">
-					<label>Número interior</label>
-					<input pInputText type="text" formControlName="numero_interior" class="w-100" />
-				</div>
-			</div>
-			<!-- Indiviso, M2, Cuota -->
-			<div class="row py-1">
-				<div class="col-12 col-md-4">
-					<label>% Indiviso</label>
-					<input pInputText type="number" formControlName="porcentaje_indiviso" class="w-100" min="0" step="0.0001" />
-				</div>
-				<div class="col-12 col-md-4">
-					<label>M²</label>
-					<input pInputText type="number" formControlName="metros_cuadrados" class="w-100" min="0" step="0.01" />
-				</div>
-				<div class="col-12 col-md-4">
-					<label>Cuota Mtto. Ordinaria</label>
-					<input pInputText type="number" formControlName="cuota_mantenimiento" class="w-100" min="0" step="0.01" />
-				</div>
-			</div>
-			<!-- Estacionamiento y Bodega -->
-			<div class="row py-1">
-				<div class="col-12 col-md-6">
-					<label>Estacionamiento(s)</label>
-					<input pInputText type="text" formControlName="estacionamiento" class="w-100" placeholder="Ej: E-15, E-16" />
-				</div>
-				<div class="col-12 col-md-6">
-					<label>Bodega</label>
-					<input pInputText type="text" formControlName="bodega" class="w-100" placeholder="Ej: B-03" />
-				</div>
-			</div>
-			<!-- Escrituras -->
-			<div class="row py-1">
-				<div class="col-12 col-md-6">
-					<label>Escrituras (PDF)</label>
-					<div *ngIf="srcEscrituras" class="text-center mb-2">
-						<i class="pi pi-file-pdf text-danger" style="font-size:3rem;cursor:pointer" (click)="onUnidadEscriturasMostrar()"></i>
+						<form id="frmUnidad" class="mt-1" [formGroup]="frmUnidad" autocomplete="off">
+			<!-- Contenedor: Condominio -->
+			<div class="hoose-section" *ngIf="esSuperAdminSinCondominio">
+				<div class="hoose-section-title">Condominio</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Condominio <span class="text-danger">*</span></label>
+						<select class="form-control" formControlName="fk_id_condominio">
+							<option [value]="null" disabled>Selecciona el condominio</option>
+							<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
+						</select>
 					</div>
-					<input type="file" class="form-control form-control-sm" accept=".pdf" (change)="onEscriturasSeleccionadas($event)" />
 				</div>
-				<div class="col-12 col-md-6">
-					<label>Plano de Distribución</label>
-					<input type="file" class="form-control form-control-sm" accept=".pdf,.png,.jpg,.jpeg" (change)="onPlanoSeleccionado($event)" />
+			</div>
+
+			<!-- Contenedor: Información General -->
+			<div class="hoose-section">
+				<div class="hoose-section-title">Información General</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Edificio / Torre <span class="text-danger">*</span></label>
+						<select formControlName="id_edificio" class="form-select" autofocus>
+							<option [value]="0" disabled>Selecciona...</option>
+							<option *ngFor="let e of Edificios" [value]="e.id_edificio">{{ e.tipo || 'Edificio' }}: {{ e.edificio }}</option>
+						</select>
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Nombre de la Unidad <span class="text-danger">*</span></label>
+						<input pInputText type="text" formControlName="unidad" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" />
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-12 col-md-4">
+						<label>Nivel / Piso</label>
+						<input pInputText type="number" formControlName="nivel" class="w-100" min="0" />
+					</div>
+					<div class="col-12 col-md-4">
+						<label>Tipo de Unidad</label>
+						<select class="form-select" formControlName="tipo_unidad">
+							<option *ngFor="let t of tiposUnidad" [value]="t">{{ t }}</option>
+						</select>
+					</div>
+					<div class="col-12 col-md-4">
+						<label>Número interior</label>
+						<input pInputText type="text" formControlName="numero_interior" class="w-100" />
+					</div>
+				</div>
+			</div>
+
+			<!-- Contenedor: Información Adicional -->
+			<div class="hoose-section">
+				<div class="hoose-section-title">Información Adicional</div>
+				<div class="row">
+					<div class="col-12 col-md-4">
+						<label>% Indiviso</label>
+						<input pInputText type="number" formControlName="porcentaje_indiviso" class="w-100" min="0" step="0.0001" />
+					</div>
+					<div class="col-12 col-md-4">
+						<label>M²</label>
+						<input pInputText type="number" formControlName="metros_cuadrados" class="w-100" min="0" step="0.01" />
+					</div>
+					<div class="col-12 col-md-4">
+						<label>Cuota Mtto. Ordinaria ($)</label>
+						<input pInputText type="number" formControlName="cuota_mantenimiento" class="w-100" min="0" step="0.01" />
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-12 col-md-6">
+						<label>Estacionamiento(s)</label>
+						<input pInputText type="text" formControlName="estacionamiento" class="w-100" placeholder="Ej: E-15, E-16" />
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Bodega</label>
+						<input pInputText type="text" formControlName="bodega" class="w-100" placeholder="Ej: B-03" />
+					</div>
+				</div>
+			</div>
+
+			<!-- Contenedor: Legal -->
+			<div class="hoose-section">
+				<div class="hoose-section-title">Legal</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Escrituras (PDF)</label>
+						<div *ngIf="srcEscrituras" class="text-center mb-2">
+							<i class="pi pi-file-pdf text-danger" style="font-size:3rem;cursor:pointer" (click)="onUnidadEscriturasMostrar()"></i>
+						</div>
+						<input type="file" class="form-control form-control-sm" accept=".pdf" (change)="onEscriturasSeleccionadas($event)" />
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Plano de Distribución</label>
+						<input type="file" class="form-control form-control-sm" accept=".pdf,.png,.jpg,.jpeg" (change)="onPlanoSeleccionado($event)" />
+					</div>
 				</div>
 			</div>
 		</form>
