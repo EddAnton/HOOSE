@@ -326,6 +326,7 @@ export class CatalogoPropietariosComponent implements OnInit {
 					this.Propietarios = this.OrdenarPropietarios(this.Propietarios);
 					hlpSwal.ExitoToast(r.value.msg);
 					this.mostrarDialogoEdicionPropietario = false;
+          this.onActualizarInformacion();
 				}
 			});
 	}

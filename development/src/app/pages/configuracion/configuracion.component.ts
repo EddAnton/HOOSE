@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as hlpSwal from '../../helpers/sweetalert2-helper';
 import { ConfiguracionService } from '../../services/configuracion.service';
+import { SesionUsuarioService } from '../../services/sesion-usuario.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -23,9 +24,14 @@ export class ConfiguracionComponent implements OnInit {
     { clave: 'orden_dia_minuta_apertura', label: 'Orden del Día - Lectura de Minuta', seccion: 'Acta' },
     { clave: 'orden_dia_votacion_cierre', label: 'Orden del Día - Cierre de Punto con Votación', seccion: 'Acta' },
     { clave: 'acta_cierre', label: 'Cierre del Acta', seccion: 'Acta' },
+    { clave: 'mail_host', label: 'Servidor SMTP', seccion: 'Correo' },
+    { clave: 'mail_port', label: 'Puerto', seccion: 'Correo' },
+    { clave: 'mail_user', label: 'Usuario (email)', seccion: 'Correo' },
+    { clave: 'mail_password', label: 'Contraseña', seccion: 'Correo' },
+    { clave: 'mail_from_name', label: 'Nombre remitente', seccion: 'Correo' },
   ];
 
-  secciones = ['Convocatoria', 'Acta'];
+  secciones = ['Convocatoria', 'Acta', 'Correo'];
 
   variablesConvocatoria = [
     { variable: '{{nombre_condominio}}', descripcion: 'Nombre del condominio' },
@@ -71,6 +77,8 @@ export class ConfiguracionComponent implements OnInit {
   ];
 
   editorActivo: string = null;
+  mostrarMailPassword: boolean = false;
+  esAdminOSuperAdmin: boolean = false;
   quillEditors: any = {};
 
   // Imágenes
@@ -82,9 +90,14 @@ export class ConfiguracionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private configuracionService: ConfiguracionService,
+    private sesionService: SesionUsuarioService,
   ) {}
 
-  ngOnInit() { this.cargarConfig(); }
+  ngOnInit() {
+    const perfil = this.sesionService.obtenerIDPerfilUsuario();
+    this.esAdminOSuperAdmin = [1, 2].includes(perfil);
+    this.cargarConfig();
+  }
 
   async cargarConfig() {
     hlpSwal.Cargando();
@@ -164,4 +177,24 @@ export class ConfiguracionComponent implements OnInit {
       await hlpSwal.Exito('Configuración guardada correctamente.');
     } catch(e) { await hlpSwal.Error(e); }
   }
+
+  async onProbarCorreo() {
+    const email = this.frmConfig.get('mail_user').value;
+    if (!email) {
+      hlpSwal.Error('Configura primero el usuario (email) SMTP.');
+      return;
+    }
+    // Primero guardar la config actual
+    await this.onGuardar();
+    hlpSwal.Cargando();
+    try {
+      const r: any = await this.configuracionService.ProbarCorreo().toPromise();
+      if (r && !r.error) {
+        await hlpSwal.Exito('Correo de prueba enviado a ' + email);
+      } else {
+        await hlpSwal.Error(r?.msg || 'Error al enviar correo de prueba.');
+      }
+    } catch(e) { await hlpSwal.Error(e); }
+  }
+
 }

@@ -42,4 +42,9 @@ export class ConfiguracionService {
       })
     });
   }
+
+  ProbarCorreo() {
+    return this.http.post(environment.urlBackend + 'configuracion/probar-correo', {}, { headers: this.headers });
+  }
+
 }

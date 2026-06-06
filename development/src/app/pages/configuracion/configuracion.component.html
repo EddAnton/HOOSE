@@ -106,5 +106,47 @@
         </p-fieldset>
       </div>
     </form>
+
+    <!-- Sección de Correo Electrónico -->
+    <p-fieldset *ngIf="esAdminOSuperAdmin" legend="Correo Electrónico (SMTP)" [toggleable]="true" [collapsed]="true" styleClass="mb-3">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <small class="text-muted">Configura el servidor de correo para enviar notificaciones y credenciales a los usuarios de este condominio.</small>
+        </div>
+        <div class="col-12 col-md-6 py-2" *ngIf="frmConfig">
+          <label class="fw-bold d-block mb-1">Servidor SMTP</label>
+          <input type="text" pInputText class="w-100" [formControl]="frmConfig.get('mail_host')" placeholder="smtp.ejemplo.com" />
+        </div>
+        <div class="col-12 col-md-6 py-2" *ngIf="frmConfig">
+          <label class="fw-bold d-block mb-1">Puerto</label>
+          <input type="text" pInputText class="w-100" [formControl]="frmConfig.get('mail_port')" placeholder="465" />
+        </div>
+        <div class="col-12 col-md-6 py-2" *ngIf="frmConfig">
+          <label class="fw-bold d-block mb-1">Usuario (email)</label>
+          <input type="text" pInputText class="w-100" [formControl]="frmConfig.get('mail_user')" placeholder="notificaciones@condominio.com" />
+        </div>
+        <div class="col-12 col-md-6 py-2" *ngIf="frmConfig">
+          <label class="fw-bold d-block mb-1">Contraseña</label>
+          <div style="position:relative">
+            <input [type]="mostrarMailPassword ? 'text' : 'password'" pInputText class="w-100" [formControl]="frmConfig.get('mail_password')" placeholder="••••••••" />
+            <button type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#8a8f9e;cursor:pointer"
+              (click)="mostrarMailPassword = !mostrarMailPassword">
+              <i class="pi" [ngClass]="mostrarMailPassword ? 'pi-eye-slash' : 'pi-eye'"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 py-2" *ngIf="frmConfig">
+          <label class="fw-bold d-block mb-1">Nombre remitente</label>
+          <input type="text" pInputText class="w-100" [formControl]="frmConfig.get('mail_from_name')" placeholder="Mi Condominio" />
+        </div>
+        <div class="col-12 col-md-6 py-2 d-flex align-items-end" *ngIf="frmConfig">
+          <button pButton type="button" label="Probar envío" icon="pi pi-send"
+            class="p-button-outlined p-button-secondary"
+            pTooltip="Envía un correo de prueba al email configurado"
+            (click)="onProbarCorreo()"></button>
+        </div>
+      </div>
+    </p-fieldset>
+
   </div>
 </div>

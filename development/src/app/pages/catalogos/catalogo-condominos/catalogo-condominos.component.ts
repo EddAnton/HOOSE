@@ -485,6 +485,7 @@ export class CatalogoCondominosComponent implements OnInit {
           this.Condominos = this.OrdenarCondominos(this.Condominos);
           hlpSwal.ExitoToast(r.value.msg);
           this.mostrarDialogoEdicionCondomino = false;
+          this.onActualizarInformacion();
         }
       });
   }

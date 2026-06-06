@@ -406,6 +406,7 @@ export class CatalogoColaboradoresComponent implements OnInit {
 					this.Colaboradores = this.OrdenarColaboradores(this.Colaboradores);
 					hlpSwal.ExitoToast(r.value.msg);
 					this.mostrarDialogoEdicionColaborador = false;
+          this.onActualizarInformacion();
 				}
 			});
 	}
