@@ -1208,3 +1208,62 @@ app-login .p-inputtext {
   color: #8a8f9e !important;
   font-size: 0.8rem !important;
 }
+
+/* ── Checkboxes en diálogos oscuros ── */
+.hoose-dialogo .form-check-input {
+  background-color: #181b22 !important;
+  border-color: rgba(255,255,255,0.15) !important;
+}
+.hoose-dialogo .form-check-input:checked {
+  background-color: #e91e8c !important;
+  border-color: #e91e8c !important;
+}
+
+/* ── Selects/Dropdowns en tema oscuro ── */
+.hoose-dialogo select.form-select,
+.hoose-dialogo select.form-control {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e91e8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px 12px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding-right: 2.5rem !important;
+}
+
+/* ── Calendarios PrimeNG ── */
+.hoose-dialogo .p-calendar .p-datepicker-trigger {
+  background: #e91e8c !important;
+  border-color: #e91e8c !important;
+  color: #fff !important;
+}
+.hoose-dialogo .p-calendar .p-inputtext {
+  background: #0e1016 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+}
+
+/* ── InputNumber PrimeNG ── */
+.hoose-dialogo .p-inputnumber .p-inputtext {
+  background: #0e1016 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+}
+
+/* ── File inputs ── */
+.hoose-dialogo input[type="file"].form-control,
+.hoose-dialogo input[type="file"].form-control-sm {
+  background: #0e1016 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #8a8f9e !important;
+}
+.hoose-dialogo input[type="file"]::file-selector-button {
+  background: #232730 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #ccc !important;
+}
+
+/* ── Number inputs spin buttons rosa ── */
+.hoose-dialogo input[type="number"]::-webkit-inner-spin-button {
+  opacity: 0.5;
+}

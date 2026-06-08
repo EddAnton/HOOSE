@@ -244,41 +244,42 @@
 						<div class="p-inputgroup"><span class="p-inputgroup-addon">$</span><p-inputNumber formControlName="renta" mode="decimal" locale="es-MX" [minFractionDigits]="2" [maxFractionDigits]="2" [step]="0" [inputStyle]="{ 'text-align': 'right' }" (onFocus)="hlpApp.selectAllContent($event)"></p-inputNumber></div>
 					</div>
 					<div class="col-12 col-md-4">
-						<label>Fecha Límite de Pago <span class="text-danger">*</span></label>
+						<label>Día límite de pago <span class="text-danger">*</span></label>
 						<input pInputText type="number" formControlName="fecha_limite_pago" class="w-100" min="1" max="31" placeholder="Día del mes" />
 					</div>
 				</div>
 				<div class="row mt-2">
-					<div class="col-12 col-md-6">
-						<label>Otros Servicios Incluidos</label>
-						<div class="d-flex flex-wrap gap-2 mt-1">
-							<label *ngFor="let s of serviciosDisponibles" class="d-flex align-items-center gap-1" style="cursor:pointer">
-								<input type="checkbox" [value]="s" (change)="onServicioToggle($event, s)" [checked]="serviciosSeleccionados.includes(s)" /> {{ s }}
-							</label>
-						</div>
+					<div class="col-12 col-md-3">
+						<label>Fecha Inicio <span class="text-danger">*</span></label>
+						<p-calendar [showIcon]="true" formControlName="fecha_inicio" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" inputStyleClass="uppercase"></p-calendar>
 					</div>
 					<div class="col-12 col-md-3">
-						<label>Fecha Inicio Alquiler <span class="text-danger">*</span></label>
-						<p-calendar formControlName="fecha_inicio" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+						<label>Fecha Término <span class="text-danger">*</span></label>
+						<p-calendar [showIcon]="true" formControlName="fecha_fin" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" inputStyleClass="uppercase"></p-calendar>
 					</div>
 					<div class="col-12 col-md-3">
-						<label>Fecha Término Alquiler <span class="text-danger">*</span></label>
-						<p-calendar formControlName="fecha_fin" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
-					</div>
-				</div>
-				<div class="row mt-2">
-					<div class="col-12 col-md-4">
-						<label>Penalización por pago tardío <span class="text-danger">*</span></label>
+						<label>Penalización tardío <span class="text-danger">*</span></label>
 						<select class="form-select" formControlName="penalizacion_pago_tardio">
 							<option [value]="0">No</option>
 							<option [value]="1">Sí</option>
 						</select>
 					</div>
-					<div class="col-12 col-md-4" *ngIf="frmCondomino.get('penalizacion_pago_tardio')?.value == 1">
-						<label>% Penalización por día <span class="text-danger">*</span></label>
+					<div class="col-12 col-md-3" *ngIf="frmCondomino.get('penalizacion_pago_tardio')?.value == 1">
+						<label>% por día <span class="text-danger">*</span></label>
 						<div class="p-inputgroup"><input pInputText type="number" formControlName="porcentaje_penalizacion" class="w-100" min="0" max="100" step="0.01" /><span class="p-inputgroup-addon">%</span></div>
 					</div>
-					<div class="col-12 col-md-4">
+				</div>
+				<div class="row mt-2">
+					<div class="col-12 col-md-6">
+						<label>Servicios incluidos</label>
+						<div class="d-flex flex-wrap gap-3 mt-1 p-2" style="background:#181b22;border-radius:6px;border:1px solid rgba(255,255,255,0.08)">
+							<div *ngFor="let s of serviciosDisponibles" class="form-check form-check-inline mb-0">
+								<input class="form-check-input" type="checkbox" [id]="'svc_'+s" [value]="s" (change)="onServicioToggle($event, s)" [checked]="serviciosSeleccionados.includes(s)" />
+								<label class="form-check-label" [for]="'svc_'+s" style="color:#ccc;font-size:0.8rem">{{ s }}</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
 						<label>Cuota de Mantenimiento <span class="text-danger">*</span></label>
 						<select class="form-select" formControlName="cuota_mantenimiento_aplica">
 							<option [value]="0">No aplica</option>
@@ -307,11 +308,11 @@
 				<div class="row mt-2">
 					<div class="col-12 col-md-6">
 						<label>Fecha de Firma del Contrato</label>
-						<p-calendar formControlName="contrato_fecha_firma" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+						<p-calendar [showIcon]="true" formControlName="contrato_fecha_firma" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Fecha de Vencimiento del Contrato</label>
-						<p-calendar formControlName="contrato_fecha_vencimiento" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+						<p-calendar [showIcon]="true" formControlName="contrato_fecha_vencimiento" dateFormat="dd-MM-yy" [appendTo]="dlgCondomino" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
 					</div>
 				</div>
 			</div>
