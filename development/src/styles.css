@@ -1267,3 +1267,45 @@ app-login .p-inputtext {
 .hoose-dialogo input[type="number"]::-webkit-inner-spin-button {
   opacity: 0.5;
 }
+
+/* ── PrimeNG Dropdown y MultiSelect en tema oscuro ── */
+.hoose-dialogo .p-dropdown,
+.hoose-dialogo .p-multiselect {
+  background: #0e1016 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+  width: 100% !important;
+}
+.hoose-dialogo .p-dropdown .p-dropdown-label,
+.hoose-dialogo .p-multiselect .p-multiselect-label {
+  color: #f0f0f0 !important;
+  background: transparent !important;
+}
+.hoose-dialogo .p-dropdown .p-dropdown-trigger,
+.hoose-dialogo .p-multiselect .p-multiselect-trigger {
+  color: #8a8f9e !important;
+  background: transparent !important;
+}
+.hoose-dialogo .p-dropdown-panel,
+.hoose-dialogo .p-multiselect-panel {
+  background: #1a1d24 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+.hoose-dialogo .p-dropdown-panel .p-dropdown-items .p-dropdown-item,
+.hoose-dialogo .p-multiselect-panel .p-multiselect-items .p-multiselect-item {
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover,
+.hoose-dialogo .p-multiselect-panel .p-multiselect-items .p-multiselect-item:hover {
+  background: #232730 !important;
+}
+.hoose-dialogo .p-dropdown-panel .p-dropdown-filter,
+.hoose-dialogo .p-multiselect-panel .p-multiselect-filter-container .p-inputtext {
+  background: #0e1016 !important;
+  color: #f0f0f0 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+.p-multiselect-panel .p-multiselect-header {
+  background: #1a1d24 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}

@@ -53,6 +53,15 @@ export class CatalogoCondominosComponent implements OnInit {
 	mostrarDialogoEdicionCondomino: boolean = false;
 	serviciosDisponibles: string[] = ['Agua', 'Energía Eléctrica', 'Gas', 'Limpia Pública', 'Otros'];
 	serviciosSeleccionados: string[] = [];
+	penalizacionOpciones: any[] = [{label: 'No', value: 0}, {label: 'Sí', value: 1}];
+	cuotaMttoOpciones: any[] = [{label: 'No aplica', value: 0}, {label: 'Sí, a cargo del Condómino', value: 1}];
+	diasPagoOpciones: any[] = [
+		{label: 'Día 1', value: 1}, {label: 'Día 5', value: 5}, {label: 'Día 10', value: 10},
+		{label: 'Día 15', value: 15}, {label: 'Día 20', value: 20}, {label: 'Día 25', value: 25},
+		{label: 'Día 28', value: 28}, {label: 'Último día del mes', value: 31}
+	];
+	representacionOpciones: any[] = [{label: 'No tiene derecho', value: 0}, {label: 'Sí, representa al Propietario', value: 1}];
+	serviciosOpciones: any[] = [{label: 'Agua', value: 'Agua'}, {label: 'Energía Eléctrica', value: 'Energía Eléctrica'}, {label: 'Gas', value: 'Gas'}, {label: 'Limpia Pública', value: 'Limpia Pública'}, {label: 'Otros', value: 'Otros'}];
   mostrarDialogoDeshabilitarCondomino: boolean = false;
   mostrarDialogoImagenCondomino: boolean = false;
   mostrarDialogoDetallesCondomino: boolean = false;
@@ -83,7 +92,7 @@ export class CatalogoCondominosComponent implements OnInit {
 		this.frmCondomino = this.formBuilder.group(new CondominoModel());
 		this.frmCondomino.addControl('apellidos', new FormControl(null));
 		this.frmCondomino.addControl('fecha_limite_pago', new FormControl(1));
-		this.frmCondomino.addControl('otros_servicios', new FormControl(null));
+		this.frmCondomino.addControl('otros_servicios', new FormControl([]));
 		this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(0));
 		this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(0));
 		this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(0));

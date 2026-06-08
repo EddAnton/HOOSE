@@ -223,10 +223,7 @@
 				<div class="row">
 					<div class="col-12">
 						<label>Unidad disponible para renta <span class="text-danger">*</span></label>
-						<select formControlName="id_unidad" class="form-select">
-							<option [value]="0" disabled>Selecciona una opción...</option>
-							<option *ngFor="let unidad of UnidadesDisponiblesRenta" [value]="unidad.id_unidad">{{ unidad.unidad }}</option>
-						</select>
+						<p-dropdown [options]="UnidadesDisponiblesRenta" formControlName="id_unidad" optionLabel="unidad" optionValue="id_unidad" placeholder="Selecciona una unidad..." [style]="{width:'100%'}" [filter]="true" filterBy="unidad"></p-dropdown>
 					</div>
 				</div>
 			</div>
@@ -245,7 +242,7 @@
 					</div>
 					<div class="col-12 col-md-4">
 						<label>Día límite de pago <span class="text-danger">*</span></label>
-						<input pInputText type="number" formControlName="fecha_limite_pago" class="w-100" min="1" max="31" placeholder="Día del mes" />
+						<p-dropdown [options]="diasPagoOpciones" formControlName="fecha_limite_pago" placeholder="Seleccionar día..." [style]="{width:'100%'}"></p-dropdown>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -259,10 +256,7 @@
 					</div>
 					<div class="col-12 col-md-3">
 						<label>Penalización tardío <span class="text-danger">*</span></label>
-						<select class="form-select" formControlName="penalizacion_pago_tardio">
-							<option [value]="0">No</option>
-							<option [value]="1">Sí</option>
-						</select>
+						<p-dropdown [options]="penalizacionOpciones" formControlName="penalizacion_pago_tardio" [style]="{width:'100%'}"></p-dropdown>
 					</div>
 					<div class="col-12 col-md-3" *ngIf="frmCondomino.get('penalizacion_pago_tardio')?.value == 1">
 						<label>% por día <span class="text-danger">*</span></label>
@@ -272,19 +266,11 @@
 				<div class="row mt-2">
 					<div class="col-12 col-md-6">
 						<label>Servicios incluidos</label>
-						<div class="d-flex flex-wrap gap-3 mt-1 p-2" style="background:#181b22;border-radius:6px;border:1px solid rgba(255,255,255,0.08)">
-							<div *ngFor="let s of serviciosDisponibles" class="form-check form-check-inline mb-0">
-								<input class="form-check-input" type="checkbox" [id]="'svc_'+s" [value]="s" (change)="onServicioToggle($event, s)" [checked]="serviciosSeleccionados.includes(s)" />
-								<label class="form-check-label" [for]="'svc_'+s" style="color:#ccc;font-size:0.8rem">{{ s }}</label>
-							</div>
-						</div>
+						<p-multiSelect [options]="serviciosOpciones" formControlName="otros_servicios" defaultLabel="Seleccionar servicios" [style]="{width:'100%'}"></p-multiSelect>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Cuota de Mantenimiento <span class="text-danger">*</span></label>
-						<select class="form-select" formControlName="cuota_mantenimiento_aplica">
-							<option [value]="0">No aplica</option>
-							<option [value]="1">Sí, a cargo del Condómino</option>
-						</select>
+						<p-dropdown [options]="cuotaMttoOpciones" formControlName="cuota_mantenimiento_aplica" [style]="{width:'100%'}"></p-dropdown>
 					</div>
 				</div>
 			</div>
@@ -295,10 +281,7 @@
 				<div class="row">
 					<div class="col-12 col-md-6">
 						<label>Representación en Asambleas <span class="text-danger">*</span></label>
-						<select class="form-select" formControlName="representacion_asamblea">
-							<option [value]="0">No tiene derecho</option>
-							<option [value]="1">Sí, representa al Propietario</option>
-						</select>
+						<p-dropdown [options]="representacionOpciones" formControlName="representacion_asamblea" [style]="{width:'100%'}"></p-dropdown>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Archivo del Contrato</label>
