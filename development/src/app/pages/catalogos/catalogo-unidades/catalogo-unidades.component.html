@@ -192,25 +192,25 @@
 							<option *ngFor="let e of Edificios" [value]="e.id_edificio">{{ e.tipo || 'Edificio' }}: {{ e.edificio }}</option>
 						</select>
 					</div>
-					<div class="col-12 col-md-6">
-						<label>Nombre de la Unidad <span class="text-danger">*</span></label>
-						<input pInputText type="text" formControlName="unidad" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" />
+					<div class="col-12 col-md-3">
+						<label>Nivel / Piso</label>
+						<input pInputText type="number" formControlName="nivel" class="w-100" min="0" />
+					</div>
+					<div class="col-12 col-md-3">
+						<label>Número interior</label>
+						<input pInputText type="text" formControlName="numero_interior" class="w-100" (input)="onGenerarNombreUnidad()" />
 					</div>
 				</div>
 				<div class="row mt-2">
 					<div class="col-12 col-md-4">
-						<label>Nivel / Piso</label>
-						<input pInputText type="number" formControlName="nivel" class="w-100" min="0" />
-					</div>
-					<div class="col-12 col-md-4">
 						<label>Tipo de Unidad</label>
-						<select class="form-select" formControlName="tipo_unidad">
+						<select class="form-select" formControlName="tipo_unidad" (change)="onGenerarNombreUnidad()">
 							<option *ngFor="let t of tiposUnidad" [value]="t">{{ t }}</option>
 						</select>
 					</div>
-					<div class="col-12 col-md-4">
-						<label>Número interior</label>
-						<input pInputText type="text" formControlName="numero_interior" class="w-100" />
+					<div class="col-12 col-md-8">
+						<label>Nombre de la Unidad <span class="text-danger">*</span></label>
+						<input pInputText type="text" formControlName="unidad" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" />
 					</div>
 				</div>
 			</div>
@@ -221,15 +221,15 @@
 				<div class="row">
 					<div class="col-12 col-md-4">
 						<label>% Indiviso</label>
-						<input pInputText type="number" formControlName="porcentaje_indiviso" class="w-100" min="0" step="0.0001" />
+						<div class="p-inputgroup"><input pInputText type="number" formControlName="porcentaje_indiviso" class="w-100" min="0" max="100" step="0.01" /><span class="p-inputgroup-addon">%</span></div>
 					</div>
 					<div class="col-12 col-md-4">
 						<label>M²</label>
-						<input pInputText type="number" formControlName="metros_cuadrados" class="w-100" min="0" step="0.01" />
+						<div class="p-inputgroup"><input pInputText type="number" formControlName="metros_cuadrados" class="w-100" min="0" step="0.01" /><span class="p-inputgroup-addon">m²</span></div>
 					</div>
 					<div class="col-12 col-md-4">
-						<label>Cuota Mtto. Ordinaria ($)</label>
-						<input pInputText type="number" formControlName="cuota_mantenimiento" class="w-100" min="0" step="0.01" />
+						<label>Cuota Mtto. Ordinaria</label>
+						<div class="p-inputgroup"><span class="p-inputgroup-addon">$</span><input pInputText type="number" formControlName="cuota_mantenimiento" class="w-100" min="0" step="0.01" /></div>
 					</div>
 				</div>
 				<div class="row mt-2">

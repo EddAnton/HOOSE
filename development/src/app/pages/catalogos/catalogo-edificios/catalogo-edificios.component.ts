@@ -41,7 +41,8 @@ export class CatalogoEdificiosComponent implements OnInit {
 
 	constructor(private formBuilder: FormBuilder, private edificiosService: EdificiosService,
 		private condominiosService: CondominiosService,
-		private sesionUsuarioService: SesionUsuarioService) {}
+		private sesionUsuarioService: SesionUsuarioService) {
+		this.frmEdificio = this.formBuilder.group(new EdificioModel());}
 
 	ngOnInit(): void {
 		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
@@ -85,7 +86,7 @@ export class CatalogoEdificiosComponent implements OnInit {
 			this.Edificio = await this.edificiosService
 				.ListarEdificio(idEdificio)
 				.toPromise()
-				.then((r) => r['edificios'])
+				.then((r) => ({ ...new EdificioModel(), ...r['edificios'] }))
 				.catch(async (e) => {
 					await hlpSwal.Error(e).then(() => null);
 				})

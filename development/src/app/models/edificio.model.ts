@@ -9,6 +9,8 @@ export class EdificioModel {
   direccion: string;
   descripcion: string;
   plano_archivo: string;
+  fk_id_condominio: number;
+  archivo_plano: any;
   estatus: number;
   condominio_nombre: string;
 
@@ -22,6 +24,8 @@ export class EdificioModel {
       direccion: null,
       descripcion: null,
       plano_archivo: null,
+      fk_id_condominio: null,
+      archivo_plano: null,
       estatus: 0,
       condominio_nombre: null,
     };

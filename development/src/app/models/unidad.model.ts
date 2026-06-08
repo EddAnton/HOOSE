@@ -13,6 +13,9 @@ export class UnidadModel {
   edificio: string;
   escrituras_archivo: string;
   plano_archivo: string;
+  fk_id_condominio: number;
+  archivo_escrituras: any;
+  archivo_plano: any;
   estatus: number;
   condominio_nombre: string;
 
@@ -32,6 +35,9 @@ export class UnidadModel {
       edificio: null,
       escrituras_archivo: null,
       plano_archivo: null,
+      fk_id_condominio: null,
+      archivo_escrituras: null,
+      archivo_plano: null,
       estatus: 0,
       condominio_nombre: null,
     };

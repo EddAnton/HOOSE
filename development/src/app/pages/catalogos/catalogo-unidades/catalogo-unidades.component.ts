@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, isDevMode } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { environment } from '../../../../environments/environment';
@@ -63,7 +63,8 @@ export class CatalogoUnidadesComponent implements OnInit {
 		private condominiosService: CondominiosService,
 		private formBuilder: FormBuilder,
 		private sanitizer: DomSanitizer,
-	) {}
+	) {
+		this.frmUnidad = this.formBuilder.group(new UnidadModel());}
 
 	ngOnInit(): void {
 		this.permitirAgregarEditar = [1, 2].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
@@ -129,9 +130,7 @@ export class CatalogoUnidadesComponent implements OnInit {
 				.get('unidad')
 				.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(150)]);
 			this.frmUnidad.get('id_edificio').setValidators([Validators.required, Validators.min(1)]);
-			this.frmUnidad.addControl('fk_id_condominio', new FormControl(null));
-			this.frmUnidad.addControl('archivo_escrituras', new FormControl());
-			this.frmUnidad.addControl('archivo_plano', new FormControl());
+			
 			this.frmUnidad.updateValueAndValidity();
 			this.bEscriturasBorrar = false;
 
@@ -293,6 +292,16 @@ export class CatalogoUnidadesComponent implements OnInit {
 		const file = event.target.files[0];
 		this.frmUnidad.patchValue({ archivo_plano: file });
 		this.frmUnidad.get('archivo_plano').updateValueAndValidity();
+	}
+
+
+	onGenerarNombreUnidad() {
+		if (this.Unidad && this.Unidad.id_unidad > 0) return;
+		const tipo = this.frmUnidad?.get('tipo_unidad')?.value || '';
+		const interior = this.frmUnidad?.get('numero_interior')?.value || '';
+		if (tipo && interior) {
+			this.frmUnidad.patchValue({ unidad: tipo + ' ' + interior });
+		}
 	}
 
 }

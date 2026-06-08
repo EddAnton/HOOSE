@@ -1200,3 +1200,11 @@ app-login .p-inputtext {
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
+
+/* ── InputGroup addons en diálogos ── */
+.hoose-dialogo .p-inputgroup-addon {
+  background: #181b22 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #8a8f9e !important;
+  font-size: 0.8rem !important;
+}
