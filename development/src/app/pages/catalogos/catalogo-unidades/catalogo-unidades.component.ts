@@ -198,7 +198,9 @@ export class CatalogoUnidadesComponent implements OnInit {
 				allowOutsideClick: () => !hlpSwal.estaCargando,
 			})
 			.then((r) => {
-				if (r.value && !r.value.err && r.value.unidad) {
+				if (r.value && r.value.err && r.value.msg) {
+					hlpSwal.Error(r.value.msg);
+				} else if (r.value && !r.value.err && r.value.unidad) {
 					const c = r.value.unidad;
 					if (unidad.id_unidad == 0) {
 						this.Unidades.push(c);

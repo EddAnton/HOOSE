@@ -134,7 +134,9 @@ export class CatalogoEdificiosComponent implements OnInit {
 				allowOutsideClick: () => !hlpSwal.estaCargando,
 			})
 			.then((r) => {
-				if (r.value && !r.value.err && r.value.edificio) {
+				if (r.value && r.value.err && r.value.msg) {
+					hlpSwal.Error(r.value.msg);
+				} else if (r.value && !r.value.err && r.value.edificio) {
 					const c = r.value.edificio;
 					if (edificio.id_edificio == 0) {
 						this.Edificios.push(c);

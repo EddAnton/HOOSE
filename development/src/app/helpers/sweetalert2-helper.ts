@@ -296,3 +296,8 @@ export function Info(mensaje: any) {
 	}
 	return respuesta;
 }
+
+export function showValidationMessage(msg: string) {
+  const swal2 = require('sweetalert2');
+  swal2.showValidationMessage(msg);
+}
