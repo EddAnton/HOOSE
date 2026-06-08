@@ -235,8 +235,8 @@
 					</div>
 				</div>
 				<div class="row mt-2">
-					<div class="col-12 col-md-6 text-center">
-						<label class="d-block">Anverso</label>
+					<div class="col-12 col-md-6">
+						<label class="d-block">Anverso Identificación</label>
 						<img *ngIf="srcIdentificacionAnverso" class="imagenThumbnail img-thumbnail mb-2" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionAnverso" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
 						<div class="d-flex gap-2 justify-content-center">
 							<label for="txtAnversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
@@ -245,8 +245,8 @@
 							<button *ngIf="frmPropietario.get('identificacion_anverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(2)"><i class="pi pi-trash"></i></button>
 						</div>
 					</div>
-					<div class="col-12 col-md-6 text-center">
-						<label class="d-block">Reverso</label>
+					<div class="col-12 col-md-6">
+						<label class="d-block">Reverso Identificación</label>
 						<img *ngIf="srcIdentificacionReverso" class="imagenThumbnail img-thumbnail mb-2" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionReverso" (click)="onImagenMostrar(srcIdentificacionReverso)" />
 						<div class="d-flex gap-2 justify-content-center">
 							<label for="txtReversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
