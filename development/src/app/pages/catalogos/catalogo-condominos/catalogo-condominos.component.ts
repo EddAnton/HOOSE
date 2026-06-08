@@ -50,7 +50,9 @@ export class CatalogoCondominosComponent implements OnInit {
 
   frmCondomino: FormGroup;
   frmCondominoDeshabilitar: FormGroup;
-  mostrarDialogoEdicionCondomino: boolean = false;
+	mostrarDialogoEdicionCondomino: boolean = false;
+	serviciosDisponibles: string[] = ['Agua', 'Energía Eléctrica', 'Gas', 'Limpia Pública', 'Otros'];
+	serviciosSeleccionados: string[] = [];
   mostrarDialogoDeshabilitarCondomino: boolean = false;
   mostrarDialogoImagenCondomino: boolean = false;
   mostrarDialogoDetallesCondomino: boolean = false;
@@ -79,7 +81,15 @@ export class CatalogoCondominosComponent implements OnInit {
     private sanitizer: DomSanitizer,
   ) {
 		this.frmCondomino = this.formBuilder.group(new CondominoModel());
-		this.frmCondomino.addControl('apellidos', new FormControl(null)); }
+		this.frmCondomino.addControl('apellidos', new FormControl(null));
+		this.frmCondomino.addControl('fecha_limite_pago', new FormControl(1));
+		this.frmCondomino.addControl('otros_servicios', new FormControl(null));
+		this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(0));
+		this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(0));
+		this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(0));
+		this.frmCondomino.addControl('representacion_asamblea', new FormControl(0));
+		this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
+		this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null)); }
 
   ngOnInit(): void {
     this.permitirAgregarEditar = [1, 2, 4].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
@@ -503,7 +513,7 @@ export class CatalogoCondominosComponent implements OnInit {
           }
           this.Condominos = this.OrdenarCondominos(this.Condominos);
           hlpSwal.ExitoToast(r.value.msg);
-          this.mostrarDialogoEdicionCondomino = false;
+	this.mostrarDialogoEdicionCondomino = false;
           this.onActualizarInformacion();
         }
       });
@@ -514,7 +524,7 @@ export class CatalogoCondominosComponent implements OnInit {
     this.srcIdentificacionAnverso = null;
     this.srcIdentificacionReverso = null;
     this.srcContrato = null;
-    this.mostrarDialogoEdicionCondomino = false;
+	this.mostrarDialogoEdicionCondomino = false;
   }
 
   onCondominoAlternarEstatus(condomino: CondominoResumenModel = null) {
@@ -700,4 +710,15 @@ export class CatalogoCondominosComponent implements OnInit {
 		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
 		this.frmCondomino.patchValue({ usuario: usuario });
 		}
+	
+
+	onServicioToggle(event, servicio: string) {
+		if (event.target.checked) {
+			this.serviciosSeleccionados.push(servicio);
+		} else {
+			this.serviciosSeleccionados = this.serviciosSeleccionados.filter(s => s !== servicio);
+		}
+		this.frmCondomino.patchValue({ otros_servicios: this.serviciosSeleccionados.join(',') });
 	}
+
+}
