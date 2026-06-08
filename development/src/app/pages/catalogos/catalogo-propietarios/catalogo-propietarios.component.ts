@@ -68,7 +68,9 @@ export class CatalogoPropietariosComponent implements OnInit {
 		private unidadesService: UnidadesService,
 		private condominiosService: CondominiosService,
 		private usuariosService: UsuariosService,
-	) {}
+	) {
+		this.frmPropietario = this.formBuilder.group(new PropietarioModel());
+		this.frmPropietario.addControl('apellidos', new FormControl(null));}
 
 	ngOnInit(): void {
 		this.permitirAgregarEditar = [1, 2].includes(this.sesionUsuarioService.obtenerIDPerfilUsuario());
@@ -453,14 +455,12 @@ export class CatalogoPropietariosComponent implements OnInit {
 
 
 	onGenerarUsuario() {
-		const nombre = this.frmPropietario.get('nombre').value || '';
-		if (!nombre || nombre.length < 3) return;
-		const partes = nombre.toLowerCase().trim().split(/\s+/);
-		let usuario = '';
-		if (partes.length >= 2) {
-			usuario = partes[0] + '.' + partes[partes.length - 1];
-		} else {
-			usuario = partes[0];
+		const nombre = (this.frmPropietario.get('nombre').value || '').trim();
+		const apellidos = (this.frmPropietario.get('apellidos')?.value || '').trim();
+		if (!nombre || nombre.length < 2) return;
+		let usuario = nombre.toLowerCase().split(/\s+/)[0];
+		if (apellidos) {
+			usuario += '.' + apellidos.toLowerCase().split(/\s+/)[0];
 		}
 		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
 		if (this.frmPropietario.get('id_usuario').value == 0) {

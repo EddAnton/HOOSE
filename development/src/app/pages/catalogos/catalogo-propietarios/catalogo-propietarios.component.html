@@ -167,361 +167,124 @@
 	styleClass="hoose-dialogo"
 >
 	<ng-template pTemplate="content">
-		<form id="frmPropietario" class="mt-1" [formGroup]="frmPropietario" autocomplete="off">
-<div class="row py-1" *ngIf="esSuperAdminSinCondominio">
-				<div class="col-12 col-md-6">
-					<label>Condominio <span class="text-danger">*</span></label>
-					<select class="form-control" formControlName="fk_id_condominio">
-						<option [value]="null" disabled>Selecciona el condominio</option>
-						<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
-					</select>
+		<form *ngIf="frmPropietario" id="frmPropietario" class="mt-1" [formGroup]="frmPropietario" autocomplete="off">
+			<!-- Condominio -->
+			<div class="hoose-section" *ngIf="esSuperAdminSinCondominio">
+				<div class="hoose-section-title">Condominio</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Condominio <span class="text-danger">*</span></label>
+						<select class="form-control" formControlName="fk_id_condominio">
+							<option [value]="null" disabled>Selecciona el condominio</option>
+							<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
+						</select>
+					</div>
 				</div>
 			</div>
 
-<div class="row py-1" *ngIf="esSuperAdminSinCondominio">
-				<div class="col-12 col-md-6">
-					<label>Condominio <span class="text-danger">*</span></label>
-					<select class="form-control" formControlName="fk_id_condominio">
-						<option [value]="null" disabled>Selecciona el condominio</option>
-						<option *ngFor="let c of condominiosLista" [value]="c.value">{{ c.label }}</option>
-					</select>
+			<!-- Datos Generales -->
+			<div class="hoose-section">
+				<div class="hoose-section-title">Datos Generales</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Nombre(s) <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="nombre" class="uppercase w-100" autofocus (focus)="hlpApp.selectAllContent($event)" (input)="onGenerarUsuario()" />
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Apellidos <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="apellidos" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" (input)="onGenerarUsuario()" />
+					</div>
 				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Nombre -->
-				<div class="col-12 col-md-8">
-					<label for="txtNombre">Nombre <span class="text-danger">*</span></label>
-					<input
-						type="text"
-						pInputText
-						id="txtNombre"
-						formControlName="nombre"
-						class="uppercase"
-						autofocus
-						(focus)="hlpApp.selectAllContent($event)"
-						(input)="onGenerarUsuario()"
-					/>
+				<div class="row mt-2">
+					<div class="col-12 col-md-6">
+						<label>Email <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="email" class="lowercase w-100" (focus)="hlpApp.selectAllContent($event)" />
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Teléfono <span class="text-danger">*</span></label>
+						<p-inputMask formControlName="telefono" mask="(9999) 99-9999" unmask="true" placeholder="(9999) 99-9999" (focus)="hlpApp.selectAllContent($event)"></p-inputMask>
+					</div>
 				</div>
-				<!-- Usuario -->
-				<div class="col-12 col-md-4">
-					<label for="txtUsuario">Usuario <span class="text-danger">*</span></label>
-					<input
-						type="text"
-						pInputText
-						id="txtUsuario"
-						formControlName="usuario"
-						class="lowercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
-				</div>
-				<div class="col-12" *ngIf="frmPropietario.get('id_usuario').value == 0">
-					<app-password-input [control]="frmPropietario.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Email  -->
-				<div class="col-12 col-md-6">
-					<label for="txtEmail">Email <span class="text-danger">*</span></label>
-					<input
-						type="text"
-						pInputText
-						id="txtEmail"
-						formControlName="email"
-						class="lowercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
-				</div>
-				<!-- Teléfono -->
-				<div class="col-12 col-md-6">
-					<label for="txtTelefono">Teléfono <span class="text-danger">*</span></label>
-					<p-inputMask
-						id="txtTelefono"
-						formControlName="telefono"
-						mask="(9999) 99-9999"
-						unmask="true"
-						placeholder="(9999) 99-9999"
-						(focus)="hlpApp.selectAllContent($event)"
-					></p-inputMask>
-				</div>
-			</div>
-
-			<!-- Domicilio -->
-			<div class="row py-1">
-				<div class="col-12">
-					<label for="txtDomicilio">Domicilio</label>
-					<textarea
-						pInputTextarea
-						id="txtDomicilio"
-						formControlName="domicilio"
-						rows="3"
-						class="uppercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					></textarea>
-				</div>
-			</div>
-
-			<div class="row py-1">
-				<!-- Identificación Folio -->
-				<div class="col-12">
-					<label for="txtIdentificacionFolio">Folio Identificación</label>
-					<input
-						pInputText
-						type="text"
-						id="txtIdentificacionFolio"
-						formControlName="identificacion_folio"
-						class="uppercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					/>
-				</div>
-				<!-- Identificación Domicilio -->
-				<div class="col-12">
-					<label for="txtIdentificacionDomicilio">Domicilio Identificación</label>
-					<textarea
-						pInputTextarea
-						id="txtIdentificacionDomicilio"
-						formControlName="identificacion_domicilio"
-						rows="3"
-						class="uppercase"
-						(focus)="hlpApp.selectAllContent($event)"
-					></textarea>
-				</div>
-			</div>
-
-			<!-- Imagen -->
-			<hr />
-			Imagen
-			<div class="row py-1">
-				<!-- Thumbnail de la Imagen del propietario -->
-				<div class="col-12 text-center pb-3">
-					<img
-						class="imagenThumbnail img-thumbnail"
-						style="cursor: pointer"
-						*ngIf="srcImagen != null"
-						[src]="srcImagen"
-						(click)="onImagenMostrar(srcImagen)"
-					/>
-				</div>
-				<!-- Botones de acción -->
-				<div class="col-12 text-center">
-					<div class="input-group" style="display: unset">
-						<!-- Botón Seleccionar imagen -->
-						<label
-							for="txtImagenArchivo"
-							class="btn btn-dark"
-							pTooltip="Selecciona imagen del Propietario"
-							tooltipPosition="top"
-						>
-							<i class="pi pi-folder-open"></i
-						></label>
-						<input
-							type="file"
-							id="txtImagenArchivo"
-							class="form-control d-none"
-							accept=".png,.jpg,.jpeg"
-							aria-describedby="btnClearImagen"
-							pTooltip="Selecciona imagen del Propietario"
-							tooltipPosition="top"
-							(change)="onImagenSeleccionada($event, 1)"
-						/>
-						<!-- Botón Eliminar imagen seleccionada -->
-						<button
-							*ngIf="frmPropietario.get('archivo_imagen').value"
-							type="button"
-							id="btnClearImagen"
-							class="btn btn-secondary"
-							pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Propietario"
-							tooltipPosition="left"
-							[disabled]="!frmPropietario.get('archivo_imagen').value"
-							(click)="onImagenSeleccionadaCancelar(1)"
-						>
-							<i class="pi pi-undo"></i>
-						</button>
-						<!-- Botón Eliminar imagen -->
-						<button
-							*ngIf="frmPropietario.get('imagen').value"
-							type="button"
-							icon="pi pi-trash"
-							class="btn btn-danger"
-							pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Propietario"
-							tooltipPosition="left"
-							[disabled]="!frmPropietario.get('imagen').value"
-							(click)="onImagenEliminar(1)"
-						>
-							<i class="pi pi-trash"></i>
-						</button>
+				<div class="row mt-2">
+					<div class="col-12">
+						<label>Imagen de Perfil</label>
+						<div *ngIf="srcImagen" class="text-center mb-2">
+							<img class="imagenThumbnail img-thumbnail" style="cursor:pointer;max-height:100px" [src]="srcImagen" (click)="onImagenMostrar(srcImagen)" />
+						</div>
+						<div class="d-flex gap-2 justify-content-center">
+							<label for="txtImagenArchivo" class="btn btn-dark" pTooltip="Seleccionar imagen"><i class="pi pi-folder-open"></i></label>
+							<input type="file" id="txtImagenArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
+							<button *ngIf="frmPropietario.get('archivo_imagen').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(1)"><i class="pi pi-undo"></i></button>
+							<button *ngIf="frmPropietario.get('imagen').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(1)"><i class="pi pi-trash"></i></button>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<!-- Identificación -->
-			<hr />
-			Identificación
-			<div class="row py-2">
-				<!-- Imagen del Anverso de la Identificación del propietario -->
-				<div class="col-12">
-					<div class="row">
-						<!-- Thumbnail  Anverso -->
-						<div class="col-12 col-md-6 text-center pb-3">
-							<img
-								class="imagenThumbnail img-thumbnail"
-								style="cursor: pointer"
-								*ngIf="srcIdentificacionAnverso != null"
-								[src]="srcIdentificacionAnverso"
-								(click)="onImagenMostrar(srcIdentificacionAnverso)"
-							/>
-							<!-- 							<div
-								*ngIf="srcIdentificacionAnverso == null && srcIdentificacionReverso != null"
-								class="d-none d-md-block h-100"
-							></div> -->
-						</div>
-						<!-- Thumbnail  Reverso -->
-						<div class="col-12 col-md-6 text-center pb-3">
-							<img
-								class="imagenThumbnail img-thumbnail"
-								style="cursor: pointer"
-								*ngIf="srcIdentificacionReverso != null"
-								[src]="srcIdentificacionReverso"
-								(click)="onImagenMostrar(srcIdentificacionReverso)"
-							/>
+			<div class="hoose-section">
+				<div class="hoose-section-title">Identificación</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Folio Identificación</label>
+						<input pInputText type="text" formControlName="identificacion_folio" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)" />
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Domicilio</label>
+						<textarea pInputTextarea formControlName="identificacion_domicilio" rows="2" class="uppercase w-100" (focus)="hlpApp.selectAllContent($event)"></textarea>
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-12 col-md-6 text-center">
+						<label class="d-block">Anverso</label>
+						<img *ngIf="srcIdentificacionAnverso" class="imagenThumbnail img-thumbnail mb-2" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionAnverso" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+						<div class="d-flex gap-2 justify-content-center">
+							<label for="txtAnversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
+							<input type="file" id="txtAnversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
+							<button *ngIf="frmPropietario.get('archivo_identificacion_anverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(2)"><i class="pi pi-undo"></i></button>
+							<button *ngIf="frmPropietario.get('identificacion_anverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(2)"><i class="pi pi-trash"></i></button>
 						</div>
 					</div>
-					<div class="row">
-						<!-- Botones de acción Anverso -->
-						<div class="col-12 col-md-6 text-center">
-							<div class="input-group" style="display: unset">
-								<!-- Botón Seleccionar imagen -->
-								<label
-									for="txtAnversoIdentificacionArchivo"
-									class="btn btn-dark"
-									pTooltip="Selecciona imagen del anverso de la identificación del Propietario"
-									tooltipPosition="top"
-								>
-									<i class="pi pi-folder-open"></i
-								></label>
-								<input
-									type="file"
-									id="txtAnversoIdentificacionArchivo"
-									class="form-control d-none"
-									accept=".png,.jpg,.jpeg"
-									aria-describedby="btnClearAnversoIdentificacion"
-									pTooltip="Selecciona imagen del anverso de la identificación del Propietario"
-									tooltipPosition="top"
-									(change)="onImagenSeleccionada($event, 2)"
-								/>
-								<!-- Botón Eliminar imagen seleccionada -->
-								<button
-									*ngIf="frmPropietario.get('archivo_identificacion_anverso').value"
-									type="button"
-									id="btnClearAnversoIdentificacion"
-									class="btn btn-secondary"
-									pTooltip="Anular la elección de nueva imagen del anverso de la identificación del Propietario"
-									tooltipPosition="left"
-									[disabled]="!frmPropietario.get('archivo_identificacion_anverso').value"
-									(click)="onImagenSeleccionadaCancelar(2)"
-								>
-									<i class="pi pi-undo"></i>
-								</button>
-								<!-- Botón Eliminar imagen -->
-								<button
-									*ngIf="frmPropietario.get('identificacion_anverso').value"
-									type="button"
-									icon="pi pi-trash"
-									class="btn btn-danger"
-									pTooltip="Borrar la imagen ya almacenada del anverso de la identificación del Propietario"
-									tooltipPosition="left"
-									[disabled]="!frmPropietario.get('identificacion_anverso').value"
-									(click)="onImagenEliminar(2)"
-								>
-									<i class="pi pi-trash"></i>
-								</button>
-							</div>
-						</div>
-						<!-- Botones de acción Reverso -->
-						<div class="col-12 col-md-6 text-center">
-							<div class="input-group" style="display: unset">
-								<!-- Botón Seleccionar imagen -->
-								<label
-									for="txtReversoIdentificacionArchivo"
-									class="btn btn-dark"
-									pTooltip="Selecciona imagen del reverso de la identificación del Propietario"
-									tooltipPosition="top"
-								>
-									<i class="pi pi-folder-open"></i
-								></label>
-								<input
-									type="file"
-									id="txtReversoIdentificacionArchivo"
-									class="form-control d-none"
-									accept=".png,.jpg,.jpeg"
-									aria-describedby="btnClearReversoIdentificacion"
-									pTooltip="Selecciona imagen del reverso de la identificación del Propietario"
-									tooltipPosition="top"
-									(change)="onImagenSeleccionada($event, 3)"
-								/>
-								<!-- Botón Eliminar imagen seleccionada -->
-								<button
-									*ngIf="frmPropietario.get('archivo_identificacion_reverso').value"
-									type="button"
-									id="btnClearReversoIdentificacion"
-									class="btn btn-secondary"
-									pTooltip="Anular la elección de nueva imagen del reverso de la identificación del Propietario"
-									tooltipPosition="left"
-									[disabled]="!frmPropietario.get('archivo_identificacion_reverso').value"
-									(click)="onImagenSeleccionadaCancelar(3)"
-								>
-									<i class="pi pi-undo"></i>
-								</button>
-								<!-- Botón Eliminar imagen -->
-								<button
-									*ngIf="frmPropietario.get('identificacion_reverso').value"
-									type="button"
-									icon="pi pi-trash"
-									class="btn btn-danger"
-									pTooltip="Borrar la imagen ya almacenada del reverso de la identificación del Propietario"
-									tooltipPosition="left"
-									[disabled]="!frmPropietario.get('identificacion_reverso').value"
-									(click)="onImagenEliminar(3)"
-								>
-									<i class="pi pi-trash"></i>
-								</button>
-							</div>
+					<div class="col-12 col-md-6 text-center">
+						<label class="d-block">Reverso</label>
+						<img *ngIf="srcIdentificacionReverso" class="imagenThumbnail img-thumbnail mb-2" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionReverso" (click)="onImagenMostrar(srcIdentificacionReverso)" />
+						<div class="d-flex gap-2 justify-content-center">
+							<label for="txtReversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
+							<input type="file" id="txtReversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
+							<button *ngIf="frmPropietario.get('archivo_identificacion_reverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(3)"><i class="pi pi-undo"></i></button>
+							<button *ngIf="frmPropietario.get('identificacion_reverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(3)"><i class="pi pi-trash"></i></button>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- Unidades -->
-			<hr />
-			Unidades
-			<div class="row py-1">
-				<div class="col-12">
-					<p-pickList
-						[responsive]="true"
-						[dragdrop]="true"
-						[source]="UnidadesSinPropietario"
-						[target]="Propietario.unidades"
-						sourceHeader="Disponibles"
-						targetHeader="Asignar"
-						[sourceStyle]="{ height: '220px' }"
-						[targetStyle]="{ height: '220px' }"
-						[showSourceControls]="false"
-						[showTargetControls]="false"
-						filterBy="unidad"
-						sourceFilterPlaceholder="Filtrar"
-						targetFilterPlaceholder="Filtrar"
-						(onMoveToSource)="onOrdenarUnidades(UnidadesSinPropietario)"
-						(onMoveAllToSource)="onOrdenarUnidades(UnidadesSinPropietario)"
-						(onMoveToTarget)="onOrdenarUnidades(Propietario.unidades)"
-						(onMoveAllToTarget)="onOrdenarUnidades(Propietario.unidades)"
-					>
-						<ng-template let-Unidad pTemplate="item">
-							<div>
-								{{ Unidad.unidad }}
-							</div>
-						</ng-template>
-					</p-pickList>
+			<!-- Cuenta de Usuario -->
+			<div class="hoose-section">
+				<div class="hoose-section-title">Cuenta de Usuario</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<label>Usuario <span class="text-danger">*</span></label>
+						<input type="text" pInputText formControlName="usuario" class="lowercase w-100" (focus)="hlpApp.selectAllContent($event)" />
+					</div>
+				</div>
+				<div class="row mt-2" *ngIf="frmPropietario.get('id_usuario').value == 0">
+					<div class="col-12">
+						<app-password-input [control]="frmPropietario.get('contrasenia')" label="Contraseña inicial" placeholder="Se enviará al correo" [confirmar]="true" [required]="true"></app-password-input>
+					</div>
+				</div>
+			</div>
+
+			<!-- Unidades en Propiedad -->
+			<div class="hoose-section">
+				<div class="hoose-section-title">Unidades en Propiedad <span class="text-danger">*</span></div>
+				<div class="row">
+					<div class="col-12">
+						<p-pickList [responsive]="true" [dragdrop]="true" [source]="UnidadesSinPropietario" [target]="Propietario.unidades" sourceHeader="Disponibles" targetHeader="Asignar" [sourceStyle]="{ height: '220px' }" [targetStyle]="{ height: '220px' }" [showSourceControls]="false" [showTargetControls]="false" filterBy="unidad" sourceFilterPlaceholder="Filtrar" targetFilterPlaceholder="Filtrar" (onMoveToSource)="onOrdenarUnidades(UnidadesSinPropietario)" (onMoveAllToSource)="onOrdenarUnidades(UnidadesSinPropietario)" (onMoveToTarget)="onOrdenarUnidades(Propietario.unidades)" (onMoveAllToTarget)="onOrdenarUnidades(Propietario.unidades)">
+							<ng-template let-Unidad pTemplate="item">
+								<div>{{ Unidad.unidad }}</div>
+							</ng-template>
+						</p-pickList>
+					</div>
 				</div>
 			</div>
 		</form>
