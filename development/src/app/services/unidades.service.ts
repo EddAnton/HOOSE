@@ -122,7 +122,7 @@ export class UnidadesService {
     );
   }
 
-  ListarUnidadesSinPropietario() {
+  ListarUnidadesSinPropietario(idCondominio: number = null) {
     const url = 'unidades/sin-propietario';
     const headers = new HttpHeaders({
       'X-API-KEY': environment.appKey,
@@ -136,7 +136,7 @@ export class UnidadesService {
     );
   }
 
-  ListarUnidadesDisponiblesRenta() {
+  ListarUnidadesDisponiblesRenta(idCondominio: number = null) {
     const url = 'unidades/disponibles-renta';
     const headers = new HttpHeaders({
       'X-API-KEY': environment.appKey,
