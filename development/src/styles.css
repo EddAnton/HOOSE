@@ -1309,3 +1309,9 @@ app-login .p-inputtext {
   background: #1a1d24 !important;
   border-color: rgba(255,255,255,0.1) !important;
 }
+
+/* ── Columna Condominio en tablas ── */
+.hoose-cond-color {
+  font-size: 0.85rem;
+  font-weight: 600;
+}

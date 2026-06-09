@@ -62,7 +62,7 @@
           <span class="p-column-title">Depósito</span>{{ Condomino.deposito | number : '1.2-2' }}
         </td>
         <td class="text-md-end"><span class="p-column-title">Renta</span>{{ Condomino.renta | number : '1.2-2' }}</td>
-        <td class="text-center"><span *ngIf="Condomino.condominio_nombre" [style.color]="getCondominioColor(Condomino.condominio_nombre)" style="font-weight:600;font-size:0.78rem">{{ Condomino.condominio_nombre }}</span><span *ngIf="!Condomino.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
+        <td class="text-center"><span *ngIf="Condomino.condominio_nombre" class="hoose-cond-color" [style.color]="getCondominioColor(Condomino.condominio_nombre)" style="font-weight:600;font-size:0.78rem">{{ Condomino.condominio_nombre }}</span><span *ngIf="!Condomino.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
         <td class="text-md-center">
           <span class="p-column-title">Estatus</span>
           <span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
