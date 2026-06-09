@@ -144,7 +144,7 @@ export class CatalogoCondominosComponent implements OnInit {
     hlpSwal.Cargando();
 
     this.UnidadesDisponiblesRenta = await this.unidadesService
-      .ListarUnidadesDisponiblesRenta(condomino?.['fk_id_condominio'] || null)
+      .ListarUnidadesDisponiblesRenta(condomino ? (this.condominiosLista?.find(c => c.label === condomino['condominio_nombre'])?.value || null) : null)
       .toPromise()
       .then((r) => r['unidades'])
       .catch(async (e) => {
@@ -299,7 +299,7 @@ export class CatalogoCondominosComponent implements OnInit {
 
     // Obtener las unidades disponibles para renta
     this.UnidadesDisponiblesRenta = await this.unidadesService
-      .ListarUnidadesDisponiblesRenta(condomino?.['fk_id_condominio'] || null)
+      .ListarUnidadesDisponiblesRenta(condomino ? (this.condominiosLista?.find(c => c.label === condomino['condominio_nombre'])?.value || null) : null)
       .toPromise()
       .then((r) => r['unidades'])
       .catch(async (e) => {
