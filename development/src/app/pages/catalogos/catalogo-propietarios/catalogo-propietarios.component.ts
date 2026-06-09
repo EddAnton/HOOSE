@@ -137,6 +137,15 @@ export class CatalogoPropietariosComponent implements OnInit {
 					await hlpSwal.Error(e).then(() => null);
 				});
 			if (this.Propietario == null) return;
+// Recargar unidades filtradas por condominio
+const condId = this.Propietario['fk_id_condominio'];
+if (condId) {
+this.UnidadesSinPropietario = await this.unidadesService
+.ListarUnidadesSinPropietario(condId)
+.toPromise()
+.then((r) => r['unidades'] || [])
+.catch(() => []);
+}
 		} else {
 			this.Propietario = new PropietarioModel();
 		}
