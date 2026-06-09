@@ -866,4 +866,16 @@ export class CatalogoCondominosComponent implements OnInit {
 		this.frmCondomino.patchValue({ otros_servicios: this.serviciosSeleccionados.join(',') });
 	}
 
+
+	async onCondominioChangeCond(event) {
+		const condId = event?.value || null;
+		if (condId) {
+			this.UnidadesDisponiblesRenta = await this.unidadesService
+				.ListarUnidadesDisponiblesRenta(condId)
+				.toPromise()
+				.then((r) => r['unidades'] || [])
+				.catch(() => []);
+		}
+	}
+
 }

@@ -493,4 +493,17 @@ this.UnidadesSinPropietario = await this.unidadesService
 		}
 	}
 
+
+	async onCondominioChange(event) {
+		const condId = event?.value || null;
+		if (condId) {
+			this.UnidadesSinPropietario = await this.unidadesService
+				.ListarUnidadesSinPropietario(condId)
+				.toPromise()
+				.then((r) => r['unidades'] || [])
+				.catch(() => []);
+			this.Propietario.unidades = [];
+		}
+	}
+
 }
