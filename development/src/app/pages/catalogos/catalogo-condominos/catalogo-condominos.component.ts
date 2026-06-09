@@ -627,6 +627,9 @@ export class CatalogoCondominosComponent implements OnInit {
     condomino.borrar_identificacion_reverso = this.bIdentificacionReversoBorrar ? 1 : 0;
     condomino.borrar_contrato = this.bContratoBorrar ? 1 : 0;
     condomino.fecha_inicio = hlpApp.formatDateToMySQL(condomino.fecha_inicio);
+    condomino.fecha_fin = hlpApp.formatDateToMySQL(condomino.fecha_fin);
+    condomino.contrato_fecha_firma = hlpApp.formatDateToMySQL(condomino.contrato_fecha_firma);
+    condomino.contrato_fecha_vencimiento = hlpApp.formatDateToMySQL(condomino.contrato_fecha_vencimiento);
     delete condomino.imagen;
     delete condomino.identificacion_anverso;
     delete condomino.identificacion_reverso;
