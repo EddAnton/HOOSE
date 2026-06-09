@@ -47,6 +47,8 @@ export class CatalogoPropietariosComponent implements OnInit {
 	UnidadesSinPropietario: UnidadesEdificioModel[] = [];
 
 	frmPropietario: FormGroup;
+	modoOpciones: any[] = [{label: 'Vivienda', value: 'Vivienda'}, {label: 'Alquiler', value: 'Alquiler'}, {label: 'Airbnb', value: 'Airbnb'}];
+	pagoCuotaOpciones: any[] = [{label: 'Propietario', value: 'Propietario'}, {label: 'Condómino', value: 'Condómino'}];
 	mostrarDialogoEdicionPropietario: boolean = false;
 	mostrarDialogoImagenPropietario: boolean = false;
 	mostrarDialogoDetallesPropietario: boolean = false;
@@ -465,6 +467,20 @@ export class CatalogoPropietariosComponent implements OnInit {
 		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
 		if (this.frmPropietario.get('id_usuario').value == 0) {
 			this.frmPropietario.patchValue({ usuario: usuario });
+		}
+	}
+
+
+	onModoChange(unidad: any) {
+		if (unidad.modo === 'Vivienda') {
+			unidad.pago_cuota_mantenimiento = 'Propietario';
+		}
+	}
+
+	onUnidadAsignada() {
+		for (const u of this.Propietario.unidades) {
+			if (!u.modo) u.modo = 'Vivienda';
+			if (!u.pago_cuota_mantenimiento) u.pago_cuota_mantenimiento = 'Propietario';
 		}
 	}
 

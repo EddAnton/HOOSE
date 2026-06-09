@@ -57,11 +57,15 @@ export class UnidadesPropietarioResumenModel {
 export class UnidadesEdificioModel {
 	id_unidad: number;
 	unidad: string;
+	modo?: string;
+	pago_cuota_mantenimiento?: string;
 
 	constructor() {
 		return {
 			id_unidad: 0,
 			unidad: null,
+			modo: 'Vivienda',
+			pago_cuota_mantenimiento: 'Propietario',
 		};
 	}
 }

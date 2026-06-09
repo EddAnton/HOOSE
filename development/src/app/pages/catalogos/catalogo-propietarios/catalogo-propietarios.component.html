@@ -279,7 +279,7 @@
 				<div class="hoose-section-title">Unidades en Propiedad <span class="text-danger">*</span></div>
 				<div class="row">
 					<div class="col-12">
-						<p-pickList [responsive]="true" [dragdrop]="true" [source]="UnidadesSinPropietario" [target]="Propietario.unidades" sourceHeader="Disponibles" targetHeader="Asignar" [sourceStyle]="{ height: '220px' }" [targetStyle]="{ height: '220px' }" [showSourceControls]="false" [showTargetControls]="false" filterBy="unidad" sourceFilterPlaceholder="Filtrar" targetFilterPlaceholder="Filtrar" (onMoveToSource)="onOrdenarUnidades(UnidadesSinPropietario)" (onMoveAllToSource)="onOrdenarUnidades(UnidadesSinPropietario)" (onMoveToTarget)="onOrdenarUnidades(Propietario.unidades)" (onMoveAllToTarget)="onOrdenarUnidades(Propietario.unidades)">
+						<p-pickList [responsive]="true" [dragdrop]="true" [source]="UnidadesSinPropietario" [target]="Propietario.unidades" sourceHeader="Disponibles" targetHeader="Asignar" [sourceStyle]="{ height: '220px' }" [targetStyle]="{ height: '220px' }" [showSourceControls]="false" [showTargetControls]="false" filterBy="unidad" sourceFilterPlaceholder="Filtrar" targetFilterPlaceholder="Filtrar" (onMoveToSource)="onOrdenarUnidades(UnidadesSinPropietario)" (onMoveAllToSource)="onOrdenarUnidades(UnidadesSinPropietario)" (onMoveToTarget)="onOrdenarUnidades(Propietario.unidades); onUnidadAsignada()" (onMoveAllToTarget)="onOrdenarUnidades(Propietario.unidades); onUnidadAsignada()">
 							<ng-template let-Unidad pTemplate="item">
 								<div>{{ Unidad.unidad }}</div>
 							</ng-template>
@@ -287,6 +287,25 @@
 					</div>
 				</div>
 			</div>
+		
+			<!-- Detalles de las Unidades -->
+			<div class="hoose-section" *ngIf="Propietario?.unidades?.length > 0">
+				<div class="hoose-section-title">Detalles de las Unidades</div>
+				<div class="row" *ngFor="let u of Propietario.unidades" style="border-bottom:1px solid rgba(255,255,255,0.05);padding:8px 0">
+					<div class="col-12 col-md-4 d-flex align-items-center">
+						<span style="color:#ccc;font-size:0.85rem">{{ u.unidad }}</span>
+					</div>
+					<div class="col-12 col-md-4">
+						<label style="font-size:0.7rem;color:#666">Modo</label>
+						<p-dropdown [options]="modoOpciones" [(ngModel)]="u.modo" [ngModelOptions]="{standalone: true}" [style]="{width:'100%'}" (onChange)="onModoChange(u)"></p-dropdown>
+					</div>
+					<div class="col-12 col-md-4">
+						<label style="font-size:0.7rem;color:#666">Pago Cuota Mtto.</label>
+						<p-dropdown [options]="pagoCuotaOpciones" [(ngModel)]="u.pago_cuota_mantenimiento" [ngModelOptions]="{standalone: true}" [style]="{width:'100%'}" [disabled]="u.modo === 'Vivienda'"></p-dropdown>
+					</div>
+				</div>
+			</div>
+
 		</form>
 	</ng-template>
 	<ng-template pTemplate="footer">
