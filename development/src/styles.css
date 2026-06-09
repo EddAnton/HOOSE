@@ -1337,3 +1337,46 @@ app-login .p-inputtext {
 .p-datatable .p-datatable-tbody > tr > td .p-tag {
   font-size: 0.72rem !important;
 }
+
+/* ── FAB flotante para botón + ── */
+.p-datatable .p-datatable-header .p-button-success.p-button-rounded {
+  position: fixed !important;
+  bottom: 30px !important;
+  right: 30px !important;
+  z-index: 999 !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(233, 30, 140, 0.4) !important;
+  background: #e91e8c !important;
+  border-color: #e91e8c !important;
+}
+.p-datatable .p-datatable-header .p-button-success.p-button-rounded .pi-plus {
+  font-size: 1.2rem !important;
+}
+
+/* ── Header de tabla limpio ── */
+.p-datatable .p-datatable-header {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 0 !important;
+}
+.p-datatable .p-datatable-header .d-flex {
+  justify-content: flex-end !important;
+}
+.p-datatable .p-datatable-header .me-auto {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 999;
+}
+
+/* ── Filtro compacto ── */
+.p-datatable .p-datatable-header .p-input-icon-left input {
+  background: #181b22 !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 20px !important;
+  padding-left: 2.5rem !important;
+  color: #f0f0f0 !important;
+  font-size: 0.82rem !important;
+}
