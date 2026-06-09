@@ -45,6 +45,7 @@ export class CatalogoUnidadesComponent implements OnInit {
 	Unidades: UnidadModel[] = [];
 	Unidad: UnidadModel;
 	Edificios: EdificioModel[] = [];
+	EdificiosTodos: EdificioModel[] = [];
 
 	frmUnidad: FormGroup;
 	esSuperAdminSinCondominio: boolean = false;
@@ -106,7 +107,8 @@ export class CatalogoUnidadesComponent implements OnInit {
 					.ListarActivos()
 					.toPromise()
 					.then((r) => {
-						this.Edificios = r['edificios'];
+						this.EdificiosTodos = r['edificios'];
+				this.Edificios = this.EdificiosTodos;
 					})
 					.catch(async (e) => {
 						await hlpSwal.Error(e);
@@ -127,6 +129,10 @@ export class CatalogoUnidadesComponent implements OnInit {
 				? environment.urlBackendUnidadesFiles + this.Unidad.id_unidad + '/' + this.Unidad.escrituras_archivo
 				: null;
 			this.frmUnidad = this.formBuilder.group(this.Unidad);
+		// Filtrar edificios por condominio de la unidad
+		if (this.Unidad['fk_id_condominio']) {
+			this.Edificios = this.EdificiosTodos.filter(e => e['fk_id_condominio'] == this.Unidad['fk_id_condominio']);
+		}
 			this.frmUnidad
 				.get('unidad')
 				.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(150)]);
@@ -319,4 +325,16 @@ export class CatalogoUnidadesComponent implements OnInit {
 		}
 		return colores[Math.abs(hash) % colores.length];
 	}
+
+	onCondominioChangeUnidad(event) {
+		const condId = event?.target?.value || null;
+		if (condId) {
+			this.Edificios = this.EdificiosTodos.filter(e => e['fk_id_condominio'] == condId);
+		} else {
+			this.Edificios = this.EdificiosTodos;
+		}
+		// Reset edificio seleccionado
+		if (this.frmUnidad) this.frmUnidad.patchValue({ fk_id_edificio: '' });
+	}
+
 }
