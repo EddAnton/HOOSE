@@ -193,6 +193,13 @@ export class CatalogoCondominosComponent implements OnInit {
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
       this.frmCondomino = this.formBuilder.group(this.Condomino);
+      // Forzar fechas como Date
+      const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
+      for (const [k, v] of Object.entries(fechasCampos)) {
+        if (v instanceof Date) { this.frmCondomino.get(k)?.setValue(v); }
+        else if (v && typeof v === 'string' && v !== '0000-00-00') { this.frmCondomino.get(k)?.setValue(new Date(v + 'T00:00:00')); }
+        else { this.frmCondomino.get(k)?.setValue(null); }
+      }
       // Agregar controles que no están en el modelo
       if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
       if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || 1));
@@ -233,6 +240,26 @@ export class CatalogoCondominosComponent implements OnInit {
       this.frmCondomino.addControl('archivo_identificacion_anverso', new FormControl());
       this.frmCondomino.addControl('archivo_identificacion_reverso', new FormControl());
       this.frmCondomino.addControl('archivo_contrato', new FormControl());
+      // Controles dinámicos
+      if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
+      if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || '1'));
+      if (!this.frmCondomino.get('otros_servicios')) this.frmCondomino.addControl('otros_servicios', new FormControl([]));
+      if (!this.frmCondomino.get('penalizacion_pago_tardio')) this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(this.Condomino['penalizacion_pago_tardio'] || '0'));
+      if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || '0'));
+      if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || '0'));
+      if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || '0'));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null));
+      // Forzar fechas como Date
+      ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(campo => {
+        const v = this.frmCondomino.get(campo)?.value;
+        if (v && typeof v === 'string' && v !== '0000-00-00') { this.frmCondomino.get(campo).setValue(new Date(v + 'T00:00:00')); }
+        else if (!v || v === '0000-00-00') { this.frmCondomino.get(campo)?.setValue(null); }
+      });
+      // Cargar servicios como array
+      if (this.Condomino['otros_servicios']) {
+        this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
+      }
       this.frmCondomino.updateValueAndValidity();
 
       this.bImagenBorrar = false;
@@ -338,6 +365,13 @@ export class CatalogoCondominosComponent implements OnInit {
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
       this.frmCondomino = this.formBuilder.group(this.Condomino);
+      // Forzar fechas como Date
+      const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
+      for (const [k, v] of Object.entries(fechasCampos)) {
+        if (v instanceof Date) { this.frmCondomino.get(k)?.setValue(v); }
+        else if (v && typeof v === 'string' && v !== '0000-00-00') { this.frmCondomino.get(k)?.setValue(new Date(v + 'T00:00:00')); }
+        else { this.frmCondomino.get(k)?.setValue(null); }
+      }
       // Agregar controles que no están en el modelo
       if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
       if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || 1));
@@ -378,6 +412,26 @@ export class CatalogoCondominosComponent implements OnInit {
       this.frmCondomino.addControl('archivo_identificacion_anverso', new FormControl());
       this.frmCondomino.addControl('archivo_identificacion_reverso', new FormControl());
       this.frmCondomino.addControl('archivo_contrato', new FormControl());
+      // Controles dinámicos
+      if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
+      if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || '1'));
+      if (!this.frmCondomino.get('otros_servicios')) this.frmCondomino.addControl('otros_servicios', new FormControl([]));
+      if (!this.frmCondomino.get('penalizacion_pago_tardio')) this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(this.Condomino['penalizacion_pago_tardio'] || '0'));
+      if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || '0'));
+      if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || '0'));
+      if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || '0'));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null));
+      // Forzar fechas como Date
+      ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(campo => {
+        const v = this.frmCondomino.get(campo)?.value;
+        if (v && typeof v === 'string' && v !== '0000-00-00') { this.frmCondomino.get(campo).setValue(new Date(v + 'T00:00:00')); }
+        else if (!v || v === '0000-00-00') { this.frmCondomino.get(campo)?.setValue(null); }
+      });
+      // Cargar servicios como array
+      if (this.Condomino['otros_servicios']) {
+        this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
+      }
       this.frmCondomino.updateValueAndValidity();
 
       this.bImagenBorrar = false;
