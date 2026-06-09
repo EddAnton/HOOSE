@@ -242,11 +242,19 @@ export class CatalogoCondominosComponent implements OnInit {
 				this.frmCondomino.patchValue({ otros_servicios: svcs });
 			}
 			// Convertir fechas string a Date
-			['fecha_inicio', 'fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
-			  const v = this.frmCondomino.get(c)?.value;
-			  if (v && typeof v === 'string' && v !== '0000-00-00') this.frmCondomino.patchValue({ [c]: new Date(v + 'T12:00:00') });
-			  else if (v === '0000-00-00') this.frmCondomino.patchValue({ [c]: null });
-			});
+			// Convertir fechas explícitamente
+			const v_fecha_inicio = this.frmCondomino.get('fecha_inicio')?.value;
+			if (v_fecha_inicio && typeof v_fecha_inicio === 'string' && v_fecha_inicio !== '0000-00-00') { this.frmCondomino.get('fecha_inicio').setValue(new Date(v_fecha_inicio + 'T12:00:00')); }
+			else if (v_fecha_inicio === '0000-00-00') { this.frmCondomino.get('fecha_inicio').setValue(null); }
+			const v_fecha_fin = this.frmCondomino.get('fecha_fin')?.value;
+			if (v_fecha_fin && typeof v_fecha_fin === 'string' && v_fecha_fin !== '0000-00-00') { this.frmCondomino.get('fecha_fin').setValue(new Date(v_fecha_fin + 'T12:00:00')); }
+			else if (v_fecha_fin === '0000-00-00') { this.frmCondomino.get('fecha_fin').setValue(null); }
+			const v_contrato_fecha_firma = this.frmCondomino.get('contrato_fecha_firma')?.value;
+			if (v_contrato_fecha_firma && typeof v_contrato_fecha_firma === 'string' && v_contrato_fecha_firma !== '0000-00-00') { this.frmCondomino.get('contrato_fecha_firma').setValue(new Date(v_contrato_fecha_firma + 'T12:00:00')); }
+			else if (v_contrato_fecha_firma === '0000-00-00') { this.frmCondomino.get('contrato_fecha_firma').setValue(null); }
+			const v_contrato_fecha_vencimiento = this.frmCondomino.get('contrato_fecha_vencimiento')?.value;
+			if (v_contrato_fecha_vencimiento && typeof v_contrato_fecha_vencimiento === 'string' && v_contrato_fecha_vencimiento !== '0000-00-00') { this.frmCondomino.get('contrato_fecha_vencimiento').setValue(new Date(v_contrato_fecha_vencimiento + 'T12:00:00')); }
+			else if (v_contrato_fecha_vencimiento === '0000-00-00') { this.frmCondomino.get('contrato_fecha_vencimiento').setValue(null); }
 			this.mostrarDialogoEdicionCondomino = true;
     } catch (e) {
       hlpSwal.Error(e);
@@ -385,11 +393,19 @@ export class CatalogoCondominosComponent implements OnInit {
         this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
       }
       // Convertir fechas
-      ['fecha_inicio', 'fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
-        const v = this.frmCondomino.get(c)?.value;
-        if (v && typeof v === 'string' && v !== '0000-00-00') this.frmCondomino.patchValue({ [c]: new Date(v + 'T12:00:00') });
-        else if (v === '0000-00-00') this.frmCondomino.patchValue({ [c]: null });
-      });
+      // Convertir fechas explícitamente
+      const v_fecha_inicio = this.frmCondomino.get('fecha_inicio')?.value;
+      if (v_fecha_inicio && typeof v_fecha_inicio === 'string' && v_fecha_inicio !== '0000-00-00') { this.frmCondomino.get('fecha_inicio').setValue(new Date(v_fecha_inicio + 'T12:00:00')); }
+      else if (v_fecha_inicio === '0000-00-00') { this.frmCondomino.get('fecha_inicio').setValue(null); }
+      const v_fecha_fin = this.frmCondomino.get('fecha_fin')?.value;
+      if (v_fecha_fin && typeof v_fecha_fin === 'string' && v_fecha_fin !== '0000-00-00') { this.frmCondomino.get('fecha_fin').setValue(new Date(v_fecha_fin + 'T12:00:00')); }
+      else if (v_fecha_fin === '0000-00-00') { this.frmCondomino.get('fecha_fin').setValue(null); }
+      const v_contrato_fecha_firma = this.frmCondomino.get('contrato_fecha_firma')?.value;
+      if (v_contrato_fecha_firma && typeof v_contrato_fecha_firma === 'string' && v_contrato_fecha_firma !== '0000-00-00') { this.frmCondomino.get('contrato_fecha_firma').setValue(new Date(v_contrato_fecha_firma + 'T12:00:00')); }
+      else if (v_contrato_fecha_firma === '0000-00-00') { this.frmCondomino.get('contrato_fecha_firma').setValue(null); }
+      const v_contrato_fecha_vencimiento = this.frmCondomino.get('contrato_fecha_vencimiento')?.value;
+      if (v_contrato_fecha_vencimiento && typeof v_contrato_fecha_vencimiento === 'string' && v_contrato_fecha_vencimiento !== '0000-00-00') { this.frmCondomino.get('contrato_fecha_vencimiento').setValue(new Date(v_contrato_fecha_vencimiento + 'T12:00:00')); }
+      else if (v_contrato_fecha_vencimiento === '0000-00-00') { this.frmCondomino.get('contrato_fecha_vencimiento').setValue(null); }
       this.mostrarDialogoEdicionCondomino = true;
     } catch (e) {
       hlpSwal.Error(e);
