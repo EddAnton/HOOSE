@@ -81,6 +81,7 @@
 		</ng-template>
 		<ng-template pTemplate="body" let-Edificio>
 			<tr>
+				<td><span class="p-column-title">Condominio</span><span class="hoose-badge-blue">{{ Edificio.condominio_nombre || '-' }}</span></td>
 				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Edificio.tipo || 'Edificio' }}</span></td>
 				<td><span class="p-column-title">Nombre</span>{{ Edificio.edificio }}</td>
 				<td class="text-md-center">

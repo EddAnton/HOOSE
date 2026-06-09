@@ -22,6 +22,7 @@ export class CatalogoEdificiosComponent implements OnInit {
 	// Tabla Edificio
 	// Columnas de la tabla
 	EdificiosCols: any[] = [
+		{ header: 'Condominio' },
 		{ header: 'Tipo', width: '120px' },
 		{ header: 'Nombre' },
 		{ header: 'Estatus', width: '70px' },

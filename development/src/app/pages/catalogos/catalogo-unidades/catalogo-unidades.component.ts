@@ -31,6 +31,7 @@ export class CatalogoUnidadesComponent implements OnInit {
 	// Columnas de la tabla
 	UnidadesCols: any[] = [
 		{ header: 'Unidad' },
+		{ header: 'Condominio' },
 		{ header: 'Edificio / Torre' },
 		{ header: 'Tipo', width: '120px' },
 		{ header: 'Nivel', width: '70px' },
