@@ -190,6 +190,16 @@ export class CatalogoCondominosComponent implements OnInit {
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
       this.frmCondomino = this.formBuilder.group(this.Condomino);
+      // Agregar controles que no están en el modelo
+      if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
+      if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || 1));
+      if (!this.frmCondomino.get('otros_servicios')) this.frmCondomino.addControl('otros_servicios', new FormControl([]));
+      if (!this.frmCondomino.get('penalizacion_pago_tardio')) this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(this.Condomino['penalizacion_pago_tardio'] || 0));
+      if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || 0));
+      if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || 0));
+      if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || 0));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(this.Condomino['contrato_fecha_firma'] || null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(this.Condomino['contrato_fecha_vencimiento'] || null));
       this.frmCondomino
         .get('nombre')
         .setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(255)]);
@@ -227,8 +237,8 @@ export class CatalogoCondominosComponent implements OnInit {
       this.bIdentificacionReversoBorrar = false;
       this.bContratoBorrar = false;
       // Cargar otros_servicios como array
-			if (this.Condomino && this.Condomino.otros_servicios) {
-				const svcs = this.Condomino.otros_servicios.split(',').filter(s => s.length > 1);
+			if (this.Condomino && this.Condomino['otros_servicios']) {
+				const svcs = this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1);
 				this.frmCondomino.patchValue({ otros_servicios: svcs });
 			}
 			this.mostrarDialogoEdicionCondomino = true;
@@ -308,6 +318,16 @@ export class CatalogoCondominosComponent implements OnInit {
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
       this.frmCondomino = this.formBuilder.group(this.Condomino);
+      // Agregar controles que no están en el modelo
+      if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
+      if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || 1));
+      if (!this.frmCondomino.get('otros_servicios')) this.frmCondomino.addControl('otros_servicios', new FormControl([]));
+      if (!this.frmCondomino.get('penalizacion_pago_tardio')) this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(this.Condomino['penalizacion_pago_tardio'] || 0));
+      if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || 0));
+      if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || 0));
+      if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || 0));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(this.Condomino['contrato_fecha_firma'] || null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(this.Condomino['contrato_fecha_vencimiento'] || null));
       this.frmCondomino
         .get('nombre')
         .setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(255)]);
