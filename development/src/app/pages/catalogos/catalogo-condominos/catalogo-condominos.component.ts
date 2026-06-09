@@ -170,6 +170,9 @@ export class CatalogoCondominosComponent implements OnInit {
         unidad: this.Condomino.unidad + ' (' + this.Condomino.edificio + ')',
       });
       this.Condomino.fecha_inicio = new Date(this.Condomino.fecha_inicio + 'T00:00:00');
+        if (this.Condomino.fecha_fin && (this.Condomino.fecha_fin as any) !== '0000-00-00') this.Condomino.fecha_fin = new Date(this.Condomino.fecha_fin + 'T00:00:00'); else this.Condomino.fecha_fin = null;
+        if (this.Condomino['contrato_fecha_firma'] && this.Condomino['contrato_fecha_firma'] !== '0000-00-00') this.Condomino['contrato_fecha_firma'] = new Date(this.Condomino['contrato_fecha_firma'] + 'T00:00:00'); else this.Condomino['contrato_fecha_firma'] = null;
+        if (this.Condomino['contrato_fecha_vencimiento'] && this.Condomino['contrato_fecha_vencimiento'] !== '0000-00-00') this.Condomino['contrato_fecha_vencimiento'] = new Date(this.Condomino['contrato_fecha_vencimiento'] + 'T00:00:00'); else this.Condomino['contrato_fecha_vencimiento'] = null;
       this.onOrdenarUnidades(this.UnidadesDisponiblesRenta);
     } else {
       this.Condomino = new CondominoModel();
@@ -303,6 +306,9 @@ export class CatalogoCondominosComponent implements OnInit {
           unidad: this.Condomino.unidad + ' (' + this.Condomino.edificio + ')',
         });
         this.Condomino.fecha_inicio = new Date(this.Condomino.fecha_inicio + 'T00:00:00');
+        if (this.Condomino.fecha_fin && (this.Condomino.fecha_fin as any) !== '0000-00-00') this.Condomino.fecha_fin = new Date(this.Condomino.fecha_fin + 'T00:00:00'); else this.Condomino.fecha_fin = null;
+        if (this.Condomino['contrato_fecha_firma'] && this.Condomino['contrato_fecha_firma'] !== '0000-00-00') this.Condomino['contrato_fecha_firma'] = new Date(this.Condomino['contrato_fecha_firma'] + 'T00:00:00'); else this.Condomino['contrato_fecha_firma'] = null;
+        if (this.Condomino['contrato_fecha_vencimiento'] && this.Condomino['contrato_fecha_vencimiento'] !== '0000-00-00') this.Condomino['contrato_fecha_vencimiento'] = new Date(this.Condomino['contrato_fecha_vencimiento'] + 'T00:00:00'); else this.Condomino['contrato_fecha_vencimiento'] = null;
       } else {
         // this.Condomino.edificio = null;
         this.Condomino.id_unidad = 0;
