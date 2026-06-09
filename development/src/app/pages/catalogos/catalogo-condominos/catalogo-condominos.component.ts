@@ -439,7 +439,7 @@ export class CatalogoCondominosComponent implements OnInit {
         this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
       }
       this.frmCondomino.updateValueAndValidity();
-
+      
       this.bImagenBorrar = false;
       this.bIdentificacionAnversoBorrar = false;
       this.bIdentificacionReversoBorrar = false;
