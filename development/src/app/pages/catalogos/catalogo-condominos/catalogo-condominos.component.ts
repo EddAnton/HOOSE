@@ -241,6 +241,12 @@ export class CatalogoCondominosComponent implements OnInit {
 				const svcs = this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1);
 				this.frmCondomino.patchValue({ otros_servicios: svcs });
 			}
+			// Convertir fechas string a Date
+			['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
+			  const v = this.frmCondomino.get(c)?.value;
+			  if (v && typeof v === 'string' && v !== '0000-00-00') this.frmCondomino.patchValue({ [c]: new Date(v + 'T12:00:00') });
+			  else if (v === '0000-00-00') this.frmCondomino.patchValue({ [c]: null });
+			});
 			this.mostrarDialogoEdicionCondomino = true;
     } catch (e) {
       hlpSwal.Error(e);
