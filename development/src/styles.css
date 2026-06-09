@@ -1380,3 +1380,19 @@ app-login .p-inputtext {
   color: #f0f0f0 !important;
   font-size: 0.82rem !important;
 }
+
+/* ── Tablas con scroll horizontal (no texto vertical) ── */
+.p-datatable-wrapper {
+  overflow-x: auto !important;
+}
+.p-datatable .p-datatable-tbody > tr > td,
+.p-datatable .p-datatable-thead > tr > th {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-width: 80px !important;
+}
+.p-datatable .p-datatable-tbody > tr > td .hoose-cond-color,
+.p-datatable .p-datatable-tbody > tr > td .p-tag {
+  white-space: nowrap !important;
+}
