@@ -242,7 +242,7 @@ export class CatalogoCondominosComponent implements OnInit {
 				this.frmCondomino.patchValue({ otros_servicios: svcs });
 			}
 			// Convertir fechas string a Date
-			['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
+			['fecha_inicio', 'fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
 			  const v = this.frmCondomino.get(c)?.value;
 			  if (v && typeof v === 'string' && v !== '0000-00-00') this.frmCondomino.patchValue({ [c]: new Date(v + 'T12:00:00') });
 			  else if (v === '0000-00-00') this.frmCondomino.patchValue({ [c]: null });
@@ -385,7 +385,7 @@ export class CatalogoCondominosComponent implements OnInit {
         this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
       }
       // Convertir fechas
-      ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
+      ['fecha_inicio', 'fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
         const v = this.frmCondomino.get(c)?.value;
         if (v && typeof v === 'string' && v !== '0000-00-00') this.frmCondomino.patchValue({ [c]: new Date(v + 'T12:00:00') });
         else if (v === '0000-00-00') this.frmCondomino.patchValue({ [c]: null });
