@@ -1384,6 +1384,13 @@ app-login .p-inputtext {
 /* ── Tablas con scroll horizontal (no texto vertical) ── */
 .p-datatable-wrapper {
   overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.p-datatable {
+  overflow: visible !important;
+}
+.p-datatable table {
+  
 }
 .p-datatable .p-datatable-tbody > tr > td,
 .p-datatable .p-datatable-thead > tr > th {
@@ -1395,4 +1402,66 @@ app-login .p-inputtext {
 .p-datatable .p-datatable-tbody > tr > td .hoose-cond-color,
 .p-datatable .p-datatable-tbody > tr > td .p-tag {
   white-space: nowrap !important;
+}
+
+/* ── Forzar scroll horizontal en contenedores de tabla ── */
+.card {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+}
+.p-datatable-scrollable-body,
+.p-datatable-unfrozen-view .p-datatable-scrollable-body {
+  overflow-x: auto !important;
+}
+.content-body,
+.main-content,
+app-catalogo-propietarios,
+app-catalogo-condominos,
+app-catalogo-colaboradores,
+app-catalogo-edificios,
+app-catalogo-unidades,
+app-catalogo-administradores {
+  overflow-x: auto !important;
+}
+
+/* ── Desktop: tabla con scroll horizontal ── */
+@media screen and (min-width: 769px) {
+  .p-datatable.p-datatable-responsive .p-datatable-tbody > tr > td .p-column-title {
+    display: none !important;
+  }
+  .p-datatable.p-datatable-responsive .p-datatable-thead > tr > th,
+  .p-datatable.p-datatable-responsive .p-datatable-tbody > tr > td {
+    display: table-cell !important;
+  }
+}
+
+/* ── Scroll horizontal definitivo ── */
+.card.shadow-sm {
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+.card.shadow-sm .p-datatable-wrapper {
+  overflow-x: scroll !important;
+  overflow-y: visible !important;
+  max-width: 100% !important;
+  -webkit-overflow-scrolling: touch;
+}
+.card.shadow-sm .p-datatable-wrapper > table {
+  table-layout: auto !important;
+  min-width: 100% !important;
+  width: auto !important;
+}
+
+/* ── Responsive mobile: ancho completo ── */
+@media screen and (max-width: 768px) {
+  .card.shadow-sm,
+  .card.shadow-sm .p-datatable-wrapper {
+    max-width: 100vw !important;
+    width: 100% !important;
+  }
+  .p-datatable.p-datatable-responsive .p-datatable-tbody > tr > td {
+    width: 100% !important;
+    display: flex !important;
+    padding: 8px 12px !important;
+  }
 }
