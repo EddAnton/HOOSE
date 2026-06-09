@@ -370,6 +370,26 @@ export class CatalogoCondominosComponent implements OnInit {
       this.bIdentificacionAnversoBorrar = false;
       this.bIdentificacionReversoBorrar = false;
       this.bContratoBorrar = false;
+      // Agregar controles dinámicos
+      if (!this.frmCondomino.get('apellidos')) this.frmCondomino.addControl('apellidos', new FormControl(this.Condomino['apellidos'] || null));
+      if (!this.frmCondomino.get('fecha_limite_pago')) this.frmCondomino.addControl('fecha_limite_pago', new FormControl(this.Condomino['fecha_limite_pago'] || '1'));
+      if (!this.frmCondomino.get('otros_servicios')) this.frmCondomino.addControl('otros_servicios', new FormControl([]));
+      if (!this.frmCondomino.get('penalizacion_pago_tardio')) this.frmCondomino.addControl('penalizacion_pago_tardio', new FormControl(this.Condomino['penalizacion_pago_tardio'] || '0'));
+      if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || '0'));
+      if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || '0'));
+      if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || '0'));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null));
+      // Cargar servicios como array
+      if (this.Condomino['otros_servicios']) {
+        this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
+      }
+      // Convertir fechas
+      ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(c => {
+        const v = this.frmCondomino.get(c)?.value;
+        if (v && typeof v === 'string' && v !== '0000-00-00') this.frmCondomino.patchValue({ [c]: new Date(v + 'T12:00:00') });
+        else if (v === '0000-00-00') this.frmCondomino.patchValue({ [c]: null });
+      });
       this.mostrarDialogoEdicionCondomino = true;
     } catch (e) {
       hlpSwal.Error(e);
