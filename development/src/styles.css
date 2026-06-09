@@ -1310,12 +1310,30 @@ app-login .p-inputtext {
   border-color: rgba(255,255,255,0.1) !important;
 }
 
-/* ── Columna Condominio en tablas ── */
+/* ── Badge Condominio en tablas ── */
 .hoose-cond-color {
-  font-size: 0.8rem;
+  font-size: 0.75rem !important;
   font-weight: 600;
   display: inline-block;
-  padding: 2px 8px;
-  border: 1px solid currentColor;
+  padding: 4px 10px;
+  border: none;
   border-radius: 4px;
+}
+
+
+/* ── Uniformidad global de tablas ── */
+.p-datatable .p-datatable-tbody > tr > td {
+  text-align: left !important;
+  font-size: 0.82rem !important;
+  vertical-align: middle !important;
+}
+.p-datatable .p-datatable-thead > tr > th {
+  text-align: left !important;
+  font-size: 0.78rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #8a8f9e !important;
+}
+.p-datatable .p-datatable-tbody > tr > td .p-tag {
+  font-size: 0.72rem !important;
 }

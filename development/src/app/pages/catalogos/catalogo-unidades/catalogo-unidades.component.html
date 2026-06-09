@@ -83,7 +83,7 @@
 		<ng-template pTemplate="body" let-Unidad>
 			<tr>
 				<td><span class="p-column-title">Unidad</span>{{ Unidad.unidad }}</td>
-				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [style.color]="getCondominioColor(Unidad.condominio_nombre)">{{ Unidad.condominio_nombre || '-' }}</span></td>
+				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Unidad.condominio_nombre), 'background': getCondominioColor(Unidad.condominio_nombre) + '20'}">{{ Unidad.condominio_nombre || '-' }}</span></td>
 				<td><span class="p-column-title">Edificio / Torre</span>{{ Unidad.edificio }}</td>
 				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Unidad.tipo_unidad || 'Departamento' }}</span></td>
 				<td class="text-center"><span class="p-column-title">Nivel</span>{{ Unidad.nivel || '-' }}</td>

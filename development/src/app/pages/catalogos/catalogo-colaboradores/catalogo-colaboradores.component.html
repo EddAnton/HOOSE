@@ -110,7 +110,7 @@
 				<td class="text-md-end">
 					<span class="p-column-title">Salario</span>{{ Colaborador.salario | number : '1.2-2' }}
 				</td>
-				<td class="text-center"><span *ngIf="Colaborador.condominio_nombre" class="hoose-cond-color" [style.color]="getCondominioColor(Colaborador.condominio_nombre)" style="font-weight:600;font-size:0.78rem">{{ Colaborador.condominio_nombre }}</span><span *ngIf="!Colaborador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
+				<td class="text-center"><span *ngIf="Colaborador.condominio_nombre" class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Colaborador.condominio_nombre), 'background': getCondominioColor(Colaborador.condominio_nombre) + '20'}" style="font-weight:600;font-size:0.78rem">{{ Colaborador.condominio_nombre }}</span><span *ngIf="!Colaborador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
 				<td class="text-md-center">
 					<span class="p-column-title">Estatus</span>
 					<span [ngStyle]="{ cursor: Colaborador.id_estatus_recaudacion == 1 ? 'pointer' : 'context-menu' }">

@@ -104,7 +104,7 @@
 				<td><span class="p-column-title">Nombre</span>{{ Administrador.nombre }}</td>
 				<td>
 					<span class="p-column-title">Condominio</span>
-					<span *ngIf="Administrador.condominio_nombre" class="hoose-badge-blue"><span class="hoose-cond-color" [style.color]="getCondominioColor(Administrador.condominio_nombre)">{{ Administrador.condominio_nombre }}</span></span>
+					<span *ngIf="Administrador.condominio_nombre" class="hoose-badge-blue"><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Administrador.condominio_nombre), 'background': getCondominioColor(Administrador.condominio_nombre) + '20'}">{{ Administrador.condominio_nombre }}</span></span>
 					<span *ngIf="!Administrador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span>
 				</td>
 				<td>
