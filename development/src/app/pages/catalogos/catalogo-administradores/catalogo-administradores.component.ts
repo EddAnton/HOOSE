@@ -697,4 +697,17 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		this.mostrarDialogoEdicionAdministrador = false;
 	}
 
+
+	getCondominioColor(nombre: string): string {
+		if (!nombre) return '#8a8f9e';
+		const colores = [
+			'#e91e8c', '#3B82F6', '#1BC99A', '#f59e0b', '#8b5cf6',
+			'#ef4444', '#06b6d4', '#84cc16', '#f97316', '#ec4899',
+		];
+		let hash = 0;
+		for (let i = 0; i < nombre.length; i++) {
+			hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
+		}
+		return colores[Math.abs(hash) % colores.length];
+	}
 }
