@@ -258,7 +258,7 @@
 						<label>Penalización tardío <span class="text-danger">*</span></label>
 						<p-dropdown [options]="penalizacionOpciones" formControlName="penalizacion_pago_tardio" [style]="{width:'100%'}"></p-dropdown>
 					</div>
-					<div class="col-12 col-md-3" *ngIf="frmCondomino.get('penalizacion_pago_tardio')?.value == 1">
+					<div class="col-12 col-md-3" *ngIf="frmCondomino.get('penalizacion_pago_tardio')?.value == '1' || frmCondomino.get('penalizacion_pago_tardio')?.value == 1">
 						<label>% por día <span class="text-danger">*</span></label>
 						<div class="p-inputgroup"><input pInputText type="number" formControlName="porcentaje_penalizacion" class="w-100" min="0" max="100" step="0.01" /><span class="p-inputgroup-addon">%</span></div>
 					</div>
