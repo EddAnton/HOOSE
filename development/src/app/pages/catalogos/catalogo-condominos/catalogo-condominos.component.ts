@@ -170,13 +170,16 @@ export class CatalogoCondominosComponent implements OnInit {
         unidad: this.Condomino.unidad + ' (' + this.Condomino.edificio + ')',
       });
       this.Condomino.fecha_inicio = new Date(this.Condomino.fecha_inicio + 'T00:00:00');
-        this.Condomino.fecha_fin = (this.Condomino.fecha_fin && String(this.Condomino.fecha_fin).indexOf('0000') < 0) ? new Date(this.Condomino.fecha_fin + 'T00:00:00') : null;
-        this.Condomino['contrato_fecha_firma'] = (this.Condomino['contrato_fecha_firma'] && String(this.Condomino['contrato_fecha_firma']).indexOf('0000') < 0) ? new Date(this.Condomino['contrato_fecha_firma'] + 'T00:00:00') : null;
-        this.Condomino['contrato_fecha_vencimiento'] = (this.Condomino['contrato_fecha_vencimiento'] && String(this.Condomino['contrato_fecha_vencimiento']).indexOf('0000') < 0) ? new Date(this.Condomino['contrato_fecha_vencimiento'] + 'T00:00:00') : null;
-      this.onOrdenarUnidades(this.UnidadesDisponiblesRenta);
+                              this.onOrdenarUnidades(this.UnidadesDisponiblesRenta);
     } else {
       this.Condomino = new CondominoModel();
     }
+    // Convertir TODAS las fechas fuera del if/else
+    ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(f => {
+      const v = this.Condomino[f];
+      if (v && typeof v === 'string' && v.indexOf('0000') < 0) { this.Condomino[f] = new Date(v + 'T00:00:00'); }
+      else if (typeof v === 'string') { this.Condomino[f] = null; }
+    });
     hlpSwal.Cerrar();
 
     try {
@@ -333,10 +336,7 @@ export class CatalogoCondominosComponent implements OnInit {
           unidad: this.Condomino.unidad + ' (' + this.Condomino.edificio + ')',
         });
         this.Condomino.fecha_inicio = new Date(this.Condomino.fecha_inicio + 'T00:00:00');
-        this.Condomino.fecha_fin = (this.Condomino.fecha_fin && String(this.Condomino.fecha_fin).indexOf('0000') < 0) ? new Date(this.Condomino.fecha_fin + 'T00:00:00') : null;
-        this.Condomino['contrato_fecha_firma'] = (this.Condomino['contrato_fecha_firma'] && String(this.Condomino['contrato_fecha_firma']).indexOf('0000') < 0) ? new Date(this.Condomino['contrato_fecha_firma'] + 'T00:00:00') : null;
-        this.Condomino['contrato_fecha_vencimiento'] = (this.Condomino['contrato_fecha_vencimiento'] && String(this.Condomino['contrato_fecha_vencimiento']).indexOf('0000') < 0) ? new Date(this.Condomino['contrato_fecha_vencimiento'] + 'T00:00:00') : null;
-      } else {
+                              } else {
         // this.Condomino.edificio = null;
         this.Condomino.id_unidad = 0;
         // this.Condomino.unidad = null;
@@ -349,6 +349,12 @@ export class CatalogoCondominosComponent implements OnInit {
     } else {
       this.Condomino = new CondominoModel();
     }
+    // Convertir TODAS las fechas fuera del if/else
+    ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(f => {
+      const v = this.Condomino[f];
+      if (v && typeof v === 'string' && v.indexOf('0000') < 0) { this.Condomino[f] = new Date(v + 'T00:00:00'); }
+      else if (typeof v === 'string') { this.Condomino[f] = null; }
+    });
     hlpSwal.Cerrar();
 
     try {
