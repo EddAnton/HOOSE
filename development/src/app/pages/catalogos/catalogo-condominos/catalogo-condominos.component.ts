@@ -226,7 +226,12 @@ export class CatalogoCondominosComponent implements OnInit {
       this.bIdentificacionAnversoBorrar = false;
       this.bIdentificacionReversoBorrar = false;
       this.bContratoBorrar = false;
-      this.mostrarDialogoEdicionCondomino = true;
+      // Cargar otros_servicios como array
+			if (this.Condomino && this.Condomino.otros_servicios) {
+				const svcs = this.Condomino.otros_servicios.split(',').filter(s => s.length > 1);
+				this.frmCondomino.patchValue({ otros_servicios: svcs });
+			}
+			this.mostrarDialogoEdicionCondomino = true;
     } catch (e) {
       hlpSwal.Error(e);
     }
