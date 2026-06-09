@@ -123,7 +123,7 @@ export class UnidadesService {
   }
 
   ListarUnidadesSinPropietario(idCondominio: number = null) {
-    const url = 'unidades/sin-propietario';
+    const url = 'unidades/sin-propietario' + (idCondominio ? '?id_condominio=' + idCondominio : '');
     const headers = new HttpHeaders({
       'X-API-KEY': environment.appKey,
       Authorization: this.sesionUsuarioService.obtenerToken(),
@@ -137,7 +137,7 @@ export class UnidadesService {
   }
 
   ListarUnidadesDisponiblesRenta(idCondominio: number = null) {
-    const url = 'unidades/disponibles-renta';
+    const url = 'unidades/disponibles-renta' + (idCondominio ? '?id_condominio=' + idCondominio : '');
     const headers = new HttpHeaders({
       'X-API-KEY': environment.appKey,
       Authorization: this.sesionUsuarioService.obtenerToken(),
