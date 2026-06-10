@@ -50,7 +50,7 @@
 							}}" style="width: 70px; height: 70px" />
           </div>
         </td>
-        <td><span class="p-column-title">Nombre</span>{{ Condomino.nombre }}</td>
+        <td><span class="p-column-title">Nombre</span>{{ Condomino.nombre }} {{ Condomino.apellidos || "" }}</td>
         <td><span class="p-column-title">Usuario</span>{{ Condomino.usuario }}</td>
         <td><span class="p-column-title">Email</span>{{ Condomino.email }}</td>
         <td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Condomino.telefono | phoneFormat }}</td>
@@ -393,7 +393,7 @@
 
     <div class="row">
       <div class="col-6">
-        <p class="m-0"><b>Nombre:</b> {{ Condomino.nombre }}</p>
+        <p class="m-0"><b>Nombre:</b> {{ Condomino.nombre }} {{ Condomino.apellidos || "" }}</p>
         <p class="m-0"><b>Usuario:</b> {{ Condomino.usuario }}</p>
         <p class="m-0"><b>Email:</b> {{ Condomino.email }}</p>
         <p class="m-0"><b>Teléfono:</b> {{ Condomino.telefono | phoneFormat }}</p>

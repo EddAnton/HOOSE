@@ -95,7 +95,7 @@
 						/>
 					</div>
 				</td>
-				<td><span class="p-column-title">Nombre</span>{{ Propietario.nombre }}</td>
+				<td><span class="p-column-title">Nombre</span>{{ Propietario.nombre }} {{ Propietario.apellidos || "" }}</td>
 				<td><span class="p-column-title">Usuario</span>{{ Propietario.usuario }}</td>
 				<td><span class="p-column-title">Email</span>{{ Propietario.email }}</td>
 				<td class="text-md-end">
@@ -392,7 +392,7 @@
 
 		<div class="row">
 			<div class="col-6">
-				<p class="m-0"><b>Nombre:</b> {{ Propietario.nombre }}</p>
+				<p class="m-0"><b>Nombre:</b> {{ Propietario.nombre }} {{ Propietario.apellidos || "" }}</p>
 				<p class="m-0"><b>Usuario:</b> {{ Propietario.usuario }}</p>
 				<p class="m-0"><b>Email:</b> {{ Propietario.email }}</p>
 				<p class="m-0"><b>Teléfono:</b> {{ Propietario.telefono | phoneFormat }}</p>

@@ -195,7 +195,15 @@ export class CatalogoCondominosComponent implements OnInit {
       this.srcContrato = this.Condomino.contrato
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
-      this.frmCondomino = this.formBuilder.group(this.Condomino);
+      const hoy = new Date();
+const unAnio = new Date(); unAnio.setFullYear(unAnio.getFullYear() + 1);
+if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
+  this.Condomino['fecha_inicio'] = hoy;
+  this.Condomino['fecha_fin'] = unAnio;
+  this.Condomino['contrato_fecha_firma'] = hoy;
+  this.Condomino['contrato_fecha_vencimiento'] = unAnio;
+}
+this.frmCondomino = this.formBuilder.group(this.Condomino);
       // Forzar fechas como Date
       const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
       for (const [k, v] of Object.entries(fechasCampos)) {
