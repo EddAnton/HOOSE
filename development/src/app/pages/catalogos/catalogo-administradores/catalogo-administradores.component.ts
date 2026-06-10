@@ -1,5 +1,6 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import * as hlpApp from '../../../helpers/app-helper';
@@ -90,6 +91,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	constructor(
 		private formBuilder: FormBuilder,
 		private administradoresService: UsuariosAdministradoresService,
+		private http: HttpClient,
 		private usuariosService: UsuariosService,
 		private condominiosService: CondominiosService,
 		private sesionUsuarioService: SesionUsuarioService,
@@ -118,6 +120,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			contrasenia: [null],
 		});
 		this.onActualizarInformacion();
+					this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => { this.Condominios = r['condominios'] || []; this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio })); }).catch(() => {});
 		this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => {
 			this.Condominios = r['condominios'] || [];
 			this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
@@ -559,6 +562,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 					hlpSwal.ExitoToast(r.value.msg);
 					this.mostrarDialogoEdicionAdministrador = false;
 					this.onActualizarInformacion();
+					this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => { this.Condominios = r['condominios'] || []; this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio })); }).catch(() => {});
 				}
 			});
 	}
@@ -586,6 +590,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			if (r.value && !r.value.err && !r.value.error) {
 				hlpSwal.ExitoToast('Administrador desvinculado correctamente.');
 				this.onActualizarInformacion();
+					this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => { this.Condominios = r['condominios'] || []; this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio })); }).catch(() => {});
 			}
 		});
 	}
@@ -606,6 +611,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			if (r.value && !r.value.err && !r.value.error) {
 				hlpSwal.ExitoToast('Administrador eliminado correctamente.');
 				this.onActualizarInformacion();
+					this.condominiosService.ListarSinAdministrador().toPromise().then((r: any) => { this.Condominios = r['condominios'] || []; this.opcionesCondominios = this.Condominios.map((c: any) => ({ label: c.condominio, value: +c.id_condominio })); }).catch(() => {});
 			}
 		});
 	}
@@ -651,7 +657,11 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				showLoaderOnConfirm: true,
 				preConfirm: async () => {
 					try {
-						return await this.usuariosService.AlternarEstatus(administrador.id_usuario).toPromise();
+						if (administrador['tipo_administrador'] === 'INTERNO' && administrador['id_administrador_interno']) {
+              return await this.http.put(environment.urlBackend + 'usuarios-administradores/alternar-estatus-interno/' + administrador['id_administrador_interno'], {}, { headers: new HttpHeaders({ 'X-API-KEY': environment.appKey, Authorization: this.sesionUsuarioService.obtenerToken() }) }).toPromise();
+            } else {
+              return await this.usuariosService.AlternarEstatus(administrador.id_usuario).toPromise();
+            }
 					} catch (e) {
 						return hlpSwal.Error(e).then(() => ({ err: true }));
 					}
