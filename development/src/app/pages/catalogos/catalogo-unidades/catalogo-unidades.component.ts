@@ -123,6 +123,10 @@ export class CatalogoUnidadesComponent implements OnInit {
 		} else {
 			this.Unidad = new UnidadModel();
 		}
+			if (this.Edificios.length === 0) {
+				await hlpSwal.Error('No hay edificios o torres disponibles para crear una unidad.');
+				return;
+			}
 
 		try {
 			this.srcEscrituras = this.Unidad.escrituras_archivo
