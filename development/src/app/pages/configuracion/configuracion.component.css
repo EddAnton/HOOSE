@@ -1,34 +1,42 @@
-
-/* Editores de texto (Quill) oscuros */
 :host ::ng-deep .p-editor-container .ql-toolbar {
-  background: #2a2a3d !important;
-  border-color: #3d3d5c !important;
+  background: #1a1a2e !important;
+  border: 1px solid #333 !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-toolbar .ql-picker-label,
 :host ::ng-deep .p-editor-container .ql-toolbar button {
-  color: #c0c0d0 !important;
+  color: #aaa !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-toolbar button svg .ql-stroke {
-  stroke: #c0c0d0 !important;
+  stroke: #aaa !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-toolbar button svg .ql-fill {
-  fill: #c0c0d0 !important;
+  fill: #aaa !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-container {
-  background: #2a2a3d !important;
-  border-color: #3d3d5c !important;
-  color: #e0e0e0 !important;
+  background: #141422 !important;
+  border: 1px solid #333 !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-editor {
-  background: #2a2a3d !important;
-  color: #e0e0e0 !important;
+  background: #141422 !important;
+  color: #ddd !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-editor.ql-blank::before {
-  color: #666 !important;
+  color: #555 !important;
+}
+
+:host ::ng-deep input.form-control,
+:host ::ng-deep textarea.form-control {
+  background: #141422 !important;
+  border: 1px solid #333 !important;
+  color: #ddd !important;
+}
+
+:host ::ng-deep div[style*="background:#f8f9fa"] {
+  background: #1a1a2e !important;
 }
