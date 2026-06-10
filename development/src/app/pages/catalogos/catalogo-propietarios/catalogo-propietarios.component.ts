@@ -121,7 +121,7 @@ export class CatalogoPropietariosComponent implements OnInit {
 			.toPromise()
 			.then((r) => r['unidades'])
 			.catch(async (e) => {
-				await hlpSwal.Error(e).then(() => null);
+				await hlpSwal.Error(e || 'Error desconocido').then(() => null);
 			});
 
 		if (!this.UnidadesSinPropietario || this.UnidadesSinPropietario.length === 0) {
@@ -139,7 +139,7 @@ export class CatalogoPropietariosComponent implements OnInit {
 				.toPromise()
 				.then((r) => r['propietario'])
 				.catch(async (e) => {
-					await hlpSwal.Error(e).then(() => null);
+					await hlpSwal.Error(e || 'Error desconocido').then(() => null);
 				});
 			if (this.Propietario == null) return;
 // Recargar unidades filtradas por condominio
@@ -382,7 +382,7 @@ this.UnidadesSinPropietario = await this.unidadesService
 			.toPromise()
 			.then((r) => r['propietario'])
 			.catch(async (e) => {
-				await hlpSwal.Error(e).then(() => null);
+				await hlpSwal.Error(e || 'Error desconocido').then(() => null);
 			})
 			.finally(() => {
 				hlpSwal.Cerrar();
