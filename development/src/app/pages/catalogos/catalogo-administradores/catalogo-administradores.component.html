@@ -115,9 +115,11 @@
 				</td>
 				<td>
 					<span class="p-column-title">Estructura</span>
-					<span *ngIf="Administrador.estructura_administracion==='UNICO'" style="font-size:0.75rem">Único</span>
-					<span *ngIf="Administrador.estructura_administracion==='COMITE'" style="font-size:0.75rem">Comité</span>
-					<span *ngIf="!Administrador.estructura_administracion" style="color:#8a8f9e;font-size:0.75rem">—</span>
+					<span *ngIf="Administrador.tipo_administrador==='INTERNO' && Administrador.estructura_administracion==='UNICO'" style="font-size:0.75rem">Único</span>
+					<span *ngIf="Administrador.tipo_administrador==='INTERNO' && Administrador.estructura_administracion==='COMITE'" style="font-size:0.75rem">Comité</span>
+					<span *ngIf="Administrador.tipo_administrador!=='INTERNO' && Administrador.tipo_persona==='FISICA'" style="font-size:0.75rem">P. Física</span>
+					<span *ngIf="Administrador.tipo_administrador!=='INTERNO' && Administrador.tipo_persona==='MORAL'" style="font-size:0.75rem">P. Moral</span>
+					<span *ngIf="Administrador.tipo_administrador!=='INTERNO' && !Administrador.tipo_persona" style="color:#8a8f9e;font-size:0.75rem">—</span>
 				</td>
 				<td><span class="p-column-title">Email</span>{{ Administrador.email }}</td>
 				<td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Administrador.telefono | phoneFormat }}</td>
