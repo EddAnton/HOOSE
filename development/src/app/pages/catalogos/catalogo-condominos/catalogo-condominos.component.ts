@@ -891,4 +891,24 @@ export class CatalogoCondominosComponent implements OnInit {
 		}
 	}
 
+
+	async onCondominoEliminar(condomino: any) {
+		const result = await hlpSwal.Pregunta({
+			html: '¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.',
+			showLoaderOnConfirm: true,
+			preConfirm: async () => {
+				try {
+					return await this.condominosService.Eliminar(condomino.id_usuario).toPromise();
+				} catch (e) {
+					return hlpSwal.Error(e || 'Error al eliminar').then(() => ({ err: true }));
+				}
+			},
+			allowOutsideClick: () => false,
+		});
+		if (result.value && !result.value.err && !result.value.error) {
+			hlpSwal.ExitoToast('Registro eliminado correctamente.');
+			this.onActualizarInformacion();
+		}
+	}
+
 }

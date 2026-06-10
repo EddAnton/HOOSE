@@ -163,4 +163,12 @@ export class UnidadesService {
       }),
     );
   }
+
+  Eliminar(id: number) {
+    const params = new FormData();
+    params.append('id_unidad', id.toString());
+    const headers = new HttpHeaders({ 'X-API-KEY': environment.appKey, Authorization: this.sesionUsuarioService.obtenerToken() });
+    return this.http.post(environment.urlBackend + 'unidades/eliminar', params, { headers }).pipe(map(r => r));
+  }
+
 }

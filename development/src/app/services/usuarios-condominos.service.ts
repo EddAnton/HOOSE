@@ -94,4 +94,11 @@ export class UsuariosCondominosService {
 			}),
 		);
 	}
+
+  Eliminar(id: number) {
+    const params = new FormData();
+    params.append('id_usuario', id.toString());
+    return this.http.post(environment.urlBackend + 'condominos/eliminar', params, { headers: new HttpHeaders({ 'X-API-KEY': environment.appKey, Authorization: this.sesionUsuarioService.obtenerToken() }) }).pipe(map(r => r));
+  }
+
 }
