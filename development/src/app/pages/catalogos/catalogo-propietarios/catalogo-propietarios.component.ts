@@ -124,7 +124,12 @@ export class CatalogoPropietariosComponent implements OnInit {
 				await hlpSwal.Error(e).then(() => null);
 			});
 
-		if (!this.unidadesService) {
+		if (!this.UnidadesSinPropietario || this.UnidadesSinPropietario.length === 0) {
+		  if (idUsuario === 0) {
+		    hlpSwal.Cerrar();
+		    hlpSwal.Advertencia('No hay unidades disponibles para asignar.');
+		    return;
+		  }
 			return;
 		}
 
