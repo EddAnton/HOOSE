@@ -317,7 +317,7 @@ this.UnidadesSinPropietario = await this.unidadesService
 
 		let propietario = this.frmPropietario.value;
 
-		propietario.unidades = JSON.stringify(this.Propietario.unidades.map((u) => ({ id_unidad: u.id_unidad })));
+		propietario.unidades = JSON.stringify(this.Propietario.unidades.map((u) => ({ id_unidad: u.id_unidad, modo: u.modo || 'Vivienda', pago_cuota_mantenimiento: u.pago_cuota_mantenimiento || 'Propietario' })));
 		if (this.esSuperAdminSinCondominio && this.frmPropietario.get('fk_id_condominio')) {
 			propietario.fk_id_condominio = this.frmPropietario.get('fk_id_condominio').value;
 		}
