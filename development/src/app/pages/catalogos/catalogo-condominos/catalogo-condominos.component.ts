@@ -204,6 +204,11 @@ if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
   this.Condomino['contrato_fecha_vencimiento'] = unAnio;
 }
 this.frmCondomino = this.formBuilder.group(this.Condomino);
+      // Patchear fechas default para nuevo condómino
+      if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
+        const hoyD = new Date(); const unAnioD = new Date(); unAnioD.setFullYear(unAnioD.getFullYear() + 1);
+        this.frmCondomino.patchValue({ fecha_inicio: hoyD, fecha_fin: unAnioD, contrato_fecha_firma: hoyD, contrato_fecha_vencimiento: unAnioD });
+      }
       // Forzar fechas como Date
       const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
       for (const [k, v] of Object.entries(fechasCampos)) {
@@ -259,8 +264,8 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
       if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || '0'));
       if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || '0'));
       if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || '0'));
-      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
-      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(this.Condomino['contrato_fecha_firma'] || null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(this.Condomino['contrato_fecha_vencimiento'] || null));
       // Forzar fechas como Date
       ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(campo => {
         const v = this.frmCondomino.get(campo)?.value;
@@ -379,6 +384,11 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
       this.frmCondomino = this.formBuilder.group(this.Condomino);
+      // Patchear fechas default para nuevo condómino
+      if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
+        const hoyD = new Date(); const unAnioD = new Date(); unAnioD.setFullYear(unAnioD.getFullYear() + 1);
+        this.frmCondomino.patchValue({ fecha_inicio: hoyD, fecha_fin: unAnioD, contrato_fecha_firma: hoyD, contrato_fecha_vencimiento: unAnioD });
+      }
       // Forzar fechas como Date
       const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
       for (const [k, v] of Object.entries(fechasCampos)) {
@@ -434,8 +444,8 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
       if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || '0'));
       if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || '0'));
       if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || '0'));
-      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
-      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(this.Condomino['contrato_fecha_firma'] || null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(this.Condomino['contrato_fecha_vencimiento'] || null));
       // Forzar fechas como Date
       ['fecha_fin', 'contrato_fecha_firma', 'contrato_fecha_vencimiento'].forEach(campo => {
         const v = this.frmCondomino.get(campo)?.value;
@@ -460,8 +470,8 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
       if (!this.frmCondomino.get('porcentaje_penalizacion')) this.frmCondomino.addControl('porcentaje_penalizacion', new FormControl(this.Condomino['porcentaje_penalizacion'] || '0'));
       if (!this.frmCondomino.get('cuota_mantenimiento_aplica')) this.frmCondomino.addControl('cuota_mantenimiento_aplica', new FormControl(this.Condomino['cuota_mantenimiento_aplica'] || '0'));
       if (!this.frmCondomino.get('representacion_asamblea')) this.frmCondomino.addControl('representacion_asamblea', new FormControl(this.Condomino['representacion_asamblea'] || '0'));
-      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(null));
-      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(null));
+      if (!this.frmCondomino.get('contrato_fecha_firma')) this.frmCondomino.addControl('contrato_fecha_firma', new FormControl(this.Condomino['contrato_fecha_firma'] || null));
+      if (!this.frmCondomino.get('contrato_fecha_vencimiento')) this.frmCondomino.addControl('contrato_fecha_vencimiento', new FormControl(this.Condomino['contrato_fecha_vencimiento'] || null));
       // Cargar servicios como array
       if (this.Condomino['otros_servicios']) {
         this.frmCondomino.patchValue({ otros_servicios: this.Condomino['otros_servicios'].split(',').filter(s => s.length > 1) });
