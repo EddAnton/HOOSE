@@ -139,7 +139,7 @@
 					<!-- Botón Editar -->
 					<button
 						pButton
-						*ngIf="Administrador.estatus == 1"
+						*ngIf="Administrador.estatus == 1 && Administrador.tipo_administrador !== 'INTERNO'"
 						type="button"
 						icon="pi pi-pencil"
 						class="p-button-rounded p-button-text p-button-success me-1"
