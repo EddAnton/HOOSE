@@ -601,7 +601,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			showLoaderOnConfirm: true,
 			preConfirm: async () => {
 				try {
-					return await this.usuariosService.AlternarEstatus(administrador.id_usuario).toPromise();
+					return await this.administradoresService.EliminarCompleto(administrador.id_usuario).toPromise();
 				} catch (e) {
 					return hlpSwal.Error(e).then(() => ({ err: true }));
 				}
