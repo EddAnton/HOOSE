@@ -72,6 +72,7 @@ export var MensajeToast = Swal.mixin({
 });
 
 function instanceOfSweetAlertOptions(object: any): object is SweetAlertOptions {
+	if (!object || typeof object !== 'object') return false;
 	return 'icon' in object || 'title' in object || 'text' in object || 'html' in object;
 }
 
