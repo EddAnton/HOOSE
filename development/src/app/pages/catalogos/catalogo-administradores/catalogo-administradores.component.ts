@@ -578,7 +578,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				try {
 					return await this.administradoresService.Eliminar({
 						id_usuario: administrador.id_usuario,
-						tipo_administrador: administrador.tipo_administrador,
+						tipo_administrador: administrador.id_administrador_interno ? 'INTERNO' : 'EXTERNO',
 						fk_id_condominio: administrador.fk_id_condominio,
 					}).toPromise();
 				} catch (e) {
