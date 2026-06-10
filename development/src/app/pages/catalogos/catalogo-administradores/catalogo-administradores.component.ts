@@ -658,7 +658,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				preConfirm: async () => {
 					try {
 						if (administrador['tipo_administrador'] === 'INTERNO' && administrador['id_administrador_interno']) {
-              return await this.http.put(environment.urlBackend + 'usuarios_administradores/alternar_estatus_interno/' + administrador['id_administrador_interno'], {}, { headers: new HttpHeaders({ 'X-API-KEY': environment.appKey, Authorization: this.sesionUsuarioService.obtenerToken() }) }).toPromise();
+              return await this.http.post(environment.urlBackend + 'usuarios-administradores/alternar-estatus-interno/' + administrador['id_administrador_interno'], {}, { headers: new HttpHeaders({ 'X-API-KEY': environment.appKey, Authorization: this.sesionUsuarioService.obtenerToken() }) }).toPromise();
             } else {
               return await this.usuariosService.AlternarEstatus(administrador.id_usuario).toPromise();
             }
