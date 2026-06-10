@@ -148,7 +148,7 @@ export class CatalogoCondominosComponent implements OnInit {
       .toPromise()
       .then((r) => r['unidades'])
       .catch(async (e) => {
-        await hlpSwal.Error(e).then(() => null);
+        return [];
       });
 
     if (idUsuario == 0 && this.UnidadesDisponiblesRenta.length < 1) {
