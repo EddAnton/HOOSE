@@ -130,7 +130,6 @@ export class CatalogoPropietariosComponent implements OnInit {
 		    hlpSwal.Error('No hay unidades disponibles para asignar a un propietario.');
 		    return;
 		  }
-			return;
 		}
 
 		if (idUsuario > 0) {
