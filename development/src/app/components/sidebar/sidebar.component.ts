@@ -69,7 +69,7 @@ export class SidebarComponent implements OnInit {
       },
       {
         path: '/catalogos/administradores',
-        title: 'Administración',
+        title: 'Administradores',
         visiblePerfilUsuario: [1],
         visible: true,
         icon: 'bi bi-person-workspace',

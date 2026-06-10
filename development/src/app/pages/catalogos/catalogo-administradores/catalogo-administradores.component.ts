@@ -163,9 +163,9 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	get kpiInternos() { return this.Administradores.filter((a: any) => a.tipo_administrador === 'INTERNO').length; }
 	get kpiUnicos() { return this.Administradores.filter((a: any) => a.estructura_administracion === 'UNICO').length; }
 	get kpiComites() { return this.Administradores.filter((a: any) => a.estructura_administracion === 'COMITE').length; }
-	get kpiExternos() { return this.Administradores.filter((a: any) => a.tipo_administrador === 'EXTERNO').length; }
-	get kpiFisicas() { return this.Administradores.filter((a: any) => a.tipo_persona === 'FISICA').length; }
-	get kpiMorales() { return this.Administradores.filter((a: any) => a.tipo_persona === 'MORAL').length; }
+	get kpiExternos() { return this.Administradores.filter((a: any) => a.tipo_administrador !== 'INTERNO').length; }
+	get kpiFisicas() { return this.Administradores.filter((a: any) => a.tipo_administrador !== 'INTERNO' && a.tipo_persona === 'FISICA').length; }
+	get kpiMorales() { return this.Administradores.filter((a: any) => a.tipo_administrador !== 'INTERNO' && a.tipo_persona === 'MORAL').length; }
 
 	public onActualizarInformacion() {
 		// Recargar condominios sin administrador
