@@ -35,6 +35,9 @@ export class CatalogoUnidadesComponent implements OnInit {
 		{ header: 'Edificio / Torre' },
 		{ header: 'Tipo', width: '120px' },
 		{ header: 'Nivel', width: '70px' },
+{ header: 'Modo', width: '90px' },
+{ header: 'Propietario', width: '150px' },
+{ header: 'Condómino', width: '150px' },
 		{ header: 'Escrituras', width: '70px' },
 		{ header: 'Estatus', width: '70px' },
 		// Botones de acción
