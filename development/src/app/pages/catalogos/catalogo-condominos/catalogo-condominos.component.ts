@@ -878,4 +878,17 @@ export class CatalogoCondominosComponent implements OnInit {
 		}
 	}
 
+
+	onUnidadRentaChange(event) {
+		const idUnidad = event?.value || null;
+		if (idUnidad && this.UnidadesDisponiblesRenta) {
+			const unidad = this.UnidadesDisponiblesRenta.find(u => u.id_unidad == idUnidad);
+			if (unidad && unidad.pago_cuota_mantenimiento === 'Condómino') {
+				this.frmCondomino.patchValue({ cuota_mantenimiento_aplica: '1' });
+			} else {
+				this.frmCondomino.patchValue({ cuota_mantenimiento_aplica: '0' });
+			}
+		}
+	}
+
 }

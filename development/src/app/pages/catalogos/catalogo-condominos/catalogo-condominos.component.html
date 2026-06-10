@@ -223,7 +223,7 @@
 				<div class="row">
 					<div class="col-12">
 						<label>Unidad disponible para renta <span class="text-danger">*</span></label>
-						<p-dropdown [options]="UnidadesDisponiblesRenta" formControlName="id_unidad" optionLabel="unidad" optionValue="id_unidad" placeholder="Selecciona una unidad..." [style]="{width:'100%'}" [filter]="true" filterBy="unidad"></p-dropdown>
+						<p-dropdown [options]="UnidadesDisponiblesRenta" formControlName="id_unidad" (onChange)="onUnidadRentaChange($event)" optionLabel="unidad" optionValue="id_unidad" placeholder="Selecciona una unidad..." [style]="{width:'100%'}" [filter]="true" filterBy="unidad"></p-dropdown>
 					</div>
 				</div>
 			</div>
