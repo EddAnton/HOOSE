@@ -122,11 +122,11 @@ function GenerarContenidoMensajeErrorREST(error: HttpErrorResponse) {
 	mensaje.icon = 'error';
 
 	if ([400, 401, 403].includes(error.status)) {
-		mensaje.html = error.error.msg ? error.error.msg : error.message;
+		mensaje.html = error.error && error.error.msg ? error.error.msg : error.message;
 		if (typeof mensaje.html === 'string') mensaje.html = mensaje.html.replace(/(\r\n|\n|\r)/g, '<br />');
 	} else {
 		//		if (isDevMode()) {
-		if (typeof error.error !== 'object') {
+		if (!error.error || typeof error.error !== 'object') {
 			mensaje.html = error.error;
 			// mensaje.width = '75vw';
 		} else {
