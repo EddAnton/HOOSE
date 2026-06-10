@@ -204,12 +204,7 @@ if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
   this.Condomino['contrato_fecha_vencimiento'] = unAnio;
 }
 this.frmCondomino = this.formBuilder.group(this.Condomino);
-      // Patchear fechas default para nuevo condómino
-      if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
-        const hoyD = new Date(); const unAnioD = new Date(); unAnioD.setFullYear(unAnioD.getFullYear() + 1);
-        this.frmCondomino.patchValue({ fecha_inicio: hoyD, fecha_fin: unAnioD, contrato_fecha_firma: hoyD, contrato_fecha_vencimiento: unAnioD });
-      }
-      // Forzar fechas como Date
+// Forzar fechas como Date
       const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
       for (const [k, v] of Object.entries(fechasCampos)) {
         if (v instanceof Date) { this.frmCondomino.get(k)?.setValue(v); }
@@ -384,12 +379,7 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
         ? environment.urlBackendUsuariosFiles + this.Condomino.id_usuario + '/' + this.Condomino.contrato
         : null;
       this.frmCondomino = this.formBuilder.group(this.Condomino);
-      // Patchear fechas default para nuevo condómino
-      if (!this.Condomino['id_usuario'] || this.Condomino['id_usuario'] === 0) {
-        const hoyD = new Date(); const unAnioD = new Date(); unAnioD.setFullYear(unAnioD.getFullYear() + 1);
-        this.frmCondomino.patchValue({ fecha_inicio: hoyD, fecha_fin: unAnioD, contrato_fecha_firma: hoyD, contrato_fecha_vencimiento: unAnioD });
-      }
-      // Forzar fechas como Date
+// Forzar fechas como Date
       const fechasCampos = {fecha_inicio: this.Condomino.fecha_inicio, fecha_fin: this.Condomino.fecha_fin};
       for (const [k, v] of Object.entries(fechasCampos)) {
         if (v instanceof Date) { this.frmCondomino.get(k)?.setValue(v); }
