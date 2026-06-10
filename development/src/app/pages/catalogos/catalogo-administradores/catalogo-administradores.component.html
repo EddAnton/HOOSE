@@ -58,7 +58,8 @@
   </div>
 
 <div class="admin-table-wrap">
-	<p-table
+	<div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+<p-table
 		#ptAdministradores
 		[responsive]="true"
 		[value]="Administradores"
@@ -172,6 +173,7 @@
 			</tr>
 		</ng-template>
 	</p-table>
+</div>
 </div>
 
 <!-- Diálogo Edición del Administrador -->
