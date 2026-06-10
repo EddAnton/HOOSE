@@ -495,7 +495,7 @@ this.UnidadesSinPropietario = await this.unidadesService
 
 
 	async onCondominioChange(event) {
-		const condId = event?.value || null;
+		const condId = event?.target?.value || event?.value || null;
 		if (condId) {
 			this.UnidadesSinPropietario = await this.unidadesService
 				.ListarUnidadesSinPropietario(condId)
