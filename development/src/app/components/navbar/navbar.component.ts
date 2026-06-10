@@ -238,6 +238,9 @@ export class NavbarComponent implements OnInit {
 			]),
 		});
 		this.frmSeleccionarCondominio.updateValueAndValidity();
+    const condActualId = this.sesionUsuarioService.leerUsuario().id_condominio_usuario;
+    const idxActual = this.Condominios.findIndex(c => c.id_condominio == condActualId);
+    this.idxCondominioSeleccionado = idxActual >= 0 ? idxActual : 0;
 		this.mostrarDialogoSeleccionCondominio = true;
 	}
 
