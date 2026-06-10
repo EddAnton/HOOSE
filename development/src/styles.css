@@ -1465,3 +1465,14 @@ app-catalogo-administradores {
     padding: 8px 12px !important;
   }
 }
+
+/* ── Scroll horizontal para TODAS las tablas ── */
+.p-datatable .p-datatable-wrapper {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.p-datatable .p-datatable-wrapper > table {
+  min-width: 100% !important;
+  width: auto !important;
+  table-layout: auto !important;
+}
