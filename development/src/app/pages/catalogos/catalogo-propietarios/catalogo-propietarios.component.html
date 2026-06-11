@@ -428,11 +428,11 @@
           </div>
           <div class="d-flex align-items-center gap-2" *ngIf="Propietario.email">
             <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
-            <div><small class="text-muted d-block">Correo electrónico</small><strong class="text-white" style="font-size:0.85rem">{{ Propietario.email }}</strong></div>
+            <div><small class="text-muted d-block">Correo electrónico</small><a [href]="'mailto:' + Propietario.email" style="color:#3b82f6;font-size:0.85rem;font-weight:600;text-decoration:none">{{ Propietario.email }}</a></div>
           </div>
           <div class="d-flex align-items-center gap-2" *ngIf="Propietario.telefono">
             <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-phone" style="color:#10b981"></i></div>
-            <div><small class="text-muted d-block">Teléfono</small><strong class="text-white">{{ Propietario.telefono | phoneFormat }}</strong></div>
+            <div><small class="text-muted d-block">Teléfono</small><a [href]="'tel:' + Propietario.telefono" style="color:#10b981;font-weight:600;text-decoration:none">{{ Propietario.telefono | phoneFormat }}</a></div>
           </div>
         </div>
       </div>
@@ -448,11 +448,7 @@
         </div>
       </div>
 
-      <!-- Domicilio -->
-      <div class="hoose-detalle-card p-3 mb-3">
-        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(245,158,11,0.15)"><i class="pi pi-map-marker" style="color:#f59e0b"></i></div><h6 class="text-white mb-0">Domicilio</h6></div>
-        <span class="text-white">{{ Propietario.domicilio || 'No registrado' }}</span>
-      </div>
+
 
       <!-- Identificación -->
       <div class="hoose-detalle-card p-3 mb-3">

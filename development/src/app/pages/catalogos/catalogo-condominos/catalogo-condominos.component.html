@@ -434,11 +434,11 @@
         <div class="d-flex flex-wrap gap-3">
           <div class="d-flex align-items-center gap-2" *ngIf="Condomino.email">
             <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
-            <div><small class="text-muted d-block">Email</small><strong class="text-white" style="font-size:0.85rem">{{ Condomino.email }}</strong></div>
+            <div><small class="text-muted d-block">Email</small><a [href]="'mailto:' + Condomino.email" style="color:#3b82f6;font-size:0.85rem;font-weight:600;text-decoration:none">{{ Condomino.email }}</a></div>
           </div>
           <div class="d-flex align-items-center gap-2" *ngIf="Condomino.telefono">
             <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-phone" style="color:#10b981"></i></div>
-            <div><small class="text-muted d-block">Teléfono</small><strong class="text-white">{{ Condomino.telefono | phoneFormat }}</strong></div>
+            <div><small class="text-muted d-block">Teléfono</small><a [href]="'tel:' + Condomino.telefono" style="color:#10b981;font-weight:600;text-decoration:none">{{ Condomino.telefono | phoneFormat }}</a></div>
           </div>
           <div class="d-flex align-items-center gap-2">
             <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
@@ -454,21 +454,35 @@
           <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Teléfono</small><span class="text-white">{{ Condomino.telefono ? (Condomino.telefono | phoneFormat) : 'No registrado' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Usuario</small><span class="text-white">{{ Condomino.usuario || 'No registrado' }}</span></div>
-          <div class="col-6 mb-2"><small class="text-muted d-block">Domicilio</small><span class="text-white">{{ Condomino.domicilio || 'No registrado' }}</span></div>
+
           <div class="col-6"><small class="text-muted d-block">Email</small><span class="text-white">{{ Condomino.email || 'No registrado' }}</span></div>
         </div>
       </div>
 
-      <!-- Datos de contrato -->
+      <!-- Unidad en Alquiler -->
       <div class="hoose-detalle-card p-3 mb-3">
-        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(16,185,129,0.15)"><i class="pi pi-file" style="color:#10b981"></i></div><h6 class="text-white mb-0">Datos de contrato</h6></div>
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(233,30,138,0.15)"><i class="pi pi-home" style="color:#e91e8a"></i></div><h6 class="text-white mb-0">Unidad en Alquiler</h6></div>
         <div class="row">
-          <div class="col-6 mb-2"><small class="text-muted d-block">Edificio</small><span class="text-white">{{ Condomino.edificio || '-' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Unidad</small><span class="text-white">{{ Condomino.unidad || '-' }} ({{ Condomino.edificio || '-' }})</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Depósito</small><span class="text-white">{{ Condomino.deposito | number:'1.2-2' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Renta</small><span class="text-white">{{ Condomino.renta | number:'1.2-2' }}</span></div>
-          <div class="col-6 mb-2"><small class="text-muted d-block">Unidad</small><span class="text-white">{{ Condomino.unidad || '-' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Día límite de pago</small><span class="text-white">{{ Condomino.fecha_limite_pago || 'No definido' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Fecha inicio</small><span class="text-white">{{ Condomino.fecha_inicio | date:'MMMM dd, yyyy' | uppercase }}</span></div>
-          <div class="col-6"><small class="text-muted d-block">Depósito</small><span class="text-white">{{ Condomino.deposito | number:'1.2-2' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Fecha término</small><span class="text-white">{{ Condomino.fecha_fin ? (Condomino.fecha_fin | date:'MMMM dd, yyyy' | uppercase) : 'No definida' }}</span></div>
+          <div class="col-6 mb-2" *ngIf="Condomino.penalizacion_pago_tardio == 1"><small class="text-muted d-block">Penalización pago tardío</small><span class="text-white">Sí — {{ Condomino.porcentaje_penalizacion }}% por día</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Servicios no incluidos</small><span class="text-white">{{ Condomino.otros_servicios || 'Ninguno' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Cuota de mantenimiento</small><span class="text-white">{{ Condomino.cuota_mantenimiento_aplica == '1' ? 'Sí, a cargo del Condómino' : 'No aplica' }}</span></div>
           <div class="col-6"><small class="text-muted d-block">Estatus contrato</small><span class="hoose-badge-activo" *ngIf="Condomino.contrato_activo == 1"><span class="hoose-dot-green"></span> Activo</span><span class="hoose-badge-inactivo" *ngIf="Condomino.contrato_activo != 1"><span class="hoose-dot-red"></span> Inactivo</span></div>
+        </div>
+      </div>
+
+      <!-- Legal / Contrato -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(245,158,11,0.15)"><i class="pi pi-briefcase" style="color:#f59e0b"></i></div><h6 class="text-white mb-0">Legal / Contrato</h6></div>
+        <div class="row">
+          <div class="col-6 mb-2"><small class="text-muted d-block">Representación en Asambleas</small><span class="text-white">{{ Condomino.representacion_asamblea == '1' ? 'Sí' : 'No' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Fecha firma contrato</small><span class="text-white">{{ Condomino.contrato_fecha_firma ? (Condomino.contrato_fecha_firma | date:'MMMM dd, yyyy' | uppercase) : 'No registrada' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Fecha vencimiento contrato</small><span class="text-white">{{ Condomino.contrato_fecha_vencimiento ? (Condomino.contrato_fecha_vencimiento | date:'MMMM dd, yyyy' | uppercase) : 'No registrada' }}</span></div>
         </div>
       </div>
 
