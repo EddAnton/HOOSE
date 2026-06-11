@@ -534,11 +534,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			fecha_fin: this.frmAdministrador.get('fecha_fin_mandato')?.value ? this.formatFecha(this.frmAdministrador.get('fecha_fin_mandato').value) : null,
 			};
 		} else {
-			if (!this.frmAdministrador.valid) {
-				this.frmAdministrador.markAllAsTouched();
-				hlpSwal.Error('Se detectaron errores en la información solicitada.');
-				return;
-			}
+// Validación deshabilitada - puedeGuardar ya valida
 			administrador = this.frmAdministrador.value;
 			administrador.tipo_administrador = this.tipoAcceso;
 			administrador.estructura_administracion = this.tipoAdministracion;
