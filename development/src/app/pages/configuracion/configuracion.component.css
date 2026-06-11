@@ -1,42 +1,134 @@
-:host ::ng-deep .p-editor-container .ql-toolbar {
-  background: #1a1a2e !important;
-  border: 1px solid #333 !important;
+/* === Card principal === */
+:host ::ng-deep .card.shadow-sm {
+  background: linear-gradient(145deg, #1a1a2e 0%, #16162a 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
 }
 
-:host ::ng-deep .p-editor-container .ql-toolbar .ql-picker-label,
-:host ::ng-deep .p-editor-container .ql-toolbar button {
-  color: #aaa !important;
+/* === Fieldsets === */
+:host ::ng-deep .p-fieldset {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px !important;
+}
+
+:host ::ng-deep .p-fieldset .p-fieldset-legend {
+  background: transparent;
+  border: none;
+  color: #e0e0f0;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+
+:host ::ng-deep .p-fieldset .p-fieldset-legend a {
+  color: #e0e0f0 !important;
+}
+
+:host ::ng-deep .p-fieldset .p-fieldset-content {
+  padding: 1rem;
+}
+
+/* === Info banner === */
+:host ::ng-deep .text-muted.small {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px !important;
+  color: #94a3b8 !important;
+}
+
+/* === Variables badges === */
+:host ::ng-deep .badge.bg-secondary {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #c0c0d0 !important;
+  font-weight: 400;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+
+:host ::ng-deep .badge.bg-secondary:hover {
+  border-color: #e91e8a;
+  color: #e91e8a !important;
+  background: rgba(233, 30, 138, 0.1) !important;
+}
+
+:host ::ng-deep .border.rounded.bg-light {
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* === Editores Quill === */
+:host ::ng-deep .p-editor-container {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+:host ::ng-deep .p-editor-container .ql-toolbar {
+  background: rgba(255,255,255,0.04) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+:host ::ng-deep .p-editor-container .ql-toolbar button,
+:host ::ng-deep .p-editor-container .ql-toolbar .ql-picker-label {
+  color: #888 !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-toolbar button svg .ql-stroke {
-  stroke: #aaa !important;
+  stroke: #888 !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-toolbar button svg .ql-fill {
-  fill: #aaa !important;
+  fill: #888 !important;
+}
+
+:host ::ng-deep .p-editor-container .ql-toolbar button:hover svg .ql-stroke {
+  stroke: #e91e8a !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-container {
-  background: #141422 !important;
-  border: 1px solid #333 !important;
+  background: rgba(0,0,0,0.2) !important;
+  border: none !important;
 }
 
 :host ::ng-deep .p-editor-container .ql-editor {
-  background: #141422 !important;
-  color: #ddd !important;
+  background: transparent !important;
+  color: #ccc !important;
+  min-height: 120px;
 }
 
 :host ::ng-deep .p-editor-container .ql-editor.ql-blank::before {
   color: #555 !important;
+  font-style: normal;
 }
 
+/* === Inputs de archivos === */
 :host ::ng-deep input.form-control,
-:host ::ng-deep textarea.form-control {
-  background: #141422 !important;
-  border: 1px solid #333 !important;
-  color: #ddd !important;
+:host ::ng-deep input.form-control-sm {
+  background: rgba(0,0,0,0.2) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #ccc !important;
+  border-radius: 8px;
 }
 
+/* === Contenedores de imágenes === */
 :host ::ng-deep div[style*="background:#f8f9fa"] {
-  background: #1a1a2e !important;
+  background: rgba(0,0,0,0.15) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* === Labels === */
+:host ::ng-deep label.fw-bold {
+  color: #b0b0c0;
+}
+
+:host ::ng-deep .text-muted {
+  color: #666 !important;
+}
+
+:host ::ng-deep .text-secondary {
+  color: #888 !important;
 }
