@@ -738,7 +738,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
   onRazonSocialChange(val: string) {
     if (this.tipoPersona === 'MORAL' && val) {
       this.frmAdministrador.patchValue({
-        usuario: val.toLowerCase().replace(/\s+/g, '')
+        usuario: val.toLowerCase().replace(/[^a-z0-9]/g, '')
       });
     }
   }
