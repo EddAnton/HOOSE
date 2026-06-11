@@ -326,3 +326,9 @@ small.text-muted { color: #555a6a !important; font-size: 0.7rem !important; }
 .hoose-info-icon-sm i { font-size: 0.9rem; }
 :host ::ng-deep .hoose-detalle-dialog .p-dialog-content { padding: 0 !important; background: #12121f !important; border-radius: 16px !important; }
 :host ::ng-deep .hoose-detalle-dialog .p-dialog { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
+
+.hoose-section-title { color: #e0e0f0; font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.hoose-form-section { margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; }
+.hoose-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.hoose-form-field { display: flex; flex-direction: column; }
+.hoose-form-label { color: #a0a0b0; font-size: 0.85rem; margin-bottom: 4px; }
