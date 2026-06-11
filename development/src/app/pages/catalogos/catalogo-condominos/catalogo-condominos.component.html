@@ -432,6 +432,10 @@
       <!-- Quick info -->
       <div class="hoose-detalle-card p-3 mb-3">
         <div class="d-flex flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
+            <div><small class="text-muted d-block">Edificio / Unidad</small><strong class="text-white">{{ Condomino.edificio || '-' }} {{ Condomino.unidad || '' }}</strong></div>
+          </div>
           <div class="d-flex align-items-center gap-2" *ngIf="Condomino.email">
             <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
             <div><small class="text-muted d-block">Email</small><a [href]="'mailto:' + Condomino.email" style="color:#3b82f6;font-size:0.85rem;font-weight:600;text-decoration:none">{{ Condomino.email }}</a></div>
@@ -440,22 +444,6 @@
             <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-phone" style="color:#10b981"></i></div>
             <div><small class="text-muted d-block">Teléfono</small><a [href]="'tel:' + Condomino.telefono" style="color:#10b981;font-weight:600;text-decoration:none">{{ Condomino.telefono | phoneFormat }}</a></div>
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
-            <div><small class="text-muted d-block">Edificio / Unidad</small><strong class="text-white">{{ Condomino.edificio || '-' }} {{ Condomino.unidad || '' }}</strong></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Información de contacto -->
-      <div class="hoose-detalle-card p-3 mb-3">
-        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Información de contacto</h6></div>
-        <div class="row">
-          <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</span></div>
-          <div class="col-6 mb-2"><small class="text-muted d-block">Teléfono</small><span class="text-white">{{ Condomino.telefono ? (Condomino.telefono | phoneFormat) : 'No registrado' }}</span></div>
-          <div class="col-6 mb-2"><small class="text-muted d-block">Usuario</small><span class="text-white">{{ Condomino.usuario || 'No registrado' }}</span></div>
-
-          <div class="col-6"><small class="text-muted d-block">Email</small><span class="text-white">{{ Condomino.email || 'No registrado' }}</span></div>
         </div>
       </div>
 
