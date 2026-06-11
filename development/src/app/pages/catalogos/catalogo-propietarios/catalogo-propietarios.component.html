@@ -357,95 +357,142 @@
 
 <!-- Diálogo Detalles del Propietario -->
 <p-dialog
-	styleClass="hoose-dialogo"
-	[breakpoints]="{ '991px': '80vw', '640px': '96vw' }"
-	[style]="{ width: '60vw' }"
-	[(visible)]="mostrarDialogoDetallesPropietario"
-	modal="true"
-	header="Detalles del Propietario"
+  styleClass="hoose-detalle-dialog"
+  [breakpoints]="{ '991px': '90vw', '640px': '98vw' }"
+  [style]="{ width: '70vw', maxWidth: '900px' }"
+  [(visible)]="mostrarDialogoDetallesPropietario"
+  [modal]="true"
+  [showHeader]="false"
+  [contentStyle]="{'padding': '0', 'background': '#12121f', 'border-radius': '16px'}"
 >
-	<ng-template pTemplate="content">
-		<div class="row pt-4">
-			<!-- Thumbnail de la Imagen del propietario -->
-			<div class="col-12 text-center">
-				<div>
-					<img
-						class="imagenThumbnail img-thumbnail"
-						[src]="srcImagen ? srcImagen : './assets/img/imagen_no_disponible.png'"
-						[ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
-						(click)="srcImagen && onImagenMostrar(srcImagen)"
-					/>
-				</div>
-				<!-- <div class="my-1">
-					<b>Imagen del Propietario</b>
-				</div> -->
-				<div class="mt-1">
-					<b>Estatus: </b>
-					<!-- <span class="p-column-title">Estatus</span> -->
-					<!-- <div style="cursor: pointer" (click)="Condomino.estatus == 1 && onCondominoAlternarEstatus(Condomino)"> -->
-					<p-tag *ngIf="Propietario.estatus == 1" severity="success" value="Activo"></p-tag>
-					<p-tag *ngIf="Propietario.estatus != 1" severity="danger" value="Inactivo"></p-tag>
-				</div>
-			</div>
-			<hr class="mt-3" />
-		</div>
+<ng-template pTemplate="content">
+<div class="hoose-detalle">
+  <!-- Header -->
+  <div class="hoose-detalle-header">
+    <div class="d-flex align-items-center">
+      <div class="hoose-detalle-icon-header"><i class="pi pi-user"></i></div>
+      <div class="ms-3">
+        <h4 class="mb-0 text-white">Detalles del Propietario</h4>
+        <small class="text-muted">Información completa del propietario y sus unidades</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button pButton type="button" icon="pi pi-pencil" label="Editar" class="p-button-outlined p-button-sm" style="color:#ccc;border-color:#444" (click)="mostrarDialogoDetallesPropietario=false; onPropietarioEditar(Propietario.id_usuario)"></button>
+      <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="mostrarDialogoDetallesPropietario=false"></button>
+    </div>
+  </div>
 
-		<div class="row">
-			<div class="col-6">
-				<p class="m-0"><b>Nombre:</b> {{ Propietario.nombre }} {{ Propietario.apellidos || "" }}</p>
-				<p class="m-0"><b>Usuario:</b> {{ Propietario.usuario }}</p>
-				<p class="m-0"><b>Email:</b> {{ Propietario.email }}</p>
-				<p class="m-0"><b>Teléfono:</b> {{ Propietario.telefono | phoneFormat }}</p>
-				<p class="m-0"><b>Domicilio:</b> {{ Propietario.domicilio }}</p>
-				<p class="m-0"><b>Folio Identificacion:</b> {{ Propietario.identificacion_folio }}</p>
-				<p class="m-0"><b>Domicilio Identificación:</b> {{ Propietario.identificacion_domicilio }}</p>
-			</div>
-			<div class="col-6">
-				<p class="m-0">
-					<b>Unidades <span class="text-danger">*</span></b>
-				</p>
-				<ol>
-					<li *ngFor="let unidad of Propietario.unidades" class="m-0">
-						{{ unidad.unidad }}
-					</li>
-				</ol>
-				<!-- <p class="m-0">
-					Usuario: <b>{{ Propietario.usuario }}</b>
-				</p>
-				<p class="m-0">
-					Domicilio: <b>{{ Propietario.domicilio }}</b>
-				</p> -->
-			</div>
-		</div>
+  <div class="row g-3 p-3">
+    <!-- Columna izquierda: Perfil -->
+    <div class="col-12 col-md-4">
+      <div class="hoose-detalle-card text-center p-4">
+        <div class="hoose-avatar-ring mx-auto mb-3" (click)="srcImagen && onImagenMostrar(srcImagen)" [ngStyle]="{'cursor': srcImagen ? 'pointer' : 'default'}">
+          <img *ngIf="srcImagen" [src]="srcImagen" class="hoose-avatar-img" />
+          <span *ngIf="!srcImagen" class="hoose-avatar-initials">{{ (Propietario.nombre || 'P').charAt(0) }}{{ (Propietario.apellidos || '').charAt(0) || '' }}</span>
+        </div>
+        <div class="mb-2">
+          <span class="hoose-badge-activo" *ngIf="Propietario.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
+          <span class="hoose-badge-inactivo" *ngIf="Propietario.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+        </div>
+        <h5 class="text-white mb-1">{{ Propietario.nombre }} {{ Propietario.apellidos || '' }}</h5>
+        <small class="text-muted">{{ Propietario.usuario }}</small>
 
-		<!-- Thumbnails de la Identificación del propietario -->
-		<div *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso" class="row mt-2">
-			<hr class="mt-3" />
-			<div class="col-12 text-center my-1"><b>Identificación</b></div>
-			<div
-				*ngIf="srcIdentificacionAnverso"
-				class="text-end col-12"
-				[ngClass]="{ 'col-md-6': srcIdentificacionReverso }"
-			>
-				<img
-					class="imagenThumbnail img-thumbnail"
-					[src]="srcIdentificacionAnverso"
-					style="cursor: pointer"
-					(click)="onImagenMostrar(srcIdentificacionAnverso)"
-				/>
-			</div>
-			<div
-				*ngIf="srcIdentificacionReverso"
-				class="text-start col-12"
-				[ngClass]="{ 'col-md-6': srcIdentificacionAnverso }"
-			>
-				<img
-					class="imagenThumbnail img-thumbnail"
-					[src]="srcIdentificacionReverso"
-					style="cursor: pointer"
-					(click)="onImagenMostrar(srcIdentificacionReverso)"
-				/>
-			</div>
-		</div>
-	</ng-template>
+        <div class="d-flex justify-content-center gap-2 mt-3">
+          <div class="hoose-stat-box">
+            <i class="pi pi-building" style="color:#e91e8a;font-size:1.2rem"></i>
+            <div class="hoose-stat-val">{{ Propietario.unidades?.length || 0 }}</div>
+            <div class="hoose-stat-label">Unidades</div>
+          </div>
+          <div class="hoose-stat-box">
+            <i class="pi pi-user" style="color:#8b5cf6;font-size:1.2rem"></i>
+            <div class="hoose-stat-val">Propietario</div>
+            <div class="hoose-stat-label">Rol</div>
+          </div>
+          <div class="hoose-stat-box">
+            <i class="pi pi-check-circle" style="color:#10b981;font-size:1.2rem"></i>
+            <div class="hoose-stat-val">{{ Propietario.estatus == 1 ? 'Verificado' : 'Inactivo' }}</div>
+            <div class="hoose-stat-label">Cuenta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Info -->
+    <div class="col-12 col-md-8">
+      <!-- Quick info -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2" *ngIf="Propietario.unidades?.length > 0">
+            <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
+            <div><small class="text-muted d-block">Unidad asignada</small><strong class="text-white">{{ Propietario.unidades[0].unidad }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2" *ngIf="Propietario.email">
+            <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
+            <div><small class="text-muted d-block">Correo electrónico</small><strong class="text-white" style="font-size:0.85rem">{{ Propietario.email }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2" *ngIf="Propietario.telefono">
+            <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-phone" style="color:#10b981"></i></div>
+            <div><small class="text-muted d-block">Teléfono</small><strong class="text-white">{{ Propietario.telefono | phoneFormat }}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información de contacto -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Información de contacto</h6></div>
+        <div class="row">
+          <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Propietario.nombre }} {{ Propietario.apellidos || '' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Email</small><span class="text-white">{{ Propietario.email || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Usuario</small><span class="text-white">{{ Propietario.usuario || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Teléfono</small><span class="text-white">{{ Propietario.telefono ? (Propietario.telefono | phoneFormat) : 'No registrado' }}</span></div>
+        </div>
+      </div>
+
+      <!-- Domicilio -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(245,158,11,0.15)"><i class="pi pi-map-marker" style="color:#f59e0b"></i></div><h6 class="text-white mb-0">Domicilio</h6></div>
+        <span class="text-white">{{ Propietario.domicilio || 'No registrado' }}</span>
+      </div>
+
+      <!-- Identificación -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Identificación</h6></div>
+        <div class="row">
+          <div class="col-6"><small class="text-muted d-block">Folio Identificación</small><span class="text-white">{{ Propietario.identificacion_folio || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Domicilio Identificación</small><span class="text-white">{{ Propietario.identificacion_domicilio || 'No registrado' }}</span></div>
+        </div>
+        <div class="row mt-2" *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso">
+          <div class="col-6 text-center" *ngIf="srcIdentificacionAnverso">
+            <small class="text-muted d-block mb-1">Anverso</small>
+            <img [src]="srcIdentificacionAnverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+          </div>
+          <div class="col-6 text-center" *ngIf="srcIdentificacionReverso">
+            <small class="text-muted d-block mb-1">Reverso</small>
+            <img [src]="srcIdentificacionReverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionReverso)" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Unidades asignadas -->
+      <div class="hoose-detalle-card p-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div><h6 class="text-white mb-0">Unidades asignadas</h6></div>
+        <div *ngFor="let unidad of Propietario.unidades" class="hoose-unidad-row">
+          <div class="d-flex align-items-center gap-3">
+            <div class="hoose-info-icon" style="background:rgba(139,92,246,0.15)"><i class="pi pi-building" style="color:#8b5cf6"></i></div>
+            <div>
+              <strong class="text-white">{{ unidad.unidad?.split('(')[0] || unidad.unidad }}</strong><br/>
+              <small class="text-muted">{{ unidad.unidad?.includes('(') ? unidad.unidad.split('(')[1]?.replace(')','') : '' }}</small>
+            </div>
+            <div class="ms-auto" *ngIf="unidad.modo">
+              <small class="text-muted">Modo</small><br/>
+              <span class="text-white">{{ unidad.modo }}</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!Propietario.unidades || Propietario.unidades.length === 0" class="text-muted">Sin unidades asignadas</div>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-template>
 </p-dialog>
