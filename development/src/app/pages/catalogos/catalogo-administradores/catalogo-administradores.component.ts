@@ -657,6 +657,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			  this.Administrador.identificacion_reverso
 			: null;
 
+console.log('ADMIN DETALLE:', this.Administrador);
 		this.mostrarDialogoDetallesAdministrador = this.Administrador != null;
 	}
 
