@@ -304,3 +304,25 @@
 
 /* small muted */
 small.text-muted { color: #555a6a !important; font-size: 0.7rem !important; }
+
+.hoose-detalle { background: #12121f; border-radius: 16px; }
+.hoose-detalle-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.hoose-detalle-icon-header { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.hoose-detalle-icon-header i { font-size: 1.3rem; }
+.hoose-detalle-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; }
+.hoose-avatar-ring { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #f59e0b; display: flex; align-items: center; justify-content: center; background: rgba(245,158,11,0.08); overflow: hidden; }
+.hoose-avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.hoose-avatar-initials { font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; }
+.hoose-badge-activo { background: rgba(16,185,129,0.15); color: #10b981; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.hoose-badge-inactivo { background: rgba(239,68,68,0.15); color: #ef4444; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.hoose-dot-green { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 6px; }
+.hoose-dot-red { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; margin-right: 6px; }
+.hoose-stat-box { text-align: center; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; min-width: 75px; }
+.hoose-stat-val { color: #fff; font-size: 0.75rem; font-weight: 600; margin-top: 4px; }
+.hoose-stat-label { color: #666; font-size: 0.7rem; }
+.hoose-info-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hoose-info-icon i { font-size: 1.1rem; }
+.hoose-info-icon-sm { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hoose-info-icon-sm i { font-size: 0.9rem; }
+:host ::ng-deep .hoose-detalle-dialog .p-dialog-content { padding: 0 !important; background: #12121f !important; border-radius: 16px !important; }
+:host ::ng-deep .hoose-detalle-dialog .p-dialog { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
