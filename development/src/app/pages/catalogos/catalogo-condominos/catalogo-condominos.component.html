@@ -367,81 +367,131 @@
 
 <!-- Diálogo Detalles del Condomino -->
 <p-dialog
-	styleClass="hoose-dialogo" [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '60vw' }"
-  [(visible)]="mostrarDialogoDetallesCondomino" modal="true" header="Detalles del Condomino">
-  <ng-template pTemplate="content">
-    <div class="row pt-4">
-      <!-- Thumbnail de la Imagen del condómino -->
-      <div class="col-12 text-center">
-        <div>
-          <img class="imagenThumbnail img-thumbnail"
-            [src]="srcImagen ? srcImagen : './assets/img/imagen_no_disponible.png'"
-            [ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
-            (click)="srcImagen && onImagenMostrar(srcImagen)" />
+  styleClass="hoose-detalle-dialog"
+  [breakpoints]="{ '991px': '90vw', '640px': '98vw' }"
+  [style]="{ width: '70vw', maxWidth: '900px' }"
+  [(visible)]="mostrarDialogoDetallesCondomino"
+  [modal]="true"
+  [showHeader]="false"
+  [contentStyle]="{'padding': '0', 'background': '#12121f', 'border-radius': '16px'}"
+>
+<ng-template pTemplate="content">
+<div class="hoose-detalle">
+  <!-- Header -->
+  <div class="hoose-detalle-header">
+    <div class="d-flex align-items-center">
+      <div class="hoose-detalle-icon-header" style="background:rgba(139,92,246,0.15)"><i class="pi pi-home" style="color:#8b5cf6"></i></div>
+      <div class="ms-3">
+        <h4 class="mb-0 text-white">Detalles del Condómino</h4>
+        <small class="text-muted">Resumen general del condómino y datos de arrendamiento</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button pButton type="button" icon="pi pi-pencil" label="Editar" class="p-button-outlined p-button-sm" style="color:#ccc;border-color:#444" (click)="mostrarDialogoDetallesCondomino=false; onCondominoEditar(Condomino)"></button>
+      <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="mostrarDialogoDetallesCondomino=false"></button>
+    </div>
+  </div>
+
+  <div class="row g-3 p-3">
+    <!-- Columna izquierda: Perfil -->
+    <div class="col-12 col-md-4">
+      <div class="hoose-detalle-card text-center p-4">
+        <div class="hoose-avatar-ring mx-auto mb-3" style="border-color:#8b5cf6" (click)="srcImagen && onImagenMostrar(srcImagen)" [ngStyle]="{'cursor': srcImagen ? 'pointer' : 'default'}">
+          <img *ngIf="srcImagen" [src]="srcImagen" class="hoose-avatar-img" />
+          <span *ngIf="!srcImagen" class="hoose-avatar-initials" style="color:#8b5cf6">{{ (Condomino.nombre || 'C').charAt(0) }}{{ (Condomino.apellidos || '').charAt(0) || '' }}</span>
         </div>
-        <!-- <div class="my-1">
-					<b>Imagen del Condomino</b>
-				</div> -->
-        <div class="mt-1">
-          <b>Estatus: </b>
-          <p-tag *ngIf="Condomino.estatus == 1" severity="success" value="Activo"></p-tag>
-          <p-tag *ngIf="Condomino.estatus != 1" severity="danger" value="Inactivo"></p-tag>
+        <div class="mb-2">
+          <span class="hoose-badge-activo" *ngIf="Condomino.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
+          <span class="hoose-badge-inactivo" *ngIf="Condomino.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+        </div>
+        <h5 class="text-white mb-1">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</h5>
+        <small class="text-muted">{{ Condomino.usuario }}</small>
+
+        <div class="d-flex justify-content-center gap-2 mt-3">
+          <div class="hoose-stat-box">
+            <i class="pi pi-building" style="color:#e91e8a;font-size:1.2rem"></i>
+            <div class="hoose-stat-val">{{ Condomino.edificio || '-' }}</div>
+            <div class="hoose-stat-label">Torre</div>
+          </div>
+          <div class="hoose-stat-box">
+            <i class="pi pi-th-large" style="color:#3b82f6;font-size:1.2rem"></i>
+            <div class="hoose-stat-val">{{ Condomino.unidad || '-' }}</div>
+            <div class="hoose-stat-label">Unidad</div>
+          </div>
+          <div class="hoose-stat-box">
+            <i class="pi pi-check-circle" style="color:#10b981;font-size:1.2rem"></i>
+            <div class="hoose-stat-val">{{ Condomino.contrato_activo == 1 ? 'Activo' : 'Inactivo' }}</div>
+            <div class="hoose-stat-label">Contrato</div>
+          </div>
         </div>
       </div>
-      <hr class="mt-3" />
     </div>
 
-    <div class="row">
-      <div class="col-6">
-        <p class="m-0"><b>Nombre:</b> {{ Condomino.nombre }} {{ Condomino.apellidos || "" }}</p>
-        <p class="m-0"><b>Usuario:</b> {{ Condomino.usuario }}</p>
-        <p class="m-0"><b>Email:</b> {{ Condomino.email }}</p>
-        <p class="m-0"><b>Teléfono:</b> {{ Condomino.telefono | phoneFormat }}</p>
-        <p class="m-0"><b>Domicilio:</b> {{ Condomino.domicilio }}</p>
+    <!-- Columna derecha: Info -->
+    <div class="col-12 col-md-8">
+      <!-- Quick info -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2" *ngIf="Condomino.email">
+            <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
+            <div><small class="text-muted d-block">Email</small><strong class="text-white" style="font-size:0.85rem">{{ Condomino.email }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2" *ngIf="Condomino.telefono">
+            <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-phone" style="color:#10b981"></i></div>
+            <div><small class="text-muted d-block">Teléfono</small><strong class="text-white">{{ Condomino.telefono | phoneFormat }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
+            <div><small class="text-muted d-block">Edificio / Unidad</small><strong class="text-white">{{ Condomino.edificio || '-' }} {{ Condomino.unidad || '' }}</strong></div>
+          </div>
+        </div>
       </div>
-      <div class="col-6">
-        <p class="m-0"><b>Folio Identificacion:</b> {{ Condomino.identificacion_folio }}</p>
-        <p class="m-0"><b>Domicilio Identificación:</b> {{ Condomino.identificacion_domicilio }}</p>
-        <p class="m-0"><b>Edificio:</b> {{ Condomino.edificio }}</p>
-        <p class="m-0"><b>Unidad:</b> {{ Condomino.unidad }}</p>
-        <p class="m-0"><b>Depósito:</b> {{ Condomino.deposito | number : '1.2-2' }}</p>
-        <p class="m-0"><b>Renta:</b> {{ Condomino.renta | number : '1.2-2' }}</p>
-        <p class="m-0"><b>Fecha inicio:</b> {{ Condomino.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}</p>
-        <!-- <p class="m-0"><b>Estatus:</b> {{ (Condomino.contrato_activo == 1 ? 'A' : 'Ina') + 'ctiva' }}</p> -->
-        <p class="m-0">
-          <b>Estatus contrato: </b>
-          <p-tag *ngIf="Condomino.contrato_activo == 1" severity="success" value="Activo"></p-tag>
-          <p-tag *ngIf="Condomino.contrato_activo != 1" severity="danger" value="Inactivo"></p-tag>
-        </p>
-      </div>
-    </div>
 
-    <!-- Thumbnails de la Identificación del condómino -->
-    <div *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso" class="row mt-2">
-      <hr class="mt-3" />
-      <div class="col-12 text-center my-1"><b>Identificación</b></div>
-      <div *ngIf="srcIdentificacionAnverso" class="col-12 text-end"
-        [ngClass]="{ 'col-md-6': srcIdentificacionReverso }">
-        <img class="imagenThumbnail img-thumbnail" [src]="srcIdentificacionAnverso"
-          [ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
-          (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+      <!-- Información de contacto -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Información de contacto</h6></div>
+        <div class="row">
+          <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Teléfono</small><span class="text-white">{{ Condomino.telefono ? (Condomino.telefono | phoneFormat) : 'No registrado' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Usuario</small><span class="text-white">{{ Condomino.usuario || 'No registrado' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Domicilio</small><span class="text-white">{{ Condomino.domicilio || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Email</small><span class="text-white">{{ Condomino.email || 'No registrado' }}</span></div>
+        </div>
       </div>
-      <div *ngIf="srcIdentificacionReverso" class="col-12 text-start"
-        [ngClass]="{ 'col-md-6': srcIdentificacionAnverso }">
-        <img class="imagenThumbnail img-thumbnail" [src]="srcIdentificacionReverso"
-          [ngStyle]="{ cursor: srcImagen ? 'pointer' : 'inherit' }"
-          (click)="onImagenMostrar(srcIdentificacionReverso)" />
-      </div>
-    </div>
 
-    <!-- Contrato -->
-    <div *ngIf="permitirAgregarEditar && Condomino.contrato" class="row mt-2">
-      <div class="col-12 text-center my-1"><b>Contrato</b></div>
-      <div class="col-12 text-center">
-        <i class="pi pi-file-pdf img-thumbnail text-danger p-3" style="font-size: 7rem; cursor: pointer"
-          pTooltip="Visualizar el contrato de arrendamiento" tooltipPosition="top"
-          (click)="onContratoMostrar(Condomino)"></i>
+      <!-- Datos de contrato -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(16,185,129,0.15)"><i class="pi pi-file" style="color:#10b981"></i></div><h6 class="text-white mb-0">Datos de contrato</h6></div>
+        <div class="row">
+          <div class="col-6 mb-2"><small class="text-muted d-block">Edificio</small><span class="text-white">{{ Condomino.edificio || '-' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Renta</small><span class="text-white">{{ Condomino.renta | number:'1.2-2' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Unidad</small><span class="text-white">{{ Condomino.unidad || '-' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Fecha inicio</small><span class="text-white">{{ Condomino.fecha_inicio | date:'MMMM dd, yyyy' | uppercase }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Depósito</small><span class="text-white">{{ Condomino.deposito | number:'1.2-2' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Estatus contrato</small><span class="hoose-badge-activo" *ngIf="Condomino.contrato_activo == 1"><span class="hoose-dot-green"></span> Activo</span><span class="hoose-badge-inactivo" *ngIf="Condomino.contrato_activo != 1"><span class="hoose-dot-red"></span> Inactivo</span></div>
+        </div>
+      </div>
+
+      <!-- Identificación -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Identificación</h6></div>
+        <div class="row">
+          <div class="col-6"><small class="text-muted d-block">Folio Identificación</small><span class="text-white">{{ Condomino.identificacion_folio || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Domicilio Identificación</small><span class="text-white">{{ Condomino.identificacion_domicilio || 'No registrado' }}</span></div>
+        </div>
+        <div class="row mt-2" *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso">
+          <div class="col-6 text-center" *ngIf="srcIdentificacionAnverso">
+            <small class="text-muted d-block mb-1">Anverso</small>
+            <img [src]="srcIdentificacionAnverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+          </div>
+          <div class="col-6 text-center" *ngIf="srcIdentificacionReverso">
+            <small class="text-muted d-block mb-1">Reverso</small>
+            <img [src]="srcIdentificacionReverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionReverso)" />
+          </div>
+        </div>
       </div>
     </div>
-  </ng-template>
+  </div>
+</div>
+</ng-template>
 </p-dialog>
