@@ -198,18 +198,18 @@
 						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
 						(onChange)="onTipoAccesoChange($event.value)" styleClass="w-100"></p-dropdown>
 				</div>
+				<div class="hoose-form-field" *ngIf="tipoAcceso==='EXTERNO'">
+					<label class="hoose-form-label">Personalidad Jurídica <span class="text-danger">*</span></label>
+					<p-dropdown [options]="opcionesTipoPersona" [(ngModel)]="tipoPersona"
+						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
+						(onChange)="onTipoPersonaChange($event.value)" styleClass="w-100"></p-dropdown>
+				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Condominio <span *ngIf="tipoAcceso==='INTERNO'" class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesCondominios" formControlName="fk_id_condominio"
 						placeholder="Selecciona el condominio" [showClear]="tipoAcceso==='EXTERNO'"
 						[filter]="true" filterBy="label" styleClass="w-100"
 						(onChange)="onCondominioAdminChange($event.value)"></p-dropdown>
-				</div>
-				<div class="hoose-form-field" *ngIf="tipoAcceso==='EXTERNO'">
-					<label class="hoose-form-label">Personalidad Jurídica <span class="text-danger">*</span></label>
-					<p-dropdown [options]="opcionesTipoPersona" [(ngModel)]="tipoPersona"
-						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
-						(onChange)="onTipoPersonaChange($event.value)" styleClass="w-100"></p-dropdown>
 				</div>
 				<div class="hoose-form-field" *ngIf="tipoAcceso==='INTERNO'">
 					<label class="hoose-form-label">Estructura <span class="text-danger">*</span></label>
@@ -298,11 +298,11 @@
 			</div>
 			<div class="hoose-form-grid mt-2">
 				<div class="hoose-form-field">
-					<label class="hoose-form-label">Anverso Identificación <span class="text-danger">*</span></label>
+					<label class="hoose-form-label">Anverso Identificación</label>
 					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'identificacion_anverso')" accept=".png,.jpg,.jpeg" />
 				</div>
 				<div class="hoose-form-field">
-					<label class="hoose-form-label">Reverso Identificación <span class="text-danger">*</span></label>
+					<label class="hoose-form-label">Reverso Identificación</label>
 					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'identificacion_reverso')" accept=".png,.jpg,.jpeg" />
 				</div>
 			</div>

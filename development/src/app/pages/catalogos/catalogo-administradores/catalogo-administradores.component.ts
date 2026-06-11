@@ -530,8 +530,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				estructura_administracion: this.tipoAdministracion,
 				tipo_persona: null,
 				miembros_comite: this.tipoAdministracion === 'COMITE' ? this.MiembrosComite : null,
-			fecha_inicio: this.frmAdministrador.get('fecha_inicio').value ? this.formatFecha(this.frmAdministrador.get('fecha_inicio').value) : null,
-			fecha_fin: this.frmAdministrador.get('fecha_fin').value ? this.formatFecha(this.frmAdministrador.get('fecha_fin').value) : null,
+			fecha_inicio: this.frmAdministrador.get('fecha_inicio_mandato')?.value ? this.formatFecha(this.frmAdministrador.get('fecha_inicio_mandato').value) : null,
+			fecha_fin: this.frmAdministrador.get('fecha_fin_mandato')?.value ? this.formatFecha(this.frmAdministrador.get('fecha_fin_mandato').value) : null,
 			};
 		} else {
 			if (!this.frmAdministrador.valid) {
