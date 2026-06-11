@@ -698,6 +698,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 
 
 	onGenerarUsuario() {
+    if (this.tipoPersona === 'MORAL') return;
 		const nombre = this.frmAdministrador.get('nombre').value || '';
 		if (!nombre || nombre.length < 3) return;
 		const partes = nombre.toLowerCase().trim().split(/\s+/);
