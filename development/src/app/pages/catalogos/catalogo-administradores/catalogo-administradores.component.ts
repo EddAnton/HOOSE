@@ -530,8 +530,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 				estructura_administracion: this.tipoAdministracion,
 				tipo_persona: null,
 				miembros_comite: this.tipoAdministracion === 'COMITE' ? this.MiembrosComite : null,
-			fecha_inicio: this.frmAdministrador.get('fecha_inicio_mandato')?.value ? this.formatFecha(this.frmAdministrador.get('fecha_inicio_mandato').value) : null,
-			fecha_fin: this.frmAdministrador.get('fecha_fin_mandato')?.value ? this.formatFecha(this.frmAdministrador.get('fecha_fin_mandato').value) : null,
+			fecha_inicio: this.frmAdministrador.get('fecha_inicio_mandato')?.value ? this.hlpApp.formatDateToMySQL(this.frmAdministrador.get('fecha_inicio_mandato').value) : null,
+			fecha_fin: this.frmAdministrador.get('fecha_fin_mandato')?.value ? this.hlpApp.formatDateToMySQL(this.frmAdministrador.get('fecha_fin_mandato').value) : null,
 			};
 		} else {
 // Validación deshabilitada - puedeGuardar ya valida
@@ -627,129 +627,28 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	}
 
 	async onAdministradorDetalles(idUsuario: number = 0) {
-		if (idUsuario == 0) {
-			return;
-		}
-		hlpSwal.Cargando();
-		this.Administrador = await this.administradoresService
-			.ListarAdministrador(idUsuario)
-			.toPromise()
-			.then((r) => r['administrador'])
-			.catch(async (e) => {
-				await hlpSwal.Error(e).then(() => null);
-			})
-			.finally(() => {
-				hlpSwal.Cerrar();
-			});
-		this.srcImagen = this.Administrador.imagen
-			? environment.urlBackendUsuariosFiles + this.Administrador.id_usuario + '/' + this.Administrador.imagen
-			: null;
-		this.srcIdentificacionAnverso = this.Administrador.identificacion_anverso
-			? environment.urlBackendUsuariosFiles +
-			  this.Administrador.id_usuario +
-			  '/' +
-			  this.Administrador.identificacion_anverso
-			: null;
-		this.srcIdentificacionReverso = this.Administrador.identificacion_reverso
-			? environment.urlBackendUsuariosFiles +
-			  this.Administrador.id_usuario +
-			  '/' +
-			  this.Administrador.identificacion_reverso
-			: null;
+    if (idUsuario == 0) return;
+    // Usar datos de la tabla directamente (ya tiene todos los campos)
+    const admin = this.Administradores.find((a: any) => a.id_usuario == idUsuario);
+    if (!admin) { hlpSwal.Error('Administrador no encontrado.'); return; }
+    this.Administrador = admin as any;
+    this.srcImagen = admin.imagen
+      ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + admin.imagen
+      : null;
+    this.srcIdentificacionAnverso = (admin as any).identificacion_anverso
+      ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + (admin as any).identificacion_anverso
+      : null;
+    this.srcIdentificacionReverso = (admin as any).identificacion_reverso
+      ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + (admin as any).identificacion_reverso
+      : null;
 
-console.log('ADMIN DETALLE:', this.Administrador);
-		this.mostrarDialogoDetallesAdministrador = this.Administrador != null;
-	}
-
-	onAdministradorAlternarEstatus(administrador: AdministradorResumenModel) {
-		hlpSwal
-			.Pregunta({
-				html: '¿Deseas ' + (administrador.estatus == 1 ? 'des' : '') + 'habilitar el Administrador?',
-				showLoaderOnConfirm: true,
-				preConfirm: async () => {
-					try {
-						if (administrador['tipo_administrador'] === 'INTERNO' && administrador['id_administrador_interno']) {
-              return await this.http.post(environment.urlBackend + 'administradores/alternar-estatus-interno/' + administrador['id_administrador_interno'], {}, { headers: new HttpHeaders({ 'X-API-KEY': environment.appKey, Authorization: this.sesionUsuarioService.obtenerToken() }) }).toPromise();
-            } else {
-              return await this.usuariosService.AlternarEstatus(administrador.id_usuario).toPromise();
-            }
-					} catch (e) {
-						return hlpSwal.Error(e).then(() => ({ err: true }));
-					}
-				},
-				allowOutsideClick: () => !hlpSwal.estaCargando,
-			})
-			.then((r) => {
-				if (r.value && !r.value.err) {
-					administrador.estatus = administrador.estatus == 1 ? 0 : 1;
-					hlpSwal.ExitoToast(r.value.msg);
-				}
-			});
-	}
-
-
-	formatFecha(fecha: any): string {
-		if (!fecha) return null;
-		const d = new Date(fecha);
-		const y = d.getFullYear();
-		const m = String(d.getMonth() + 1).padStart(2, '0');
-		const day = String(d.getDate()).padStart(2, '0');
-		return y + '-' + m + '-' + day;
-	}
-
-
-	onGenerarUsuario() {
-    if (this.tipoPersona === 'MORAL') return;
-		const nombre = this.frmAdministrador.get('nombre').value || '';
-		if (!nombre || nombre.length < 3) return;
-		const partes = nombre.toLowerCase().trim().split(/\s+/);
-		let usuario = '';
-		if (partes.length >= 2) {
-			usuario = partes[0] + '.' + partes[partes.length - 1];
-		} else {
-			usuario = partes[0];
-		}
-		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
-		if (this.frmAdministrador.get('id_usuario').value == 0) {
-			this.frmAdministrador.patchValue({ usuario: usuario });
-		}
-	}
-
-	onAdministradorCancelar() {
-		this.mostrarDialogoEdicionAdministrador = false;
-	}
-
-
-	getCondominioColor(nombre: string): string {
-		if (!nombre) return '#8a8f9e';
-		const colores = [
-			'#e91e8c', '#3B82F6', '#1BC99A', '#f59e0b', '#8b5cf6',
-			'#ef4444', '#06b6d4', '#84cc16', '#f97316', '#ec4899',
-		];
-		let hash = 0;
-		for (let i = 0; i < nombre.length; i++) {
-			hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
-		}
-		return colores[Math.abs(hash) % colores.length];
-	}
-
-  onRazonSocialChange(val: string) {
-    if (this.tipoPersona === 'MORAL' && val) {
-      this.frmAdministrador.patchValue({
-        usuario: val.toLowerCase().replace(/[^a-z0-9]/g, '')
-      });
-    }
-  }
-
-
-  async onVerDetalleMiembro(miembro: any) {
-    // Navegar al módulo del propietario/condómino según su perfil
-    if (miembro.perfil_usuario === 'Propietario') {
-      alert('Ver detalle de Propietario: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+    // Cargar miembros del comité si es interno comité
+    const adm = this.Administrador as any;
+    if (adm && adm.id_administrador_interno && adm.estructura_administracion === 'COMITE' && adm.fk_id_condominio) {
+      this.miembrosComiteDetalle = await this.administradoresService.MiembrosComite(adm.fk_id_condominio).toPromise().then((r: any) => r['miembros'] || []).catch(() => []);
     } else {
-      alert('Ver detalle de Condómino: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+      this.miembrosComiteDetalle = [];
     }
+    this.mostrarDialogoDetallesAdministrador = true;
   }
-
 }
-
