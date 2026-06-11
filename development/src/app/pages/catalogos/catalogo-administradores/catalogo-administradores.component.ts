@@ -133,7 +133,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	}
 
 	get puedeGuardar(): boolean {
-		if (this.tipoAcceso === 'EXTERNO') return !!(this.frmAdministrador?.get('nombre')?.value && this.frmAdministrador?.get('email')?.value);
+		if (this.tipoAcceso === 'EXTERNO') return !!(this.frmAdministrador?.get('nombre')?.value && this.frmAdministrador?.get('email')?.value && this.frmAdministrador?.get('telefono')?.value);
 		if (this.tipoAcceso === 'INTERNO') {
 			const idCond = this.frmAdministrador?.get('fk_id_condominio')?.value;
 			if (!idCond) return false;
