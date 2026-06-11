@@ -204,6 +204,12 @@
 						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
 						(onChange)="onTipoPersonaChange($event.value)" styleClass="w-100"></p-dropdown>
 				</div>
+				<div class="hoose-form-field" *ngIf="tipoAcceso==='INTERNO'">
+					<label class="hoose-form-label">Estructura <span class="text-danger">*</span></label>
+					<p-dropdown [options]="opcionesTipoAdmin" [(ngModel)]="tipoAdministracion"
+						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
+						(onChange)="onTipoAdminChange($event.value)" styleClass="w-100"></p-dropdown>
+				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Condominio <span *ngIf="tipoAcceso==='INTERNO'" class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesCondominios" formControlName="fk_id_condominio"
@@ -211,12 +217,7 @@
 						[filter]="true" filterBy="label" styleClass="w-100"
 						(onChange)="onCondominioAdminChange($event.value)"></p-dropdown>
 				</div>
-				<div class="hoose-form-field" *ngIf="tipoAcceso==='INTERNO'">
-					<label class="hoose-form-label">Estructura <span class="text-danger">*</span></label>
-					<p-dropdown [options]="opcionesTipoAdmin" [(ngModel)]="tipoAdministracion"
-						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
-						(onChange)="onTipoAdminChange($event.value)" styleClass="w-100"></p-dropdown>
-				</div>
+
 			</div>
 			<div class="hoose-form-grid mt-2">
 				<div class="hoose-form-field">
