@@ -85,4 +85,9 @@ export class UsuariosAdministradoresService {
     return this.http.post(environment.urlBackend + 'administradores/eliminar-completo', params, { headers: this.headers }).pipe(map(r => r));
   }
 
+
+  MiembrosComite(idCondominio: number) {
+    return this.http.get(environment.urlBackend + 'administradores/miembros-comite/' + idCondominio, { headers: this.headers }).pipe(map(r => r));
+  }
+
 }

@@ -555,8 +555,39 @@
         </div>
       </div>
 
-      <!-- Condominio asignado -->
-      <div class="hoose-detalle-card p-3 mb-3">
+      <!-- Admin Interno Único: info del propietario/condómino -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="Administrador.id_administrador_interno && Administrador.estructura_administracion === 'UNICO'">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Administrador Único</h6></div>
+        <div class="row">
+          <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Administrador.nombre }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Cargo</small><span class="text-white">{{ Administrador.cargo || 'Administrador' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Perfil</small><span class="text-white">Propietario / Condómino</span></div>
+          <div class="col-6"><small class="text-muted d-block">Condominio</small><span class="text-white">{{ Administrador.condominio_nombre }}</span></div>
+        </div>
+      </div>
+
+      <!-- Admin Interno Comité: estructura del comité -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="Administrador.id_administrador_interno && Administrador.estructura_administracion === 'COMITE'">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(245,158,11,0.15)"><i class="pi pi-users" style="color:#f59e0b"></i></div><h6 class="text-white mb-0">Estructura del Comité</h6></div>
+        <div *ngIf="miembrosComiteDetalle.length === 0" class="text-muted">No hay miembros registrados</div>
+        <div *ngFor="let miembro of miembrosComiteDetalle" class="d-flex align-items-center gap-3 p-2 mb-2" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px">
+          <div class="hoose-info-icon" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div>
+          <div class="flex-grow-1">
+            <strong class="text-white">{{ miembro.nombre }}</strong><br/>
+            <small class="text-muted">{{ miembro.perfil_usuario }} — {{ miembro.email }}</small>
+          </div>
+          <div class="text-end">
+            <span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600">{{ miembro.cargo }}</span>
+          </div>
+          <div>
+            <span class="hoose-dot-green" *ngIf="miembro.estatus == 1" style="width:10px;height:10px"></span>
+            <span class="hoose-dot-red" *ngIf="miembro.estatus != 1" style="width:10px;height:10px"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Condominio asignado (solo externos) -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="!Administrador.id_administrador_interno">
         <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div><h6 class="text-white mb-0">Condominio asignado</h6></div>
         <span class="text-white" style="font-size:1.1rem">{{ Administrador.condominio_nombre || 'Sin asignar' }}</span>
       </div>

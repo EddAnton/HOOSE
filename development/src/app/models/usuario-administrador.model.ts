@@ -10,6 +10,11 @@ export class AdministradorResumenModel {
   imagen: string;
   fk_id_condominio: number;
   condominio_nombre: string;
+  tipo_administrador: string;
+  estructura_administracion: string;
+  tipo_persona: string;
+  id_administrador_interno: number;
+  cargo: string;
   estatus: number;
 
   constructor() {
@@ -23,6 +28,11 @@ export class AdministradorResumenModel {
       imagen: null,
       fk_id_condominio: null,
       condominio_nombre: null,
+      tipo_administrador: null,
+      estructura_administracion: null,
+      tipo_persona: null,
+      id_administrador_interno: null,
+      cargo: null,
       estatus: 0,
     };
   }
@@ -41,6 +51,14 @@ export class AdministradorModel {
   identificacion_anverso: string;
   identificacion_reverso: string;
   fk_id_condominio: number;
+  tipo_administrador: string;
+  estructura_administracion: string;
+  tipo_persona: string;
+  razon_social: string;
+  rfc: string;
+  domicilio_fiscal: string;
+  fecha_inicio_mandato: any;
+  fecha_fin_mandato: any;
   estatus: number;
 
   constructor() {
@@ -57,6 +75,14 @@ export class AdministradorModel {
       identificacion_anverso: null,
       identificacion_reverso: null,
       fk_id_condominio: null,
+      tipo_administrador: null,
+      estructura_administracion: null,
+      tipo_persona: 'FISICA',
+      razon_social: null,
+      rfc: null,
+      domicilio_fiscal: null,
+      fecha_inicio_mandato: null,
+      fecha_fin_mandato: null,
       estatus: 0,
     };
   }

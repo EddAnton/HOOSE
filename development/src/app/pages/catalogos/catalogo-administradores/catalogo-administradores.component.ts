@@ -53,6 +53,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	tipoPersona: string = 'FISICA';
 	UsuariosInternos: any[] = [];
 	MiembrosComite: any[] = [];
+  miembrosComiteDetalle: any[] = [];
 	frmMiembroComite: any = null;
 	mostrarFrmMiembro: boolean = false;
 	razonSocial: string = null;
@@ -294,7 +295,20 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			// Cargar usuarios internos solo si hay condominio
 			this.UsuariosInternos = [];
 
-			this.mostrarDialogoEdicionAdministrador = true;
+			// Fechas de mandato default
+    const hoyM = new Date(); const unAnioM = new Date(); unAnioM.setFullYear(unAnioM.getFullYear() + 1);
+    if (!this.Administrador.id_usuario || this.Administrador.id_usuario === 0) {
+      this.frmAdministrador.addControl('fecha_inicio_mandato', new FormControl(hoyM));
+      this.frmAdministrador.addControl('fecha_fin_mandato', new FormControl(unAnioM));
+    } else {
+      if (!this.frmAdministrador.get('fecha_inicio_mandato')) this.frmAdministrador.addControl('fecha_inicio_mandato', new FormControl(this.Administrador.fecha_inicio_mandato ? new Date(this.Administrador.fecha_inicio_mandato + 'T12:00:00') : null));
+      if (!this.frmAdministrador.get('fecha_fin_mandato')) this.frmAdministrador.addControl('fecha_fin_mandato', new FormControl(this.Administrador.fecha_fin_mandato ? new Date(this.Administrador.fecha_fin_mandato + 'T12:00:00') : null));
+    }
+    // Campos Persona Moral
+    if (!this.frmAdministrador.get('razon_social')) this.frmAdministrador.addControl('razon_social', new FormControl(this.Administrador.razon_social || null));
+    if (!this.frmAdministrador.get('rfc')) this.frmAdministrador.addControl('rfc', new FormControl(this.Administrador.rfc || null));
+    if (!this.frmAdministrador.get('domicilio_fiscal')) this.frmAdministrador.addControl('domicilio_fiscal', new FormControl(this.Administrador.domicilio_fiscal || null));
+    this.mostrarDialogoEdicionAdministrador = true;
 			// Cargar usuarios internos si hay condominio y es interno
 			setTimeout(() => {
 				const idCond = this.frmAdministrador?.get('fk_id_condominio')?.value;
@@ -721,3 +735,4 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		return colores[Math.abs(hash) % colores.length];
 	}
 }
+
