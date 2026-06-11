@@ -734,5 +734,15 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		}
 		return colores[Math.abs(hash) % colores.length];
 	}
+
+  onRazonSocialChange(val: string) {
+    if (this.tipoPersona === 'MORAL' && val) {
+      this.frmAdministrador.patchValue({
+        nombre: 'Representante Legal (' + val + ')',
+        usuario: val.toLowerCase().replace(/\s+/g, '')
+      });
+    }
+  }
+
 }
 
