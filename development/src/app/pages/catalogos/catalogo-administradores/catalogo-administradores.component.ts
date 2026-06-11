@@ -652,7 +652,24 @@ export class CatalogoAdministradoresComponent implements OnInit {
     this.mostrarDialogoDetallesAdministrador = true;
   }
 
-  getCondominioColor(nombre: string): string {
+
+  onRazonSocialChange(val: string) {
+    if (this.tipoPersona === 'MORAL' && val) {
+      this.frmAdministrador.patchValue({
+        usuario: val.toLowerCase().replace(/[^a-z0-9]/g, '')
+      });
+    }
+  }
+
+  async onVerDetalleMiembro(miembro: any) {
+    if (miembro.perfil_usuario === 'Propietario') {
+      alert('Ver detalle de Propietario: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+    } else {
+      alert('Ver detalle de Condómino: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+    }
+  }
+
+    getCondominioColor(nombre: string): string {
     if (!nombre) return '#888';
     const colores = ['#e91e8a','#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#84cc16','#f97316','#6366f1'];
     let hash = 0;
