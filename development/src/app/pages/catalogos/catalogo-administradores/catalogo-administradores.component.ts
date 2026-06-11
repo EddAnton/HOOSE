@@ -740,5 +740,15 @@ export class CatalogoAdministradoresComponent implements OnInit {
     }
   }
 
+
+  async onVerDetalleMiembro(miembro: any) {
+    // Navegar al módulo del propietario/condómino según su perfil
+    if (miembro.perfil_usuario === 'Propietario') {
+      alert('Ver detalle de Propietario: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+    } else {
+      alert('Ver detalle de Condómino: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+    }
+  }
+
 }
 

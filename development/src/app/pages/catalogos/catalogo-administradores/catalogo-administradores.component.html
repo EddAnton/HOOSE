@@ -504,14 +504,16 @@
         </div>
       </div>
 
-      <!-- Admin Interno Único: info del propietario/condómino -->
+      <!-- Admin Interno Único: info completa del propietario/condómino -->
       <div class="hoose-detalle-card p-3 mb-3" *ngIf="Administrador.id_administrador_interno && Administrador.estructura_administracion === 'UNICO'">
-        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Administrador Único</h6></div>
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Administrador Único</h6></div>
         <div class="row">
           <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Administrador.nombre }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Email</small><a *ngIf="Administrador.email" [href]="'mailto:' + Administrador.email" style="color:#3b82f6;text-decoration:none">{{ Administrador.email }}</a><span *ngIf="!Administrador.email" class="text-muted">No registrado</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Teléfono</small><a *ngIf="Administrador.telefono" [href]="'tel:' + Administrador.telefono" style="color:#10b981;text-decoration:none">{{ Administrador.telefono | phoneFormat }}</a><span *ngIf="!Administrador.telefono" class="text-muted">No registrado</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Condominio</small><span class="text-white">{{ Administrador.condominio_nombre }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Cargo</small><span class="text-white">{{ Administrador.cargo || 'Administrador' }}</span></div>
-          <div class="col-6"><small class="text-muted d-block">Perfil</small><span class="text-white">Propietario / Condómino</span></div>
-          <div class="col-6"><small class="text-muted d-block">Condominio</small><span class="text-white">{{ Administrador.condominio_nombre }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Perfil original</small><span class="text-white">Propietario / Condómino</span></div>
         </div>
       </div>
 
@@ -522,7 +524,7 @@
         <div *ngFor="let miembro of miembrosComiteDetalle" class="d-flex align-items-center gap-3 p-2 mb-2" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px">
           <div class="hoose-info-icon" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div>
           <div class="flex-grow-1">
-            <strong class="text-white">{{ miembro.nombre }}</strong><br/>
+            <strong class="text-white" style="cursor:pointer" (click)="mostrarDialogoDetallesAdministrador=false; onVerDetalleMiembro(miembro)">{{ miembro.nombre }}</strong><br/>
             <small class="text-muted">{{ miembro.perfil_usuario }} — {{ miembro.email }}</small>
           </div>
           <div class="text-end">
@@ -532,6 +534,18 @@
             <span class="hoose-dot-green" *ngIf="miembro.estatus == 1" style="width:10px;height:10px"></span>
             <span class="hoose-dot-red" *ngIf="miembro.estatus != 1" style="width:10px;height:10px"></span>
           </div>
+        </div>
+      </div>
+
+      <!-- P. Moral: Información de la Empresa -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="!Administrador.id_administrador_interno && Administrador.tipo_persona === 'MORAL'">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-briefcase" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Información de la Empresa</h6></div>
+        <div class="row">
+          <div class="col-6 mb-2"><small class="text-muted d-block">Razón Social</small><span class="text-white">{{ Administrador.razon_social || '-' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">RFC</small><span class="text-white">{{ Administrador.rfc || '-' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Domicilio Fiscal</small><span class="text-white">{{ Administrador.domicilio_fiscal || 'No registrado' }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Inicio de Mandato</small><span class="text-white">{{ Administrador.fecha_inicio_mandato ? (Administrador.fecha_inicio_mandato | date:'MMMM dd, yyyy' | uppercase) : 'No definido' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Fin de Mandato</small><span class="text-white">{{ Administrador.fecha_fin_mandato ? (Administrador.fecha_fin_mandato | date:'MMMM dd, yyyy' | uppercase) : 'No definido' }}</span></div>
         </div>
       </div>
 
