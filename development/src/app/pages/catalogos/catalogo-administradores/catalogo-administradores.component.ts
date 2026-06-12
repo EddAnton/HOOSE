@@ -200,6 +200,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 					await hlpSwal.Error(e).then(() => null);
 				});
 			if (this.Administrador == null) return;
+alert('TIPO: ' + (this.Administrador as any)['tipo_persona'] + ' RAZON: ' + (this.Administrador as any)['razon_social']);
 		} else {
 			this.Administrador = new AdministradorModel();
 		}
@@ -675,6 +676,11 @@ export class CatalogoAdministradoresComponent implements OnInit {
     let hash = 0;
     for (let i = 0; i < nombre.length; i++) hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
     return colores[Math.abs(hash) % colores.length];
+  }
+
+
+  onAdministradorCancelar() {
+    this.mostrarDialogoEdicionAdministrador = false;
   }
 
 }
