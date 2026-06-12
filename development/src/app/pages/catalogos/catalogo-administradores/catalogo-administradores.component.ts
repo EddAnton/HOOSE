@@ -85,6 +85,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
   srcLogotipo: string = null;
   srcActaConstitutiva: string = null;
   srcConstanciaFiscal: string = null;
+  editandoCondominio: boolean = false;
+  condominioSeleccionadoDetalle: number = null;
 	srcImagenMostrar: string = null;
 	bImagenBorrar: boolean = false;
 	bIdentificacionAnversoBorrar: boolean = false;
@@ -711,6 +713,17 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 
   onAdministradorCancelar() {
     this.mostrarDialogoEdicionAdministrador = false;
+  }
+
+
+  async onAsignarCondominioDetalle() {
+    if (!this.condominioSeleccionadoDetalle) { this.editandoCondominio = false; return; }
+    try {
+      await this.administradoresService.AsignarCondominio((this.Administrador as any).id_usuario, this.condominioSeleccionadoDetalle).toPromise();
+      this.editandoCondominio = false;
+      this.mostrarDialogoDetallesAdministrador = false;
+      this.onActualizarInformacion();
+    } catch (e) { hlpSwal.Error(e); }
   }
 
 }
