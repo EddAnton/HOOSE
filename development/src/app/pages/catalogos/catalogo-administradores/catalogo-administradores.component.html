@@ -278,6 +278,7 @@
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Imagen de Perfil</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg,.webp" />
+					<small *ngIf="Administrador?.imagen" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Imagen cargada</small>
 				</div>
 			</div>
 			<div class="hoose-form-grid mt-2">
