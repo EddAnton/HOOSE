@@ -552,7 +552,8 @@ if (fimVal) administrador.fecha_inicio_mandato = this.hlpApp.formatDateToMySQL(f
 if (ffmVal) administrador.fecha_fin_mandato = this.hlpApp.formatDateToMySQL(ffmVal);
 
 		}
-		administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
+		console.log('GUARDAR DATA:', JSON.stringify(administrador));
+administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		administrador.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;
 		administrador.borrar_identificacion_reverso = this.bIdentificacionReversoBorrar ? 1 : 0;
 		delete administrador.imagen;
