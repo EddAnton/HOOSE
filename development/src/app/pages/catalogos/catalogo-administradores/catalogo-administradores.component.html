@@ -560,17 +560,15 @@
           <div class="col-6 mb-2"><small class="text-muted d-block">Inicio de Mandato</small><span class="text-white">{{ Administrador.fecha_inicio_mandato ? (Administrador.fecha_inicio_mandato | date:'MMMM dd, yyyy' | uppercase) : 'No definido' }}</span></div>
           <div class="col-6"><small class="text-muted d-block">Fin de Mandato</small><span class="text-white">{{ Administrador.fecha_fin_mandato ? (Administrador.fecha_fin_mandato | date:'MMMM dd, yyyy' | uppercase) : 'No definido' }}</span></div>
         </div>
-        <div class="row mt-3" *ngIf="Administrador.acta_constitutiva_archivo || Administrador.constancia_fiscal_archivo || Administrador.logotipo_archivo">
+        <div class="row mt-3" *ngIf="Administrador.acta_constitutiva_archivo || Administrador.constancia_fiscal_archivo">
           <div class="col-12 mb-2"><small class="text-muted d-block" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px">Documentos</small></div>
           <div class="col-4" *ngIf="Administrador.acta_constitutiva_archivo">
-            <a [href]="srcActaConstitutiva" target="_blank" style="color:#ef4444;text-decoration:none;cursor:pointer;font-size:0.85rem"><i class="pi pi-file-pdf me-1"></i>Acta Constitutiva</a>
+            <a [href]="srcActaConstitutiva" target="_blank" style="color:#3b82f6;text-decoration:none;cursor:pointer;font-size:0.85rem"><i class="pi pi-file-pdf me-1"></i>Acta Constitutiva</a>
           </div>
           <div class="col-4" *ngIf="Administrador.constancia_fiscal_archivo">
             <a [href]="srcConstanciaFiscal" target="_blank" style="color:#3b82f6;text-decoration:none;cursor:pointer;font-size:0.85rem"><i class="pi pi-file-pdf me-1"></i>Constancia Fiscal</a>
           </div>
-          <div class="col-4" *ngIf="Administrador.logotipo_archivo">
-            <a [href]="srcLogotipo" target="_blank" style="color:#10b981;text-decoration:none;cursor:pointer;font-size:0.85rem"><i class="pi pi-image me-1"></i>Logotipo</a>
-          </div>
+
         </div>
       </div>
 
