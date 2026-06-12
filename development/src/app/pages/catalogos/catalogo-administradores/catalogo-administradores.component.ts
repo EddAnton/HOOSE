@@ -555,7 +555,12 @@ if (fimVal) administrador.fecha_inicio_mandato = this.hlpApp.formatDateToMySQL(f
 if (ffmVal) administrador.fecha_fin_mandato = this.hlpApp.formatDateToMySQL(ffmVal);
 
 		}
-		// TODO: archivos P.Moral pendientes de implementación
+		// Agregar archivos P.Moral
+if (this.archivosPersonaMoral) {
+  if (this.archivosPersonaMoral.acta_constitutiva) administrador.archivo_acta_constitutiva = this.archivosPersonaMoral.acta_constitutiva;
+  if (this.archivosPersonaMoral.constancia_fiscal) administrador.archivo_constancia_fiscal = this.archivosPersonaMoral.constancia_fiscal;
+  if (this.archivosPersonaMoral.logotipo) administrador.archivo_logotipo = this.archivosPersonaMoral.logotipo;
+}
 administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		administrador.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;
 		administrador.borrar_identificacion_reverso = this.bIdentificacionReversoBorrar ? 1 : 0;
