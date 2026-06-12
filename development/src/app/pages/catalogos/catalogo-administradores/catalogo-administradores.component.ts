@@ -203,6 +203,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 					await hlpSwal.Error(e).then(() => null);
 				});
 			if (this.Administrador == null) return;
+console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any).acta_constitutiva_archivo, constancia: (this.Administrador as any).constancia_fiscal_archivo, logo: (this.Administrador as any).logotipo_archivo}));
 		} else {
 			this.Administrador = new AdministradorModel();
 		}

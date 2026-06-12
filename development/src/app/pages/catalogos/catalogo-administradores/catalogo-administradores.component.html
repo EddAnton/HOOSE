@@ -304,10 +304,14 @@
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Anverso Identificación</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg" />
+					<small *ngIf="Administrador?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
+					<small *ngIf="Administrador?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Reverso Identificación</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg" />
+					<small *ngIf="Administrador?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
+					<small *ngIf="Administrador?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
 				</div>
 			</div>
 		</div>
@@ -462,7 +466,7 @@
           <img *ngIf="srcImagen" [src]="srcImagen" class="hoose-avatar-img" />
           <span *ngIf="!srcImagen" class="hoose-avatar-initials" style="color:#f59e0b">{{ (Administrador.nombre || 'A').charAt(0) }}</span>
         </div>
-        <div *ngIf="Administrador.logotipo_archivo" style="position:absolute;bottom:10px;right:-5px;width:40px;height:40px;border-radius:50%;border:2px solid #12121f;background:#2a2a3d;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
+        <div *ngIf="Administrador.logotipo_archivo" style="position:absolute;bottom:8px;right:-8px;width:52px;height:52px;border-radius:50%;border:2px solid #12121f;background:#2a2a3d;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
           <img [src]="srcLogotipo" style="width:100%;height:100%;object-fit:contain;border-radius:50%" />
         </div>
         </div>
