@@ -82,6 +82,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	srcImagen: string = null;
 	srcIdentificacionAnverso: string = null;
 	srcIdentificacionReverso: string = null;
+  srcLogotipo: string = null;
 	srcImagenMostrar: string = null;
 	bImagenBorrar: boolean = false;
 	bIdentificacionAnversoBorrar: boolean = false;
@@ -659,6 +660,9 @@ if (ffmVal) administrador.fecha_fin_mandato = this.hlpApp.formatDateToMySQL(ffmV
     } else {
       this.miembrosComiteDetalle = [];
     }
+    this.srcLogotipo = (admin as any).logotipo_archivo
+      ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + (admin as any).logotipo_archivo
+      : null;
     this.mostrarDialogoDetallesAdministrador = true;
   }
 
