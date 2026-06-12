@@ -200,7 +200,6 @@ export class CatalogoAdministradoresComponent implements OnInit {
 					await hlpSwal.Error(e).then(() => null);
 				});
 			if (this.Administrador == null) return;
-alert('TIPO: ' + (this.Administrador as any)['tipo_persona'] + ' RAZON: ' + (this.Administrador as any)['razon_social']);
 		} else {
 			this.Administrador = new AdministradorModel();
 		}
@@ -540,6 +539,18 @@ alert('TIPO: ' + (this.Administrador as any)['tipo_persona'] + ' RAZON: ' + (thi
 			administrador.tipo_administrador = this.tipoAcceso;
 			administrador.estructura_administracion = this.tipoAdministracion;
 			administrador.tipo_persona = this.tipoPersona;
+// Campos P.Moral
+if (this.tipoPersona === 'MORAL') {
+  administrador.razon_social = this.frmAdministrador.get('razon_social')?.value || null;
+  administrador.rfc = this.frmAdministrador.get('rfc')?.value || null;
+  administrador.domicilio_fiscal = this.frmAdministrador.get('domicilio_fiscal')?.value || null;
+}
+// Fechas mandato
+const fimVal = this.frmAdministrador.get('fecha_inicio_mandato')?.value;
+const ffmVal = this.frmAdministrador.get('fecha_fin_mandato')?.value;
+if (fimVal) administrador.fecha_inicio_mandato = this.hlpApp.formatDateToMySQL(fimVal);
+if (ffmVal) administrador.fecha_fin_mandato = this.hlpApp.formatDateToMySQL(ffmVal);
+
 		}
 		administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		administrador.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;
