@@ -252,14 +252,17 @@
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Acta Constitutiva</label>
 					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'acta_constitutiva')" accept=".pdf,.jpg,.png" />
+				<small *ngIf="Administrador?.acta_constitutiva_archivo" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Administrador.acta_constitutiva_archivo }}</small>
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Constancia de Situación Fiscal</label>
 					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'constancia_fiscal')" accept=".pdf,.jpg,.png" />
+				<small *ngIf="Administrador?.constancia_fiscal_archivo" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Administrador.constancia_fiscal_archivo }}</small>
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Logotipo de la Empresa</label>
 					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'logotipo')" accept=".png,.jpg,.jpeg,.svg,.webp" />
+				<small *ngIf="Administrador?.logotipo_archivo" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Administrador.logotipo_archivo }}</small>
 				</div>
 			</div>
 		</div>

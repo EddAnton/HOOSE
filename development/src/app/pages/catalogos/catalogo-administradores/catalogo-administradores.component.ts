@@ -83,6 +83,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	srcIdentificacionAnverso: string = null;
 	srcIdentificacionReverso: string = null;
   srcLogotipo: string = null;
+  srcActaConstitutiva: string = null;
+  srcConstanciaFiscal: string = null;
 	srcImagenMostrar: string = null;
 	bImagenBorrar: boolean = false;
 	bIdentificacionAnversoBorrar: boolean = false;
@@ -668,6 +670,12 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
     } else {
       this.miembrosComiteDetalle = [];
     }
+    this.srcActaConstitutiva = (admin as any).acta_constitutiva_archivo
+      ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + (admin as any).acta_constitutiva_archivo
+      : null;
+    this.srcConstanciaFiscal = (admin as any).constancia_fiscal_archivo
+      ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + (admin as any).constancia_fiscal_archivo
+      : null;
     this.srcLogotipo = (admin as any).logotipo_archivo
       ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + (admin as any).logotipo_archivo
       : null;
