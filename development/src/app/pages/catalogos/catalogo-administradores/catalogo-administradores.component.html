@@ -463,6 +463,7 @@
           <span class="hoose-badge-inactivo" *ngIf="Administrador.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
         </div>
         <h5 class="text-white mb-1">{{ Administrador.nombre }}</h5>
+        <small style="color:#8b5cf6;font-weight:500" *ngIf="Administrador.tipo_persona === 'MORAL'">Representante Legal</small>
         <small class="text-muted">{{ Administrador.usuario }}</small>
 
         <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
@@ -566,7 +567,7 @@
 
       <!-- Identificación -->
       <div class="hoose-detalle-card p-3">
-        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Identificación</h6></div>
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">{{ Administrador.tipo_persona === 'MORAL' ? 'Identificación Representante Legal' : 'Identificación' }}</h6></div>
         <div class="row">
           <div class="col-6"><small class="text-muted d-block">Folio</small><span class="text-white">{{ Administrador.identificacion_folio || 'No registrado' }}</span></div>
           <div class="col-6"><small class="text-muted d-block">Domicilio Identificación</small><span class="text-white">{{ Administrador.identificacion_domicilio || 'No registrado' }}</span></div>
