@@ -574,13 +574,21 @@
 
       <!-- Condominio asignado (solo externos) -->
       <div class="hoose-detalle-card p-3 mb-3" *ngIf="!Administrador.id_administrador_interno">
-        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div><h6 class="text-white mb-0">Condominio asignado</h6></div>
-        <div class="d-flex align-items-center gap-2">
-          <span class="text-white" style="font-size:1.1rem" *ngIf="!editandoCondominio">{{ Administrador.condominio_nombre || 'Sin asignar' }}</span>
-          <p-dropdown *ngIf="editandoCondominio" [options]="opcionesCondominios" [(ngModel)]="condominioSeleccionadoDetalle" [ngModelOptions]="{standalone:true}" placeholder="Seleccionar condominio" [filter]="true" filterBy="label" [showClear]="true" styleClass="w-100" appendTo="body"></p-dropdown>
-          <button *ngIf="!editandoCondominio" pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" style="color:#e91e8a" (click)="editandoCondominio=true; condominioSeleccionadoDetalle=Administrador.fk_id_condominio" pTooltip="Cambiar condominio"></button>
-          <button *ngIf="editandoCondominio" pButton type="button" icon="pi pi-check" class="p-button-text p-button-sm p-button-success" (click)="onAsignarCondominioDetalle()"></button>
-          <button *ngIf="editandoCondominio" pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm p-button-warning" (click)="editandoCondominio=false"></button>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-2"><div class="hoose-info-icon-sm" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div><h6 class="text-white mb-0">Condominio asignado</h6></div>
+          <button *ngIf="!editandoCondominio" pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" style="color:#e91e8a;background:rgba(233,30,138,0.1)" (click)="editandoCondominio=true; condominioSeleccionadoDetalle=Administrador.fk_id_condominio" pTooltip="Cambiar condominio"></button>
+        </div>
+        <div *ngIf="!editandoCondominio" class="d-flex align-items-center gap-2 py-1">
+          <i class="pi pi-building" style="color:#e91e8a;font-size:1.2rem"></i>
+          <span class="text-white" style="font-size:1.05rem">{{ Administrador.condominio_nombre || 'Sin asignar' }}</span>
+        </div>
+        <div *ngIf="editandoCondominio" class="p-3 mt-1" style="background:rgba(233,30,138,0.05);border:1px solid rgba(233,30,138,0.15);border-radius:10px">
+          <small class="text-muted d-block mb-2">Selecciona el condominio a asignar</small>
+          <p-dropdown [options]="opcionesCondominios" [(ngModel)]="condominioSeleccionadoDetalle" [ngModelOptions]="{standalone:true}" placeholder="Buscar condominio..." [filter]="true" filterBy="label" [showClear]="true" styleClass="w-100" appendTo="body"></p-dropdown>
+          <div class="d-flex justify-content-end gap-2 mt-2">
+            <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="editandoCondominio=false"></button>
+            <button pButton type="button" label="Asignar" icon="pi pi-check" class="p-button-sm" style="background:#e91e8a;border-color:#e91e8a" (click)="onAsignarCondominioDetalle()"></button>
+          </div>
         </div>
       </div>
 
