@@ -306,12 +306,10 @@
 					<label class="hoose-form-label">Anverso Identificación</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg" />
 					<small *ngIf="Administrador?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
-					<small *ngIf="Administrador?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Reverso Identificación</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg" />
-					<small *ngIf="Administrador?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
 					<small *ngIf="Administrador?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado</small>
 				</div>
 			</div>
