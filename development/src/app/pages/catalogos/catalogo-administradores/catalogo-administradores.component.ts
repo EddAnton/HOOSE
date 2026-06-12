@@ -290,6 +290,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 			this.tipoAcceso = this.Administrador['tipo_administrador'] || 'EXTERNO';
 			this.tipoPersona = this.Administrador['tipo_persona'] || 'FISICA';
 			this.MiembrosComite = [];
+this.archivosPersonaMoral = {};
 			this.UsuariosInternos = [];
 			this.mostrarFrmMiembro = false;
 
@@ -352,6 +353,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	onTipoAdminChange(val: string) {
 		this.tipoAdministracion = val;
 		if (val === 'COMITE') this.MiembrosComite = [];
+this.archivosPersonaMoral = {};
 	}
 
 	onTipoAccesoChange(val: string) { this.tipoAcceso = val; }
@@ -553,7 +555,13 @@ if (fimVal) administrador.fecha_inicio_mandato = this.hlpApp.formatDateToMySQL(f
 if (ffmVal) administrador.fecha_fin_mandato = this.hlpApp.formatDateToMySQL(ffmVal);
 
 		}
-		administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
+		// Agregar archivos P.Moral al data
+if (this.archivosPersonaMoral) {
+  if (this.archivosPersonaMoral.acta_constitutiva) administrador.archivo_acta_constitutiva = this.archivosPersonaMoral.acta_constitutiva;
+  if (this.archivosPersonaMoral.constancia_fiscal) administrador.archivo_constancia_fiscal = this.archivosPersonaMoral.constancia_fiscal;
+  if (this.archivosPersonaMoral.logotipo) administrador.archivo_logotipo = this.archivosPersonaMoral.logotipo;
+}
+administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 		administrador.borrar_identificacion_anverso = this.bIdentificacionAnversoBorrar ? 1 : 0;
 		administrador.borrar_identificacion_reverso = this.bIdentificacionReversoBorrar ? 1 : 0;
 		delete administrador.imagen;

@@ -274,7 +274,7 @@
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Imagen de Perfil</label>
-					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'imagen')" accept=".png,.jpg,.jpeg,.webp" />
+					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg,.webp" />
 				</div>
 			</div>
 			<div class="hoose-form-grid mt-2">
@@ -300,11 +300,11 @@
 			<div class="hoose-form-grid mt-2">
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Anverso Identificación</label>
-					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'identificacion_anverso')" accept=".png,.jpg,.jpeg" />
+					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 2)" accept=".png,.jpg,.jpeg" />
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Reverso Identificación</label>
-					<input type="file" class="form-control form-control-sm" (change)="onArchivoSeleccionado($event, 'identificacion_reverso')" accept=".png,.jpg,.jpeg" />
+					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 3)" accept=".png,.jpg,.jpeg" />
 				</div>
 			</div>
 		</div>
