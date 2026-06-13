@@ -408,18 +408,18 @@
         <small class="text-muted">{{ Condomino.usuario }}</small>
 
         <div class="d-flex flex-column gap-2 mt-3">
-          <div class="hoose-stat-box d-flex align-items-center gap-2 text-start">
-            <i class="pi pi-building" style="color:#e91e8a;font-size:1.2rem"></i>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-building" style="color:#e91e8a;font-size:1.1rem"></i>
             <div class="hoose-stat-val">{{ Condomino.edificio || '-' }}</div>
             <div class="hoose-stat-label">Torre</div>
           </div>
-          <div class="hoose-stat-box">
-            <i class="pi pi-th-large" style="color:#3b82f6;font-size:1.2rem"></i>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-th-large" style="color:#3b82f6;font-size:1.1rem"></i>
             <div class="hoose-stat-val">{{ Condomino.unidad || '-' }}</div>
             <div class="hoose-stat-label">Unidad</div>
           </div>
-          <div class="hoose-stat-box">
-            <i class="pi pi-check-circle" style="color:#10b981;font-size:1.2rem"></i>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-check-circle" style="color:#10b981;font-size:1.1rem"></i>
             <div class="hoose-stat-val">{{ Condomino.contrato_activo == 1 ? 'Activo' : 'Inactivo' }}</div>
             <div class="hoose-stat-label">Contrato</div>
           </div>
