@@ -603,8 +603,8 @@
       <!-- Persona Moral (solo externo P. Moral) -->
       
 
-      <!-- Identificación -->
-      <div class="hoose-detalle-card p-3">
+      <!-- Identificación (no para comité) -->
+      <div class="hoose-detalle-card p-3" *ngIf="Administrador.estructura_administracion !== 'COMITE'">
         <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">{{ Administrador.tipo_persona === 'MORAL' ? 'Identificación Representante Legal' : 'Identificación' }}</h6></div>
         <div class="row">
           <div class="col-6"><small class="text-muted d-block">Folio</small><span class="text-white">{{ Administrador.identificacion_folio || 'No registrado' }}</span></div>
