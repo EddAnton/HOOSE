@@ -1,6 +1,7 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import * as hlpApp from '../../../helpers/app-helper';
@@ -101,6 +102,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		private usuariosService: UsuariosService,
 		private condominiosService: CondominiosService,
 		private sesionUsuarioService: SesionUsuarioService,
+    private router: Router,
 	) {}
 
 	ngOnInit(): void {
@@ -697,10 +699,11 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
   }
 
   async onVerDetalleMiembro(miembro: any) {
+    this.mostrarDialogoDetallesAdministrador = false;
     if (miembro.perfil_usuario === 'Propietario') {
-      alert('Ver detalle de Propietario: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+      this.router.navigate(['/catalogos/propietarios'], { queryParams: { id: miembro.id_usuario } });
     } else {
-      alert('Ver detalle de Condómino: ' + miembro.nombre + ' (ID: ' + miembro.id_usuario + ')');
+      this.router.navigate(['/catalogos/condominos'], { queryParams: { id: miembro.id_usuario } });
     }
   }
 

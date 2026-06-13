@@ -532,6 +532,9 @@
           <div class="col-6 mb-2"><small class="text-muted d-block">Cargo</small><span class="text-white">{{ Administrador.cargo || 'Administrador' }}</span></div>
           <div class="col-6"><small class="text-muted d-block">Perfil original</small><span class="text-white">Propietario / Condómino</span></div>
         </div>
+        <div class="text-center mt-3" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px">
+          <button pButton type="button" label="Ver ficha completa" icon="pi pi-external-link" class="p-button-outlined p-button-sm" style="color:#8b5cf6;border-color:rgba(139,92,246,0.3)" (click)="onVerDetalleMiembro({id_usuario: Administrador.id_usuario, perfil_usuario: Administrador.tipo_persona === 'Propietario' ? 'Propietario' : 'Condómino', nombre: Administrador.nombre})"></button>
+        </div>
       </div>
 
       <!-- Admin Interno Comité: estructura del comité -->
