@@ -81,7 +81,7 @@
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="body" let-Unidad>
-			<tr>
+<tr style="cursor:pointer" (click)="onUnidadDetalles(Unidad)">
 				<td><span class="p-column-title">Unidad</span>{{ Unidad.unidad }}</td>
 				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Unidad.condominio_nombre), 'background': getCondominioColor(Unidad.condominio_nombre) + '20'}">{{ Unidad.condominio_nombre || '-' }}</span></td>
 				<td><span class="p-column-title">Edificio / Torre</span>{{ Unidad.edificio }}</td>
@@ -312,4 +312,97 @@
 			</iframe>
 		</div>
 	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles de la Unidad -->
+<p-dialog
+  styleClass="hoose-detalle-dialog"
+  [breakpoints]="{ '991px': '90vw', '640px': '98vw' }"
+  [style]="{ width: '70vw', maxWidth: '900px' }"
+  *ngIf="mostrarDialogoDetallesUnidad" [(visible)]="mostrarDialogoDetallesUnidad"
+  [modal]="true"
+  [showHeader]="false"
+  [contentStyle]="{'padding': '0', 'background': '#12121f', 'border-radius': '16px'}"
+>
+<ng-template pTemplate="content">
+<div class="hoose-detalle">
+  <div class="hoose-detalle-header">
+    <div class="d-flex align-items-center">
+      <div class="hoose-detalle-icon-header" style="background:rgba(59,130,246,0.15)"><i class="pi pi-home" style="color:#3b82f6"></i></div>
+      <div class="ms-3">
+        <h4 class="mb-0 text-white">{{ UnidadDetalle?.unidad }}</h4>
+        <small class="text-muted">{{ UnidadDetalle?.tipo_unidad || 'Departamento' }} — {{ UnidadDetalle?.edificio }}</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button pButton type="button" icon="pi pi-pencil" label="Editar" class="p-button-outlined p-button-sm" style="color:#ccc;border-color:#444" (click)="mostrarDialogoDetallesUnidad=false; onUnidadEditar(UnidadDetalle?.id_unidad)"></button>
+      <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="mostrarDialogoDetallesUnidad=false"></button>
+    </div>
+  </div>
+
+  <div class="row g-3 p-3">
+    <div class="col-12 col-md-4">
+      <div class="hoose-detalle-card text-center p-4">
+        <div class="mx-auto mb-3" style="width:110px;height:110px;border-radius:50%;border:3px solid #3b82f6;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,0.08)">
+          <i class="pi pi-home" style="color:#3b82f6;font-size:3rem"></i>
+        </div>
+        <div class="mb-2">
+          <span class="hoose-badge-activo" *ngIf="UnidadDetalle?.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
+          <span class="hoose-badge-inactivo" *ngIf="UnidadDetalle?.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+        </div>
+        <h5 class="text-white mb-1">{{ UnidadDetalle?.unidad }}</h5>
+        <small class="text-muted">{{ UnidadDetalle?.tipo_unidad || 'Departamento' }}</small>
+
+        <div class="d-flex flex-column gap-2 mt-3">
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-building" style="color:#f59e0b;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ UnidadDetalle?.edificio || '-' }}</div>
+            <div class="hoose-stat-label">Edificio / Torre</div>
+          </div>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-sort-amount-up" style="color:#8b5cf6;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ UnidadDetalle?.nivel || '-' }}</div>
+            <div class="hoose-stat-label">Nivel</div>
+          </div>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-tag" style="color:#06b6d4;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ UnidadDetalle?.modo || 'Vivienda' }}</div>
+            <div class="hoose-stat-label">Modo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8">
+      <!-- Info general -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
+            <div><small class="text-muted d-block">Condominio</small><strong class="text-white">{{ UnidadDetalle?.condominio_nombre || '-' }}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propietario -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Propietario</h6></div>
+        <span class="text-white" style="font-size:1rem">{{ UnidadDetalle?.propietario_nombre || 'Sin asignar' }}</span>
+      </div>
+
+      <!-- Condómino -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="UnidadDetalle?.condomino_nombre">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(16,185,129,0.15)"><i class="pi pi-users" style="color:#10b981"></i></div><h6 class="text-white mb-0">Condómino</h6></div>
+        <span class="text-white" style="font-size:1rem">{{ UnidadDetalle?.condomino_nombre }}</span>
+      </div>
+
+      <!-- Escrituras -->
+      <div class="hoose-detalle-card p-3" *ngIf="UnidadDetalle?.escrituras_archivo">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(239,68,68,0.15)"><i class="pi pi-file-pdf" style="color:#ef4444"></i></div><h6 class="text-white mb-0">Escrituras</h6></div>
+        <a style="color:#ef4444;text-decoration:none;cursor:pointer;font-size:0.9rem" (click)="onUnidadEscriturasMostrar(UnidadDetalle)"><i class="pi pi-file-pdf me-1"></i>Ver escrituras</a>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-template>
 </p-dialog>

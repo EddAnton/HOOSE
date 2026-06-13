@@ -56,6 +56,8 @@ export class CatalogoUnidadesComponent implements OnInit {
 	permitirAgregarEditar: boolean = false;
 	tiposUnidad: string[] = ['Departamento', 'Casa', 'Town House', 'Pent House', 'Local Comercial', 'Oficina', 'Loft', 'Estudio'];
 	mostrarDialogoEdicionUnidad: boolean = false;
+  mostrarDialogoDetallesUnidad: boolean = false;
+  UnidadDetalle: any = null;
 	mostrarDialogoImagenUnidad: boolean = false;
 	mostrarDialogoEscriturasUnidad: boolean = false;
 	srcEscrituras: string = null;
@@ -363,5 +365,11 @@ export class CatalogoUnidadesComponent implements OnInit {
 			this.onActualizarInformacion();
 		}
 	}
+
+
+  onUnidadDetalles(unidad: any) {
+    this.UnidadDetalle = unidad;
+    this.mostrarDialogoDetallesUnidad = true;
+  }
 
 }
