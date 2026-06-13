@@ -88,6 +88,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
   srcConstanciaFiscal: string = null;
   editandoCondominio: boolean = false;
   condominioSeleccionadoDetalle: number = null;
+  condominioDelHeader: number = 0;
 	srcImagenMostrar: string = null;
 	bImagenBorrar: boolean = false;
 	bIdentificacionAnversoBorrar: boolean = false;
@@ -296,7 +297,8 @@ console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any
 			this.tipoAdministracion = this.Administrador['estructura_administracion'] || 'UNICO';
 			this.tipoAcceso = this.Administrador['tipo_administrador'] || 'EXTERNO';
 			this.tipoPersona = this.Administrador['tipo_persona'] || 'FISICA';
-			this.MiembrosComite = [];
+			this.condominioDelHeader = this.sesionUsuarioService.obtenerIDCondominioUsuario() || 0;
+    this.MiembrosComite = [];
 this.archivosPersonaMoral = {};
 			this.UsuariosInternos = [];
 			this.mostrarFrmMiembro = false;
@@ -318,6 +320,12 @@ this.archivosPersonaMoral = {};
     if (!this.frmAdministrador.get('rfc')) this.frmAdministrador.addControl('rfc', new FormControl(this.Administrador.rfc || null));
     if (!this.frmAdministrador.get('sitio_web')) this.frmAdministrador.addControl('sitio_web', new FormControl(this.Administrador.sitio_web || null));
     if (!this.frmAdministrador.get('domicilio_fiscal')) this.frmAdministrador.addControl('domicilio_fiscal', new FormControl(this.Administrador.domicilio_fiscal || null));
+    // Auto-llenar condominio del header
+    const condHeader = this.sesionUsuarioService.obtenerIDCondominioUsuario() || 0;
+    if (condHeader > 0 && this.frmAdministrador.get('fk_id_condominio')) {
+      this.frmAdministrador.patchValue({ fk_id_condominio: condHeader });
+      this.onCondominioAdminChange(condHeader);
+    }
     this.mostrarDialogoEdicionAdministrador = true;
 			// Cargar usuarios internos si hay condominio y es interno
 			setTimeout(() => {

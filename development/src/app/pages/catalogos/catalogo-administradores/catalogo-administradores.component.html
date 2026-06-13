@@ -210,7 +210,7 @@
 						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
 						(onChange)="onTipoAdminChange($event.value)" styleClass="w-100"></p-dropdown>
 				</div>
-				<div class="hoose-form-field">
+				<div class="hoose-form-field" *ngIf="condominioDelHeader === 0">
 					<label class="hoose-form-label">Condominio <span *ngIf="tipoAcceso==='INTERNO'" class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesCondominios" formControlName="fk_id_condominio"
 						placeholder="Selecciona el condominio" [showClear]="tipoAcceso==='EXTERNO'"
