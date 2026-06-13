@@ -548,6 +548,7 @@ this.archivosPersonaMoral = {};
 			administrador.tipo_administrador = this.tipoAcceso;
 			administrador.estructura_administracion = this.tipoAdministracion;
 			administrador.tipo_persona = this.tipoPersona;
+administrador.sitio_web = this.frmAdministrador.get('sitio_web')?.value || null;
 // Campos P.Moral
 if (this.tipoPersona === 'MORAL') {
   administrador.razon_social = this.frmAdministrador.get('razon_social')?.value || null;
