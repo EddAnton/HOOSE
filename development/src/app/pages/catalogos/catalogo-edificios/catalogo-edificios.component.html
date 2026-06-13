@@ -80,7 +80,7 @@
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="body" let-Edificio>
-			<tr>
+<tr style="cursor:pointer" (click)="onEdificioDetalles(Edificio)">
 				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Edificio.condominio_nombre), 'background': getCondominioColor(Edificio.condominio_nombre) + '20'}">{{ Edificio.condominio_nombre || '-' }}</span></td>
 				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Edificio.tipo || 'Edificio' }}</span></td>
 				<td><span class="p-column-title">Nombre</span>{{ Edificio.edificio }}</td>
