@@ -40,7 +40,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-Condomino>
-      <tr>
+      <tr style="cursor:pointer" (click)="onCondominoDetalles(Condomino.id_usuario)">
         <td class="me-1 mt-1">
           <div (click)="onCondominoDetalles(Condomino.id_usuario)" style="cursor: pointer">
             <img class="rounded-circle" src="{{

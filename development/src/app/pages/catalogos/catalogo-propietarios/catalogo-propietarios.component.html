@@ -81,7 +81,7 @@
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="body" let-Propietario>
-			<tr>
+      <tr style="cursor:pointer" (click)="onPropietarioDetalles(Propietario.id_usuario)">
 				<td class="me-1 mt-1">
 					<div (click)="onPropietarioDetalles(Propietario.id_usuario)" style="cursor: pointer">
 						<img
