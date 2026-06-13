@@ -83,7 +83,7 @@
 			<tr>
 				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Edificio.condominio_nombre), 'background': getCondominioColor(Edificio.condominio_nombre) + '20'}">{{ Edificio.condominio_nombre || '-' }}</span></td>
 				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Edificio.tipo || 'Edificio' }}</span></td>
-				<td style="cursor:pointer" (click)="onEdificioDetalles(Edificio)"><span class="p-column-title">Nombre</span><span class="text-white" style="text-decoration:underline dotted;text-underline-offset:3px">{{ Edificio.edificio }}</span></td>
+				<td><span class="p-column-title">Nombre</span>{{ Edificio.edificio }}</td>
 				<td class="text-md-center">
 					<span class="p-column-title">Estatus</span>
 					<span style="cursor: pointer">
