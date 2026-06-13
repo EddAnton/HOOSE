@@ -407,8 +407,8 @@
         <h5 class="text-white mb-1">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</h5>
         <small class="text-muted">{{ Condomino.usuario }}</small>
 
-        <div class="d-flex justify-content-center gap-2 mt-3">
-          <div class="hoose-stat-box">
+        <div class="d-flex flex-column gap-2 mt-3">
+          <div class="hoose-stat-box d-flex align-items-center gap-2 text-start">
             <i class="pi pi-building" style="color:#e91e8a;font-size:1.2rem"></i>
             <div class="hoose-stat-val">{{ Condomino.edificio || '-' }}</div>
             <div class="hoose-stat-label">Torre</div>
