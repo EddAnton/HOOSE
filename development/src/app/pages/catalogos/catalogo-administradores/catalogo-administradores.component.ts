@@ -11,6 +11,8 @@ import { UsuariosService } from '../../../services/usuarios.service';
 import { CondominiosService } from '../../../services/condominios.service';
 import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
 import { AdministradorModel, AdministradorResumenModel } from '../../../models/usuario-administrador.model';
+import { UsuariosPropietariosService } from '../../../services/usuarios-propietarios.service';
+import { UsuariosCondominosService } from '../../../services/usuarios-condominos.service';
 import { UsuariosAdministradoresService } from '../../../services/usuarios-administradores.service';
 
 @Component({
@@ -89,6 +91,9 @@ export class CatalogoAdministradoresComponent implements OnInit {
   editandoCondominio: boolean = false;
   condominioSeleccionadoDetalle: number = null;
   condominioDelHeader: number = 0;
+  miembroDetalle: any = null;
+  mostrarDetalleMiembro: boolean = false;
+  srcImagenMiembro: string = null;
 	srcImagenMostrar: string = null;
 	bImagenBorrar: boolean = false;
 	bIdentificacionAnversoBorrar: boolean = false;
@@ -104,6 +109,8 @@ export class CatalogoAdministradoresComponent implements OnInit {
 		private condominiosService: CondominiosService,
 		private sesionUsuarioService: SesionUsuarioService,
     private router: Router,
+    private propietariosService: UsuariosPropietariosService,
+    private condominosService: UsuariosCondominosService,
 	) {}
 
 	ngOnInit(): void {
@@ -707,12 +714,22 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
   }
 
   async onVerDetalleMiembro(miembro: any) {
-    this.mostrarDialogoDetallesAdministrador = false;
-    if (miembro.perfil_usuario === 'Propietario') {
-      this.router.navigate(['/catalogos/propietarios'], { queryParams: { id: miembro.id_usuario } });
-    } else {
-      this.router.navigate(['/catalogos/condominos'], { queryParams: { id: miembro.id_usuario } });
-    }
+    try {
+      hlpSwal.Cargando();
+      let data: any;
+      if (miembro.perfil_usuario === 'Propietario') {
+        data = await this.propietariosService.ListarPropietario(miembro.id_usuario).toPromise().then((r: any) => r['propietario']);
+      } else {
+        data = await this.condominosService.ListarCondomino(miembro.id_usuario).toPromise().then((r: any) => r['condomino']);
+      }
+      hlpSwal.Cerrar();
+      if (data) {
+        this.miembroDetalle = { ...data, perfil_tipo: miembro.perfil_usuario, cargo_comite: miembro.cargo };
+        this.srcImagenMiembro = data.imagen ? environment.urlBackendUsuariosFiles + data.id_usuario + '/' + data.imagen : null;
+        this.mostrarDialogoDetallesAdministrador = false;
+        this.mostrarDetalleMiembro = true;
+      }
+    } catch (e) { hlpSwal.Cerrar(); hlpSwal.Error(e); }
   }
 
     getCondominioColor(nombre: string): string {

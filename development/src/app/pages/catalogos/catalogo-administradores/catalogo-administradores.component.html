@@ -633,3 +633,68 @@
 </p-dialog>
 
 </div><!-- /admin-wrapper -->
+
+<!-- Diálogo Detalle Miembro del Comité -->
+<p-dialog
+  styleClass="hoose-detalle-dialog"
+  [breakpoints]="{ '991px': '90vw', '640px': '98vw' }"
+  [style]="{ width: '60vw', maxWidth: '750px' }"
+  *ngIf="mostrarDetalleMiembro" [(visible)]="mostrarDetalleMiembro"
+  [modal]="true"
+  [showHeader]="false"
+  [contentStyle]="{'padding': '0', 'background': '#12121f', 'border-radius': '16px'}"
+>
+<ng-template pTemplate="content">
+<div class="hoose-detalle">
+  <div class="hoose-detalle-header">
+    <div class="d-flex align-items-center">
+      <div class="hoose-detalle-icon-header" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div>
+      <div class="ms-3">
+        <h4 class="mb-0 text-white">{{ miembroDetalle?.nombre }}</h4>
+        <small class="text-muted">{{ miembroDetalle?.perfil_tipo }} — {{ miembroDetalle?.cargo_comite }}</small>
+      </div>
+    </div>
+    <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="mostrarDetalleMiembro=false; mostrarDialogoDetallesAdministrador=true"></button>
+  </div>
+
+  <div class="row g-3 p-3">
+    <div class="col-12 col-md-4 text-center">
+      <div class="hoose-detalle-card p-4">
+        <div class="hoose-avatar-ring mx-auto mb-3" style="border-color:#8b5cf6;width:110px;height:110px">
+          <img *ngIf="srcImagenMiembro" [src]="srcImagenMiembro" class="hoose-avatar-img" />
+          <span *ngIf="!srcImagenMiembro" class="hoose-avatar-initials" style="color:#8b5cf6;font-size:2rem">{{ (miembroDetalle?.nombre || 'M').charAt(0) }}</span>
+        </div>
+        <h6 class="text-white mb-0">{{ miembroDetalle?.nombre }}</h6>
+        <small style="color:#f59e0b;font-weight:600">{{ miembroDetalle?.cargo_comite }}</small><br/>
+        <small class="text-muted">{{ miembroDetalle?.usuario }}</small>
+      </div>
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2" *ngIf="miembroDetalle?.email">
+            <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
+            <div><small class="text-muted d-block">Email</small><a [href]="'mailto:' + miembroDetalle.email" style="color:#3b82f6;font-size:0.85rem;font-weight:600;text-decoration:none">{{ miembroDetalle.email }}</a></div>
+          </div>
+          <div class="d-flex align-items-center gap-2" *ngIf="miembroDetalle?.telefono">
+            <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-phone" style="color:#10b981"></i></div>
+            <div><small class="text-muted d-block">Teléfono</small><a [href]="'tel:' + miembroDetalle.telefono" style="color:#10b981;font-weight:600;text-decoration:none">{{ miembroDetalle.telefono | phoneFormat }}</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="miembroDetalle?.domicilio">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(16,185,129,0.15)"><i class="pi pi-map-marker" style="color:#10b981"></i></div><h6 class="text-white mb-0">Domicilio</h6></div>
+        <span class="text-white">{{ miembroDetalle.domicilio }}</span>
+      </div>
+      <div class="hoose-detalle-card p-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Identificación</h6></div>
+        <div class="row">
+          <div class="col-6"><small class="text-muted d-block">Folio</small><span class="text-white">{{ miembroDetalle?.identificacion_folio || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Domicilio ID</small><span class="text-white">{{ miembroDetalle?.identificacion_domicilio || 'No registrado' }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-template>
+</p-dialog>
