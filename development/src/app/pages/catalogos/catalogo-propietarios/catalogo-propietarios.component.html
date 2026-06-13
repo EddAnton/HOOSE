@@ -397,21 +397,21 @@
         <h5 class="text-white mb-1">{{ Propietario.nombre }} {{ Propietario.apellidos || '' }}</h5>
         <small class="text-muted">{{ Propietario.usuario }}</small>
 
-        <div class="d-flex justify-content-center gap-2 mt-3">
-          <div class="hoose-stat-box">
-            <i class="pi pi-building" style="color:#e91e8a;font-size:1.2rem"></i>
-            <div class="hoose-stat-val">{{ Propietario.unidades?.length || 0 }}</div>
-            <div class="hoose-stat-label">Unidades</div>
+        <div class="d-flex flex-column gap-2 mt-3">
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-home" style="color:#e91e8a;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ Propietario.unidades?.length > 0 ? Propietario.unidades[0].unidad : 'Sin asignar' }}</div>
+            <div class="hoose-stat-label">Unidad Asignada</div>
           </div>
-          <div class="hoose-stat-box">
-            <i class="pi pi-user" style="color:#8b5cf6;font-size:1.2rem"></i>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-user" style="color:#8b5cf6;font-size:1.1rem"></i>
             <div class="hoose-stat-val">Propietario</div>
             <div class="hoose-stat-label">Rol</div>
           </div>
-          <div class="hoose-stat-box">
-            <i class="pi pi-check-circle" style="color:#10b981;font-size:1.2rem"></i>
-            <div class="hoose-stat-val">{{ Propietario.estatus == 1 ? 'Verificado' : 'Inactivo' }}</div>
-            <div class="hoose-stat-label">Cuenta</div>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-building" style="color:#3b82f6;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ Propietario.unidades?.length || 0 }}</div>
+            <div class="hoose-stat-label">Unidades</div>
           </div>
         </div>
       </div>
