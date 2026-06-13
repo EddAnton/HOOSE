@@ -88,7 +88,7 @@
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="body" let-Administrador>
-			<tr>
+<tr style="cursor:pointer" (click)="onAdministradorDetalles(Administrador.id_usuario)">
 				<td class="me-1 mt-1">
 					<div (click)="onAdministradorDetalles(Administrador.id_usuario)" style="cursor: pointer">
 						<img
