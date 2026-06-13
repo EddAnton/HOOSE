@@ -83,7 +83,7 @@
 			<tr>
 				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Edificio.condominio_nombre), 'background': getCondominioColor(Edificio.condominio_nombre) + '20'}">{{ Edificio.condominio_nombre || '-' }}</span></td>
 				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Edificio.tipo || 'Edificio' }}</span></td>
-				<td><span class="p-column-title">Nombre</span>{{ Edificio.edificio }}</td>
+				<td style="cursor:pointer" (click)="onEdificioDetalles(Edificio)"><span class="p-column-title">Nombre</span><span class="text-white" style="text-decoration:underline dotted;text-underline-offset:3px">{{ Edificio.edificio }}</span></td>
 				<td class="text-md-center">
 					<span class="p-column-title">Estatus</span>
 					<span style="cursor: pointer">
@@ -214,4 +214,84 @@
 			(click)="onEdificioCancelar()"
 		></button>
 	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Detalles del Edificio -->
+<p-dialog
+  styleClass="hoose-detalle-dialog"
+  [breakpoints]="{ '991px': '90vw', '640px': '98vw' }"
+  [style]="{ width: '70vw', maxWidth: '900px' }"
+  *ngIf="mostrarDialogoDetallesEdificio" [(visible)]="mostrarDialogoDetallesEdificio"
+  [modal]="true"
+  [showHeader]="false"
+  [contentStyle]="{'padding': '0', 'background': '#12121f', 'border-radius': '16px'}"
+>
+<ng-template pTemplate="content">
+<div class="hoose-detalle">
+  <div class="hoose-detalle-header">
+    <div class="d-flex align-items-center">
+      <div class="hoose-detalle-icon-header" style="background:rgba(245,158,11,0.15)"><i class="pi pi-building" style="color:#f59e0b"></i></div>
+      <div class="ms-3">
+        <h4 class="mb-0 text-white">{{ EdificioDetalle?.edificio }}</h4>
+        <small class="text-muted">{{ EdificioDetalle?.tipo || 'Edificio' }} — {{ EdificioDetalle?.condominio_nombre }}</small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button pButton type="button" icon="pi pi-pencil" label="Editar" class="p-button-outlined p-button-sm" style="color:#ccc;border-color:#444" (click)="mostrarDialogoDetallesEdificio=false; onEdificioEditar(EdificioDetalle?.id_edificio)"></button>
+      <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="mostrarDialogoDetallesEdificio=false"></button>
+    </div>
+  </div>
+
+  <div class="row g-3 p-3">
+    <div class="col-12 col-md-4">
+      <div class="hoose-detalle-card text-center p-4">
+        <div class="mx-auto mb-3" style="width:110px;height:110px;border-radius:50%;border:3px solid #f59e0b;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.08)">
+          <i class="pi pi-building" style="color:#f59e0b;font-size:3rem"></i>
+        </div>
+        <div class="mb-2">
+          <span class="hoose-badge-activo" *ngIf="EdificioDetalle?.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
+          <span class="hoose-badge-inactivo" *ngIf="EdificioDetalle?.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+        </div>
+        <h5 class="text-white mb-1">{{ EdificioDetalle?.edificio }}</h5>
+        <small class="text-muted">{{ EdificioDetalle?.tipo || 'Edificio' }}</small>
+
+        <div class="d-flex flex-column gap-2 mt-3">
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-building" style="color:#e91e8a;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ EdificioDetalle?.condominio_nombre }}</div>
+            <div class="hoose-stat-label">Condominio</div>
+          </div>
+          <div class="hoose-stat-box w-100 text-center py-2">
+            <i class="pi pi-th-large" style="color:#3b82f6;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ UnidadesDelEdificio?.length || 0 }}</div>
+            <div class="hoose-stat-label">Unidades</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8">
+      <!-- Unidades del edificio -->
+      <div class="hoose-detalle-card p-3">
+        <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-th-large" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Unidades</h6></div>
+        <div *ngIf="UnidadesDelEdificio.length === 0" class="text-muted">No hay unidades registradas</div>
+        <div *ngFor="let unidad of UnidadesDelEdificio" class="d-flex align-items-center gap-3 p-2 mb-2" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px">
+          <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-home" style="color:#3b82f6"></i></div>
+          <div class="flex-grow-1">
+            <strong class="text-white">{{ unidad.unidad }}</strong><br/>
+            <small class="text-muted">{{ unidad.propietario_nombre || 'Sin propietario' }}</small>
+          </div>
+          <div class="text-end">
+            <span *ngIf="unidad.modo" style="background:rgba(139,92,246,0.15);color:#8b5cf6;padding:3px 10px;border-radius:15px;font-size:0.7rem;font-weight:600">{{ unidad.modo }}</span>
+          </div>
+          <div>
+            <span class="hoose-dot-green" *ngIf="unidad.estatus == 1" style="width:10px;height:10px"></span>
+            <span class="hoose-dot-red" *ngIf="unidad.estatus != 1" style="width:10px;height:10px"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-template>
 </p-dialog>

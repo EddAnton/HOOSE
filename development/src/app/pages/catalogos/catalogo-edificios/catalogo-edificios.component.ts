@@ -5,6 +5,7 @@ import * as hlpSwal from '../../../helpers/sweetalert2-helper';
 import * as hlpApp from '../../../helpers/app-helper';
 import * as hlpPrimeNGTable from '../../../helpers/primeng-table-helper';
 import { EdificioModel } from '../../../models/edificio.model';
+import { UnidadesService } from '../../../services/unidades.service';
 import { EdificiosService } from '../../../services/edificios.service';
 import { CondominiosService } from '../../../services/condominios.service';
 import { SesionUsuarioService } from '../../../services/sesion-usuario.service';
@@ -32,6 +33,9 @@ export class CatalogoEdificiosComponent implements OnInit {
 	EdificiosFilter: any[] = ['edificio'];
 
 	Edificios: EdificioModel[] = [];
+  EdificioDetalle: any = null;
+  UnidadesDelEdificio: any[] = [];
+  mostrarDialogoDetallesEdificio: boolean = false;
 	Edificio: EdificioModel;
 	frmEdificio: FormGroup;
 	mostrarDialogoEdicionEdificio: boolean = false;
@@ -42,6 +46,7 @@ export class CatalogoEdificiosComponent implements OnInit {
 
 	constructor(private formBuilder: FormBuilder, private edificiosService: EdificiosService,
 		private condominiosService: CondominiosService,
+private unidadesService: UnidadesService,
 		private sesionUsuarioService: SesionUsuarioService) {
 		this.frmEdificio = this.formBuilder.group(new EdificioModel());}
 
@@ -243,4 +248,15 @@ export class CatalogoEdificiosComponent implements OnInit {
 		}
 	}
 
+
+  async onEdificioDetalles(edificio: any) {
+    this.EdificioDetalle = edificio;
+    // Cargar unidades del edificio
+    try {
+      const r: any = await this.unidadesService.Listar().toPromise();
+      const unidades = r['unidades'] || [];
+      this.UnidadesDelEdificio = unidades.filter((u: any) => u.fk_id_edificio == edificio.id_edificio || u.edificio === edificio.edificio);
+    } catch (e) { this.UnidadesDelEdificio = []; }
+    this.mostrarDialogoDetallesEdificio = true;
+  }
 }
