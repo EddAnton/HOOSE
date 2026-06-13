@@ -482,18 +482,23 @@
         <br/>
         <small class="text-muted">{{ Administrador.usuario }}</small>
 
-        <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
-          <div class="hoose-stat-box">
+        <div class="d-flex flex-column gap-2 mt-3">
+          <div class="hoose-stat-box w-100 text-center py-2">
             <i class="pi pi-shield" style="color:#f59e0b;font-size:1.1rem"></i>
             <div class="hoose-stat-val">{{ Administrador.id_administrador_interno ? 'Interno' : 'Externo' }}</div>
             <div class="hoose-stat-label">Tipo</div>
           </div>
-          <div class="hoose-stat-box">
+          <div class="hoose-stat-box w-100 text-center py-2">
             <i class="pi pi-sitemap" style="color:#8b5cf6;font-size:1.1rem"></i>
             <div class="hoose-stat-val">{{ Administrador.estructura_administracion === 'UNICO' ? 'Único' : Administrador.estructura_administracion === 'COMITE' ? 'Comité' : Administrador.tipo_persona === 'MORAL' ? 'P. Moral' : 'P. Física' }}</div>
             <div class="hoose-stat-label">Estructura</div>
           </div>
-          <div class="hoose-stat-box" *ngIf="Administrador.cargo">
+          <div class="hoose-stat-box w-100 text-center py-2" *ngIf="Administrador.estructura_administracion === 'COMITE'">
+            <i class="pi pi-users" style="color:#e91e8a;font-size:1.1rem"></i>
+            <div class="hoose-stat-val">{{ miembrosComiteDetalle?.length || 0 }}</div>
+            <div class="hoose-stat-label">Integrantes</div>
+          </div>
+          <div class="hoose-stat-box w-100 text-center py-2" *ngIf="Administrador.cargo && Administrador.estructura_administracion !== 'COMITE'">
             <i class="pi pi-id-card" style="color:#3b82f6;font-size:1.1rem"></i>
             <div class="hoose-stat-val">{{ Administrador.cargo }}</div>
             <div class="hoose-stat-label">Cargo</div>
