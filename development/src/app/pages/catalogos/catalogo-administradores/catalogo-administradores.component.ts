@@ -717,7 +717,7 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
     try {
       hlpSwal.Cargando();
       let data: any;
-      if (miembro.perfil_usuario === 'Propietario') {
+      if (miembro.perfil_usuario === 'PROPIETARIO' || miembro.perfil_usuario === 'Propietario') {
         data = await this.propietariosService.ListarPropietario(miembro.id_usuario).toPromise().then((r: any) => r['propietario']);
       } else {
         data = await this.condominosService.ListarCondomino(miembro.id_usuario).toPromise().then((r: any) => r['condomino']);
