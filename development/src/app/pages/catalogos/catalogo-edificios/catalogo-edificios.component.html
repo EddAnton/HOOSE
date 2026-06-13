@@ -254,23 +254,28 @@
         </div>
         <h5 class="text-white mb-1">{{ EdificioDetalle?.edificio }}</h5>
         <small class="text-muted">{{ EdificioDetalle?.tipo || 'Edificio' }}</small>
-
-        <div class="d-flex flex-column gap-2 mt-3">
-          <div class="hoose-stat-box w-100 text-center py-2">
-            <i class="pi pi-building" style="color:#e91e8a;font-size:1.1rem"></i>
-            <div class="hoose-stat-val">{{ EdificioDetalle?.condominio_nombre }}</div>
-            <div class="hoose-stat-label">Condominio</div>
-          </div>
-          <div class="hoose-stat-box w-100 text-center py-2">
-            <i class="pi pi-th-large" style="color:#3b82f6;font-size:1.1rem"></i>
-            <div class="hoose-stat-val">{{ UnidadesDelEdificio?.length || 0 }}</div>
-            <div class="hoose-stat-label">Unidades</div>
-          </div>
-        </div>
       </div>
     </div>
 
     <div class="col-12 col-md-8">
+      <!-- Info general -->
+      <div class="hoose-detalle-card p-3 mb-3">
+        <div class="d-flex flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
+            <div><small class="text-muted d-block">Condominio</small><strong class="text-white">{{ EdificioDetalle?.condominio_nombre }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(245,158,11,0.15)"><i class="pi pi-tag" style="color:#f59e0b"></i></div>
+            <div><small class="text-muted d-block">Tipo</small><strong class="text-white">{{ EdificioDetalle?.tipo || 'Edificio' }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-th-large" style="color:#3b82f6"></i></div>
+            <div><small class="text-muted d-block">Unidades</small><strong class="text-white">{{ UnidadesDelEdificio?.length || 0 }}</strong></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Unidades del edificio -->
       <div class="hoose-detalle-card p-3">
         <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-th-large" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Unidades</h6></div>

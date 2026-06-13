@@ -352,24 +352,6 @@
         </div>
         <h5 class="text-white mb-1">{{ UnidadDetalle?.unidad }}</h5>
         <small class="text-muted">{{ UnidadDetalle?.tipo_unidad || 'Departamento' }}</small>
-
-        <div class="d-flex flex-column gap-2 mt-3">
-          <div class="hoose-stat-box w-100 text-center py-2">
-            <i class="pi pi-building" style="color:#f59e0b;font-size:1.1rem"></i>
-            <div class="hoose-stat-val">{{ UnidadDetalle?.edificio || '-' }}</div>
-            <div class="hoose-stat-label">Edificio / Torre</div>
-          </div>
-          <div class="hoose-stat-box w-100 text-center py-2">
-            <i class="pi pi-sort-amount-up" style="color:#8b5cf6;font-size:1.1rem"></i>
-            <div class="hoose-stat-val">{{ UnidadDetalle?.nivel || '-' }}</div>
-            <div class="hoose-stat-label">Nivel</div>
-          </div>
-          <div class="hoose-stat-box w-100 text-center py-2">
-            <i class="pi pi-tag" style="color:#06b6d4;font-size:1.1rem"></i>
-            <div class="hoose-stat-val">{{ UnidadDetalle?.modo || 'Vivienda' }}</div>
-            <div class="hoose-stat-label">Modo</div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -380,6 +362,18 @@
           <div class="d-flex align-items-center gap-2">
             <div class="hoose-info-icon" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div>
             <div><small class="text-muted d-block">Condominio</small><strong class="text-white">{{ UnidadDetalle?.condominio_nombre || '-' }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(245,158,11,0.15)"><i class="pi pi-building" style="color:#f59e0b"></i></div>
+            <div><small class="text-muted d-block">Edificio / Torre</small><strong class="text-white">{{ UnidadDetalle?.edificio || '-' }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(139,92,246,0.15)"><i class="pi pi-sort-amount-up" style="color:#8b5cf6"></i></div>
+            <div><small class="text-muted d-block">Nivel</small><strong class="text-white">{{ UnidadDetalle?.nivel || '-' }}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="hoose-info-icon" style="background:rgba(6,182,212,0.15)"><i class="pi pi-tag" style="color:#06b6d4"></i></div>
+            <div><small class="text-muted d-block">Modo</small><strong class="text-white">{{ UnidadDetalle?.modo || 'Vivienda' }}</strong></div>
           </div>
         </div>
       </div>
