@@ -57,6 +57,7 @@ export class AdministradorModel {
   razon_social: string;
   rfc: string;
   domicilio_fiscal: string;
+  sitio_web: string;
   fecha_inicio_mandato: any;
   fecha_fin_mandato: any;
   estatus: number;
@@ -81,6 +82,7 @@ export class AdministradorModel {
       razon_social: null,
       rfc: null,
       domicilio_fiscal: null,
+      sitio_web: null,
       fecha_inicio_mandato: null,
       fecha_fin_mandato: null,
       estatus: 0,

@@ -314,6 +314,7 @@ this.archivosPersonaMoral = {};
     // Campos Persona Moral
     if (!this.frmAdministrador.get('razon_social')) this.frmAdministrador.addControl('razon_social', new FormControl(this.Administrador.razon_social || null));
     if (!this.frmAdministrador.get('rfc')) this.frmAdministrador.addControl('rfc', new FormControl(this.Administrador.rfc || null));
+    if (!this.frmAdministrador.get('sitio_web')) this.frmAdministrador.addControl('sitio_web', new FormControl(this.Administrador.sitio_web || null));
     if (!this.frmAdministrador.get('domicilio_fiscal')) this.frmAdministrador.addControl('domicilio_fiscal', new FormControl(this.Administrador.domicilio_fiscal || null));
     this.mostrarDialogoEdicionAdministrador = true;
 			// Cargar usuarios internos si hay condominio y es interno

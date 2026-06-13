@@ -248,6 +248,10 @@
 				<label class="hoose-form-label">Domicilio Fiscal</label>
 				<textarea pInputTextarea formControlName="domicilio_fiscal" rows="2" class="w-100 uppercase" placeholder="Domicilio fiscal de la empresa"></textarea>
 			</div>
+			<div class="hoose-form-field mt-2">
+				<label class="hoose-form-label">Sitio Web</label>
+				<input pInputText formControlName="sitio_web" class="w-100 lowercase" placeholder="https://www.ejemplo.com" />
+			</div>
 			<div class="hoose-form-grid mt-2">
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Acta Constitutiva</label>
@@ -557,6 +561,7 @@
           <div class="col-6 mb-2"><small class="text-muted d-block">Razón Social</small><span class="text-white">{{ Administrador.razon_social || '-' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">RFC</small><span class="text-white">{{ Administrador.rfc || '-' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Domicilio Fiscal</small><span class="text-white">{{ Administrador.domicilio_fiscal || 'No registrado' }}</span></div>
+          <div class="col-6 mb-2" *ngIf="Administrador.sitio_web"><small class="text-muted d-block">Sitio Web</small><a [href]="Administrador.sitio_web.startsWith('http') ? Administrador.sitio_web : 'https://' + Administrador.sitio_web" target="_blank" style="color:#3b82f6;text-decoration:none"><i class="pi pi-external-link me-1"></i>{{ Administrador.sitio_web }}</a></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Inicio de Mandato</small><span class="text-white">{{ Administrador.fecha_inicio_mandato ? (Administrador.fecha_inicio_mandato | date:'MMMM dd, yyyy' | uppercase) : 'No definido' }}</span></div>
           <div class="col-6"><small class="text-muted d-block">Fin de Mandato</small><span class="text-white">{{ Administrador.fecha_fin_mandato ? (Administrador.fecha_fin_mandato | date:'MMMM dd, yyyy' | uppercase) : 'No definido' }}</span></div>
         </div>
