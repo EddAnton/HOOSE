@@ -135,7 +135,7 @@
 						class="p-button-rounded p-button-text p-button-success me-1"
 						pTooltip="Editar información de la Unidad"
 						tooltipPosition="left"
-						(click)="onUnidadEditar(Unidad)"
+						(click)="$event.stopPropagation(); onUnidadEditar(Unidad)"
 					></button>
 					<!-- Botón Deshabilitar -->
 					<!-- <button
@@ -148,7 +148,7 @@
 						tooltipPosition="left"
 						(click)="onUnidadDeshabilitar(Unidad)"
 					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="onUnidadEliminar(Unidad)"></button>
+<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onUnidadEliminar(Unidad)"></button>
  -->
 				</td>
 			</tr>

@@ -92,7 +92,7 @@
 							value="{{ Edificio.estatus == 1 ? 'A' : 'Ina' }}ctivo"
 							pTooltip="{{ Edificio.estatus == 1 ? 'Desh' : 'H' }}abilitar edificio"
 							tooltipPosition="left"
-							(click)="onEdificioAlternarEstatus(Edificio)"
+							(click)="$event.stopPropagation(); onEdificioAlternarEstatus(Edificio)"
 						></p-tag>
 					</span>
 				</td>
@@ -105,7 +105,7 @@
 						class="p-button-rounded p-button-text p-button-success me-1"
 						pTooltip="Editar edificio"
 						tooltipPosition="left"
-						(click)="onEdificioEditar(Edificio.id_edificio)"
+						(click)="$event.stopPropagation(); onEdificioEditar(Edificio.id_edificio)"
 					></button>
 					<!-- Botón Deshabilitar -->
 					<!-- <button
@@ -117,7 +117,7 @@
 						tooltipPosition="left"
 						(click)="onEdificioDeshabilitar(Edificio)"
 					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="onEdificioEliminar(Edificio)"></button>
+<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onEdificioEliminar(Edificio)"></button>
  -->
 				</td>
 			</tr>

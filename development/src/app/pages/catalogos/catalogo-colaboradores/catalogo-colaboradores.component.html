@@ -141,7 +141,7 @@
 						class="p-button-rounded p-button-text p-button-success me-1"
 						pTooltip="Editar colaborador"
 						tooltipPosition="left"
-						(click)="onColaboradorEditar(Colaborador.id_usuario)"
+						(click)="$event.stopPropagation(); onColaboradorEditar(Colaborador.id_usuario)"
 					></button>
 					<!-- Botón Salarios -->
 					<button
@@ -186,7 +186,7 @@
 						tooltipPosition="left"
 						(click)="onColaboradorDeshabilitar(Colaborador)"
 					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="onColaboradorEliminar(Colaborador)"></button>
+<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onColaboradorEliminar(Colaborador)"></button>
  -->
 				</td>
 			</tr>

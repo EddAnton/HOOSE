@@ -80,7 +80,7 @@
           <!-- Botón Editar -->
           <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.estatus == 1" icon="pi pi-pencil"
             class="p-button-rounded p-button-text p-button-success me-1" pTooltip="Editar condómino"
-            tooltipPosition="left" (click)="onCondominoEditar(Condomino)"></button>
+            tooltipPosition="left" (click)="$event.stopPropagation(); onCondominoEditar(Condomino)"></button>
           <!-- Botón Detalles -->
           <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-warning me-1"
             pTooltip="Detalles del condómino" tooltipPosition="left"
@@ -94,7 +94,7 @@
             icon="pi pi-lock" class="p-button-rounded p-button-text p-button-danger me-1"
             pTooltip="Reiniciar contraseña" tooltipPosition="left"
             (click)="onReiniciarContrasenia(Condomino.id_usuario)"></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="onCondominoEliminar(Condomino)"></button>
+<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onCondominoEliminar(Condomino)"></button>
 
         </td>
       </tr>

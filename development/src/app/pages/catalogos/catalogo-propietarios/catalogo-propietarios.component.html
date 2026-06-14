@@ -137,7 +137,7 @@
 						class="p-button-rounded p-button-text p-button-success me-1"
 						pTooltip="Editar propietario"
 						tooltipPosition="left"
-						(click)="onPropietarioEditar(Propietario.id_usuario)"
+						(click)="$event.stopPropagation(); onPropietarioEditar(Propietario.id_usuario)"
 					></button>
 					<!-- Botón Detalles -->
 					<button
@@ -149,7 +149,7 @@
 						tooltipPosition="left"
 						(click)="onPropietarioDetalles(Propietario.id_usuario)"
 					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="onPropietarioEliminar(Propietario)"></button>
+<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onPropietarioEliminar(Propietario)"></button>
 
 				</td>
 			</tr>

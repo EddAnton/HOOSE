@@ -131,7 +131,7 @@
 							value="{{ Administrador.estatus == 1 ? 'A' : 'Ina' }}ctivo"
 							pTooltip="{{ Administrador.estatus == 1 ? 'Desh' : 'H' }}abilitar administrador"
 							tooltipPosition="left"
-							(click)="onAdministradorAlternarEstatus(Administrador)"
+							(click)="$event.stopPropagation(); onAdministradorAlternarEstatus(Administrador)"
 						></p-tag>
 					</span>
 				</td>
@@ -144,7 +144,7 @@
 						icon="pi pi-pencil"
 						class="p-button-rounded p-button-text p-button-success me-1"
 						pTooltip="Editar administrador"
-						(click)="onAdministradorEditar(Administrador.id_usuario)"
+						(click)="$event.stopPropagation(); onAdministradorEditar(Administrador.id_usuario)"
 					></button>
 					<!-- Botón Desvincular (solo si tiene condominio) -->
 					<button pButton type="button"
@@ -152,7 +152,7 @@
 						class="p-button-rounded p-button-text p-button-warning me-1"
 						pTooltip="Desvincular condominio" tooltipPosition="left"
 						*ngIf="Administrador.fk_id_condominio"
-						(click)="onAdministradorDesvincular(Administrador)"
+						(click)="$event.stopPropagation(); onAdministradorDesvincular(Administrador)"
 					></button>
 					<!-- Botón Eliminar (solo si NO tiene condominio) -->
 					<button pButton type="button"
@@ -160,7 +160,7 @@
 						class="p-button-rounded p-button-text p-button-danger me-1"
 						pTooltip="Eliminar administrador" tooltipPosition="left"
 						*ngIf="!Administrador.fk_id_condominio"
-						(click)="onAdministradorEliminar(Administrador)"
+						(click)="$event.stopPropagation(); onAdministradorEliminar(Administrador)"
 					></button>
 					<!-- Botón Detalles -->
 					<button pButton type="button"
