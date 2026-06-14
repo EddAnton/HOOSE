@@ -106,13 +106,7 @@
               <span class="cond-data-value">{{ CondominioSeleccionado.email }}</span>
             </div>
           </div>
-          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono">
-            <i class="pi pi-phone cond-data-icon"></i>
-            <div>
-              <span class="cond-data-label">Teléfono</span>
-              <span class="cond-data-value">{{ CondominioSeleccionado.telefono }}</span>
-            </div>
-          </div>
+          
           <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_caseta">
             <i class="pi pi-shield cond-data-icon"></i>
             <div>
@@ -294,10 +288,7 @@
         <label class="frm-label">Email</label>
         <input pInputText formControlName="email" class="w-100" placeholder="correo@ejemplo.com"/>
       </div>
-      <div class="col-6">
-        <label class="frm-label">Teléfono</label>
-        <p-inputMask formControlName="telefono" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
-      </div>
+
       <div class="col-6">
         <label class="frm-label">Año Construcción</label>
         <input pInputText formControlName="anio_construccion" class="w-100" placeholder="2000" maxlength="4"/>
@@ -314,19 +305,7 @@
         <p-inputMask formControlName="telefono_caseta" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
       </div>
 
-      <!-- Ubicación -->
-      <div class="col-12"><div class="cond-form-section-title">Ubicación en Mapa</div></div>
-      <div class="col-12">
-        <small class="text-muted d-block mb-2">Busca la dirección en Google Maps, haz clic derecho en el pin y copia las coordenadas.</small>
-      </div>
-      <div class="col-6">
-        <label class="frm-label">Latitud</label>
-        <input pInputText formControlName="latitud" class="w-100" placeholder="Ej: 19.4326" type="number" step="any"/>
-      </div>
-      <div class="col-6">
-        <label class="frm-label">Longitud</label>
-        <input pInputText formControlName="longitud" class="w-100" placeholder="Ej: -99.1332" type="number" step="any"/>
-      </div>
+
 
       <!-- Constructora -->
       <div class="col-12"><div class="cond-form-section-title">Constructora</div></div>
@@ -348,7 +327,7 @@
       <div class="col-6">
         <label class="frm-label">Acta Constitutiva</label>
         <div class="cond-file-input">
-          <label class="cond-btn-file">
+          <label class="cond-btn-file" for="fileActa">
             <i class="pi pi-upload"></i>
             {{ frmCondominio.get('archivo_acta_constitutiva').value?.name || (CondominioSeleccionado?.archivo_acta_constitutiva ? 'Reemplazar' : 'Seleccionar') }}
           </label>
@@ -359,7 +338,7 @@
       <div class="col-6">
         <label class="frm-label">Reglamento Interno</label>
         <div class="cond-file-input">
-          <label class="cond-btn-file">
+          <label class="cond-btn-file" for="fileReglamento">
             <i class="pi pi-upload"></i>
             {{ frmCondominio.get('archivo_reglamento_interno').value?.name || (CondominioSeleccionado?.archivo_reglamento_interno ? 'Reemplazar' : 'Seleccionar') }}
           </label>
@@ -370,7 +349,7 @@
       <div class="col-6">
         <label class="frm-label">Póliza de Seguro</label>
         <div class="cond-file-input">
-          <label class="cond-btn-file">
+          <label class="cond-btn-file" for="filePoliza">
             <i class="pi pi-upload"></i>
             {{ frmCondominio.get('archivo_poliza_seguro').value?.name || (CondominioSeleccionado?.archivo_poliza_seguro ? 'Reemplazar' : 'Seleccionar') }}
           </label>
@@ -381,7 +360,7 @@
       <div class="col-6">
         <label class="frm-label">Planos</label>
         <div class="cond-file-input">
-          <label class="cond-btn-file">
+          <label class="cond-btn-file" for="filePlanos">
             <i class="pi pi-upload"></i>
             {{ frmCondominio.get('archivo_planos').value?.name || (CondominioSeleccionado?.archivo_planos ? 'Reemplazar' : 'Seleccionar') }}
           </label>
