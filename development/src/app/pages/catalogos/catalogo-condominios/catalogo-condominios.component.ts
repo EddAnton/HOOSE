@@ -35,11 +35,7 @@ export class CatalogoCondominiosComponent implements OnInit {
     { label: 'Industrial',       value: 'INDUSTRIAL' },
   ];
 
-  tiposAdministracion = [
-    { label: 'Administrador Único',       value: 'ADMINISTRADOR ÚNICO' },
-    { label: 'Comité de Administración',  value: 'COMITÉ DE ADMINISTRACIÓN' },
-    { label: 'Administrador Externo',     value: 'ADMINISTRADOR EXTERNO' },
-  ];
+  // tiposAdministracion removido - se define desde Administradores
 
   ModulosEditorReglamento = {
     imageResize: {
@@ -155,11 +151,9 @@ export class CatalogoCondominiosComponent implements OnInit {
       domicilio:              [condominio.domicilio, [Validators.required, Validators.maxLength(255)]],
       tipo:                   [condominio.tipo],
       metros_cuadrados:       [condominio.metros_cuadrados],
-      tipo_administracion:    [condominio.tipo_administracion],
       anio_construccion:      [condominio.anio_construccion, [Validators.pattern('^[0-9]{4}$')]],
-      telefono_guardia:       [condominio.telefono_guardia],
-      telefono_secretaria:    [condominio.telefono_secretaria],
-      telefono_moderador:     [condominio.telefono_moderador],
+      telefono_caseta:        [condominio.telefono_caseta],
+      telefono_administracion: [condominio.telefono_administracion],
       constructora:           [condominio.constructora],
       constructora_telefono:  [condominio.constructora_telefono],
       constructora_domicilio: [condominio.constructora_domicilio],

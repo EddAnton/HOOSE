@@ -127,6 +127,13 @@
               <span class="cond-data-value">{{ CondominioSeleccionado.telefono_administracion }}</span>
             </div>
           </div>
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_caseta">
+            <i class="pi pi-shield cond-data-icon"></i>
+            <div>
+              <span class="cond-data-label">Tel. Caseta</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_caseta }}</span>
+            </div>
+          </div>
           
         </div>
       </div>
@@ -282,7 +289,7 @@
       </div>
       <div class="col-6">
         <label class="frm-label">Tipo</label>
-        <p-dropdown formControlName="tipo" [options]="tiposCondominio"
+        <p-dropdown formControlName="tipo" [options]="tiposCondominio" optionValue="value"
           placeholder="Selecciona" styleClass="w-100" [showClear]="true">
         </p-dropdown>
       </div>
@@ -302,12 +309,7 @@
         <label class="frm-label">Año Construcción</label>
         <input pInputText formControlName="anio_construccion" class="w-100" placeholder="2000" maxlength="4"/>
       </div>
-      <div class="col-6">
-        <label class="frm-label">Tipo Administración</label>
-        <p-dropdown formControlName="tipo_administracion" [options]="tiposAdministracion"
-          placeholder="Selecciona" styleClass="w-100" [showClear]="true">
-        </p-dropdown>
-      </div>
+
 
       <!-- Teléfonos adicionales -->
       <div class="col-6">
@@ -320,14 +322,17 @@
       </div>
 
       <!-- Ubicación -->
-      <div class="col-12"><div class="cond-form-section-title">Ubicación</div></div>
+      <div class="col-12"><div class="cond-form-section-title">Ubicación en Mapa</div></div>
+      <div class="col-12">
+        <small class="text-muted d-block mb-2">Busca la dirección en Google Maps, haz clic derecho en el pin y copia las coordenadas.</small>
+      </div>
       <div class="col-6">
         <label class="frm-label">Latitud</label>
-        <input pInputText formControlName="latitud" class="w-100" placeholder="19.4326" type="number" step="any"/>
+        <input pInputText formControlName="latitud" class="w-100" placeholder="Ej: 19.4326" type="number" step="any"/>
       </div>
       <div class="col-6">
         <label class="frm-label">Longitud</label>
-        <input pInputText formControlName="longitud" class="w-100" placeholder="-99.1332" type="number" step="any"/>
+        <input pInputText formControlName="longitud" class="w-100" placeholder="Ej: -99.1332" type="number" step="any"/>
       </div>
 
       <!-- Constructora -->
