@@ -113,27 +113,21 @@
               <span class="cond-data-value">{{ CondominioSeleccionado.telefono }}</span>
             </div>
           </div>
-          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_guardia">
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_caseta">
             <i class="pi pi-shield cond-data-icon"></i>
             <div>
-              <span class="cond-data-label">Tel. Guardia</span>
-              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_guardia }}</span>
+              <span class="cond-data-label">Tel. Caseta</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_caseta }}</span>
             </div>
           </div>
-          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_secretaria">
+          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_administracion">
             <i class="pi pi-phone cond-data-icon"></i>
             <div>
-              <span class="cond-data-label">Tel. Secretaria</span>
-              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_secretaria }}</span>
+              <span class="cond-data-label">Tel. Administración</span>
+              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_administracion }}</span>
             </div>
           </div>
-          <div class="cond-data-item" *ngIf="CondominioSeleccionado.telefono_moderador">
-            <i class="pi pi-phone cond-data-icon"></i>
-            <div>
-              <span class="cond-data-label">Tel. Moderador</span>
-              <span class="cond-data-value">{{ CondominioSeleccionado.telefono_moderador }}</span>
-            </div>
-          </div>
+          
         </div>
       </div>
 
@@ -316,17 +310,24 @@
       </div>
 
       <!-- Teléfonos adicionales -->
-      <div class="col-4">
-        <label class="frm-label">Tel. Guardia</label>
-        <p-inputMask formControlName="telefono_guardia" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
+      <div class="col-6">
+        <label class="frm-label">Tel. Administración</label>
+        <p-inputMask formControlName="telefono_administracion" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
       </div>
-      <div class="col-4">
-        <label class="frm-label">Tel. Secretaria</label>
-        <p-inputMask formControlName="telefono_secretaria" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
+      <div class="col-6">
+        <label class="frm-label">Tel. Caseta</label>
+        <p-inputMask formControlName="telefono_caseta" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
       </div>
-      <div class="col-4">
-        <label class="frm-label">Tel. Moderador</label>
-        <p-inputMask formControlName="telefono_moderador" mask="(9999) 99-9999" styleClass="w-100"></p-inputMask>
+
+      <!-- Ubicación -->
+      <div class="col-12"><div class="cond-form-section-title">Ubicación</div></div>
+      <div class="col-6">
+        <label class="frm-label">Latitud</label>
+        <input pInputText formControlName="latitud" class="w-100" placeholder="19.4326" type="number" step="any"/>
+      </div>
+      <div class="col-6">
+        <label class="frm-label">Longitud</label>
+        <input pInputText formControlName="longitud" class="w-100" placeholder="-99.1332" type="number" step="any"/>
       </div>
 
       <!-- Constructora -->
