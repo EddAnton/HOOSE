@@ -231,7 +231,11 @@ export class CatalogoCondominiosComponent implements OnInit {
       if (el?.files?.length > 0) formData.append(campo, el.files[0]);
     });
 
-    hlpSwal.Pregunta({
+    // DEBUG
+const debugData: any = {};
+formData.forEach((v, k) => debugData[k] = v instanceof File ? v.name : v);
+console.log('GUARDAR CONDO:', JSON.stringify(debugData));
+hlpSwal.Pregunta({
       html: '¿Deseas guardar la información?',
       showLoaderOnConfirm: true,
       preConfirm: async () => {
