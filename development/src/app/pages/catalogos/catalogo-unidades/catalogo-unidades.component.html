@@ -378,6 +378,18 @@
         </div>
       </div>
 
+      <!-- Información Adicional -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="UnidadDetalle?.porcentaje_indiviso || UnidadDetalle?.metros_cuadrados || UnidadDetalle?.cuota_mantenimiento || UnidadDetalle?.estacionamiento || UnidadDetalle?.bodega">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(245,158,11,0.15)"><i class="pi pi-list" style="color:#f59e0b"></i></div><h6 class="text-white mb-0">Información Adicional</h6></div>
+        <div class="row">
+          <div class="col-4 mb-2" *ngIf="UnidadDetalle?.porcentaje_indiviso"><small class="text-muted d-block">% Indiviso</small><span class="text-white">{{ UnidadDetalle.porcentaje_indiviso }}%</span></div>
+          <div class="col-4 mb-2" *ngIf="UnidadDetalle?.metros_cuadrados"><small class="text-muted d-block">Superficie</small><span class="text-white">{{ UnidadDetalle.metros_cuadrados }} m²</span></div>
+          <div class="col-4 mb-2" *ngIf="UnidadDetalle?.cuota_mantenimiento"><small class="text-muted d-block">Cuota Mtto.</small><span class="text-white">$ {{ UnidadDetalle.cuota_mantenimiento | number:'1.2-2' }}</span></div>
+          <div class="col-4 mb-2" *ngIf="UnidadDetalle?.estacionamiento"><small class="text-muted d-block">Estacionamiento</small><span class="text-white">{{ UnidadDetalle.estacionamiento }}</span></div>
+          <div class="col-4 mb-2" *ngIf="UnidadDetalle?.bodega"><small class="text-muted d-block">Bodega</small><span class="text-white">{{ UnidadDetalle.bodega }}</span></div>
+        </div>
+      </div>
+
       <!-- Propietario -->
       <div class="hoose-detalle-card p-3 mb-3">
         <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Propietario</h6></div>
@@ -390,10 +402,13 @@
         <span class="text-white" style="font-size:1rem">{{ UnidadDetalle?.condomino_nombre }}</span>
       </div>
 
-      <!-- Escrituras -->
-      <div class="hoose-detalle-card p-3" *ngIf="UnidadDetalle?.escrituras_archivo">
-        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(239,68,68,0.15)"><i class="pi pi-file-pdf" style="color:#ef4444"></i></div><h6 class="text-white mb-0">Escrituras</h6></div>
-        <a style="color:#ef4444;text-decoration:none;cursor:pointer;font-size:0.9rem" (click)="onUnidadEscriturasMostrar(UnidadDetalle)"><i class="pi pi-file-pdf me-1"></i>Ver escrituras</a>
+      <!-- Legal -->
+      <div class="hoose-detalle-card p-3" *ngIf="UnidadDetalle?.escrituras_archivo || UnidadDetalle?.plano_archivo">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(239,68,68,0.15)"><i class="pi pi-file" style="color:#ef4444"></i></div><h6 class="text-white mb-0">Documentos Legales</h6></div>
+        <div class="d-flex gap-3">
+          <a *ngIf="UnidadDetalle?.escrituras_archivo" style="color:#3b82f6;text-decoration:none;cursor:pointer;font-size:0.85rem" (click)="onUnidadEscriturasMostrar(UnidadDetalle)"><i class="pi pi-file-pdf me-1"></i>Escrituras</a>
+          <a *ngIf="UnidadDetalle?.plano_archivo" style="color:#3b82f6;text-decoration:none;cursor:pointer;font-size:0.85rem" (click)="onUnidadPlanoMostrar(UnidadDetalle)"><i class="pi pi-image me-1"></i>Plano de Distribución</a>
+        </div>
       </div>
     </div>
   </div>
