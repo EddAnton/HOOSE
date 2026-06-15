@@ -260,10 +260,12 @@
 							<i class="pi pi-file-pdf text-danger" style="font-size:3rem;cursor:pointer" (click)="onUnidadEscriturasMostrar()"></i>
 						</div>
 						<input type="file" class="form-control form-control-sm" accept=".pdf" (change)="onEscriturasSeleccionadas($event)" />
+<small *ngIf="Unidad?.escrituras_archivo" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Unidad.escrituras_archivo }}</small>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Plano de Distribución</label>
 						<input type="file" class="form-control form-control-sm" accept=".pdf,.png,.jpg,.jpeg" (change)="onPlanoSeleccionado($event)" />
+<small *ngIf="Unidad?.plano_archivo" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Unidad.plano_archivo }}</small>
 					</div>
 				</div>
 			</div>

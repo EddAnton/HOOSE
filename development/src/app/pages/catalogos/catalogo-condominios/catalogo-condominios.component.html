@@ -333,7 +333,9 @@
           </label>
           <input type="file" class="d-none" accept=".pdf"
             id="fileActa" (change)="onArchivoSeleccionado($event, 'archivo_acta_constitutiva')"/>
-        </div>
+        
+<small *ngIf="CondominioSeleccionado?.archivo_acta_constitutiva" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ CondominioSeleccionado.archivo_acta_constitutiva }}</small>
+</div>
       </div>
       <div class="col-6">
         <label class="frm-label">Reglamento Interno</label>
@@ -344,7 +346,9 @@
           </label>
           <input type="file" class="d-none" accept=".pdf"
             id="fileReglamento" (change)="onArchivoSeleccionado($event, 'archivo_reglamento_interno')"/>
-        </div>
+        
+<small *ngIf="CondominioSeleccionado?.archivo_reglamento_interno" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ CondominioSeleccionado.archivo_reglamento_interno }}</small>
+</div>
       </div>
       <div class="col-6">
         <label class="frm-label">Póliza de Seguro</label>
@@ -355,7 +359,9 @@
           </label>
           <input type="file" class="d-none" accept=".pdf"
             id="filePoliza" (change)="onArchivoSeleccionado($event, 'archivo_poliza_seguro')"/>
-        </div>
+        
+<small *ngIf="CondominioSeleccionado?.archivo_poliza_seguro" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ CondominioSeleccionado.archivo_poliza_seguro }}</small>
+</div>
       </div>
       <div class="col-6">
         <label class="frm-label">Planos</label>
@@ -366,7 +372,9 @@
           </label>
           <input type="file" class="d-none" accept=".pdf,.dwg,.dxf"
             id="filePlanos" (change)="onArchivoSeleccionado($event, 'archivo_planos')"/>
-        </div>
+        
+<small *ngIf="CondominioSeleccionado?.archivo_planos" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ CondominioSeleccionado.archivo_planos }}</small>
+</div>
       </div>
 
     </div>
