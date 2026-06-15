@@ -161,7 +161,8 @@ export class CatalogoUnidadesComponent implements OnInit {
 		let file: any;
 		file = event.target.files[0];
 
-		this.frmUnidad.patchValue({ archivo_escrituras: file });
+		if (!this.frmUnidad.get("archivo_escrituras")) this.frmUnidad.addControl("archivo_escrituras", new FormControl(null));
+this.frmUnidad.patchValue({ archivo_escrituras: file });
 		this.frmUnidad.get('archivo_escrituras').updateValueAndValidity();
 
 		let reader = new FileReader();
@@ -308,7 +309,8 @@ export class CatalogoUnidadesComponent implements OnInit {
 	onPlanoSeleccionado(event: any) {
 		if (event.target.files.length !== 1) return;
 		const file = event.target.files[0];
-		this.frmUnidad.patchValue({ archivo_plano: file });
+		if (!this.frmUnidad.get("archivo_plano")) this.frmUnidad.addControl("archivo_plano", new FormControl(null));
+this.frmUnidad.patchValue({ archivo_plano: file });
 		this.frmUnidad.get('archivo_plano').updateValueAndValidity();
 	}
 
