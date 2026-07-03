@@ -612,7 +612,7 @@ label { color: #8a8f9e !important; }
 .p-paginator .p-paginator-page.p-highlight { background: #e91e8c !important; color: #fff !important; }
 
 /* PrimeNG Dialog global */
-.p-dialog { background: #1a1d24 !important; border-color: rgba(255,255,255,0.07) !important; }
+.p-dialog { border-color: rgba(255,255,255,0.07) !important; }
 .p-dialog .p-dialog-header { background: #181b22 !important; color: #f0f0f0 !important; border-color: rgba(255,255,255,0.07) !important; }
 .p-dialog .p-dialog-content { background: #1a1d24 !important; color: #f0f0f0 !important; }
 .p-dialog .p-dialog-footer { background: #181b22 !important; border-color: rgba(255,255,255,0.07) !important; }

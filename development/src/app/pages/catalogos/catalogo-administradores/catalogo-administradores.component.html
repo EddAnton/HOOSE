@@ -410,6 +410,7 @@
     </div>
     <div class="d-flex align-items-center gap-2">
       <button *ngIf="!Administrador.id_administrador_interno" pButton type="button" icon="pi pi-pencil" label="Editar" class="p-button-outlined p-button-sm" style="color:#ccc;border-color:#444" (click)="mostrarDialogoDetallesAdministrador=false; onAdministradorEditar(Administrador.id_usuario)"></button>
+      <button *ngIf="esSuperAdmin && (!Administrador.fk_id_condominio || Administrador.fk_id_condominio == 0)" pButton type="button" icon="pi pi-trash" label="Eliminar" class="p-button-outlined p-button-sm ms-2" style="color:#ef4444;border-color:#ef4444" (click)="mostrarDialogoDetallesAdministrador=false; onAdministradorEliminar(Administrador)"></button>
       <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" style="color:#888" (click)="mostrarDialogoDetallesAdministrador=false"></button>
     </div>
   </div>

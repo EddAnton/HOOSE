@@ -95,6 +95,7 @@ export class CatalogoAdministradoresComponent implements OnInit {
   editandoCondominio: boolean = false;
   condominioSeleccionadoDetalle: number = null;
   condominioDelHeader: number = 0;
+esSuperAdmin: boolean = false;
   miembroDetalle: any = null;
   mostrarDetalleMiembro: boolean = false;
   srcImagenMiembro: string = null;
@@ -115,7 +116,10 @@ export class CatalogoAdministradoresComponent implements OnInit {
     private router: Router,
     private propietariosService: UsuariosPropietariosService,
     private condominosService: UsuariosCondominosService,
-	) {}
+	)
+{
+this.esSuperAdmin = +this.sesionUsuarioService.obtenerIDPerfilUsuario() === 1;
+}
 
 	ngOnInit(): void {
 		this.frmAdministrador = this.formBuilder.group({
@@ -318,6 +322,7 @@ console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any
 			this.tipoAcceso = this.Administrador['tipo_administrador'] || 'EXTERNO';
 			this.tipoPersona = this.Administrador['tipo_persona'] || 'FISICA';
 			this.condominioDelHeader = this.sesionUsuarioService.obtenerIDCondominioUsuario() || 0;
+this.esSuperAdmin = +this.sesionUsuarioService.obtenerIDPerfilUsuario() === 1;
     this.MiembrosComite = [];
 this.archivosPersonaMoral = {};
 			this.UsuariosInternos = [];
@@ -688,6 +693,7 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
     // Usar datos de la tabla directamente (ya tiene todos los campos)
     const admin = this.Administradores.find((a: any) => a.id_usuario == idUsuario);
     if (!admin) { hlpSwal.Error('Administrador no encontrado.'); return; }
+    console.log("ADMIN fk_id_condominio:", admin["fk_id_condominio"], typeof admin["fk_id_condominio"]);
     this.Administrador = admin as any;
     this.srcImagen = admin.imagen
       ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + admin.imagen
