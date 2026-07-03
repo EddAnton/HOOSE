@@ -76,7 +76,24 @@ export class CatalogoCondominosComponent implements OnInit {
   bIdentificacionReversoBorrar: boolean = false;
   bContratoBorrar: boolean = false;
   permitirAgregarEditar: boolean = false;
+  filtroCondominio: number = null;
+  filtroEstatus: number = null;
+
+  get CondominosFiltrados() {
+    return this.Condominos.filter((c: any) => {
+      if (this.filtroCondominio) {
+        const cond = this.condominiosLista.find((cl: any) => cl.value === this.filtroCondominio);
+        if (cond && c.condominio_nombre !== cond.label) return false;
+      }
+      if (this.filtroEstatus !== null && this.filtroEstatus !== undefined && +c.estatus !== this.filtroEstatus) return false;
+      return true;
+    });
+  }
+  get kpiActivos() { return this.Condominos.filter((c: any) => c.estatus == 1).length; }
+  get kpiInactivos() { return this.Condominos.filter((c: any) => c.estatus != 1).length; }
+  limpiarFiltros() { this.filtroCondominio = null; this.filtroEstatus = null; }
 	esSuperAdminSinCondominio: boolean = false;
+esSuperAdmin: boolean = false;
 	condominiosLista: any[] = [];
   esUsuarioAdministrador: boolean = false;
 
@@ -105,6 +122,7 @@ export class CatalogoCondominosComponent implements OnInit {
 		const perfil = this.sesionUsuarioService.obtenerIDPerfilUsuario();
 		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
 		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+this.esSuperAdmin = perfil === 1;
 		if (this.esSuperAdminSinCondominio) {
 			this.condominiosService.Listar(true).toPromise().then((r: any) => {
 				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));

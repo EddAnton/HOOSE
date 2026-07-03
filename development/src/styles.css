@@ -525,7 +525,7 @@ body { background: #111318 !important; color: #f0f0f0 !important; }
 
 /* Navbar */
 nav.navbar {
-  background: #181b22 !important;
+  background: #0a0c12 !important;
   border-bottom: 1px solid rgba(255,255,255,0.07) !important;
   color: #f0f0f0 !important;
 }
@@ -814,8 +814,8 @@ label { color: #8a8f9e !important; }
 
 /* Inputs globales en diálogos */
 .hoose-dialogo .p-inputtext {
-  background: #0e1016 !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
+  background: #12121f !important;
+  border: 1px solid #8a8f9e !important;
   border-radius: 8px !important;
   color: #f0f0f0 !important;
   font-size: 0.88rem !important;
@@ -827,7 +827,7 @@ label { color: #8a8f9e !important; }
   box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
 }
 .hoose-dialogo .p-dropdown {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: 8px !important;
   width: 100% !important;
@@ -837,7 +837,7 @@ label { color: #8a8f9e !important; }
   box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
 }
 .hoose-dialogo textarea.p-inputtextarea {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: 8px !important;
   color: #f0f0f0 !important;
@@ -857,11 +857,15 @@ label { color: #8a8f9e !important; }
 
 /* Secciones del formulario */
 .hoose-dialogo .hoose-form-section {
-  background: #1a1d24;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px;
-  padding: 16px 18px;
+  background: #ffffff08;
+  border: 1px solid #ffffff0f;
+  border-radius: 12px;
+  padding: 0;
   margin-bottom: 14px;
+  overflow: hidden;
+}
+.hoose-dialogo .hoose-form-section > *:not(.hoose-section-title) {
+  padding: 10px 18px;
 }
 .hoose-dialogo .hoose-form-label {
   font-size: 0.68rem !important;
@@ -953,7 +957,7 @@ label { color: #8a8f9e !important; }
 
 /* Input de filtro en caption */
 .p-datatable .p-datatable-caption .form-control {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: 8px !important;
   color: var(--hoose-text) !important;
@@ -1039,7 +1043,7 @@ app-login .p-inputtext {
 }
 .hoose-dialogo .p-dialog-content .p-inputnumber input,
 .hoose-dialogo .p-dialog-content .p-inputnumber-input {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: 8px !important;
   color: #f0f0f0 !important;
@@ -1052,7 +1056,7 @@ app-login .p-inputtext {
 .hoose-dialogo .p-dialog-content select,
 .hoose-dialogo .p-dialog-content .form-control,
 .hoose-dialogo .p-dialog-content .form-select {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: 8px !important;
   color: #f0f0f0 !important;
@@ -1073,7 +1077,7 @@ app-login .p-inputtext {
 .hoose-dialogo .p-dialog-content .form-control,
 .hoose-dialogo .p-dialog-content input[type="text"],
 .hoose-dialogo .p-dialog-content input[type="number"] {
-  background-color: #0e1016 !important;
+  background-color: #12121f !important;
   color: #f0f0f0 !important;
 }
 
@@ -1138,23 +1142,23 @@ app-login .p-inputtext {
   border-radius: 8px !important;
 }
 .hoose-dialogo .p-picklist-header {
-  background: #181b22 !important;
+  background: #12121f !important;
   color: #f0f0f0 !important;
   border-bottom: 1px solid rgba(255,255,255,0.07) !important;
   border-radius: 8px 8px 0 0 !important;
 }
 .hoose-dialogo .p-picklist-filter-container {
-  background: #181b22 !important;
+  background: #12121f !important;
   border-bottom: 1px solid rgba(255,255,255,0.07) !important;
 }
 .hoose-dialogo .p-picklist-filter-container .p-picklist-filter {
-  background: #0e1016 !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
+  background: #12121f !important;
+  border: 1px solid #8a8f9e !important;
   color: #f0f0f0 !important;
   border-radius: 8px !important;
 }
 .hoose-dialogo .p-picklist-list {
-  background: #1a1d24 !important;
+  background: #12121f !important;
   color: #f0f0f0 !important;
 }
 .hoose-dialogo .p-picklist-item {
@@ -1177,11 +1181,15 @@ app-login .p-inputtext {
 
 /* ── Secciones agrupadas en formularios ── */
 .hoose-dialogo .hoose-section {
-  background: #1a1d24;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px;
-  padding: 16px 18px 8px;
+  background: #ffffff08;
+  border: 1px solid #ffffff0f;
+  border-radius: 12px;
+  padding: 0;
   margin-bottom: 14px;
+  overflow: hidden;
+}
+.hoose-dialogo .hoose-section > *:not(.hoose-section-title) {
+  padding: 10px 18px;
 }
 .hoose-dialogo .hoose-section .row {
   background: transparent !important;
@@ -1196,8 +1204,8 @@ app-login .p-inputtext {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 12px;
-  padding-bottom: 6px;
+  margin-bottom: 0;
+  padding-bottom: 0;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
@@ -1238,14 +1246,14 @@ app-login .p-inputtext {
   color: #fff !important;
 }
 .hoose-dialogo .p-calendar .p-inputtext {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border-color: rgba(255,255,255,0.1) !important;
   color: #f0f0f0 !important;
 }
 
 /* ── InputNumber PrimeNG ── */
 .hoose-dialogo .p-inputnumber .p-inputtext {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border-color: rgba(255,255,255,0.1) !important;
   color: #f0f0f0 !important;
 }
@@ -1253,7 +1261,7 @@ app-login .p-inputtext {
 /* ── File inputs ── */
 .hoose-dialogo input[type="file"].form-control,
 .hoose-dialogo input[type="file"].form-control-sm {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border-color: rgba(255,255,255,0.1) !important;
   color: #8a8f9e !important;
 }
@@ -1271,7 +1279,7 @@ app-login .p-inputtext {
 /* ── PrimeNG Dropdown y MultiSelect en tema oscuro ── */
 .hoose-dialogo .p-dropdown,
 .hoose-dialogo .p-multiselect {
-  background: #0e1016 !important;
+  background: #12121f !important;
   border-color: rgba(255,255,255,0.1) !important;
   color: #f0f0f0 !important;
   width: 100% !important;
@@ -1301,7 +1309,7 @@ app-login .p-inputtext {
 }
 .hoose-dialogo .p-dropdown-panel .p-dropdown-filter,
 .hoose-dialogo .p-multiselect-panel .p-multiselect-filter-container .p-inputtext {
-  background: #0e1016 !important;
+  background: #12121f !important;
   color: #f0f0f0 !important;
   border-color: rgba(255,255,255,0.1) !important;
 }
@@ -1475,4 +1483,500 @@ app-catalogo-administradores {
   min-width: 100% !important;
   width: auto !important;
   table-layout: auto !important;
+}
+
+
+/* Header de sección con icono (complemento al hoose-form-section existente) */
+.hoose-form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.hoose-form-section-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.hoose-form-section-icon i { font-size: 0.82rem; }
+.hoose-form-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #e91e8c;
+  margin: 0;
+}
+
+/* File drop zone */
+.hoose-file-zone {
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed rgba(233,30,140,0.3);
+  border-radius: 10px;
+  padding: 18px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.hoose-file-zone:hover {
+  border-color: rgba(233,30,140,0.6);
+  background: rgba(233,30,140,0.03);
+}
+.hoose-file-zone input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+.hoose-file-zone-inner {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+  pointer-events: none;
+}
+.hoose-file-zone-inner i { font-size: 1.5rem; color: #e91e8c; opacity: 0.65; margin-bottom: 4px; }
+.hoose-file-zone-inner .fz-title { font-size: 0.78rem; color: #e91e8c; font-weight: 600; }
+.hoose-file-zone-inner .fz-or { font-size: 0.68rem; color: #555a6a; }
+.hoose-file-zone-inner .fz-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 6px;
+  background: rgba(233,30,140,0.1);
+  border: 1px solid rgba(233,30,140,0.25);
+  border-radius: 7px; padding: 5px 13px;
+  font-size: 0.72rem; color: #e91e8c; font-weight: 600;
+}
+.hoose-file-zone-inner .fz-formats { font-size: 0.64rem; color: #3a3f4a; margin-top: 5px; }
+
+/* Archivo cargado */
+.hoose-file-loaded {
+  display: flex; align-items: center; gap: 7px;
+  margin-top: 7px; padding: 6px 10px;
+  background: rgba(16,185,129,0.07);
+  border: 1px solid rgba(16,185,129,0.18);
+  border-radius: 8px;
+  font-size: 0.73rem; color: #10b981;
+}
+.hoose-file-loaded i { font-size: 0.82rem; }
+
+/* Inputs nativos en hoose-dialogo */
+.hoose-dialogo select.form-control,
+.hoose-dialogo select.form-select {
+  background: #12121f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 0.85rem !important;
+  transition: border-color 0.2s !important;
+}
+.hoose-dialogo select.form-control:focus,
+.hoose-dialogo select.form-select:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+  outline: none !important;
+}
+.hoose-dialogo input[type="number"] {
+  background: #12121f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 0.85rem !important;
+  transition: border-color 0.2s !important;
+}
+.hoose-dialogo input[type="number"]:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 2px rgba(233,30,140,0.15) !important;
+  outline: none !important;
+}
+.hoose-dialogo input[type="file"].form-control,
+.hoose-dialogo input[type="file"].form-control-sm {
+  background: #12121f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #8a8f9e !important;
+  font-size: 0.78rem !important;
+}
+
+/* ── Eliminar doble padding entre filas de sección ──────── */
+.hoose-dialogo .hoose-section .row + .row,
+.hoose-dialogo .hoose-form-section .row + .row {
+  padding-top: 0 !important;
+  margin-top: 10px !important;
+}
+
+/* ── Espaciado entre hoose-form-grid ────────────────────── */
+.hoose-dialogo .hoose-form-section > .hoose-form-grid,
+.hoose-dialogo .hoose-form-section > .hoose-form-grid.mt-2 {
+  padding: 0 18px !important;
+  margin-top: 0 !important;
+}
+.hoose-dialogo .hoose-form-section > .hoose-form-grid:first-of-type {
+  padding-top: 10px !important;
+}
+.hoose-dialogo .hoose-form-section > .hoose-form-grid:last-of-type {
+  padding-bottom: 10px !important;
+}
+.hoose-dialogo .hoose-form-section > .hoose-form-grid + .hoose-form-grid {
+  margin-top: 10px !important;
+}
+
+/* ── Formulario global todos los módulos ────────────────── */
+.hoose-dialogo .p-dialog-header {
+  background: #12121f !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+.hoose-dialogo .p-dialog-content {
+  background: #12121f !important;
+}
+.hoose-dialogo .p-dialog-footer {
+  background: #12121f !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+}
+.hoose-dialogo .hoose-form-section,
+.hoose-dialogo .hoose-section {
+  background: #ffffff08 !important;
+  border: 1px solid #ffffff0f !important;
+  border-radius: 12px !important;
+  margin-bottom: 14px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.hoose-dialogo .hoose-form-section:last-child,
+.hoose-dialogo .hoose-section:last-child { margin-bottom: 0 !important; }
+.hoose-dialogo .hoose-section-title,
+.hoose-dialogo .hoose-form-section .hoose-section-title {
+  background: #0a0c12 !important;
+  border-bottom: 1px solid #ffffff0f !important;
+  border-radius: 0 !important;
+  padding: 11px 18px !important;
+  margin: 0 !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  color: #c8cad4 !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+.hoose-dialogo .hoose-form-section > *:not(.hoose-section-title),
+.hoose-dialogo .hoose-section > *:not(.hoose-section-title) {
+  padding: 0 18px !important;
+}
+.hoose-dialogo .hoose-form-section > *:not(.hoose-section-title):first-of-type,
+.hoose-dialogo .hoose-section > *:not(.hoose-section-title):first-of-type {
+  padding-top: 10px !important;
+}
+.hoose-dialogo .hoose-form-section > *:not(.hoose-section-title):last-child,
+.hoose-dialogo .hoose-section > *:not(.hoose-section-title):last-child {
+  padding-bottom: 10px !important;
+}
+.hoose-dialogo .hoose-form-section > .hoose-form-grid + .hoose-form-grid,
+.hoose-dialogo .hoose-section > .row + .row {
+  margin-top: 10px !important;
+}
+
+/* ── Input file y listbox colores ───────────────────────── */
+.hoose-dialogo input[type="file"],
+.hoose-dialogo .form-control[type="file"],
+.hoose-dialogo .form-control-sm[type="file"] {
+  background-color: #12121f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #8a8f9e !important;
+  border-radius: 8px !important;
+}
+.hoose-dialogo .p-listbox {
+  background: #12121f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+}
+.hoose-dialogo .p-listbox .p-listbox-header {
+  background: #0a0c12 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  color: #f0f0f0 !important;
+}
+.hoose-dialogo .p-listbox .p-listbox-filter-container input {
+  background: #12121f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #f0f0f0 !important;
+  border-radius: 8px !important;
+}
+.hoose-dialogo .p-listbox .p-listbox-list {
+  background: #12121f !important;
+}
+.hoose-dialogo .p-listbox .p-listbox-item {
+  color: #f0f0f0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+.hoose-dialogo .p-listbox .p-listbox-item:hover {
+  background: rgba(233,30,140,0.08) !important;
+}
+.hoose-dialogo .p-listbox .p-listbox-item.p-highlight {
+  background: rgba(233,30,140,0.15) !important;
+  color: #e91e8c !important;
+}
+
+/* =====================================================
+   HOOSE TABLE — Sistema global de tablas
+   ===================================================== */
+.hoose-tabla-wrapper {
+  background: #12121f;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+.hoose-tabla-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #0a0c12;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hoose-tabla-toolbar-left { display: flex; align-items: center; gap: 10px; }
+.hoose-tabla-toolbar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.hoose-btn-nuevo {
+  background: #e91e8c !important;
+  border-color: #e91e8c !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  padding: 7px 16px !important;
+  box-shadow: 0 4px 14px rgba(233,30,140,0.3) !important;
+}
+.hoose-btn-nuevo:hover { background: #f72fa0 !important; box-shadow: 0 6px 18px rgba(233,30,140,0.45) !important; }
+.hoose-tabla-search {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 7px 12px;
+  gap: 8px;
+  min-width: 220px;
+}
+.hoose-tabla-search i { color: #555a6a; font-size: 0.82rem; }
+.hoose-tabla-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f0f0f0;
+  font-size: 0.83rem;
+  width: 100%;
+}
+.hoose-tabla-search input::placeholder { color: #3a3f4a; }
+.hoose-btn-clear {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #555a6a !important;
+  border-radius: 8px !important;
+  width: 34px !important;
+  height: 34px !important;
+}
+.hoose-btn-clear:hover { border-color: #ef4444 !important; color: #ef4444 !important; }
+.hoose-tabla-container { overflow-x: auto; width: 100%; }
+.hoose-table { width: 100%; border-collapse: collapse; }
+.hoose-th {
+  background: #0e1016 !important;
+  color: #6b7280 !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  white-space: nowrap;
+}
+.hoose-tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+  transition: background 0.15s !important;
+  cursor: pointer;
+}
+.hoose-tr:hover { background: rgba(255,255,255,0.03) !important; }
+.hoose-td {
+  padding: 10px 14px !important;
+  color: #d0d3db !important;
+  font-size: 0.83rem !important;
+  vertical-align: middle !important;
+  border: none !important;
+  white-space: nowrap;
+}
+.hoose-nombre { color: #f0f0f0 !important; font-weight: 600; }
+.hoose-num { color: #8a8f9e; font-size: 0.82rem; }
+.hoose-cond-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.hoose-tipo-pill {
+  display: inline-block;
+  background: rgba(59,130,246,0.12);
+  color: #3b82f6;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.hoose-estatus-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.hoose-estatus-pill.activo { background: rgba(16,185,129,0.12); color: #10b981; }
+.hoose-estatus-pill.inactivo { background: rgba(239,68,68,0.12); color: #ef4444; }
+.hoose-estatus-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.hoose-estatus-pill.activo .hoose-estatus-dot { background: #10b981; }
+.hoose-estatus-pill.inactivo .hoose-estatus-dot { background: #ef4444; }
+.hoose-btn-accion {
+  background: rgba(255,255,255,0.06) !important;
+  border: none !important;
+  color: #9aa3b8 !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
+  padding: 0 !important;
+  font-size: 0.82rem !important;
+  margin: 0 2px !important;
+}
+.hoose-btn-accion:hover { background: rgba(255,255,255,0.06) !important; color: #f0f0f0 !important; border: 1px solid rgba(255,255,255,0.15) !important; }
+.hoose-tr:hover .hoose-btn-accion { border: 1px solid rgba(255,255,255,0.12) !important; }
+.hoose-empty { text-align: center; padding: 40px !important; color: #555a6a !important; font-size: 0.85rem !important; }
+
+/* Paginador */
+.hoose-table .p-paginator { background: #0a0c12 !important; border-top: 1px solid rgba(255,255,255,0.06) !important; padding: 8px 16px !important; }
+.hoose-table .p-paginator .p-paginator-current { color: #6b7280 !important; font-size: 0.78rem !important; }
+.hoose-table .p-paginator .p-paginator-page { color: #8a8f9e !important; border-radius: 6px !important; min-width: 30px !important; height: 30px !important; }
+.hoose-table .p-paginator .p-paginator-page.p-highlight { background: #e91e8c !important; color: #fff !important; }
+.hoose-table .p-paginator .p-paginator-prev, .hoose-table .p-paginator .p-paginator-next,
+.hoose-table .p-paginator .p-paginator-first, .hoose-table .p-paginator .p-paginator-last { color: #555a6a !important; }
+
+@media (max-width: 768px) {
+  .hoose-th { display: none !important; }
+  .hoose-td { display: block !important; padding: 6px 14px !important; font-size: 0.88rem !important; white-space: normal !important; }
+  .hoose-tr { display: block !important; padding: 10px 0 !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+}
+
+/* ── HOOSE KPI Bar ───────────────────────────────────────── */
+.hoose-kpi-bar {
+  display: flex;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #0a0c12;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+}
+.hoose-kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left: 3px solid #e91e8c;
+  border-radius: 10px;
+  padding: 10px 16px;
+  min-width: 200px;
+}
+.hoose-kpi-pink { border-left-color: #e91e8c; }
+.hoose-kpi-blue { border-left-color: #3b82f6; }
+.hoose-kpi-green { border-left-color: #10b981; }
+.hoose-kpi-amber { border-left-color: #f59e0b; }
+.hoose-kpi-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.hoose-kpi-pink .hoose-kpi-icon { background: rgba(233,30,140,0.12); color: #e91e8c; }
+.hoose-kpi-blue .hoose-kpi-icon { background: rgba(59,130,246,0.12); color: #3b82f6; }
+.hoose-kpi-green .hoose-kpi-icon { background: rgba(16,185,129,0.12); color: #10b981; }
+.hoose-kpi-amber .hoose-kpi-icon { background: rgba(245,158,11,0.12); color: #f59e0b; }
+.hoose-kpi-body { display: flex; flex-direction: column; gap: 1px; }
+.hoose-kpi-label { font-size: 0.67rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.hoose-kpi-value { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; line-height: 1.2; }
+.hoose-kpi-sub { font-size: 0.7rem; color: #6b7280; }
+.hoose-kpi-sub b { color: #c0c4d0; }
+
+/* ── Filtro select en toolbar ────────────────────────────── */
+.hoose-filtro-select {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 0.78rem !important;
+  padding: 6px 12px !important;
+  cursor: pointer;
+  outline: none;
+  min-width: 110px;
+}
+.hoose-filtro-select:focus { border-color: #e91e8c !important; }
+.hoose-filtro-select option { background: #12121f; color: #f0f0f0; }
+
+/* ── KPI inline en toolbar ───────────────────────────────── */
+.hoose-kpi-inline {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left: 3px solid #e91e8c;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+.hoose-kpi-inline.hoose-kpi-pink { border-left-color: #e91e8c; }
+.hoose-kpi-inline.hoose-kpi-pink i { color: #e91e8c; font-size: 1rem; }
+.hoose-kpi-inline > div { display: flex; flex-direction: column; gap: 1px; }
+.hoose-kpi-inline-val { font-size: 1.1rem; font-weight: 700; color: #f0f0f0; line-height: 1; }
+.hoose-kpi-inline-sub { font-size: 0.65rem; color: #6b7280; }
+.hoose-kpi-inline-sub b { color: #c0c4d0; }
+
+/* ── Toolbar layout fix ──────────────────────────────────── */
+.hoose-tabla-toolbar {
+  align-items: flex-start !important;
+  flex-wrap: nowrap !important;
+}
+.hoose-tabla-toolbar .ms-auto {
+  flex-shrink: 0 !important;
+}
+
+/* ── Filtros con wrap ────────────────────────────────────── */
+.hoose-tabla-toolbar .hoose-tabla-toolbar-right,
+.hoose-tabla-toolbar > div:last-child > div:last-child {
+  flex-wrap: wrap !important;
+  max-width: 600px;
+}
+
+/* ── Toolbar proporciones globales ──────────────────────── */
+.hoose-tabla-toolbar .hoose-kpi-card {
+  flex: 1 1 auto !important;
+}
+.hoose-filtro-select {
+  font-size: 0.72rem !important;
+  padding: 5px 10px !important;
+  min-width: 90px !important;
+}
+.hoose-tabla-search {
+  padding: 5px 10px !important;
+  min-width: 160px !important;
+}
+.hoose-tabla-search input {
+  font-size: 0.72rem !important;
+}
+.hoose-btn-clear {
+  width: 28px !important;
+  height: 28px !important;
 }

@@ -1,112 +1,92 @@
-<div class="card shadow-sm">
-  <p-table #ptCondominos [responsive]="true" [value]="Condominos" [columns]="CondominosCols"
-    [globalFilterFields]="CondominosFilter" [rowHover]="true" [showCurrentPageReport]="true"
-    [paginator]="Condominos.length > 0" [rows]="50" dataKey="id_usuario" styleClass="p-datatable-striped"
-    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros">
-    <ng-template pTemplate="caption">
-      <div class="d-flex align-items-center p-1">
-        <div class="me-auto">
-          <!-- Botón Nuevo -->
-          <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus"
-            class="p-button-rounded p-button-raised p-button-success ms-1" pTooltip="Agregar condómino"
-            tooltipPosition="right" (click)="onCondominoEditar()"></button>
-        </div>
-        <!-- Opciones Filtrado -->
-        <div class="ms-auto">
-          <!-- Botón Actualizar -->
-          <button *ngIf="isDevelopment" pButton type="button" icon="pi pi-refresh"
-            class="p-button-rounded p-button-text p-button-secondary me-2" pTooltip="Actualizar información"
-            tooltipPosition="right" (click)="onCondominosListar()"></button>
-          <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input type="text" id="txtGlobalFilter" class="form-control ms-1 ps-4"
-              (input)="ptCondominos.filterGlobal($event.target.value, 'contains')" placeholder="Filtrar" />
-          </span>
-        </div>
-        <div>
-          <button pButton pRipple type="button" id="btnLimpiarFiltro" icon="pi pi-times"
-            class="p-button-rounded p-button-text p-button-danger ms-3" pTooltip="Limpiar filtro" tooltipPosition="left"
-            (click)="hlpPrimeNGTable.reset(ptCondominos)"></button>
-        </div>
+<div class="hoose-tabla-wrapper" style="margin: 16px 16px 0 0;">
+  <div class="hoose-tabla-toolbar" style="align-items:flex-start;gap:16px;flex-wrap:nowrap">
+    <div style="flex-shrink:0;max-width:70%">
+    <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
+      <div class="hoose-kpi-icon"><i class="pi pi-users"></i></div>
+      <div class="hoose-kpi-body">
+        <span class="hoose-kpi-label">Total Condóminos</span>
+        <span class="hoose-kpi-value">{{ CondominosFiltrados.length }}</span>
+        <span class="hoose-kpi-sub">Activos: <b>{{ kpiActivos }}</b> &nbsp;|&nbsp; Inactivos: <b>{{ kpiInactivos }}</b></span>
       </div>
-    </ng-template>
-    <ng-template pTemplate="header" let-columns>
-      <tr>
-        <th *ngFor="let col of columns" class="text-center" [ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}">
-          {{ col.header ? col.header : '&nbsp;' }}
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-Condomino>
-      <tr style="cursor:pointer" (click)="onCondominoDetalles(Condomino.id_usuario)">
-        <td class="me-1 mt-1">
-          <div (click)="onCondominoDetalles(Condomino.id_usuario)" style="cursor: pointer">
-            <img class="rounded-circle" src="{{
-								Condomino.imagen
-									? appData.urlBackendUsuariosFiles + Condomino.id_usuario + '/' + Condomino.imagen
-									: './assets/img/imagen_no_disponible.png'
-							}}" style="width: 70px; height: 70px" />
-          </div>
-        </td>
-        <td><span class="p-column-title">Nombre</span>{{ Condomino.nombre }} {{ Condomino.apellidos || "" }}</td>
-        <td><span class="p-column-title">Usuario</span>{{ Condomino.usuario }}</td>
-        <td><span class="p-column-title">Email</span>{{ Condomino.email }}</td>
-        <td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Condomino.telefono | phoneFormat }}</td>
-        <td class="text-md-center">
-          <span class="p-column-title">Unidad</span>
-          <p-tag severity="info" [value]="Condomino.unidad_edificio"></p-tag>
-        </td>
-        <td class="text-md-end">
-          <span class="p-column-title">Depósito</span>{{ Condomino.deposito | number : '1.2-2' }}
-        </td>
-        <td class="text-md-end"><span class="p-column-title">Renta</span>{{ Condomino.renta | number : '1.2-2' }}</td>
-        <td class="text-center"><span *ngIf="Condomino.condominio_nombre" class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Condomino.condominio_nombre), 'background': getCondominioColor(Condomino.condominio_nombre) + '20'}" style="font-weight:600;font-size:0.78rem">{{ Condomino.condominio_nombre }}</span><span *ngIf="!Condomino.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
-        <td class="text-md-center">
-          <span class="p-column-title">Estatus</span>
-          <span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
-            <p-tag severity="{{
-								Condomino.estatus == 1 ? 'success' : Condomino.contrato_activo == 1 ? 'warning' : 'danger'
-							}}" value=" {{
-								Condomino.estatus == 1 ? 'Activo' : Condomino.contrato_activo == 1 ? 'Inactivo' : 'Sin contrato'
-							}} " pTooltip="{{ Condomino.estatus == 1 ? 'Desh' : 'H' }}abilitar condómino{{
-								Condomino.contrato_activo != 1 ? ' en nuevo contrato' : ''
-							}}" tooltipPosition="left" tooltipDisabled="{{ !permitirAgregarEditar }}"
-              (click)="permitirAgregarEditar && onCondominoAlternarEstatus(Condomino)"></p-tag>
-          </span>
-        </td>
-        <td class="text-end">
-          <!-- Botón Editar -->
-          <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.estatus == 1" icon="pi pi-pencil"
-            class="p-button-rounded p-button-text p-button-success me-1" pTooltip="Editar condómino"
-            tooltipPosition="left" (click)="$event.stopPropagation(); onCondominoEditar(Condomino)"></button>
-          <!-- Botón Detalles -->
-          <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-text p-button-warning me-1"
-            pTooltip="Detalles del condómino" tooltipPosition="left"
-            (click)="onCondominoDetalles(Condomino.id_usuario)"></button>
-          <!-- Botón Deshabilitar -->
-          <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.contrato_activo == 1"
-            icon="pi pi-trash" class="p-button-rounded p-button-text p-button-help me-1" pTooltip="Finalizar contrato"
-            tooltipPosition="left" (click)="onCondominoDeshabilitar(Condomino.id_usuario)"></button>
-          <!-- Botón Reiniciar contraseña -->
-          <button pButton type="button" *ngIf="permitirAgregarEditar && Condomino.contrato_activo == 1"
-            icon="pi pi-lock" class="p-button-rounded p-button-text p-button-danger me-1"
-            pTooltip="Reiniciar contraseña" tooltipPosition="left"
-            (click)="onReiniciarContrasenia(Condomino.id_usuario)"></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onCondominoEliminar(Condomino)"></button>
-
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr class="no-records">
-        <td colspan="3">Sin registros.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+    </div>
+    </div>
+    <div class="d-flex flex-column gap-2 justify-content-between">
+      <div class="d-flex justify-content-end">
+        <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus" label="Nuevo Condómino" class="hoose-btn-nuevo" tooltipPosition="left" (click)="onCondominoEditar()"></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <div class="hoose-tabla-search">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar condómino..." (input)="ptCondominos.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <select *ngIf="esSuperAdminSinCondominio" class="hoose-filtro-select" [(ngModel)]="filtroCondominio">
+          <option [ngValue]="null">Condominio</option>
+          <option *ngFor="let c of condominiosLista" [ngValue]="c.value">{{ c.label }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroEstatus">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear" pTooltip="Limpiar filtros" tooltipPosition="left" (click)="limpiarFiltros(); hlpPrimeNGTable.reset(ptCondominos)"></button>
+      </div>
+    </div>
+  </div>
+  <div class="hoose-tabla-container" style="overflow-x:auto">
+    <p-table #ptCondominos [value]="CondominosFiltrados" [globalFilterFields]="CondominosFilter"
+      [rowHover]="true" [showCurrentPageReport]="true" [paginator]="CondominosFiltrados.length > 0"
+      [rows]="20" dataKey="id_usuario" styleClass="hoose-table"
+      currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords}" [rowsPerPageOptions]="[10,20,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngIf="esSuperAdminSinCondominio" class="hoose-th" style="min-width:140px;white-space:nowrap">Condominio</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Nombre</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Email</th>
+          <th class="hoose-th" style="min-width:130px;white-space:nowrap">Contacto</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Renta</th>
+          <th class="hoose-th text-center" style="min-width:120px;white-space:nowrap">Día límite pago</th>
+          <th class="hoose-th text-center" style="min-width:150px;white-space:nowrap">Venc. Contrato</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Estatus</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Condomino>
+        <tr class="hoose-tr" (click)="onCondominoDetalles(Condomino.id_usuario)">
+          <td *ngIf="esSuperAdminSinCondominio" class="hoose-td">
+            <span class="hoose-cond-pill" [ngStyle]="{'color': getCondominioColor(Condomino.condominio_nombre), 'background': getCondominioColor(Condomino.condominio_nombre) + '18'}">{{ Condomino.condominio_nombre || '—' }}</span>
+          </td>
+          <td class="hoose-td">
+            <div class="d-flex align-items-center gap-2">
+              <img class="rounded-circle" src="{{ Condomino.imagen ? appData.urlBackendUsuariosFiles + Condomino.id_usuario + '/' + Condomino.imagen : './assets/img/imagen_no_disponible.png' }}" style="width:32px;height:32px;object-fit:cover;flex-shrink:0" />
+              <strong class="hoose-nombre">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</strong>
+            </div>
+          </td>
+          <td class="hoose-td"><span class="hoose-num">{{ Condomino.email || '—' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Condomino.telefono | phoneFormat }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Condomino.renta ? ('$' + (Condomino.renta | number:'1.2-2')) : '—' }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Condomino.dia_limite_pago ? ('Día ' + Condomino.dia_limite_pago) : '—' }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Condomino.contrato_fecha_vencimiento ? (Condomino.contrato_fecha_vencimiento | date:'dd/MM/yyyy') : '—' }}</span></td>
+          <td class="hoose-td text-center">
+            <span class="hoose-estatus-pill {{ Condomino.estatus == 1 ? 'activo' : 'inactivo' }}" style="cursor:pointer"
+              (click)="$event.stopPropagation(); permitirAgregarEditar && onCondominoAlternarEstatus(Condomino)"
+              pTooltip="{{ Condomino.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }}" tooltipPosition="top">
+              <span class="hoose-estatus-dot"></span>{{ Condomino.estatus == 1 ? 'Activo' : (Condomino.contrato_activo == 1 ? 'Inactivo' : 'Sin contrato') }}
+            </span>
+          </td>
+          <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+            <button pButton type="button" icon="pi pi-eye" class="hoose-btn-accion" pTooltip="Ver detalles" tooltipPosition="top" (click)="onCondominoDetalles(Condomino.id_usuario)"></button>
+            <button *ngIf="permitirAgregarEditar && Condomino.estatus == 1" pButton type="button" icon="pi pi-pencil" class="hoose-btn-accion" pTooltip="Editar" tooltipPosition="top" (click)="onCondominoEditar(Condomino)"></button>
+            <button *ngIf="permitirAgregarEditar && Condomino.contrato_activo == 1" pButton type="button" icon="pi pi-trash" class="hoose-btn-accion" style="color:#8b5cf6 !important" pTooltip="Finalizar contrato" tooltipPosition="top" (click)="onCondominoDeshabilitar(Condomino.id_usuario)"></button>
+            <button *ngIf="esSuperAdmin" pButton type="button" icon="pi pi-times-circle" class="hoose-btn-accion" style="color:#ef4444 !important" pTooltip="Eliminar" tooltipPosition="top" (click)="$event.stopPropagation(); onCondominoEliminar(Condomino)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td [attr.colspan]="esSuperAdminSinCondominio ? 9 : 8" class="hoose-empty">Sin registros.</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
-
 <!-- Diálogo de inserción y edición -->
 <p-dialog #dlgCondomino [(visible)]="mostrarDialogoEdicionCondomino"
   [breakpoints]="{ '991px': '80vw', '640px': '96vw' }" [style]="{ width: '50vw' }" [modal]="true" [closable]="false"
@@ -153,15 +133,8 @@
 				<div class="row mt-2">
 					<div class="col-12">
 						<label>Imagen de Perfil</label>
-						<div *ngIf="srcImagen" class="text-center mb-2">
-							<img class="imagenThumbnail img-thumbnail" style="cursor:pointer;max-height:100px" [src]="srcImagen" (click)="onImagenMostrar(srcImagen)" />
-						</div>
-						<div class="d-flex gap-2">
-							<label for="txtImagenArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtImagenArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
-							<button *ngIf="frmCondomino.get('archivo_imagen').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(1)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmCondomino.get('imagen').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(1)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
+						<small *ngIf="Condomino?.imagen" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Condomino.imagen }}</small>
 					</div>
 				</div>
 			</div>
@@ -182,23 +155,13 @@
 				<div class="row mt-2">
 					<div class="col-12 col-md-6">
 						<label>Anverso Identificación</label>
-						<img *ngIf="srcIdentificacionAnverso" class="imagenThumbnail img-thumbnail mb-2 d-block" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionAnverso" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
-						<div class="d-flex gap-2">
-							<label for="txtAnversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtAnversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
-							<button *ngIf="frmCondomino.get('archivo_identificacion_anverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(2)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmCondomino.get('identificacion_anverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(2)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
+						<small *ngIf="Condomino?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Condomino.identificacion_anverso }}</small>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Reverso Identificación</label>
-						<img *ngIf="srcIdentificacionReverso" class="imagenThumbnail img-thumbnail mb-2 d-block" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionReverso" (click)="onImagenMostrar(srcIdentificacionReverso)" />
-						<div class="d-flex gap-2">
-							<label for="txtReversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtReversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
-							<button *ngIf="frmCondomino.get('archivo_identificacion_reverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(3)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmCondomino.get('identificacion_reverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(3)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
+						<small *ngIf="Condomino?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Condomino.identificacion_reverso }}</small>
 					</div>
 				</div>
 			</div>
@@ -225,7 +188,7 @@
 				<div class="row">
 					<div class="col-12">
 						<label>Unidad disponible para renta <span class="text-danger">*</span></label>
-						<p-dropdown [options]="UnidadesDisponiblesRenta" formControlName="id_unidad" (onChange)="onUnidadRentaChange($event)" optionLabel="unidad" optionValue="id_unidad" placeholder="Selecciona una unidad..." [style]="{width:'100%'}" [filter]="true" filterBy="unidad"></p-dropdown>
+						<p-dropdown [options]="UnidadesDisponiblesRenta" formControlName="id_unidad" (onChange)="onUnidadRentaChange($event)" optionLabel="unidad" optionValue="id_unidad" placeholder="Selecciona una unidad..." [style]="{width:'100%'}" [filter]="true" filterBy="unidad"appendTo="body"></p-dropdown>
 					</div>
 				</div>
 			</div>
@@ -244,7 +207,7 @@
 					</div>
 					<div class="col-12 col-md-4">
 						<label>Día límite de pago <span class="text-danger">*</span></label>
-						<p-dropdown [options]="diasPagoOpciones" formControlName="fecha_limite_pago" placeholder="Seleccionar día..." [style]="{width:'100%'}"></p-dropdown>
+						<p-dropdown [options]="diasPagoOpciones" formControlName="fecha_limite_pago" placeholder="Seleccionar día..." [style]="{width:'100%'}"appendTo="body"></p-dropdown>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -258,7 +221,7 @@
 					</div>
 					<div class="col-12 col-md-3">
 						<label>Penalización tardío <span class="text-danger">*</span></label>
-						<p-dropdown [options]="penalizacionOpciones" formControlName="penalizacion_pago_tardio" [style]="{width:'100%'}"></p-dropdown>
+						<p-dropdown [options]="penalizacionOpciones" formControlName="penalizacion_pago_tardio" [style]="{width:'100%'}"appendTo="body"></p-dropdown>
 					</div>
 					<div class="col-12 col-md-3" *ngIf="frmCondomino.get('penalizacion_pago_tardio')?.value == '1' || frmCondomino.get('penalizacion_pago_tardio')?.value == 1">
 						<label>% por día <span class="text-danger">*</span></label>
@@ -272,7 +235,7 @@
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Cuota de Mantenimiento <span class="text-danger">*</span></label>
-						<p-dropdown [options]="cuotaMttoOpciones" formControlName="cuota_mantenimiento_aplica" [disabled]="true" [style]="{width:'100%'}"></p-dropdown>
+						<p-dropdown [options]="cuotaMttoOpciones" formControlName="cuota_mantenimiento_aplica" [disabled]="true" [style]="{width:'100%'}"appendTo="body"></p-dropdown>
 					</div>
 				</div>
 			</div>
@@ -283,11 +246,12 @@
 				<div class="row">
 					<div class="col-12 col-md-6">
 						<label>Representación en Asambleas <span class="text-danger">*</span></label>
-						<p-dropdown [options]="representacionOpciones" formControlName="representacion_asamblea" [style]="{width:'100%'}"></p-dropdown>
+						<p-dropdown [options]="representacionOpciones" formControlName="representacion_asamblea" [style]="{width:'100%'}"appendTo="body"></p-dropdown>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Archivo del Contrato</label>
 						<input type="file" class="form-control form-control-sm" accept=".pdf" (change)="onContratoSeleccionado($event)" />
+						<small *ngIf="Condomino?.contrato" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Condomino.contrato }}</small>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -401,8 +365,10 @@
           <span *ngIf="!srcImagen" class="hoose-avatar-initials" style="color:#8b5cf6">{{ (Condomino.nombre || 'C').charAt(0) }}{{ (Condomino.apellidos || '').charAt(0) || '' }}</span>
         </div>
         <div class="mb-2">
+          <div style="cursor:pointer" (click)="onCondominoAlternarEstatus(Condomino)" pTooltip="{{ Condomino?.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }} condómino" tooltipPosition="top">
           <span class="hoose-badge-activo" *ngIf="Condomino.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
           <span class="hoose-badge-inactivo" *ngIf="Condomino.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+          </div>
         </div>
         <h5 class="text-white mb-1">{{ Condomino.nombre }} {{ Condomino.apellidos || '' }}</h5>
         <small class="text-muted">{{ Condomino.usuario }}</small>
@@ -471,6 +437,11 @@
           <div class="col-6 mb-2"><small class="text-muted d-block">Representación en Asambleas</small><span class="text-white">{{ Condomino.representacion_asamblea == '1' ? 'Sí' : 'No' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Fecha firma contrato</small><span class="text-white">{{ Condomino.contrato_fecha_firma ? (Condomino.contrato_fecha_firma | date:'MMMM dd, yyyy' | uppercase) : 'No registrada' }}</span></div>
           <div class="col-6"><small class="text-muted d-block">Fecha vencimiento contrato</small><span class="text-white">{{ Condomino.contrato_fecha_vencimiento ? (Condomino.contrato_fecha_vencimiento | date:'MMMM dd, yyyy' | uppercase) : 'No registrada' }}</span></div>
+          <div class="col-12 mt-2" *ngIf="Condomino.contrato">
+            <a [href]="'http://api.residenciales.hoose.mx/uploads/usuarios/' + Condomino.id_usuario + '/' + Condomino.contrato" target="_blank" class="d-flex align-items-center gap-2" style="color:#f59e0b;text-decoration:none">
+              <i class="pi pi-file-pdf"></i><span>Contrato de Alquiler</span><i class="pi pi-external-link ms-1" style="font-size:0.75rem"></i>
+            </a>
+          </div>
         </div>
       </div>
 

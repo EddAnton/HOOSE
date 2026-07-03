@@ -59,6 +59,7 @@ $route['condominios/(:num)']['get'] = 'Condominios/listar';
 $route['condominios/insertar']['post'] = 'Condominios/insertar';
 $route['condominios/actualizar/(:num)']['post'] = 'Condominios/actualizar';
 $route['condominios/alternar-estatus/(:num)']['post'] = 'Condominios/alternar_estatus';
+$route['condominios/resumen-cards']['get'] = 'Condominios/resumen_cards';
 
 /**
  * Edificios

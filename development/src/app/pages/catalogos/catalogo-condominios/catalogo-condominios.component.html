@@ -1,11 +1,131 @@
 <div class="cond-wrapper">
+  <!-- ── Toolbar ── -->
+  <div class="hoose-tabla-toolbar" style="display:flex;align-items:center;gap:16px;background:transparent;border:none;padding:16px 16px 0 16px">
+    <div class="hoose-kpi-card hoose-kpi-blue" style="margin:0;flex-shrink:0">
+      <div class="hoose-kpi-icon"><i class="pi pi-building"></i></div>
+      <div class="hoose-kpi-body">
+        <span class="hoose-kpi-label">Total Inmuebles</span>
+        <span class="hoose-kpi-value">{{ Cards.length }}</span>
+        <span class="hoose-kpi-sub">Activos: <b>{{ kpiCardsActivos }}</b></span>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap" style="flex:1;min-width:0">
+      <div class="als-vista-switcher als-switcher-center">
+        <button [class.active]="vistaActual === 'cards'" (click)="cambiarVista('cards')">
+          <i class="pi pi-th-large"></i> Cards
+        </button>
+        <button [class.active]="vistaActual === 'carrusel'" (click)="cambiarVista('carrusel')">
+          <i class="pi pi-images"></i> Carrusel
+        </button>
+      </div>
+      <div class="hoose-tabla-search" style="border:1.5px solid #2d3150!important;box-shadow:none!important;flex:2;min-width:120px">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Buscar inmueble..." [(ngModel)]="filtroCardBusqueda" (ngModelChange)="filtrarCards()" />
+      </div>
+      <div class="als-filtros-group">
+        <select class="hoose-filtro-select" style="flex:1;min-width:100px" [(ngModel)]="filtroCardEstatus" (ngModelChange)="filtrarCards()">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <select class="hoose-filtro-select" style="flex:1;min-width:100px" [(ngModel)]="filtroCardTipo" (ngModelChange)="filtrarCards()">
+          <option [ngValue]="null">Tipo</option>
+          <option *ngFor="let t of tiposCondominio" [ngValue]="t.value">{{ t.label }}</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear"
+          pTooltip="Limpiar filtros" tooltipPosition="left"
+          style="background:#e2e8f0!important;border-color:#e2e8f0!important;color:#64748b!important;flex-shrink:0"
+          (click)="limpiarFiltrosCards()">
+        </button>
+      </div>
+    </div>
+    <div style="flex-shrink:0">
+      <button pButton type="button" icon="pi pi-plus" label="Nuevo Inmueble"
+        class="hoose-btn-nuevo" (click)="onCondominioEditar()">
+      </button>
+    </div>
+  </div>
 
-  <!-- FAB -->
-  <button pButton type="button" icon="pi pi-plus"
-    class="p-button-rounded p-button-raised p-button-success cond-fab"
-    pTooltip="Nuevo condominio" tooltipPosition="left"
-    (click)="onCondominioEditar()">
-  </button>
+  <!-- ── Vista Cards ── -->
+  <div *ngIf="vistaActual === 'cards'" style="padding:16px">
+    <div *ngIf="cargandoCards" class="text-center p-5">
+      <i class="pi pi-spin pi-spinner" style="font-size:2rem;color:#e91e8c"></i>
+      <p class="text-muted mt-2">Cargando inmuebles...</p>
+    </div>
+    <div *ngIf="!cargandoCards" class="row g-3">
+      <div *ngFor="let card of CardsFiltradas" class="col-12 col-sm-6 col-lg-4 col-xl-3">
+        <div class="als-inmueble-card" (click)="onVerDetalleCard(card)">
+          <div class="als-card-body">
+            <div class="als-card-top">
+              <img [src]="getImagenCard(card)" [alt]="card.condominio" class="als-card-avatar" />
+              <div class="als-card-title-wrap">
+                <span class="als-card-tipo-pill">{{ card.tipo || 'INMUEBLE' }}</span>
+                <h5 class="als-card-title">{{ card.condominio }}</h5>
+                <p class="als-card-dir" *ngIf="card.domicilio">
+                  <i class="pi pi-map-marker"></i> {{ card.domicilio }}
+                </p>
+              </div>
+              <div class="als-card-actions">
+                <span class="als-estatus-badge" [class.verde]="card.estatus == 1" [class.rojo]="card.estatus != 1">
+                  <span class="als-estatus-dot" [class.verde]="card.estatus == 1" [class.rojo]="card.estatus != 1"></span>
+                  {{ card.estatus == 1 ? 'Activo' : 'Inactivo' }}
+                </span>
+                <i class="pi pi-pencil als-edit-icon"
+                  (click)="$event.stopPropagation(); onCondominioEditar(card.id_condominio)"
+                  pTooltip="Editar" tooltipPosition="top"></i>
+              </div>
+            </div>
+            <div class="als-card-stats-2">
+              <div class="als-stat-half">
+                <span class="als-stat-num">{{ card.edificios }}</span>
+                <span class="als-stat-lbl">Edificios / Torres</span>
+              </div>
+              <div class="als-stat-half">
+                <span class="als-stat-num">{{ card.unidades }}</span>
+                <span class="als-stat-lbl">Unidades</span>
+              </div>
+            </div>
+            <hr class="als-card-divider" />
+            <div class="als-card-financiero">
+              <div class="als-fin-item">
+                <span class="als-fin-lbl">Recaudación</span>
+                <span class="als-fin-val" [style.color]="card.recaudacion < 0 ? '#ef4444' : '#10b981'">
+                  {{ card.recaudacion | currency:'MXN':'symbol':'1.0-0' }}
+                </span>
+              </div>
+              <div class="als-fin-item">
+                <span class="als-fin-lbl">Morosidad</span>
+                <span class="als-fin-val" [style.color]="card.morosidad >= 20 ? '#ef4444' : card.morosidad >= 10 ? '#f59e0b' : '#10b981'">
+                  {{ card.morosidad | number:'1.1-1' }}%
+                </span>
+              </div>
+              <div class="als-fin-item">
+                <span class="als-fin-lbl">Ocupación</span>
+                <span class="als-fin-val" [style.color]="card.ocupacion < 50 ? '#ef4444' : card.ocupacion < 70 ? '#f59e0b' : '#10b981'">
+                  {{ card.ocupacion | number:'1.1-1' }}%
+                </span>
+              </div>
+            </div>
+            <div class="als-card-admin" *ngIf="card.administrador">
+              <i class="pi pi-user"></i>
+              <span>{{ card.administrador.nombre }} {{ card.administrador.apellidos }}</span>
+            </div>
+            <div class="als-card-admin als-card-admin-empty" *ngIf="!card.administrador">
+              <i class="pi pi-user"></i>
+              <span>Sin administrador</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="CardsFiltradas.length === 0" class="col-12 text-center p-5">
+        <i class="pi pi-inbox" style="font-size:3rem;color:#d1dbe8"></i>
+        <p class="text-muted mt-2">No hay inmuebles que coincidan con los filtros</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Vista Carrusel ── -->
+  <div *ngIf="vistaActual === 'carrusel'">
 
   <!-- RUEDA 3D -->
   <div class="cond-rueda-wrap" *ngIf="Condominios.length > 0">
@@ -235,6 +355,9 @@
 
 </div>
 
+  </div><!-- /vista carrusel -->
+
+
 <!-- DIÁLOGO EDICIÓN -->
 <p-dialog [(visible)]="mostrarDialogoEdicion" [modal]="true" [draggable]="false"
   [style]="{ width: '700px' }" styleClass="hoose-dialogo"
@@ -388,6 +511,7 @@
     </button>
   </ng-template>
 </p-dialog>
+
 
 <!-- DIÁLOGO ASIGNAR ADMINISTRADOR -->
 <p-dialog *ngIf="mostrarPanelAdmin" [(visible)]="mostrarPanelAdmin" [modal]="true" [draggable]="false"

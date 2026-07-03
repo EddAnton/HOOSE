@@ -17,3 +17,13 @@
 .hoose-info-icon-sm i { font-size: 0.9rem; }
 :host ::ng-deep .hoose-detalle-dialog .p-dialog-content { padding: 0 !important; background: #12121f !important; border-radius: 16px !important; }
 :host ::ng-deep .hoose-detalle-dialog .p-dialog { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
+
+/* ── Tabla Unidades ─────────────────────────────────────── */
+:host ::ng-deep .hoose-table .p-datatable-wrapper { background: #12121f !important; }
+:host ::ng-deep .hoose-table .p-datatable-thead > tr > th { background: #0a0c12 !important; color: #6b7280 !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important; border-right: none !important; }
+:host ::ng-deep .hoose-table .p-datatable-tbody > tr { background: #12121f !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+:host ::ng-deep .hoose-table .p-datatable-tbody > tr:hover { background: rgba(255,255,255,0.03) !important; }
+:host ::ng-deep .hoose-table .p-datatable-tbody > tr > td { border: none !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+:host ::ng-deep .hoose-table .p-paginator { background: #0a0c12 !important; border-top: 1px solid rgba(255,255,255,0.06) !important; color: #6b7280 !important; }
+:host ::ng-deep .hoose-table .p-paginator .p-paginator-page.p-highlight { background: #e91e8c !important; color: #fff !important; border-radius: 6px !important; }
+:host ::ng-deep .hoose-table .p-paginator .p-paginator-current { color: #6b7280 !important; font-size: 0.78rem !important; }

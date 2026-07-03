@@ -1,133 +1,100 @@
-<div class="card shadow-sm">
-	<p-table
-		#ptEdificios
-		[responsive]="true"
-		[value]="Edificios"
-		[columns]="EdificiosCols"
-		[globalFilterFields]="EdificiosFilter"
-		[rowHover]="true"
-		[showCurrentPageReport]="true"
-		[paginator]="Edificios.length > 0"
-		[rows]="50"
-		dataKey="id_edificio"
-		styleClass="p-datatable-striped"
-		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-	>
-		<ng-template pTemplate="caption">
-			<div class="d-flex align-items-center p-1">
-				<div class="me-auto">
-					<!-- Botón Nuevo -->
-					<button
-						pButton
-						type="button"
-						icon="pi pi-plus"
-						class="p-button-rounded p-button-raised p-button-success ms-1"
-						pTooltip="Agregar edificio"
-						tooltipPosition="right"
-						(click)="onEdificioEditar()"
-					></button>
-				</div>
-				<!-- Opciones Filtrado -->
-				<div class="ms-auto">
-					<!-- Botón Actualizar -->
-					<button
-						*ngIf="isDevelopment"
-						pButton
-						type="button"
-						icon="pi pi-refresh"
-						class="p-button-rounded p-button-text p-button-secondary me-2"
-						pTooltip="Actualizar información"
-						tooltipPosition="right"
-						(click)="onActualizarInformacion()"
-					></button>
-					<span class="p-input-icon-left">
-						<i class="pi pi-search"></i>
-						<input
-							type="text"
-							id="txtGlobalFilter"
-							class="form-control ms-1 ps-4"
-							(input)="ptEdificios.filterGlobal($event.target.value, 'contains')"
-							placeholder="Filtrar"
-						/>
-					</span>
-				</div>
-				<div>
-					<button
-						pButton
-						pRipple
-						type="button"
-						id="btnLimpiarFiltro"
-						icon="pi pi-times"
-						class="p-button-rounded p-button-text p-button-danger ms-3"
-						pTooltip="Limpiar filtro"
-						tooltipPosition="left"
-						(click)="hlpPrimeNGTable.reset(ptEdificios)"
-					></button>
-				</div>
-			</div>
-		</ng-template>
-		<ng-template pTemplate="header" let-columns>
-			<tr>
-				<th
-					*ngFor="let col of columns"
-					class="text-center"
-					[ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}"
-				>
-					{{ col.header ? col.header : '&nbsp;' }}
-				</th>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-Edificio>
-<tr style="cursor:pointer" (click)="onEdificioDetalles(Edificio)">
-				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Edificio.condominio_nombre), 'background': getCondominioColor(Edificio.condominio_nombre) + '20'}">{{ Edificio.condominio_nombre || '-' }}</span></td>
-				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Edificio.tipo || 'Edificio' }}</span></td>
-				<td><span class="p-column-title">Nombre</span>{{ Edificio.edificio }}</td>
-				<td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
-					<span style="cursor: pointer">
-						<p-tag
-							severity="{{ Edificio.estatus == 1 ? 'success' : 'danger' }}"
-							value="{{ Edificio.estatus == 1 ? 'A' : 'Ina' }}ctivo"
-							pTooltip="{{ Edificio.estatus == 1 ? 'Desh' : 'H' }}abilitar edificio"
-							tooltipPosition="left"
-							(click)="$event.stopPropagation(); onEdificioAlternarEstatus(Edificio)"
-						></p-tag>
-					</span>
-				</td>
-				<td class="text-end">
-					<!-- Botón Editar -->
-					<button
-						pButton
-						type="button"
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text p-button-success me-1"
-						pTooltip="Editar edificio"
-						tooltipPosition="left"
-						(click)="$event.stopPropagation(); onEdificioEditar(Edificio.id_edificio)"
-					></button>
-					<!-- Botón Deshabilitar -->
-					<!-- <button
-						pButton
-						type="button"
-						icon="pi pi-trash"
-						class="p-button-rounded p-button-text p-button-danger me-1"
-						pTooltip="Deshabilitar edificio"
-						tooltipPosition="left"
-						(click)="onEdificioDeshabilitar(Edificio)"
-					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onEdificioEliminar(Edificio)"></button>
- -->
-				</td>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="emptymessage"
-			><tr class="no-records">
-				<td>Sin registros.</td>
-			</tr></ng-template
-		>
-	</p-table>
+<div class="hoose-tabla-wrapper" style="margin: 16px 16px 0 0;">
+
+  <!-- Toolbar -->
+  <div class="hoose-tabla-toolbar" style="align-items:stretch;gap:16px">
+    <!-- Izquierda: KPI card -->
+    <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
+      <div class="hoose-kpi-icon"><i class="pi pi-building"></i></div>
+      <div class="hoose-kpi-body">
+        <span class="hoose-kpi-label">Total Edificios</span>
+        <span class="hoose-kpi-value">{{ EdificiosFiltrados.length }}</span>
+        <span class="hoose-kpi-sub">Activos: <b>{{ kpiActivos }}</b> &nbsp;|&nbsp; Inactivos: <b>{{ kpiInactivos }}</b></span>
+      </div>
+    </div>
+    <!-- Derecha: botón nuevo arriba + filtros abajo -->
+    <div class="d-flex flex-column gap-2 justify-content-between" style="flex:1;min-width:0">
+      <div class="d-flex justify-content-end">
+        <button pButton type="button" icon="pi pi-plus" label="Nuevo Edificio" class="hoose-btn-nuevo" pTooltip="Agregar edificio" tooltipPosition="left" (click)="onEdificioEditar()"></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <div class="hoose-tabla-search">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar edificio..." (input)="ptEdificios.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <select *ngIf="esSuperAdminSinCondominio" class="hoose-filtro-select" [(ngModel)]="filtroCondominio">
+          <option [ngValue]="null">Condominio</option>
+          <option *ngFor="let c of condominiosLista" [ngValue]="c.value">{{ c.label }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroTipo">
+          <option [ngValue]="null">Tipo</option>
+          <option *ngFor="let t of tiposEdificio" [ngValue]="t">{{ t }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroEstatus">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear" pTooltip="Limpiar filtros" tooltipPosition="left" (click)="limpiarFiltros(); hlpPrimeNGTable.reset(ptEdificios)"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="hoose-tabla-container" style="overflow-x:auto">
+    <p-table
+      #ptEdificios
+      [value]="EdificiosFiltrados"
+      [globalFilterFields]="EdificiosFilter"
+      [rowHover]="true"
+      [showCurrentPageReport]="true"
+      [paginator]="Edificios.length > 0"
+      [rows]="20"
+      dataKey="id_edificio"
+      styleClass="hoose-table"
+      currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords}"
+      [rowsPerPageOptions]="[10,20,50]"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngIf="esSuperAdminSinCondominio" class="hoose-th" style="min-width:140px;white-space:nowrap">Condominio</th>
+          <th class="hoose-th" style="min-width:100px;white-space:nowrap">Tipo</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Nombre</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Unidades</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Niveles</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Estatus</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Edificio>
+        <tr class="hoose-tr" (click)="onEdificioDetalles(Edificio)">
+          <td *ngIf="esSuperAdminSinCondominio" class="hoose-td">
+            <span class="hoose-cond-pill" [ngStyle]="{'color': getCondominioColor(Edificio.condominio_nombre), 'background': getCondominioColor(Edificio.condominio_nombre) + '18'}">{{ Edificio.condominio_nombre || '—' }}</span>
+          </td>
+          <td class="hoose-td">
+            <span class="hoose-tipo-pill">{{ Edificio.tipo || 'Edificio' }}</span>
+          </td>
+          <td class="hoose-td"><strong class="hoose-nombre">{{ Edificio.edificio }}</strong></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Edificio.numero_unidades || 0 }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Edificio.numero_niveles || 0 }}</span></td>
+          <td class="hoose-td text-center">
+            <span class="hoose-estatus-pill {{ Edificio.estatus == 1 ? 'activo' : 'inactivo' }}" style="cursor:pointer"
+              (click)="$event.stopPropagation(); onEdificioAlternarEstatus(Edificio)"
+              pTooltip="{{ Edificio.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }}" tooltipPosition="top">
+              <span class="hoose-estatus-dot"></span>{{ Edificio.estatus == 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+            <button pButton type="button" icon="pi pi-eye" class="hoose-btn-accion" pTooltip="Ver detalles" tooltipPosition="top" (click)="onEdificioDetalles(Edificio)"></button>
+            <button pButton type="button" icon="pi pi-pencil" class="hoose-btn-accion" pTooltip="Editar" tooltipPosition="top" (click)="onEdificioEditar(Edificio.id_edificio)"></button>
+            <button *ngIf="esSuperAdmin" pButton type="button" icon="pi pi-trash" class="hoose-btn-accion" style="color:#ef4444 !important" pTooltip="Eliminar" tooltipPosition="top" (click)="$event.stopPropagation(); onEdificioEliminar(Edificio)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td [attr.colspan]="esSuperAdminSinCondominio ? 7 : 6" class="hoose-empty">Sin registros.</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
 
 <!-- Diálogo de inserción y edición -->
@@ -184,6 +151,7 @@
 					<div class="col-12">
 						<label>Plano del edificio</label>
 						<input type="file" class="form-control form-control-sm" accept=".pdf,.png,.jpg,.jpeg" (change)="onPlanoSeleccionado($event)" />
+						<small *ngIf="Edificio?.plano_archivo" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Edificio.plano_archivo }}</small>
 					</div>
 				</div>
 			</div>
@@ -248,7 +216,7 @@
         <div class="mx-auto mb-3" style="width:110px;height:110px;border-radius:50%;border:3px solid #f59e0b;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.08)">
           <i class="pi pi-building" style="color:#f59e0b;font-size:3rem"></i>
         </div>
-        <div class="mb-2">
+        <div class="mb-2" style="cursor:pointer" (click)="onEdificioAlternarEstatus(EdificioDetalle)" pTooltip="{{ EdificioDetalle?.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }} edificio" tooltipPosition="top">
           <span class="hoose-badge-activo" *ngIf="EdificioDetalle?.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
           <span class="hoose-badge-inactivo" *ngIf="EdificioDetalle?.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
         </div>
@@ -266,14 +234,22 @@
             <div><small class="text-muted d-block">Condominio</small><strong class="text-white">{{ EdificioDetalle?.condominio_nombre }}</strong></div>
           </div>
           <div class="d-flex align-items-center gap-2">
-            <div class="hoose-info-icon" style="background:rgba(245,158,11,0.15)"><i class="pi pi-tag" style="color:#f59e0b"></i></div>
-            <div><small class="text-muted d-block">Tipo</small><strong class="text-white">{{ EdificioDetalle?.tipo || 'Edificio' }}</strong></div>
+            <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-th-large" style="color:#3b82f6"></i></div>
+            <div><small class="text-muted d-block">Unidades</small><strong class="text-white">{{ UnidadesDelEdificio?.length || 0 }} de {{ EdificioDetalle?.numero_unidades || 0 }}</strong></div>
           </div>
           <div class="d-flex align-items-center gap-2">
-            <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-th-large" style="color:#3b82f6"></i></div>
-            <div><small class="text-muted d-block">Unidades</small><strong class="text-white">{{ UnidadesDelEdificio?.length || 0 }}</strong></div>
+            <div class="hoose-info-icon" style="background:rgba(16,185,129,0.15)"><i class="pi pi-bars" style="color:#10b981"></i></div>
+            <div><small class="text-muted d-block">Niveles / Pisos</small><strong class="text-white">{{ EdificioDetalle?.numero_niveles || 0 }}</strong></div>
           </div>
         </div>
+      </div>
+
+      <!-- Plano del edificio -->
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="EdificioDetalle?.plano_archivo">
+        <a [href]="'http://api.residenciales.hoose.mx/uploads/edificios/' + EdificioDetalle.id_edificio + '/' + EdificioDetalle.plano_archivo" target="_blank" class="d-flex align-items-center gap-2" style="text-decoration:none">
+          <div class="hoose-info-icon-sm" style="background:rgba(245,158,11,0.15)"><i class="pi pi-file-pdf" style="color:#f59e0b"></i></div>
+          <h6 class="text-white mb-0" style="color:#f59e0b !important">Plano del Edificio <i class="pi pi-external-link ms-1" style="font-size:0.75rem"></i></h6>
+        </a>
       </div>
 
       <!-- Unidades del edificio -->

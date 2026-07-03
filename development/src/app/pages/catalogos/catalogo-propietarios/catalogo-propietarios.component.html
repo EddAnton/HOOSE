@@ -1,163 +1,90 @@
-<div class="card shadow-sm">
-	<p-table
-		#ptPropietarios
-		[responsive]="true"
-		[value]="Propietarios"
-		[columns]="PropietariosCols"
-		[globalFilterFields]="PropietariosFilter"
-		[rowHover]="true"
-		[showCurrentPageReport]="true"
-		[paginator]="Propietarios.length > 0"
-		[rows]="50"
-		dataKey="id_usuario"
-		styleClass="p-datatable-striped"
-		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-	>
-		<ng-template pTemplate="caption">
-			<div class="d-flex align-items-center p-1">
-				<div class="me-auto">
-					<!-- Botón Nuevo -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="pi pi-plus"
-						class="p-button-rounded p-button-raised p-button-success ms-1"
-						pTooltip="Agregar propietario"
-						tooltipPosition="right"
-						(click)="onPropietarioEditar()"
-					></button>
-				</div>
-				<!-- Opciones Filtrado -->
-				<div class="ms-auto">
-					<!-- Botón Actualizar -->
-					<button
-						*ngIf="isDevelopment"
-						pButton
-						type="button"
-						icon="pi pi-refresh"
-						class="p-button-rounded p-button-text p-button-secondary me-2"
-						pTooltip="Actualizar información"
-						tooltipPosition="right"
-						(click)="onActualizarInformacion()"
-					></button>
-					<span class="p-input-icon-left">
-						<i class="pi pi-search"></i>
-						<input
-							type="text"
-							id="txtGlobalFilter"
-							class="form-control ms-1 ps-4"
-							(input)="ptPropietarios.filterGlobal($event.target.value, 'contains')"
-							placeholder="Filtrar"
-						/>
-					</span>
-				</div>
-				<div>
-					<button
-						pButton
-						pRipple
-						type="button"
-						id="btnLimpiarFiltro"
-						icon="pi pi-times"
-						class="p-button-rounded p-button-text p-button-danger ms-3"
-						pTooltip="Limpiar filtro"
-						tooltipPosition="left"
-						(click)="hlpPrimeNGTable.reset(ptPropietarios)"
-					></button>
-				</div>
-			</div>
-		</ng-template>
-		<ng-template pTemplate="header" let-columns>
-			<tr>
-				<th
-					*ngFor="let col of columns"
-					class="text-center"
-					[ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}"
-				>
-					{{ col.header ? col.header : '&nbsp;' }}
-				</th>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-Propietario>
-      <tr style="cursor:pointer" (click)="onPropietarioDetalles(Propietario.id_usuario)">
-				<td class="me-1 mt-1">
-					<div (click)="onPropietarioDetalles(Propietario.id_usuario)" style="cursor: pointer">
-						<img
-							class="rounded-circle"
-							src="{{
-								Propietario.imagen
-									? appData.urlBackendUsuariosFiles + Propietario.id_usuario + '/' + Propietario.imagen
-									: './assets/img/imagen_no_disponible.png'
-							}}"
-							style="width: 70px; height: 70px"
-						/>
-					</div>
-				</td>
-				<td><span class="p-column-title">Nombre</span>{{ Propietario.nombre }} {{ Propietario.apellidos || "" }}</td>
-				<td><span class="p-column-title">Usuario</span>{{ Propietario.usuario }}</td>
-				<td><span class="p-column-title">Email</span>{{ Propietario.email }}</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Contacto</span>{{ Propietario.telefono | phoneFormat }}
-				</td>
-				<td class="carriage-return"><span class="p-column-title">Domicilio</span>{{ Propietario.domicilio }}</td>
-				<td>
-					<span class="p-column-title">Unidad(es)</span>
-					<p *ngFor="let unidad of Propietario.unidades" class="mb-1">{{ unidad.unidad }}</p>
-				</td>
-				<!-- <td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
-					<div>
-						<p-tag *ngIf="Propietario.estatus == 1" severity="success" value="Activo"></p-tag>
-						<p-tag *ngIf="Propietario.estatus != 1" severity="danger" value="Inactivo"></p-tag>
-					</div>
-				</td> -->
-				<td class="text-center"><span *ngIf="Propietario.condominio_nombre" class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Propietario.condominio_nombre), 'background': getCondominioColor(Propietario.condominio_nombre) + '20'}" style="font-weight:600;font-size:0.78rem">{{ Propietario.condominio_nombre }}</span><span *ngIf="!Propietario.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
-				<td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
-					<span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
-						<p-tag
-							severity="{{ Propietario.estatus == 1 ? 'success' : 'danger' }}"
-							value="{{ Propietario.estatus == 1 ? 'A' : 'Ina' }}ctivo"
-							pTooltip="{{ Propietario.estatus == 1 ? 'Desh' : 'H' }}abilitar propietario"
-							tooltipPosition="left"
-							tooltipDisabled="{{ !permitirAgregarEditar }}"
-							(click)="permitirAgregarEditar && onPropietarioAlternarEstatus(Propietario)"
-						></p-tag>
-					</span>
-				</td>
-				<td class="text-end">
-					<!-- Botón Editar -->
-					<button
-						pButton
-						*ngIf="permitirAgregarEditar && Propietario.estatus == 1"
-						type="button"
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text p-button-success me-1"
-						pTooltip="Editar propietario"
-						tooltipPosition="left"
-						(click)="$event.stopPropagation(); onPropietarioEditar(Propietario.id_usuario)"
-					></button>
-					<!-- Botón Detalles -->
-					<button
-						pButton
-						type="button"
-						icon="pi pi-eye"
-						class="p-button-rounded p-button-text p-button-warning me-1"
-						pTooltip="Detalles del propietario"
-						tooltipPosition="left"
-						(click)="onPropietarioDetalles(Propietario.id_usuario)"
-					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onPropietarioEliminar(Propietario)"></button>
-
-				</td>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="emptymessage"><tr class="no-records"><td colspan="3">Sin registros.</td></tr></ng-template>
-	</p-table>
+<div class="hoose-tabla-wrapper" style="margin: 16px 16px 0 0;">
+  <div class="hoose-tabla-toolbar" style="align-items:flex-start;gap:16px;flex-wrap:nowrap">
+    <div style="flex-shrink:0;max-width:70%">
+    <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
+      <div class="hoose-kpi-icon"><i class="pi pi-users"></i></div>
+      <div class="hoose-kpi-body">
+        <span class="hoose-kpi-label">Total Propietarios</span>
+        <span class="hoose-kpi-value">{{ PropietariosFiltrados.length }}</span>
+        <span class="hoose-kpi-sub">Activos: <b>{{ kpiActivos }}</b> &nbsp;|&nbsp; Inactivos: <b>{{ kpiInactivos }}</b></span>
+      </div>
+    </div>
+    </div>
+    <div class="d-flex flex-column gap-2 justify-content-between">
+      <div class="d-flex justify-content-end">
+        <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus" label="Nuevo Propietario" class="hoose-btn-nuevo" tooltipPosition="left" (click)="onPropietarioEditar()"></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <div class="hoose-tabla-search">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar propietario..." (input)="ptPropietarios.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <select *ngIf="esSuperAdminSinCondominio" class="hoose-filtro-select" [(ngModel)]="filtroCondominio">
+          <option [ngValue]="null">Condominio</option>
+          <option *ngFor="let c of condominiosLista" [ngValue]="c.value">{{ c.label }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroEstatus">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear" pTooltip="Limpiar filtros" tooltipPosition="left" (click)="limpiarFiltros(); hlpPrimeNGTable.reset(ptPropietarios)"></button>
+      </div>
+    </div>
+  </div>
+  <div class="hoose-tabla-container" style="overflow-x:auto">
+    <p-table #ptPropietarios [value]="PropietariosFiltrados" [globalFilterFields]="PropietariosFilter"
+      [rowHover]="true" [showCurrentPageReport]="true" [paginator]="PropietariosFiltrados.length > 0"
+      [rows]="20" dataKey="id_usuario" styleClass="hoose-table"
+      currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords}" [rowsPerPageOptions]="[10,20,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngIf="esSuperAdminSinCondominio" class="hoose-th" style="min-width:140px;white-space:nowrap">Condominio</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Nombre</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Email</th>
+          <th class="hoose-th" style="min-width:130px;white-space:nowrap">Contacto</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Unidad(es)</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Estatus</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Propietario>
+        <tr class="hoose-tr" (click)="onPropietarioDetalles(Propietario.id_usuario)">
+          <td *ngIf="esSuperAdminSinCondominio" class="hoose-td">
+            <span class="hoose-cond-pill" [ngStyle]="{'color': getCondominioColor(Propietario.condominio_nombre), 'background': getCondominioColor(Propietario.condominio_nombre) + '18'}">{{ Propietario.condominio_nombre || '—' }}</span>
+          </td>
+          <td class="hoose-td">
+            <div class="d-flex align-items-center gap-2">
+              <img class="rounded-circle" src="{{ Propietario.imagen ? appData.urlBackendUsuariosFiles + Propietario.id_usuario + '/' + Propietario.imagen : './assets/img/imagen_no_disponible.png' }}" style="width:32px;height:32px;object-fit:cover;flex-shrink:0" />
+              <strong class="hoose-nombre">{{ Propietario.nombre }} {{ Propietario.apellidos || '' }}</strong>
+            </div>
+          </td>
+          <td class="hoose-td"><span class="hoose-num">{{ Propietario.email || '—' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Propietario.telefono | phoneFormat }}</span></td>
+          <td class="hoose-td">
+            <span *ngFor="let unidad of Propietario.unidades" class="hoose-tipo-pill me-1" style="margin-bottom:2px;display:inline-block">{{ unidad.unidad }}</span>
+            <span *ngIf="!Propietario.unidades?.length" class="hoose-num">—</span>
+          </td>
+          <td class="hoose-td text-center">
+            <span class="hoose-estatus-pill {{ Propietario.estatus == 1 ? 'activo' : 'inactivo' }}" style="cursor:pointer"
+              (click)="$event.stopPropagation(); permitirAgregarEditar && onPropietarioAlternarEstatus(Propietario)"
+              pTooltip="{{ Propietario.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }}" tooltipPosition="top">
+              <span class="hoose-estatus-dot"></span>{{ Propietario.estatus == 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+            <button pButton type="button" icon="pi pi-eye" class="hoose-btn-accion" pTooltip="Ver detalles" tooltipPosition="top" (click)="onPropietarioDetalles(Propietario.id_usuario)"></button>
+            <button *ngIf="permitirAgregarEditar && Propietario.estatus == 1" pButton type="button" icon="pi pi-pencil" class="hoose-btn-accion" pTooltip="Editar" tooltipPosition="top" (click)="onPropietarioEditar(Propietario.id_usuario)"></button>
+            <button pButton type="button" icon="pi pi-trash" class="hoose-btn-accion" style="color:#ef4444 !important" pTooltip="Eliminar" tooltipPosition="top" (click)="onPropietarioEliminar(Propietario)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td [attr.colspan]="esSuperAdminSinCondominio ? 7 : 6" class="hoose-empty">Sin registros.</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
-
 <!-- Diálogo de inserción y edición -->
 <p-dialog
 	[(visible)]="mostrarDialogoEdicionPropietario"
@@ -210,15 +137,8 @@
 				<div class="row mt-2">
 					<div class="col-12">
 						<label>Imagen de Perfil</label>
-						<div *ngIf="srcImagen" class="text-center mb-2">
-							<img class="imagenThumbnail img-thumbnail" style="cursor:pointer;max-height:100px" [src]="srcImagen" (click)="onImagenMostrar(srcImagen)" />
-						</div>
-						<div class="d-flex gap-2 justify-content-center">
-							<label for="txtImagenArchivo" class="btn btn-dark" pTooltip="Seleccionar imagen"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtImagenArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
-							<button *ngIf="frmPropietario.get('archivo_imagen').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(1)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmPropietario.get('imagen').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(1)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
+						<small *ngIf="Propietario?.imagen" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Propietario.imagen }}</small>
 					</div>
 				</div>
 			</div>
@@ -239,23 +159,13 @@
 				<div class="row mt-2">
 					<div class="col-12 col-md-6">
 						<label class="d-block">Anverso Identificación</label>
-						<img *ngIf="srcIdentificacionAnverso" class="imagenThumbnail img-thumbnail mb-2" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionAnverso" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
-						<div class="d-flex gap-2 justify-content-center">
-							<label for="txtAnversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtAnversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
-							<button *ngIf="frmPropietario.get('archivo_identificacion_anverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(2)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmPropietario.get('identificacion_anverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(2)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
+						<small *ngIf="Propietario?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Propietario.identificacion_anverso }}</small>
 					</div>
 					<div class="col-12 col-md-6">
 						<label class="d-block">Reverso Identificación</label>
-						<img *ngIf="srcIdentificacionReverso" class="imagenThumbnail img-thumbnail mb-2" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionReverso" (click)="onImagenMostrar(srcIdentificacionReverso)" />
-						<div class="d-flex gap-2 justify-content-center">
-							<label for="txtReversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtReversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
-							<button *ngIf="frmPropietario.get('archivo_identificacion_reverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(3)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmPropietario.get('identificacion_reverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(3)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
+						<small *ngIf="Propietario?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Propietario.identificacion_reverso }}</small>
 					</div>
 				</div>
 			</div>
@@ -299,11 +209,11 @@
 					</div>
 					<div class="col-12 col-md-4">
 						<label style="font-size:0.7rem;color:#666">Modo</label>
-						<p-dropdown [options]="modoOpciones" [(ngModel)]="u.modo" [ngModelOptions]="{standalone: true}" [style]="{width:'100%'}" (onChange)="onModoChange(u)"></p-dropdown>
+						<p-dropdown [options]="modoOpciones" [(ngModel)]="u.modo" [ngModelOptions]="{standalone: true}" [style]="{width:'100%'}" (onChange)="onModoChange(u)"appendTo="body"></p-dropdown>
 					</div>
 					<div class="col-12 col-md-4">
 						<label style="font-size:0.7rem;color:#666">Pago Cuota Mtto.</label>
-						<p-dropdown [options]="pagoCuotaOpciones" [(ngModel)]="u.pago_cuota_mantenimiento" [ngModelOptions]="{standalone: true}" [style]="{width:'100%'}" [disabled]="u.modo === 'Vivienda'"></p-dropdown>
+						<p-dropdown [options]="pagoCuotaOpciones" [(ngModel)]="u.pago_cuota_mantenimiento" [ngModelOptions]="{standalone: true}" [style]="{width:'100%'}" [disabled]="u.modo === 'Vivienda'"appendTo="body"></p-dropdown>
 					</div>
 				</div>
 			</div>
@@ -391,8 +301,10 @@
           <span *ngIf="!srcImagen" class="hoose-avatar-initials">{{ (Propietario.nombre || 'P').charAt(0) }}{{ (Propietario.apellidos || '').charAt(0) || '' }}</span>
         </div>
         <div class="mb-2">
+          <div style="cursor:pointer" (click)="onPropietarioAlternarEstatus(Propietario)" pTooltip="{{ Propietario?.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }} propietario" tooltipPosition="top">
           <span class="hoose-badge-activo" *ngIf="Propietario.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
           <span class="hoose-badge-inactivo" *ngIf="Propietario.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+          </div>
         </div>
         <h5 class="text-white mb-1">{{ Propietario.nombre }} {{ Propietario.apellidos || '' }}</h5>
         <small class="text-muted">{{ Propietario.usuario }}</small>
@@ -437,27 +349,8 @@
         </div>
       </div>
 
-      <!-- Identificación -->
-      <div class="hoose-detalle-card p-3 mb-3">
-        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Identificación</h6></div>
-        <div class="row">
-          <div class="col-6"><small class="text-muted d-block">Folio Identificación</small><span class="text-white">{{ Propietario.identificacion_folio || 'No registrado' }}</span></div>
-          <div class="col-6"><small class="text-muted d-block">Domicilio Identificación</small><span class="text-white">{{ Propietario.identificacion_domicilio || 'No registrado' }}</span></div>
-        </div>
-        <div class="row mt-2" *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso">
-          <div class="col-6 text-center" *ngIf="srcIdentificacionAnverso">
-            <small class="text-muted d-block mb-1">Anverso</small>
-            <img [src]="srcIdentificacionAnverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
-          </div>
-          <div class="col-6 text-center" *ngIf="srcIdentificacionReverso">
-            <small class="text-muted d-block mb-1">Reverso</small>
-            <img [src]="srcIdentificacionReverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionReverso)" />
-          </div>
-        </div>
-      </div>
-
       <!-- Unidades asignadas -->
-      <div class="hoose-detalle-card p-3">
+      <div class="hoose-detalle-card p-3 mb-3">
         <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(233,30,138,0.15)"><i class="pi pi-building" style="color:#e91e8a"></i></div><h6 class="text-white mb-0">Unidades asignadas</h6></div>
         <div *ngFor="let unidad of Propietario.unidades" class="hoose-unidad-row">
           <div class="d-flex align-items-center gap-3">
@@ -473,6 +366,25 @@
           </div>
         </div>
         <div *ngIf="!Propietario.unidades || Propietario.unidades.length === 0" class="text-muted">Sin unidades asignadas</div>
+      </div>
+
+      <!-- Identificación -->
+      <div class="hoose-detalle-card p-3">
+        <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(59,130,246,0.15)"><i class="pi pi-id-card" style="color:#3b82f6"></i></div><h6 class="text-white mb-0">Identificación</h6></div>
+        <div class="row">
+          <div class="col-6"><small class="text-muted d-block">Folio Identificación</small><span class="text-white">{{ Propietario.identificacion_folio || 'No registrado' }}</span></div>
+          <div class="col-6"><small class="text-muted d-block">Domicilio Identificación</small><span class="text-white">{{ Propietario.identificacion_domicilio || 'No registrado' }}</span></div>
+        </div>
+        <div class="row mt-2" *ngIf="srcIdentificacionAnverso || srcIdentificacionReverso">
+          <div class="col-6 text-center" *ngIf="srcIdentificacionAnverso">
+            <small class="text-muted d-block mb-1">Anverso</small>
+            <img [src]="srcIdentificacionAnverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
+          </div>
+          <div class="col-6 text-center" *ngIf="srcIdentificacionReverso">
+            <small class="text-muted d-block mb-1">Reverso</small>
+            <img [src]="srcIdentificacionReverso" class="img-fluid rounded" style="max-height:120px;cursor:pointer;border:1px solid #333" (click)="onImagenMostrar(srcIdentificacionReverso)" />
+          </div>
+        </div>
       </div>
     </div>
   </div>

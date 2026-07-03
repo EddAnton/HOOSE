@@ -21,6 +21,15 @@ export class CondominiosService {
     return this.http.get(environment.urlBackend + url, { headers: this.headers }).pipe(map(r => r));
   }
 
+
+  ResumenCards(fechaInicio: string = null, fechaFin: string = null) {
+    let url = 'condominios/resumen-cards';
+    if (fechaInicio && fechaFin) {
+      url += '?fecha_inicio=' + fechaInicio + '&fecha_fin=' + fechaFin;
+    }
+    return this.http.get(environment.urlBackend + url, { headers: this.headers }).pipe(map(r => r));
+  }
+
   ListarActivos() { return this.Listar(true); }
 
   ListarCondominio(idCondominio: number = 0) {

@@ -49,6 +49,10 @@ export class CatalogoAdministradoresComponent implements OnInit {
 	mostrarDialogoImagenAdministrador: boolean = false;
 	mostrarDialogoDetallesAdministrador: boolean = false;
 	mostrarFiltros: boolean = false;
+	filtroCondominio: string = null;
+	filtroTipo: string = null;
+	filtroEstatus: number = null;
+	limpiarFiltros() { this.filtroCondominio = null; this.filtroTipo = null; this.filtroEstatus = null; }
 
 	// Tipo de administración
 	tipoAdministracion: string = 'UNICO';
@@ -221,16 +225,15 @@ console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any
 		}
 		hlpSwal.Cerrar();
 
-		// Si el admin tiene condominio asignado, agregarlo a las opciones si no está
+		// Si el admin tiene condominio asignado, agregarlo a las opciones siempre
 		if (idUsuario > 0 && this.Administrador['fk_id_condominio'] && this.Administrador['condominio_nombre']) {
 			const idCond = +this.Administrador['fk_id_condominio'];
-			const existe = this.opcionesCondominios.find((o: any) => o.value === idCond);
-			if (!existe) {
-				this.opcionesCondominios = [
-					{ label: this.Administrador['condominio_nombre'], value: idCond },
-					...this.opcionesCondominios
-				];
-			}
+			this.opcionesCondominios = this.opcionesCondominios.filter((o: any) => o.value !== idCond);
+			this.opcionesCondominios = [
+				{ label: this.Administrador['condominio_nombre'], value: idCond },
+				...this.opcionesCondominios
+			];
+			console.log('COND OPTIONS:', JSON.stringify(this.opcionesCondominios.slice(0,3)), 'FORM VALUE:', this.frmAdministrador?.get('fk_id_condominio')?.value);
 		}
 
 		try {
@@ -262,7 +265,7 @@ console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any
 				imagen: [a.imagen],
 				identificacion_anverso: [a.identificacion_anverso],
 				identificacion_reverso: [a.identificacion_reverso],
-				fk_id_condominio: [+a.fk_id_condominio || null],
+				fk_id_condominio: [null],
 				estatus: [a.estatus],
 				archivo_imagen: [null],
 				archivo_identificacion_anverso: [null],
@@ -270,6 +273,16 @@ console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any
 			fecha_inicio: [null],
 			fecha_fin: [null],
 			contrasenia: [null],
+			});
+			const idCondActual = +a.fk_id_condominio || null;
+			this.condominiosService.Listar(true).toPromise().then((r: any) => {
+				const todos = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
+				// Mostrar solo sin administrador + el del admin actual
+				const sinAdminIds = this.Condominios.map((c: any) => +c.id_condominio);
+				this.opcionesCondominios = todos.filter((c: any) => sinAdminIds.includes(c.value) || c.value === idCondActual);
+				this.frmAdministrador.patchValue({ fk_id_condominio: idCondActual });
+			}).catch(() => {
+				this.frmAdministrador.patchValue({ fk_id_condominio: idCondActual });
 			});
 			this.frmAdministrador
 				.get('nombre')
@@ -327,6 +340,7 @@ this.archivosPersonaMoral = {};
     if (!this.frmAdministrador.get('rfc')) this.frmAdministrador.addControl('rfc', new FormControl(this.Administrador.rfc || null));
     if (!this.frmAdministrador.get('sitio_web')) this.frmAdministrador.addControl('sitio_web', new FormControl(this.Administrador.sitio_web || null));
     if (!this.frmAdministrador.get('domicilio_fiscal')) this.frmAdministrador.addControl('domicilio_fiscal', new FormControl(this.Administrador.domicilio_fiscal || null));
+    if (!this.frmAdministrador.get("apellidos")) this.frmAdministrador.addControl("apellidos", new FormControl(this.Administrador["apellidos"] || null));
     // Auto-llenar condominio del header
     const condHeader = this.sesionUsuarioService.obtenerIDCondominioUsuario() || 0;
     if (condHeader > 0 && this.frmAdministrador.get('fk_id_condominio')) {
@@ -756,4 +770,16 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
     } catch (e) { hlpSwal.Error(e); }
   }
 
+// Método eliminado accidentalmente - restaurado
+onGenerarUsuario() {
+const nombre = (this.frmAdministrador.get('nombre')?.value || '').trim();
+const apellidos = (this.frmAdministrador.get('apellidos')?.value || '').trim();
+if (!nombre || nombre.length < 2) return;
+let usuario = nombre.toLowerCase().split(/\s+/)[0];
+if (apellidos) {
+usuario += '.' + apellidos.toLowerCase().split(/\s+/)[0];
+}
+usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+this.frmAdministrador.patchValue({ usuario: usuario });
+}
 }

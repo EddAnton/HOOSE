@@ -46,6 +46,19 @@ export class CatalogoCondominiosComponent implements OnInit {
 
   idxSeleccionado: number = 0;
 
+  // Vista Cards
+  vistaActual: 'cards' | 'carrusel' = 'cards';
+  Cards: any[] = [];
+  CardsFiltradas: any[] = [];
+  cargandoCards: boolean = false;
+  filtroCardEstatus: any = null;
+  filtroCardTipo: any = null;
+  filtroCardBusqueda: string = '';
+  fechaInicioCards: string = null;
+  fechaFinCards: string = null;
+
+
+
   constructor(
     private condominiosService: CondominiosService,
     private administradoresService: UsuariosAdministradoresService,
@@ -56,6 +69,7 @@ export class CatalogoCondominiosComponent implements OnInit {
 
   ngOnInit(): void {
     this.onActualizarInformacion();
+    this.cargarCards();
     this.administradoresService.ListarSinAsignar().toPromise().then((r: any) => {
       this.AdminsSinAsignar = (r['administradores'] || []).map((a: any) => ({
         label: a.nombre + (a.email ? ' — ' + a.email : ''),
@@ -382,6 +396,69 @@ hlpSwal.Pregunta({
   }
   onIrAdministradores() {
     this.router.navigateByUrl('/catalogos/administradores');
+  }
+
+  get kpiCardsActivos() { return (this.Cards || []).filter(c => c.estatus == 1).length; }
+
+  cambiarVista(vista: 'cards' | 'carrusel') {
+    this.vistaActual = vista;
+    if (vista === 'cards' && this.Cards.length === 0) {
+      this.cargarCards();
+    }
+  }
+
+  async cargarCards() {
+    this.cargandoCards = true;
+    try {
+      const hoy = new Date();
+      const inicio = this.fechaInicioCards || hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0') + '-01';
+      const fin = this.fechaFinCards || new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).toISOString().slice(0, 10);
+      const r: any = await this.condominiosService.ResumenCards(inicio, fin).toPromise();
+      this.Cards = r['cards'] || [];
+      this.filtrarCards();
+    } catch (e) {
+      await hlpSwal.Error(e);
+    } finally {
+      this.cargandoCards = false;
+    }
+  }
+
+  filtrarCards() {
+    let resultado = [...this.Cards];
+    if (this.filtroCardEstatus !== null && this.filtroCardEstatus !== undefined) {
+      resultado = resultado.filter(c => c.estatus == this.filtroCardEstatus);
+    }
+    if (this.filtroCardTipo) {
+      resultado = resultado.filter(c => c.tipo === this.filtroCardTipo);
+    }
+    if (this.filtroCardBusqueda) {
+      const q = this.filtroCardBusqueda.toLowerCase();
+      resultado = resultado.filter(c =>
+        (c.condominio || '').toLowerCase().includes(q) ||
+        (c.domicilio || '').toLowerCase().includes(q)
+      );
+    }
+    this.CardsFiltradas = resultado;
+  }
+
+  limpiarFiltrosCards() {
+    this.filtroCardEstatus = null;
+    this.filtroCardTipo = null;
+    this.filtroCardBusqueda = '';
+    this.filtrarCards();
+  }
+
+  getImagenCard(card: any): string {
+    if (!card?.imagen) return './assets/img/imagen_no_disponible.png';
+    return environment.urlBackendCondominiosFiles + card.id_condominio + '/' + card.imagen;
+  }
+
+  onVerDetalleCard(card: any) {
+    const idx = this.Condominios.findIndex(c => c.id_condominio === card.id_condominio);
+    if (idx >= 0) {
+      this.vistaActual = 'carrusel';
+      this.onSeleccionarCondominio(idx);
+    }
   }
 
   onMostrarImagenPreview(url: string) {

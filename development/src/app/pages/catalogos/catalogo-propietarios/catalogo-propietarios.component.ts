@@ -60,6 +60,22 @@ export class CatalogoPropietariosComponent implements OnInit {
 	bIdentificacionAnversoBorrar: boolean = false;
 	bIdentificacionReversoBorrar: boolean = false;
 	permitirAgregarEditar: boolean = false;
+	filtroCondominio: number = null;
+	filtroEstatus: number = null;
+
+	get PropietariosFiltrados() {
+		return this.Propietarios.filter((p: any) => {
+			if (this.filtroCondominio) {
+				const cond = this.condominiosLista.find((c: any) => c.value === this.filtroCondominio);
+				if (cond && p.condominio_nombre !== cond.label) return false;
+			}
+			if (this.filtroEstatus !== null && this.filtroEstatus !== undefined && +p.estatus !== this.filtroEstatus) return false;
+			return true;
+		});
+	}
+	get kpiActivos() { return this.Propietarios.filter((p: any) => p.estatus == 1).length; }
+	get kpiInactivos() { return this.Propietarios.filter((p: any) => p.estatus != 1).length; }
+	limpiarFiltros() { this.filtroCondominio = null; this.filtroEstatus = null; }
 	esSuperAdminSinCondominio: boolean = false;
 	condominiosLista: any[] = [];
 

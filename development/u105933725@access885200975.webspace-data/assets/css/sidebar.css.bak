@@ -1,0 +1,121 @@
+.sidebar-container {
+	align-self: center;
+	height: 95vh;
+	font-family: var(--bs-font-family);
+	user-select: none;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	width: 180px;
+	margin: 0 0 auto 5px;
+	background: linear-gradient(195deg, #42424a 0%, #191919 100%);
+}
+
+.sidebar-container .top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.sidebar-container .top .logo {
+	display: flex;
+	gap: 0.8rem;
+}
+
+.sidebar-container .top .logo .title {
+	font-size: 1.2rem;
+}
+
+.sidebar-container .top .logo img {
+	width: 4rem;
+	height: 2rem;
+}
+
+.sidebar-container .top .close {
+	display: none;
+}
+
+.sidebar-container .menu-options {
+	/* background: white; */
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	position: relative;
+	/* margin-top: 2rem; */
+	/* top: 1.5rem; */
+	font-size: 1rem;
+}
+
+.sidebar-container .menu-options .menu-divider {
+	height: 1px;
+	width: 96%;
+	margin-left: 2%;
+	content: '';
+	background: var(--color-light);
+}
+
+.sidebar-container .menu-options .menu-option a {
+	color: var(--color-dark);
+	display: flex;
+	color: var(--color-info-dark);
+	margin-left: 0.5rem;
+	gap: 1rem;
+	align-items: center;
+	position: relative;
+	height: 3rem;
+	text-decoration: none;
+}
+
+.sidebar-container .menu-options .menu-option a .menu-option-title {
+	padding-left: 0.25rem;
+	/* font-size: 1.1rem; */
+	font-weight: 500;
+}
+
+.sidebar-container .menu-options .menu-option a:not(.active) span {
+	transition: all 300ms ease;
+}
+
+.sidebar-container .menu-options .menu-option a.active {
+	background: var(--color-light);
+	color: var(--color-primary);
+	margin-left: 0;
+}
+
+.sidebar-container .menu-options .menu-option a.active:before {
+	content: '';
+	width: 6px;
+	height: 100%;
+	background: var(--color-primary);
+}
+
+.sidebar-container .menu-options .menu-option a.active .menu-option-icon {
+	color: var(--color-primary);
+	margin-left: -5px;
+}
+
+.sidebar-container .menu-options .menu-option a:hover {
+	color: var(--color-primary);
+}
+
+.sidebar-container .menu-options .menu-option a:not(.active):hover .menu-option-icon {
+	margin-left: 0.5rem;
+}
+
+.sidebar-container .menu-options .menu-option a .menu-option-counter {
+	background: var(--color-danger);
+	color: var(--color-white);
+	padding: 2px 10px;
+	/* font-size: 11px; */
+	font-size: 0.7rem;
+	border-radius: var(--border-radius-1);
+}
+
+.profile-photo {
+	width: 2.8rem;
+	height: 2.8rem;
+	border-radius: 50%;
+	overflow: hidden;
+}

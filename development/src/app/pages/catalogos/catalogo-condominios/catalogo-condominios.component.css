@@ -478,3 +478,47 @@
 
 .cond-doc-item:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); transition: all 0.2s; }
 .cond-doc-available .pi { color: var(--c-pink) !important; }
+
+/* ── Vista Cards Inmuebles ── */
+.als-vista-switcher { display: flex; gap: 4px; background: #1a1d2e; border: 1px solid #2d3150; border-radius: 8px; padding: 3px; }
+.als-vista-switcher button { background: transparent; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; color: #8a8f9e; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+.als-vista-switcher button.active { background: #e91e8c; color: #ffffff; box-shadow: 0 1px 4px rgba(233,30,140,0.3); font-weight: 700; }
+
+.als-inmueble-card { background: #22253a; border: 1px solid #2d3150; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); height: 100%; display: flex; flex-direction: column; }
+.als-inmueble-card:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.2); transform: translateY(-2px); border-color: #e91e8c; }
+
+.als-card-body { padding: 8px 12px; flex: 1; }
+.als-card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.als-card-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid #1a1d2e; flex-shrink: 0; }
+.als-card-title-wrap { flex: 1; min-width: 0; }
+.als-card-tipo-pill { font-size: 0.6rem; background: rgba(233,30,140,0.15); color: #e91e8c; border-radius: 4px; padding: 2px 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.08em; }
+.als-card-title { font-size: 0.88rem; font-weight: 700; color: #ffffff; margin: 3px 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.als-card-dir { font-size: 0.72rem; color: #94a3b8; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.als-card-dir i { margin-right: 4px; }
+
+.als-card-actions { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+.als-estatus-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 600; border-radius: 20px; padding: 2px 8px; }
+.als-estatus-badge.verde { background: rgba(16,185,129,0.12); color: #10b981; }
+.als-estatus-badge.rojo { background: rgba(239,68,68,0.12); color: #ef4444; }
+.als-estatus-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.als-estatus-dot.verde { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+.als-estatus-dot.rojo { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+.als-edit-icon { font-size: 0.8rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; }
+.als-edit-icon:hover { color: #e91e8c; }
+
+.als-card-stats-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.als-stat-half { display: flex; align-items: center; justify-content: center; gap: 5px; background: #1a1d2e; border-radius: 8px; padding: 6px 8px; }
+.als-stat-num { font-size: 1.1rem; font-weight: 800; color: #e91e8c; line-height: 1; }
+.als-stat-lbl { font-size: 0.62rem; color: #8a8f9e; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.als-card-divider { border: none; border-top: 1px solid #2d3150; margin: 6px 0; }
+.als-card-financiero { display: flex; justify-content: space-between; gap: 4px; }
+.als-fin-item { flex: 1; text-align: center; }
+.als-fin-lbl { display: block; font-size: 0.62rem; color: #8a8f9e; text-transform: uppercase; }
+.als-fin-val { display: block; font-size: 1.1rem; font-weight: 800; }
+
+.als-card-admin { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #8a8f9e; margin-top: 6px; padding-top: 6px; border-top: 1px solid #2d3150; }
+.als-card-admin i { color: #e91e8c; font-size: 0.8rem; }
+.als-card-admin-empty { color: #cbd5e1; font-style: italic; }
+
+.als-filtros-group { display: flex; gap: 8px; align-items: center; flex: 1 1 100%; min-width: 0; }

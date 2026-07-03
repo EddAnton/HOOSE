@@ -1,165 +1,120 @@
-<div class="card shadow-sm">
-	<p-table
-		#ptUnidades
-		[responsive]="true"
-		[value]="Unidades"
-		[columns]="UnidadesCols"
-		[globalFilterFields]="UnidadesFilter"
-		[rowHover]="true"
-		[showCurrentPageReport]="true"
-		[paginator]="Unidades.length > 0"
-		[rows]="50"
-		dataKey="id_unidad"
-		styleClass="p-datatable-striped"
-		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-	>
-		<ng-template pTemplate="caption">
-			<div class="d-flex align-items-center p-1">
-				<div class="me-auto">
-					<!-- Botón Nuevo -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="pi pi-plus"
-						class="p-button-rounded p-button-raised p-button-success ms-1"
-						pTooltip="Agregar unidad"
-						tooltipPosition="right"
-						(click)="onUnidadEditar()"
-					></button>
-				</div>
-				<!-- Opciones Filtrado -->
-				<div class="ms-auto">
-					<!-- Botón Actualizar -->
-					<button
-						*ngIf="isDevelopment"
-						pButton
-						type="button"
-						icon="pi pi-refresh"
-						class="p-button-rounded p-button-text p-button-secondary me-2"
-						pTooltip="Actualizar información"
-						tooltipPosition="right"
-						(click)="onActualizarInformacion()"
-					></button>
-					<span class="p-input-icon-left">
-						<i class="pi pi-search"></i>
-						<input
-							type="text"
-							id="txtGlobalFilter"
-							class="form-control ms-1 ps-4"
-							(input)="ptUnidades.filterGlobal($event.target.value, 'contains')"
-							placeholder="Filtrar"
-						/>
-					</span>
-				</div>
-				<div>
-					<button
-						pButton
-						pRipple
-						type="button"
-						id="btnLimpiarFiltro"
-						icon="pi pi-times"
-						class="p-button-rounded p-button-text p-button-danger ms-3"
-						pTooltip="Limpiar filtro"
-						tooltipPosition="left"
-						(click)="hlpPrimeNGTable.reset(ptUnidades)"
-					></button>
-				</div>
-			</div>
-		</ng-template>
-		<ng-template pTemplate="header" let-columns>
-			<tr>
-				<th
-					*ngFor="let col of columns"
-					class="text-center"
-					[ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}"
-				>
-					{{ col.header ? col.header : '&nbsp;' }}
-				</th>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-Unidad>
-<tr style="cursor:pointer" (click)="onUnidadDetalles(Unidad)">
-				<td><span class="p-column-title">Unidad</span>{{ Unidad.unidad }}</td>
-				<td style="text-align:left"><span class="p-column-title">Condominio</span><span class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Unidad.condominio_nombre), 'background': getCondominioColor(Unidad.condominio_nombre) + '20'}">{{ Unidad.condominio_nombre || '-' }}</span></td>
-				<td><span class="p-column-title">Edificio / Torre</span>{{ Unidad.edificio }}</td>
-				<td><span class="p-column-title">Tipo</span><span class="hoose-badge-blue">{{ Unidad.tipo_unidad || 'Departamento' }}</span></td>
-				<td class="text-center"><span class="p-column-title">Nivel</span>{{ Unidad.nivel || '-' }}</td>
-<td><span class="p-column-title">Modo</span>{{ Unidad.modo || 'Vivienda' }}</td>
-<td><span class="p-column-title">Propietario</span>{{ Unidad.propietario_nombre || '-' }}</td>
-<td><span class="p-column-title">Condómino</span>{{ Unidad.condomino_nombre || '-' }}</td>
-				<td class="text-md-center">
-					<span class="p-column-title">Escrituras</span>
-					<i
-						*ngIf="Unidad.escrituras_archivo && Unidad.escrituras_archivo != ''"
-						class="pi pi-file-pdf text-danger"
-						style="cursor: pointer; font-size: 1.2rem"
-						pTooltip="Visualizar las escrituras de la Unidad"
-						tooltipPosition="top"
-						(click)="onUnidadEscriturasMostrar(Unidad)"
-					></i>
-				</td>
-				<td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
-					<span [ngStyle]="{ cursor: permitirAgregarEditar ? 'pointer' : 'default' }">
-						<p-tag
-							severity="{{ Unidad.estatus == 1 ? 'success' : 'danger' }}"
-							value="{{ Unidad.estatus == 1 ? 'A' : 'Ina' }}ctiva"
-							pTooltip="{{ Unidad.estatus == 1 ? 'Desh' : 'H' }}abilitar unidad"
-							tooltipPosition="left"
-							tooltipDisabled="{{ !permitirAgregarEditar }}"
-							(click)="permitirAgregarEditar && onUnidadAlternarEstatus(Unidad)"
-						></p-tag>
-					</span>
-				</td>
-				<td class="text-end">
-					<!-- Botón Mostrar escrituras -->
-					<!-- <button
-						*ngIf="Unidad.escrituras_archivo"
-						pButton
-						type="button"
-						icon="pi pi-eye"
-						class="p-button-rounded p-button-text p-button-warning me-1"
-						pTooltip="Mostrar escrituras de la Unidad"
-						tooltipPosition="left"
-						(click)="onUnidadEscriturasMostrar(Unidad)"
-					></button> -->
-					<!-- Botón Editar -->
-					<button
-						pButton
-						*ngIf="permitirAgregarEditar && Unidad.estatus == 1"
-						type="button"
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text p-button-success me-1"
-						pTooltip="Editar información de la Unidad"
-						tooltipPosition="left"
-						(click)="$event.stopPropagation(); onUnidadEditar(Unidad)"
-					></button>
-					<!-- Botón Deshabilitar -->
-					<!-- <button
-						*ngIf="Unidad.estatus == 1"
-						pButton
-						type="button"
-						icon="pi pi-trash"
-						class="p-button-rounded p-button-text p-button-danger me-1"
-						pTooltip="Deshabilitar la Unidad"
-						tooltipPosition="left"
-						(click)="onUnidadDeshabilitar(Unidad)"
-					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onUnidadEliminar(Unidad)"></button>
- -->
-				</td>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="emptymessage"
-			><tr class="no-records">
-				<td>Sin registros.</td>
-			</tr></ng-template
-		>
-	</p-table>
+<div class="hoose-tabla-wrapper" style="margin: 16px 16px 0 0;">
+
+  <!-- Toolbar -->
+  <div class="hoose-tabla-toolbar" style="align-items:flex-start;gap:16px;flex-wrap:nowrap">
+    <div style="flex-shrink:0;max-width:70%">
+    <div class="hoose-kpi-card hoose-kpi-blue" style="margin:0">
+      <div class="hoose-kpi-icon"><i class="pi pi-home"></i></div>
+      <div class="hoose-kpi-body">
+        <span class="hoose-kpi-label">Total Unidades</span>
+        <span class="hoose-kpi-value">{{ UnidadesFiltradas.length }}</span>
+        <span class="hoose-kpi-sub">Activas: <b>{{ kpiActivos }}</b> &nbsp;|&nbsp; Inactivas: <b>{{ kpiInactivos }}</b></span>
+      </div>
+    </div>
+    </div>
+    <div class="d-flex flex-column gap-2 justify-content-between">
+      <div class="d-flex justify-content-end">
+        <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus" label="Nueva Unidad" class="hoose-btn-nuevo" pTooltip="Agregar unidad" tooltipPosition="left" (click)="onUnidadEditar()"></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <div class="hoose-tabla-search">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar unidad..." (input)="ptUnidades.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <select *ngIf="esSuperAdminSinCondominio" class="hoose-filtro-select" [(ngModel)]="filtroCondominio">
+          <option [ngValue]="null">Condominio</option>
+          <option *ngFor="let c of condominiosLista" [ngValue]="c.value">{{ c.label }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroTipo">
+          <option [ngValue]="null">Tipo</option>
+          <option *ngFor="let t of tiposUnidad" [ngValue]="t">{{ t }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroModo">
+          <option [ngValue]="null">Modo</option>
+          <option ngValue="Vivienda">Vivienda</option>
+          <option ngValue="Renta">Renta</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroEstatus">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear" pTooltip="Limpiar filtros" tooltipPosition="left" (click)="limpiarFiltros(); hlpPrimeNGTable.reset(ptUnidades)"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="hoose-tabla-container" style="overflow-x:auto">
+    <p-table
+      #ptUnidades
+      [value]="UnidadesFiltradas"
+      [globalFilterFields]="UnidadesFilter"
+      [rowHover]="true"
+      [showCurrentPageReport]="true"
+      [paginator]="UnidadesFiltradas.length > 0"
+      [rows]="20"
+      dataKey="id_unidad"
+      styleClass="hoose-table"
+      currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords}"
+      [rowsPerPageOptions]="[10,20,50]"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngIf="esSuperAdminSinCondominio" class="hoose-th" style="min-width:140px;white-space:nowrap">Condominio</th>
+          <th class="hoose-th" style="min-width:160px;white-space:nowrap">Unidad</th>
+          <th class="hoose-th" style="min-width:90px;white-space:nowrap">Superficie</th>
+          <th class="hoose-th" style="min-width:110px;white-space:nowrap">Cuota Mtto</th>
+          <th class="hoose-th" style="min-width:150px;white-space:nowrap">Edificio / Torre</th>
+          <th class="hoose-th" style="min-width:110px;white-space:nowrap">Tipo</th>
+          <th class="hoose-th text-center" style="min-width:70px;white-space:nowrap">Nivel</th>
+          <th class="hoose-th" style="min-width:90px;white-space:nowrap">Modo</th>
+          <th class="hoose-th" style="min-width:150px;white-space:nowrap">Propietario</th>
+          <th class="hoose-th" style="min-width:150px;white-space:nowrap">Condómino</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Legal</th>
+          <th class="hoose-th text-center" style="min-width:90px;white-space:nowrap">Estatus</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Unidad>
+        <tr class="hoose-tr" (click)="onUnidadDetalles(Unidad)">
+          <td *ngIf="esSuperAdminSinCondominio" class="hoose-td">
+            <span class="hoose-cond-pill" [ngStyle]="{'color': getCondominioColor(Unidad.condominio_nombre), 'background': getCondominioColor(Unidad.condominio_nombre) + '18'}">{{ Unidad.condominio_nombre || '—' }}</span>
+          </td>
+          <td class="hoose-td"><strong class="hoose-nombre">{{ Unidad.unidad }}</strong></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Unidad.metros_cuadrados ? Unidad.metros_cuadrados + ' m²' : '—' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Unidad.cuota_mantenimiento ? ('$' + Unidad.cuota_mantenimiento) : '—' }}</span></td>
+          <td class="hoose-td">{{ Unidad.edificio || '—' }}</td>
+          <td class="hoose-td"><span class="hoose-tipo-pill">{{ Unidad.tipo_unidad || 'Departamento' }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Unidad.nivel || '—' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Unidad.modo || 'Vivienda' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Unidad.propietario_nombre || '—' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Unidad.condomino_nombre || '—' }}</span></td>
+          <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+            <i *ngIf="Unidad.escrituras_archivo" class="pi pi-file-pdf" style="color:#ef4444;cursor:pointer;font-size:1.1rem" pTooltip="Ver escrituras" tooltipPosition="top" (click)="onUnidadEscriturasMostrar(Unidad)"></i>
+            <span *ngIf="!Unidad.escrituras_archivo" class="hoose-num">—</span>
+          </td>
+          <td class="hoose-td text-center">
+            <span class="hoose-estatus-pill {{ Unidad.estatus == 1 ? 'activo' : 'inactivo' }}" style="cursor:pointer"
+              (click)="$event.stopPropagation(); permitirAgregarEditar && onUnidadAlternarEstatus(Unidad)"
+              pTooltip="{{ Unidad.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }}" tooltipPosition="top">
+              <span class="hoose-estatus-dot"></span>{{ Unidad.estatus == 1 ? 'Activa' : 'Inactiva' }}
+            </span>
+          </td>
+          <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+            <button pButton type="button" icon="pi pi-eye" class="hoose-btn-accion" pTooltip="Ver detalles" tooltipPosition="top" (click)="onUnidadDetalles(Unidad)"></button>
+            <button *ngIf="permitirAgregarEditar && Unidad.estatus == 1" pButton type="button" icon="pi pi-pencil" class="hoose-btn-accion" pTooltip="Editar" tooltipPosition="top" (click)="onUnidadEditar(Unidad)"></button>
+            <button *ngIf="esSuperAdmin" pButton type="button" icon="pi pi-trash" class="hoose-btn-accion" style="color:#ef4444 !important" pTooltip="Eliminar" tooltipPosition="top" (click)="$event.stopPropagation(); onUnidadEliminar(Unidad)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td [attr.colspan]="esSuperAdminSinCondominio ? 13 : 12" class="hoose-empty">Sin registros.</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
+
 
 <!-- Diálogo de inserción y edición -->
 <p-dialog
@@ -349,8 +304,10 @@
           <i class="pi pi-home" style="color:#3b82f6;font-size:3rem"></i>
         </div>
         <div class="mb-2">
+          <div style="cursor:pointer" (click)="onUnidadAlternarEstatus(UnidadDetalle)" pTooltip="{{ UnidadDetalle?.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }} unidad" tooltipPosition="top">
           <span class="hoose-badge-activo" *ngIf="UnidadDetalle?.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
           <span class="hoose-badge-inactivo" *ngIf="UnidadDetalle?.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+          </div>
         </div>
         <h5 class="text-white mb-1">{{ UnidadDetalle?.unidad }}</h5>
         <small class="text-muted">{{ UnidadDetalle?.tipo_unidad || 'Departamento' }}</small>

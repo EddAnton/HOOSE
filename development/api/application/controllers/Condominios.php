@@ -256,6 +256,58 @@ class Condominios extends REST_Controller
 		}
 		$this->response($respuesta, $codigo_respuesta);
 	}
+    public function resumen_cards_get()
+    {
+        $response = ['err' => true, 'msg' => null];
+        $responseCode = REST_Controller::HTTP_BAD_REQUEST;
+        try {
+            $token = getToken();
+            if ($token->error) { $this->response($token, $responseCode); }
+            $fechaInicio = $this->input->get('fecha_inicio');
+            $fechaFin    = $this->input->get('fecha_fin');
+            if (!$fechaInicio || !$fechaFin) {
+                $fechaInicio = date('Y-m-01');
+                $fechaFin    = date('Y-m-t');
+            }
+            $this->load->model('Metricas_model');
+            $condominios = $this->Condominio_model->listar();
+            $cards = [];
+            foreach ($condominios as $c) {
+                $metricas = $this->Metricas_model->tablero($c['id_condominio'], 'mes_anterior', $fechaInicio, $fechaFin);
+                $cards[] = [
+                    'id_condominio' => $c['id_condominio'],
+                    'condominio'    => $c['condominio'],
+                    'domicilio'     => $c['domicilio'],
+                    'tipo'          => $c['tipo'],
+                    'imagen'        => $c['imagen'],
+                    'estatus'       => $c['estatus'],
+                    'edificios'     => $metricas['catalogo']['edificios'] ?? 0,
+                    'unidades'      => $metricas['catalogo']['unidades'] ?? 0,
+                    'propietarios'  => $metricas['catalogo']['propietarios'] ?? 0,
+                    'condominos'    => $metricas['catalogo']['condominos'] ?? 0,
+                    'recaudacion'   => $metricas['financieras']['recaudaciones']['actual'] ?? 0,
+                    'morosidad'     => $metricas['morosidad']['porcentaje'] ?? 0,
+                    'ocupacion'     => $metricas['ocupacion']['porcentaje'] ?? 0,
+                    'administrador' => $this->db->select('u.nombre, u.apellidos')
+                        ->join('usuarios u', 'u.id_usuario = ai.fk_id_usuario')
+                        ->where(['ai.fk_id_condominio' => $c['id_condominio'], 'ai.estatus' => 1])
+                        ->order_by('ai.id_administrador_interno', 'ASC')
+                        ->limit(1)
+                        ->get('administradores_internos ai')
+                        ->row_array() ?: null,
+                ];
+            }
+            $response['cards'] = $cards;
+            $response['err']   = false;
+            $response['msg']   = 'OK';
+            $responseCode = REST_Controller::HTTP_OK;
+        } catch (Exception $e) {
+            $response['msg'] = $e->getMessage();
+        }
+        $this->response($response, $responseCode);
+    }
+
+
 }
 
 /* End of file Condominios.php */

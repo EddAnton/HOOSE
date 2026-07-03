@@ -332,3 +332,90 @@ small.text-muted { color: #555a6a !important; font-size: 0.7rem !important; }
 .hoose-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
 .hoose-form-field { display: flex; flex-direction: column; }
 .hoose-form-label { color: #a0a0b0; font-size: 0.85rem; margin-bottom: 4px; }
+
+/* ── Mejora colores secciones formulario ─────────────────── */
+.hoose-form-section {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 12px !important;
+}
+.hoose-section-title {
+  background: #12121f !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  color: #c8cad4 !important;
+}
+
+/* ── Formulario definitivo ──────────────────────────────── */
+:host ::ng-deep .hoose-dialogo .p-dialog-header {
+  background: #12121f !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-content {
+  background: #12121f !important;
+  padding: 20px !important;
+}
+:host ::ng-deep .hoose-dialogo .p-dialog-footer {
+  background: #12121f !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+}
+.hoose-form-section {
+  background: #ffffff08 !important;
+  border: 1px solid #ffffff0f !important;
+  border-radius: 12px !important;
+  margin-bottom: 14px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.hoose-form-section:last-child { margin-bottom: 0 !important; }
+.hoose-section-title {
+  background: #0a0c12 !important;
+  border-bottom: 1px solid #ffffff0f !important;
+  border-radius: 0 !important;
+  padding: 11px 18px !important;
+  margin: 0 !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  color: #c8cad4 !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+.hoose-form-section > *:not(.hoose-section-title) {
+  padding: 0 18px !important;
+}
+.hoose-form-section > *:not(.hoose-section-title):first-of-type {
+  padding-top: 10px !important;
+}
+.hoose-form-section > *:not(.hoose-section-title):last-child {
+  padding-bottom: 10px !important;
+}
+.hoose-form-section > .hoose-form-grid + .hoose-form-grid {
+  margin-top: 10px !important;
+}
+.hoose-form-grid + .hoose-form-grid { margin-top: 10px !important; }
+:host ::ng-deep .hoose-dialogo .p-inputtext,
+:host ::ng-deep .hoose-dialogo .p-inputmask,
+:host ::ng-deep .hoose-dialogo .p-inputnumber-input,
+:host ::ng-deep .hoose-dialogo .p-dropdown,
+:host ::ng-deep .hoose-dialogo .p-calendar .p-inputtext,
+:host ::ng-deep .hoose-dialogo textarea.p-inputtextarea,
+:host ::ng-deep .hoose-dialogo input[type="text"],
+:host ::ng-deep .hoose-dialogo input[type="number"],
+:host ::ng-deep .hoose-dialogo input[type="email"],
+:host ::ng-deep .hoose-dialogo input[type="password"],
+:host ::ng-deep .hoose-dialogo input[type="file"],
+:host ::ng-deep .hoose-dialogo select {
+  background: #12121f !important;
+}
+
+/* ── Tabla Administradores nueva ────────────────────────── */
+:host ::ng-deep .hoose-table .p-datatable-wrapper { background: #12121f !important; }
+:host ::ng-deep .hoose-table .p-datatable-thead > tr > th { background: #0a0c12 !important; color: #6b7280 !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important; border-right: none !important; }
+:host ::ng-deep .hoose-table .p-datatable-tbody > tr { background: #12121f !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+:host ::ng-deep .hoose-table .p-datatable-tbody > tr:hover { background: rgba(255,255,255,0.03) !important; }
+:host ::ng-deep .hoose-table .p-datatable-tbody > tr > td { border: none !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+:host ::ng-deep .hoose-table .p-paginator { background: #0a0c12 !important; border-top: 1px solid rgba(255,255,255,0.06) !important; color: #6b7280 !important; }
+:host ::ng-deep .hoose-table .p-paginator .p-paginator-page.p-highlight { background: #e91e8c !important; color: #fff !important; border-radius: 6px !important; }
+:host ::ng-deep .hoose-table .p-paginator .p-paginator-current { color: #6b7280 !important; font-size: 0.78rem !important; }

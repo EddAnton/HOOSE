@@ -51,13 +51,12 @@ export class EdificiosService {
 			Authorization: this.sesionUsuarioService.obtenerToken(),
 		});
 
-		/* const params: any = new FormData();
-		for (var [key, value] of Object.entries(data)) {
+		const params: any = new FormData();
+		for (const [key, value] of Object.entries(data)) {
 			if (value != null) {
 				params.append(key, value);
 			}
-		} */
-		const params = Object.assign({}, data);
+		}
 
 		return this.http.post(environment.urlBackend + `${url}`, params, { headers }).pipe(
 			map((respuesta) => {

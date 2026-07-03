@@ -1,179 +1,128 @@
 <!-- ADMINISTRADORES -->
-<div class="admin-wrapper">
+<div class="admin-wrapper" style="margin: 16px 16px 0 0;">
 
-  <!-- FAB -->
-  <button pButton type="button" icon="pi pi-plus"
-    class="p-button-rounded p-button-raised p-button-success admin-fab"
-    pTooltip="Nuevo administrador" tooltipPosition="left"
-    (click)="onAdministradorEditar()">
-  </button>
-
-  <!-- FAB FILTROS -->
-  <button class="admin-fab-filtros" (click)="mostrarFiltros = !mostrarFiltros"
-    [pTooltip]="mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros'" tooltipPosition="left">
-    <i class="pi" [ngClass]="mostrarFiltros ? 'pi-times' : 'pi-sliders-h'"></i>
-  </button>
-
-  <!-- FILTROS -->
-  <div class="admin-filtros" *ngIf="mostrarFiltros">
-    <div class="admin-search-wrap">
-      <i class="pi pi-search"></i>
-      <input type="text" class="admin-search-input"
-        (input)="ptAdministradores.filterGlobal($event.target.value, 'contains')"
-        placeholder="Buscar administrador..."/>
+  <!-- Toolbar con KPIs y filtros -->
+  <div class="hoose-tabla-toolbar" style="align-items:stretch;gap:12px;flex-wrap:wrap">
+    <!-- KPIs -->
+    <div class="d-flex gap-2 flex-wrap">
+      <div class="admin-kpi admin-kpi--pink" style="border-radius:10px;padding:10px 14px">
+        <div class="admin-kpi-icon"><i class="pi pi-users"></i></div>
+        <div class="admin-kpi-body">
+          <span class="admin-kpi-label">Total</span>
+          <span class="admin-kpi-value">{{ kpiTotal }}</span>
+          <span class="admin-kpi-sub">Asig: <b>{{ kpiAsignados }}</b> | S/Asig: <b>{{ kpiSinAsignar }}</b></span>
+        </div>
+      </div>
+      <div class="admin-kpi admin-kpi--blue" style="border-radius:10px;padding:10px 14px">
+        <div class="admin-kpi-icon"><i class="pi pi-home"></i></div>
+        <div class="admin-kpi-body">
+          <span class="admin-kpi-label">Internos</span>
+          <span class="admin-kpi-value">{{ kpiInternos }}</span>
+          <span class="admin-kpi-sub">Únicos: <b>{{ kpiUnicos }}</b> | Comités: <b>{{ kpiComites }}</b></span>
+        </div>
+      </div>
+      <div class="admin-kpi admin-kpi--green" style="border-radius:10px;padding:10px 14px">
+        <div class="admin-kpi-icon"><i class="pi pi-briefcase"></i></div>
+        <div class="admin-kpi-body">
+          <span class="admin-kpi-label">Externos</span>
+          <span class="admin-kpi-value">{{ kpiExternos }}</span>
+          <span class="admin-kpi-sub">Físicas: <b>{{ kpiFisicas }}</b> | Morales: <b>{{ kpiMorales }}</b></span>
+        </div>
+      </div>
     </div>
-    <button pButton pRipple type="button" icon="pi pi-times"
-      class="p-button-rounded p-button-text p-button-danger"
-      pTooltip="Limpiar búsqueda" tooltipPosition="left"
-      (click)="hlpPrimeNGTable.reset(ptAdministradores)">
-    </button>
+    <!-- Botón + Filtros -->
+    <div class="d-flex flex-column gap-2 justify-content-between" style="flex:1;min-width:0">
+      <div class="d-flex justify-content-end">
+        <button pButton type="button" icon="pi pi-plus" label="Nuevo Administrador" class="hoose-btn-nuevo" tooltipPosition="left" (click)="onAdministradorEditar()"></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <div class="hoose-tabla-search">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar administrador..." (input)="ptAdministradores.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <select *ngIf="condominioDelHeader === 0" class="hoose-filtro-select" [(ngModel)]="filtroCondominio">
+          <option [ngValue]="null">Condominio</option>
+          <option *ngFor="let c of opcionesCondominios" [ngValue]="c.label">{{ c.label }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroTipo">
+          <option [ngValue]="null">Tipo</option>
+          <option ngValue="INTERNO">Interno</option>
+          <option ngValue="EXTERNO">Externo</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroEstatus">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear" pTooltip="Limpiar filtros" tooltipPosition="left" (click)="limpiarFiltros(); hlpPrimeNGTable.reset(ptAdministradores)"></button>
+      </div>
+    </div>
   </div>
 
-  <!-- KPIs -->
-  <div class="admin-kpis">
-    <div class="admin-kpi admin-kpi--pink">
-      <div class="admin-kpi-icon"><i class="pi pi-users"></i></div>
-      <div class="admin-kpi-body">
-        <span class="admin-kpi-label">Total Administradores</span>
-        <span class="admin-kpi-value">{{ kpiTotal }}</span>
-        <span class="admin-kpi-sub">Asig: <b>{{ kpiAsignados }}</b> &nbsp;|&nbsp; S/Asig: <b>{{ kpiSinAsignar }}</b> &nbsp;|&nbsp; <b>{{ kpiPctAsignados }}%</b></span>
-      </div>
-    </div>
-    <div class="admin-kpi admin-kpi--blue">
-      <div class="admin-kpi-icon"><i class="pi pi-home"></i></div>
-      <div class="admin-kpi-body">
-        <span class="admin-kpi-label">Internos</span>
-        <span class="admin-kpi-value">{{ kpiInternos }}</span>
-        <span class="admin-kpi-sub">Únicos: <b>{{ kpiUnicos }}</b> &nbsp;|&nbsp; Comités: <b>{{ kpiComites }}</b></span>
-      </div>
-    </div>
-    <div class="admin-kpi admin-kpi--green">
-      <div class="admin-kpi-icon"><i class="pi pi-briefcase"></i></div>
-      <div class="admin-kpi-body">
-        <span class="admin-kpi-label">Externos</span>
-        <span class="admin-kpi-value">{{ kpiExternos }}</span>
-        <span class="admin-kpi-sub">P. Físicas: <b>{{ kpiFisicas }}</b> &nbsp;|&nbsp; P. Morales: <b>{{ kpiMorales }}</b></span>
-      </div>
-    </div>
-  </div>
-
-<div class="admin-table-wrap">
-	<div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
-<p-table
-		#ptAdministradores
-		[responsive]="true"
-		[value]="Administradores"
-		[columns]="AdministradoresCols"
-		[rowHover]="true"
-		[globalFilterFields]="AdministradoresFilter"
-		[showCurrentPageReport]="true"
-		[paginator]="Administradores.length > 0"
-		[rows]="50"
-		dataKey="id_usuario"
-		styleClass="admin-table"
-		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-	>
-		
-		<ng-template pTemplate="header" let-columns>
-			<tr>
-				<th
-					*ngFor="let col of columns"
-					class="text-center"
-					[ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}"
-				>
-					{{ col.header ? col.header : '&nbsp;' }}
-				</th>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-Administrador>
-<tr style="cursor:pointer" (click)="onAdministradorDetalles(Administrador.id_usuario)">
-				<td class="me-1 mt-1">
-					<div (click)="onAdministradorDetalles(Administrador.id_usuario)" style="cursor: pointer">
-						<img
-							class="rounded-circle"
-							src="{{
-								Administrador.imagen
-									? appData.urlBackendUsuariosFiles + Administrador.id_usuario + '/' + Administrador.imagen
-									: './assets/img/imagen_no_disponible.png'
-							}}"
-							style="width: 70px; height: 70px"
-						/>
-					</div>
-				</td>
-				<td><span class="p-column-title">Nombre</span>{{ Administrador.nombre }}</td>
-				<td>
-					<span class="p-column-title">Condominio</span>
-					<span *ngIf="Administrador.condominio_nombre" class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Administrador.condominio_nombre), 'background': getCondominioColor(Administrador.condominio_nombre) + '20'}">{{ Administrador.condominio_nombre }}</span>
-					<span *ngIf="!Administrador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span>
-				</td>
-				<td>
-					<span class="p-column-title">Tipo</span>
-					<span *ngIf="Administrador.tipo_administrador==='INTERNO'" style="color:#3b82f6;font-size:0.75rem;font-weight:600">INTERNO</span>
-					<span *ngIf="Administrador.tipo_administrador==='EXTERNO'" style="color:#e91e8c;font-size:0.75rem;font-weight:600">EXTERNO</span>
-					<span *ngIf="!Administrador.tipo_administrador" style="color:#8a8f9e;font-size:0.75rem">—</span>
-				</td>
-				<td>
-					<span class="p-column-title">Estructura</span>
-					<span *ngIf="Administrador.tipo_administrador==='INTERNO' && Administrador.estructura_administracion==='UNICO'" style="font-size:0.75rem">Único</span>
-					<span *ngIf="Administrador.tipo_administrador==='INTERNO' && Administrador.estructura_administracion==='COMITE'" style="font-size:0.75rem">Comité</span>
-					<span *ngIf="Administrador.tipo_administrador!=='INTERNO' && Administrador.tipo_persona==='FISICA'" style="font-size:0.75rem">P. Física</span>
-					<span *ngIf="Administrador.tipo_administrador!=='INTERNO' && Administrador.tipo_persona==='MORAL'" style="font-size:0.75rem">P. Moral</span>
-					<span *ngIf="Administrador.tipo_administrador!=='INTERNO' && !Administrador.tipo_persona" style="color:#8a8f9e;font-size:0.75rem">—</span>
-				</td>
-				<td><span class="p-column-title">Email</span>{{ Administrador.email }}</td>
-				<td class="text-md-end"><span class="p-column-title">Contacto</span>{{ Administrador.telefono | phoneFormat }}</td>
-				<td class="text-md-center">
-					<span style="cursor: pointer">
-						<p-tag
-							severity="{{ Administrador.estatus == 1 ? 'success' : 'danger' }}"
-							value="{{ Administrador.estatus == 1 ? 'A' : 'Ina' }}ctivo"
-							pTooltip="{{ Administrador.estatus == 1 ? 'Desh' : 'H' }}abilitar administrador"
-							tooltipPosition="left"
-							(click)="$event.stopPropagation(); onAdministradorAlternarEstatus(Administrador)"
-						></p-tag>
-					</span>
-				</td>
-				<td class="text-end">
-					<!-- Botón Editar -->
-					<button
-						pButton
-						*ngIf="Administrador.estatus == 1 && Administrador.tipo_administrador !== 'INTERNO'"
-						type="button"
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text p-button-success me-1"
-						pTooltip="Editar administrador"
-						(click)="$event.stopPropagation(); onAdministradorEditar(Administrador.id_usuario)"
-					></button>
-					<!-- Botón Desvincular (solo si tiene condominio) -->
-					<button pButton type="button"
-						icon="pi pi-ban"
-						class="p-button-rounded p-button-text p-button-warning me-1"
-						pTooltip="Desvincular condominio" tooltipPosition="left"
-						*ngIf="Administrador.fk_id_condominio"
-						(click)="$event.stopPropagation(); onAdministradorDesvincular(Administrador)"
-					></button>
-					<!-- Botón Eliminar (solo si NO tiene condominio) -->
-					<button pButton type="button"
-						icon="pi pi-trash"
-						class="p-button-rounded p-button-text p-button-danger me-1"
-						pTooltip="Eliminar administrador" tooltipPosition="left"
-						*ngIf="!Administrador.fk_id_condominio"
-						(click)="$event.stopPropagation(); onAdministradorEliminar(Administrador)"
-					></button>
-					<!-- Botón Detalles -->
-					<button pButton type="button"
-						icon="pi pi-eye"
-						class="p-button-rounded p-button-text p-button-info me-1"
-						pTooltip="Detalles del administrador" tooltipPosition="left"
-						(click)="onAdministradorDetalles(Administrador.id_usuario)"
-					></button>
-				</td>
-			</tr>
-		</ng-template>
-	</p-table>
-</div>
+<div class="hoose-tabla-container" style="margin-top:0;overflow-x:auto">
+  <p-table #ptAdministradores [value]="Administradores" [globalFilterFields]="AdministradoresFilter"
+    [rowHover]="true" [showCurrentPageReport]="true" [paginator]="Administradores.length > 0"
+    [rows]="20" dataKey="id_usuario" styleClass="hoose-table"
+    currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords}" [rowsPerPageOptions]="[10,20,50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngIf="condominioDelHeader === 0" class="hoose-th" style="min-width:140px;white-space:nowrap">Condominio</th>
+        <th class="hoose-th" style="min-width:180px;white-space:nowrap">Nombre</th>
+        <th class="hoose-th" style="min-width:90px;white-space:nowrap">Tipo</th>
+        <th class="hoose-th" style="min-width:100px;white-space:nowrap">Estructura</th>
+        <th class="hoose-th" style="min-width:180px;white-space:nowrap">Email</th>
+        <th class="hoose-th" style="min-width:130px;white-space:nowrap">Contacto</th>
+        <th class="hoose-th text-center" style="min-width:120px;white-space:nowrap">Inicio Mandato</th>
+        <th class="hoose-th text-center" style="min-width:120px;white-space:nowrap">Fin Mandato</th>
+        <th class="hoose-th text-center" style="min-width:100px;white-space:nowrap">Estatus</th>
+        <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-Administrador>
+      <tr class="hoose-tr" (click)="onAdministradorDetalles(Administrador.id_usuario)">
+        <td *ngIf="condominioDelHeader === 0" class="hoose-td">
+          <span class="hoose-cond-pill" [ngStyle]="{'color': getCondominioColor(Administrador.condominio_nombre), 'background': getCondominioColor(Administrador.condominio_nombre) + '18'}">{{ Administrador.condominio_nombre || '—' }}</span>
+        </td>
+        <td class="hoose-td">
+          <div class="d-flex align-items-center gap-2">
+            <img class="rounded-circle" src="{{ Administrador.imagen ? appData.urlBackendUsuariosFiles + Administrador.id_usuario + '/' + Administrador.imagen : './assets/img/imagen_no_disponible.png' }}" style="width:32px;height:32px;object-fit:cover;flex-shrink:0" />
+            <strong class="hoose-nombre">{{ Administrador.nombre }}</strong>
+          </div>
+        </td>
+        <td class="hoose-td">
+          <span *ngIf="Administrador.tipo_administrador==='INTERNO'" class="hoose-tipo-pill" style="background:rgba(59,130,246,0.12);color:#3b82f6">Interno</span>
+          <span *ngIf="Administrador.tipo_administrador==='EXTERNO'" class="hoose-tipo-pill" style="background:rgba(233,30,140,0.12);color:#e91e8c">Externo</span>
+          <span *ngIf="!Administrador.tipo_administrador" class="hoose-num">—</span>
+        </td>
+        <td class="hoose-td">
+          <span class="hoose-num">
+            <ng-container *ngIf="Administrador.tipo_administrador==='INTERNO'">{{ Administrador.estructura_administracion === 'UNICO' ? 'Único' : 'Comité' }}</ng-container>
+            <ng-container *ngIf="Administrador.tipo_administrador!=='INTERNO'">{{ Administrador.tipo_persona === 'FISICA' ? 'P. Física' : (Administrador.tipo_persona === 'MORAL' ? 'P. Moral' : '—') }}</ng-container>
+          </span>
+        </td>
+        <td class="hoose-td"><span class="hoose-num">{{ Administrador.email || '—' }}</span></td>
+        <td class="hoose-td"><span class="hoose-num">{{ Administrador.telefono | phoneFormat }}</span></td>
+        <td class="hoose-td text-center"><span class="hoose-num">{{ Administrador.fecha_inicio_mandato ? (Administrador.fecha_inicio_mandato | date:'dd/MM/yyyy') : '—' }}</span></td>
+        <td class="hoose-td text-center"><span class="hoose-num">{{ Administrador.fecha_fin_mandato ? (Administrador.fecha_fin_mandato | date:'dd/MM/yyyy') : '—' }}</span></td>
+        <td class="hoose-td text-center">
+          <span class="hoose-estatus-pill {{ Administrador.estatus == 1 ? 'activo' : 'inactivo' }}" style="cursor:pointer"
+            (click)="$event.stopPropagation(); onAdministradorAlternarEstatus(Administrador)"
+            pTooltip="{{ Administrador.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }}" tooltipPosition="top">
+            <span class="hoose-estatus-dot"></span>{{ Administrador.estatus == 1 ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+          <button pButton type="button" icon="pi pi-eye" class="hoose-btn-accion" pTooltip="Ver detalles" tooltipPosition="top" (click)="onAdministradorDetalles(Administrador.id_usuario)"></button>
+          <button *ngIf="Administrador.estatus == 1 && Administrador.tipo_administrador !== 'INTERNO'" pButton type="button" icon="pi pi-pencil" class="hoose-btn-accion" pTooltip="Editar" tooltipPosition="top" (click)="onAdministradorEditar(Administrador.id_usuario)"></button>
+          <button *ngIf="Administrador.fk_id_condominio" pButton type="button" icon="pi pi-ban" class="hoose-btn-accion" style="color:#f59e0b !important" pTooltip="Desvincular condominio" tooltipPosition="top" (click)="onAdministradorDesvincular(Administrador)"></button>
+          <button *ngIf="!Administrador.fk_id_condominio" pButton type="button" icon="pi pi-trash" class="hoose-btn-accion" style="color:#ef4444 !important" pTooltip="Eliminar" tooltipPosition="top" (click)="onAdministradorEliminar(Administrador)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td [attr.colspan]="condominioDelHeader === 0 ? 10 : 9" class="hoose-empty">Sin registros.</td></tr>
+    </ng-template>
+  </p-table>
 </div>
 
 <!-- Diálogo Edición del Administrador -->
@@ -196,37 +145,37 @@
 					<label class="hoose-form-label">Tipo de Administrador <span class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesTipoAcceso" [(ngModel)]="tipoAcceso"
 						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
-						(onChange)="onTipoAccesoChange($event.value)" styleClass="w-100"></p-dropdown>
+						(onChange)="onTipoAccesoChange($event.value)" appendTo="body" styleClass="w-100"></p-dropdown>
 				</div>
 				<div class="hoose-form-field" *ngIf="tipoAcceso==='EXTERNO'">
 					<label class="hoose-form-label">Personalidad Jurídica <span class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesTipoPersona" [(ngModel)]="tipoPersona"
 						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
-						(onChange)="onTipoPersonaChange($event.value)" styleClass="w-100"></p-dropdown>
+						(onChange)="onTipoPersonaChange($event.value)" appendTo="body" styleClass="w-100"></p-dropdown>
 				</div>
 				<div class="hoose-form-field" *ngIf="tipoAcceso==='INTERNO'">
 					<label class="hoose-form-label">Estructura <span class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesTipoAdmin" [(ngModel)]="tipoAdministracion"
 						[ngModelOptions]="{standalone: true}" optionLabel="label" optionValue="value"
-						(onChange)="onTipoAdminChange($event.value)" styleClass="w-100"></p-dropdown>
+						(onChange)="onTipoAdminChange($event.value)" appendTo="body" styleClass="w-100"></p-dropdown>
 				</div>
 				<div class="hoose-form-field" *ngIf="condominioDelHeader === 0 || tipoAcceso === 'EXTERNO'">
 					<label class="hoose-form-label">Condominio <span *ngIf="tipoAcceso==='INTERNO'" class="text-danger">*</span></label>
 					<p-dropdown [options]="opcionesCondominios" formControlName="fk_id_condominio"
 						placeholder="Selecciona el condominio" [showClear]="tipoAcceso==='EXTERNO'"
 						[filter]="true" filterBy="label" styleClass="w-100"
-						(onChange)="onCondominioAdminChange($event.value)"></p-dropdown>
+						(onChange)="onCondominioAdminChange($event.value)"appendTo="body"></p-dropdown>
 				</div>
 
 			</div>
 			<div class="hoose-form-grid mt-2">
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Inicio de mandato <span class="text-danger">*</span></label>
-					<p-calendar formControlName="fecha_inicio_mandato" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-100" placeholder="dd/mm/aaaa"></p-calendar>
+					<p-calendar formControlName="fecha_inicio_mandato" dateFormat="dd/mm/yy" [showIcon]="true" appendTo="body" styleClass="w-100" placeholder="dd/mm/aaaa"></p-calendar>
 				</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Fin de mandato <span class="text-danger">*</span></label>
-					<p-calendar formControlName="fecha_fin_mandato" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-100" placeholder="dd/mm/aaaa"></p-calendar>
+					<p-calendar formControlName="fecha_fin_mandato" dateFormat="dd/mm/yy" [showIcon]="true" appendTo="body" styleClass="w-100" placeholder="dd/mm/aaaa"></p-calendar>
 				</div>
 			</div>
 		</div>
@@ -276,9 +225,13 @@
 			<h6 class="hoose-section-title"><i class="pi pi-user me-2" style="color:#3b82f6"></i>{{ tipoPersona === 'MORAL' ? 'Información del Rep. Legal' : 'Información del Administrador' }}</h6>
 			<div class="hoose-form-grid">
 				<div class="hoose-form-field">
-					<label class="hoose-form-label">{{ tipoPersona === 'MORAL' ? 'Representante Legal' : 'Nombre' }} <span class="text-danger">*</span></label>
+					<label class="hoose-form-label">{{ tipoPersona === 'MORAL' ? 'Representante Legal' : 'Nombre(s)' }} <span class="text-danger">*</span></label>
 					<input pInputText formControlName="nombre" class="w-100 uppercase" (focus)="hlpApp.selectAllContent($event)" (input)="onGenerarUsuario()" />
 				</div>
+<div class="hoose-form-field">
+<label class="hoose-form-label">Apellidos <span class="text-danger">*</span></label>
+<input pInputText formControlName="apellidos" class="w-100 uppercase" (focus)="hlpApp.selectAllContent($event)" (input)="onGenerarUsuario()" />
+</div>
 				<div class="hoose-form-field">
 					<label class="hoose-form-label">Imagen de Perfil</label>
 					<input type="file" class="form-control form-control-sm" (change)="onImagenSeleccionada($event, 1)" accept=".png,.jpg,.jpeg,.webp" />
@@ -474,8 +427,10 @@
         </div>
         </div>
         <div class="mb-2">
+          <div style="cursor:pointer" (click)="onAdministradorAlternarEstatus(Administrador)" pTooltip="{{ Administrador?.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }} administrador" tooltipPosition="top">
           <span class="hoose-badge-activo" *ngIf="Administrador.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
           <span class="hoose-badge-inactivo" *ngIf="Administrador.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+          </div>
         </div>
         <h5 class="text-white mb-1">{{ Administrador.nombre }}</h5>
         <small style="color:#8b5cf6;font-weight:500" *ngIf="Administrador.tipo_persona === 'MORAL'">Representante Legal</small>

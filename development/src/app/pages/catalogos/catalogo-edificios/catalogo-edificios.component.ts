@@ -40,9 +40,23 @@ export class CatalogoEdificiosComponent implements OnInit {
 	frmEdificio: FormGroup;
 	mostrarDialogoEdicionEdificio: boolean = false;
 	esSuperAdminSinCondominio: boolean = false;
+esSuperAdmin: boolean = false;
 	condominiosLista: any[] = [];
 	tiposEdificio: string[] = ['Torre', 'Edificio', 'Sección', 'Etapa', 'Manzana'];
 	permitirAgregarEditar: boolean = false;
+	filtroCondominio: number = null;
+	filtroTipo: string = null;
+	filtroEstatus: number = null;
+
+	get EdificiosFiltrados() {
+		return this.Edificios.filter((e: any) => {
+			if (this.filtroCondominio && +e.fk_id_condominio !== this.filtroCondominio) return false;
+			if (this.filtroTipo && e.tipo !== this.filtroTipo) return false;
+			if (this.filtroEstatus !== null && this.filtroEstatus !== undefined && +e.estatus !== this.filtroEstatus) return false;
+			return true;
+		});
+	}
+	limpiarFiltros() { this.filtroCondominio = null; this.filtroTipo = null; this.filtroEstatus = null; }
 
 	constructor(private formBuilder: FormBuilder, private edificiosService: EdificiosService,
 		private condominiosService: CondominiosService,
@@ -55,6 +69,7 @@ private unidadesService: UnidadesService,
 		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
 		this.permitirAgregarEditar = [1, 2].includes(perfil);
 		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+this.esSuperAdmin = perfil === 1;
 		if (this.esSuperAdminSinCondominio) {
 			this.condominiosService.Listar(true).toPromise().then((r: any) => {
 				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
@@ -62,6 +77,9 @@ private unidadesService: UnidadesService,
 		}
 		this.onActualizarInformacion();
 	}
+
+	get kpiActivos() { return this.Edificios.filter((e: any) => e.estatus == 1).length; }
+	get kpiInactivos() { return this.Edificios.filter((e: any) => e.estatus != 1).length; }
 
 	private OrdenarEdificios(edificio: EdificioModel[]) {
 		return edificio.sort((a, b) => (a.edificio > b.edificio ? 1 : -1));
@@ -106,9 +124,11 @@ private unidadesService: UnidadesService,
 
 		try {
 			this.frmEdificio = this.formBuilder.group(this.Edificio);
+      this.frmEdificio.addControl('archivo_plano', this.formBuilder.control(null));
 			this.frmEdificio.get('edificio').setValidators([Validators.minLength(3), Validators.maxLength(150)]);
 			setTimeout(() => {
-				document.getElementById('txtEdificio').focus();
+				const el = document.getElementById('txtEdificio');
+				if (el) el.focus();
 			}, 500);
 			this.frmEdificio.updateValueAndValidity();
 			this.mostrarDialogoEdicionEdificio = true;

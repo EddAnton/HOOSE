@@ -1,204 +1,91 @@
-<div class="card shadow-sm">
-	<p-table
-		#ptColaboradores
-		[responsive]="true"
-		[value]="Colaboradores"
-		[columns]="ColaboradoresCols"
-		[rowHover]="true"
-		[globalFilterFields]="ColaboradoresFilter"
-		[showCurrentPageReport]="true"
-		[paginator]="Colaboradores.length > 0"
-		[rows]="50"
-		dataKey="id_usuario"
-		styleClass="p-datatable-striped"
-		currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-	>
-		<ng-template pTemplate="caption">
-			<div class="d-flex align-items-center p-1">
-				<div class="me-auto">
-					<!-- Botón Nuevo -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="pi pi-plus"
-						class="p-button-rounded p-button-raised p-button-success ms-1"
-						pTooltip="Agregar colaborador"
-						tooltipPosition="right"
-						(click)="onColaboradorEditar()"
-					></button>
-				</div>
-				<!-- Opciones Filtrado -->
-				<div class="ms-auto">
-					<!-- Botón Actualizar -->
-					<button
-						*ngIf="isDevelopment"
-						pButton
-						type="button"
-						icon="pi pi-refresh"
-						class="p-button-rounded p-button-text p-button-secondary me-2"
-						pTooltip="Actualizar información"
-						tooltipPosition="right"
-						(click)="onActualizarInformacion()"
-					></button>
-					<span class="p-input-icon-left">
-						<i class="pi pi-search"></i>
-						<input
-							type="text"
-							id="txtGlobalFilter"
-							class="form-control ms-1 ps-4"
-							(input)="ptColaboradores.filterGlobal($event.target.value, 'contains')"
-							placeholder="Filtrar"
-						/>
-					</span>
-				</div>
-				<div>
-					<button
-						pButton
-						pRipple
-						type="button"
-						id="btnLimpiarFiltro"
-						icon="pi pi-times"
-						class="p-button-rounded p-button-text p-button-danger ms-3"
-						pTooltip="Limpiar filtro"
-						tooltipPosition="left"
-						(click)="hlpPrimeNGTable.reset(ptColaboradores)"
-					></button>
-				</div>
-			</div>
-		</ng-template>
-		<ng-template pTemplate="header" let-columns>
-			<tr>
-				<th
-					*ngFor="let col of columns"
-					class="text-center"
-					[ngClass]="col.class ? col.class : ''"
-					[ngStyle]="{
-						width: col.width ? col.width : 'inherit'
-					}"
-				>
-					{{ col.header ? col.header : '&nbsp;' }}
-				</th>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="body" let-Colaborador>
-      <tr style="cursor:pointer" (click)="onColaboradorDetalles(Colaborador.id_usuario)">
-				<td class="me-1 mt-1">
-					<div (click)="onColaboradorDetalles(Colaborador.id_usuario)" style="cursor: pointer">
-						<img
-							class="rounded-circle"
-							src="{{
-								Colaborador.imagen
-									? appData.urlBackendUsuariosFiles + Colaborador.id_usuario + '/' + Colaborador.imagen
-									: './assets/img/imagen_no_disponible.png'
-							}}"
-							style="width: 70px; height: 70px"
-						/>
-					</div>
-				</td>
-				<td><span class="p-column-title">Nombre</span>{{ Colaborador.nombre }} {{ Colaborador.apellidos || "" }}</td>
-				<td><span class="p-column-title">Usuario</span>{{ Colaborador.usuario }}</td>
-				<td><span class="p-column-title">Email</span>{{ Colaborador.email }}</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Contacto</span>{{ Colaborador.telefono | phoneFormat }}
-				</td>
-				<td class="carriage-return"><span class="p-column-title">Domicilio</span>{{ Colaborador.domicilio }}</td>
-				<td><span class="p-column-title">Tipo</span>{{ Colaborador.tipo_miembro }}</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Inicio</span>{{ Colaborador.fecha_inicio | date : 'MMMM dd, yyyy' | uppercase }}
-				</td>
-				<td class="text-md-end">
-					<span class="p-column-title">Salario</span>{{ Colaborador.salario | number : '1.2-2' }}
-				</td>
-				<td class="text-center"><span *ngIf="Colaborador.condominio_nombre" class="hoose-cond-color" [ngStyle]="{'color': getCondominioColor(Colaborador.condominio_nombre), 'background': getCondominioColor(Colaborador.condominio_nombre) + '20'}" style="font-weight:600;font-size:0.78rem">{{ Colaborador.condominio_nombre }}</span><span *ngIf="!Colaborador.condominio_nombre" style="color:#8a8f9e;font-size:0.75rem;font-style:italic">Sin asignar</span></td>
-				<td class="text-md-center">
-					<span class="p-column-title">Estatus</span>
-					<span [ngStyle]="{ cursor: Colaborador.id_estatus_recaudacion == 1 ? 'pointer' : 'context-menu' }">
-						<p-tag
-							severity="{{ Colaborador.estatus == 1 ? 'success' : 'danger' }}"
-							value="{{ Colaborador.estatus == 1 ? 'A' : 'Ina' }}ctivo"
-							pTooltip="{{ Colaborador.estatus == 1 ? 'Desh' : 'H' }}abilitar colaborador"
-							tooltipPosition="left"
-							tooltipDisabled="{{ !permitirAgregarEditar }}"
-							(click)="permitirAgregarEditar && onColaboradorAlternarEstatus(Colaborador)"
-						></p-tag>
-					</span>
-				</td>
-				<td class="text-end">
-					<!-- <p-splitButton
-						icon="pi pi-eye"
-						styleClass="p-button-warning p-menu-align-right"
-						[model]="mnuAcciones"
-						(onClick)="onColaboradorDetalles(Colaborador.id_usuario)"
-						(onDropdownClick)="onDropdownActions(Colaborador)"
-					></p-splitButton> -->
-					<!-- Botón Editar -->
-					<button
-						*ngIf="permitirAgregarEditar && Colaborador.estatus == 1"
-						pButton
-						type="button"
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text p-button-success me-1"
-						pTooltip="Editar colaborador"
-						tooltipPosition="left"
-						(click)="$event.stopPropagation(); onColaboradorEditar(Colaborador.id_usuario)"
-					></button>
-					<!-- Botón Salarios -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="pi pi-money-bill"
-						class="p-button-rounded p-button-text me-1"
-						pTooltip="Salarios"
-						tooltipPosition="left"
-						(click)="onColaboradorDetalles(Colaborador.id_usuario)"
-					></button>
-					<!-- Botón Solicitudes ausencia -->
-					<button
-						*ngIf="permitirAgregarEditar"
-						pButton
-						type="button"
-						icon="pi pi-calendar"
-						class="p-button-rounded p-button-text p-button-danger me-1"
-						pTooltip="Solicitudes de ausencia"
-						tooltipPosition="left"
-						(click)="onColaboradorDetalles(Colaborador.id_usuario)"
-					></button>
-					<!-- Botón Detalles -->
-					<button
-						pButton
-						type="button"
-						icon="pi pi-eye"
-						class="p-button-rounded p-button-text p-button-warning me-1"
-						pTooltip="Detalles del colaborador"
-						tooltipPosition="left"
-						(click)="onColaboradorDetalles(Colaborador.id_usuario)"
-					></button>
-
-					<!-- Botón Deshabilitar -->
-					<!-- <button
-						pButton
-						type="button"
-						icon="pi pi-trash"
-						class="p-button-rounded p-button-text p-button-danger me-1"
-						pTooltip="Deshabilitar colaborador"
-						tooltipPosition="left"
-						(click)="onColaboradorDeshabilitar(Colaborador)"
-					></button>
-<button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" pTooltip="Eliminar" tooltipPosition="left" (click)="$event.stopPropagation(); onColaboradorEliminar(Colaborador)"></button>
- -->
-				</td>
-			</tr>
-		</ng-template>
-		<ng-template pTemplate="emptymessage"
-			><tr class="no-records">
-				<td colspan="2">Sin registros.</td>
-			</tr></ng-template
-		>
-	</p-table>
+<div class="hoose-tabla-wrapper" style="margin: 16px 16px 0 0;">
+  <div class="hoose-tabla-toolbar" style="align-items:flex-start;gap:16px;flex-wrap:nowrap">
+    <div style="flex-shrink:0;max-width:70%">
+    <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
+      <div class="hoose-kpi-icon"><i class="pi pi-briefcase"></i></div>
+      <div class="hoose-kpi-body">
+        <span class="hoose-kpi-label">Total Colaboradores</span>
+        <span class="hoose-kpi-value">{{ ColaboradoresFiltrados.length }}</span>
+        <span class="hoose-kpi-sub">Activos: <b>{{ kpiActivos }}</b> &nbsp;|&nbsp; Inactivos: <b>{{ kpiInactivos }}</b></span>
+      </div>
+    </div>
+    </div>
+    <div class="d-flex flex-column gap-2 justify-content-between">
+      <div class="d-flex justify-content-end">
+        <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus" label="Nuevo Colaborador" class="hoose-btn-nuevo" tooltipPosition="left" (click)="onColaboradorEditar()"></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <div class="hoose-tabla-search">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar colaborador..." (input)="ptColaboradores.filterGlobal($event.target.value, 'contains')" />
+        </div>
+        <select *ngIf="esSuperAdminSinCondominio" class="hoose-filtro-select" [(ngModel)]="filtroCondominio">
+          <option [ngValue]="null">Condominio</option>
+          <option *ngFor="let c of condominiosLista" [ngValue]="c.value">{{ c.label }}</option>
+        </select>
+        <select class="hoose-filtro-select" [(ngModel)]="filtroEstatus">
+          <option [ngValue]="null">Estatus</option>
+          <option [ngValue]="1">Activo</option>
+          <option [ngValue]="0">Inactivo</option>
+        </select>
+        <button pButton type="button" icon="pi pi-times" class="hoose-btn-clear" pTooltip="Limpiar filtros" tooltipPosition="left" (click)="limpiarFiltros(); hlpPrimeNGTable.reset(ptColaboradores)"></button>
+      </div>
+    </div>
+  </div>
+  <div class="hoose-tabla-container" style="overflow-x:auto">
+    <p-table #ptColaboradores [value]="ColaboradoresFiltrados" [globalFilterFields]="ColaboradoresFilter"
+      [rowHover]="true" [showCurrentPageReport]="true" [paginator]="ColaboradoresFiltrados.length > 0"
+      [rows]="20" dataKey="id_usuario" styleClass="hoose-table"
+      currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords}" [rowsPerPageOptions]="[10,20,50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngIf="esSuperAdminSinCondominio" class="hoose-th" style="min-width:140px;white-space:nowrap">Condominio</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Nombre</th>
+          <th class="hoose-th" style="min-width:180px;white-space:nowrap">Email</th>
+          <th class="hoose-th" style="min-width:130px;white-space:nowrap">Contacto</th>
+          <th class="hoose-th" style="min-width:120px;white-space:nowrap">Tipo</th>
+          <th class="hoose-th text-center" style="min-width:120px;white-space:nowrap">Fecha Inicio</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Salario</th>
+          <th class="hoose-th text-center" style="min-width:100px;white-space:nowrap">Estatus</th>
+          <th class="hoose-th text-center" style="min-width:110px;white-space:nowrap">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Colaborador>
+        <tr class="hoose-tr" (click)="onColaboradorDetalles(Colaborador.id_usuario)">
+          <td *ngIf="esSuperAdminSinCondominio" class="hoose-td">
+            <span class="hoose-cond-pill" [ngStyle]="{'color': getCondominioColor(Colaborador.condominio_nombre), 'background': getCondominioColor(Colaborador.condominio_nombre) + '18'}">{{ Colaborador.condominio_nombre || '—' }}</span>
+          </td>
+          <td class="hoose-td">
+            <div class="d-flex align-items-center gap-2">
+              <img class="rounded-circle" src="{{ Colaborador.imagen ? appData.urlBackendUsuariosFiles + Colaborador.id_usuario + '/' + Colaborador.imagen : './assets/img/imagen_no_disponible.png' }}" style="width:32px;height:32px;object-fit:cover;flex-shrink:0" />
+              <strong class="hoose-nombre">{{ Colaborador.nombre }} {{ Colaborador.apellidos || '' }}</strong>
+            </div>
+          </td>
+          <td class="hoose-td"><span class="hoose-num">{{ Colaborador.email || '—' }}</span></td>
+          <td class="hoose-td"><span class="hoose-num">{{ Colaborador.telefono | phoneFormat }}</span></td>
+          <td class="hoose-td"><span class="hoose-tipo-pill">{{ Colaborador.tipo_miembro || '—' }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Colaborador.fecha_inicio ? (Colaborador.fecha_inicio | date:'dd/MM/yyyy') : '—' }}</span></td>
+          <td class="hoose-td text-center"><span class="hoose-num">{{ Colaborador.salario ? ('$' + (Colaborador.salario | number:'1.2-2')) : '—' }}</span></td>
+          <td class="hoose-td text-center">
+            <span class="hoose-estatus-pill {{ Colaborador.estatus == 1 ? 'activo' : 'inactivo' }}" style="cursor:pointer"
+              (click)="$event.stopPropagation(); permitirAgregarEditar && onColaboradorAlternarEstatus(Colaborador)"
+              pTooltip="{{ Colaborador.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }}" tooltipPosition="top">
+              <span class="hoose-estatus-dot"></span>{{ Colaborador.estatus == 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="hoose-td text-center" (click)="$event.stopPropagation()">
+            <button pButton type="button" icon="pi pi-eye" class="hoose-btn-accion" pTooltip="Ver detalles" tooltipPosition="top" (click)="onColaboradorDetalles(Colaborador.id_usuario)"></button>
+            <button *ngIf="permitirAgregarEditar && Colaborador.estatus == 1" pButton type="button" icon="pi pi-pencil" class="hoose-btn-accion" pTooltip="Editar" tooltipPosition="top" (click)="onColaboradorEditar(Colaborador.id_usuario)"></button>
+            <button *ngIf="esSuperAdmin" pButton type="button" icon="pi pi-trash" class="hoose-btn-accion" style="color:#ef4444 !important" pTooltip="Eliminar" tooltipPosition="top" (click)="$event.stopPropagation(); onColaboradorEliminar(Colaborador)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td [attr.colspan]="esSuperAdminSinCondominio ? 9 : 8" class="hoose-empty">Sin registros.</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
-
 <!-- Diálogo de inserción y edición -->
 <p-dialog
 	#dlgColaborador
@@ -252,15 +139,8 @@
 				<div class="row mt-2">
 					<div class="col-12">
 						<label>Imagen de Perfil</label>
-						<div *ngIf="srcImagen" class="text-center mb-2">
-							<img class="imagenThumbnail img-thumbnail" style="cursor:pointer;max-height:100px" [src]="srcImagen" (click)="onImagenMostrar(srcImagen)" />
-						</div>
-						<div class="d-flex gap-2">
-							<label for="txtImagenArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtImagenArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
-							<button *ngIf="frmColaborador.get('archivo_imagen').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(1)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmColaborador.get('imagen').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(1)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 1)" />
+						<small *ngIf="Colaborador?.imagen" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Colaborador.imagen }}</small>
 					</div>
 				</div>
 			</div>
@@ -281,23 +161,13 @@
 				<div class="row mt-2">
 					<div class="col-12 col-md-6">
 						<label>Anverso Identificación <span class="text-danger">*</span></label>
-						<img *ngIf="srcIdentificacionAnverso" class="imagenThumbnail img-thumbnail mb-2 d-block" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionAnverso" (click)="onImagenMostrar(srcIdentificacionAnverso)" />
-						<div class="d-flex gap-2">
-							<label for="txtAnversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtAnversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
-							<button *ngIf="frmColaborador.get('archivo_identificacion_anverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(2)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmColaborador.get('identificacion_anverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(2)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 2)" />
+						<small *ngIf="Colaborador?.identificacion_anverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Colaborador.identificacion_anverso }}</small>
 					</div>
 					<div class="col-12 col-md-6">
 						<label>Reverso Identificación <span class="text-danger">*</span></label>
-						<img *ngIf="srcIdentificacionReverso" class="imagenThumbnail img-thumbnail mb-2 d-block" style="cursor:pointer;max-height:80px" [src]="srcIdentificacionReverso" (click)="onImagenMostrar(srcIdentificacionReverso)" />
-						<div class="d-flex gap-2">
-							<label for="txtReversoIdentificacionArchivo" class="btn btn-dark"><i class="pi pi-folder-open"></i></label>
-							<input type="file" id="txtReversoIdentificacionArchivo" class="d-none" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
-							<button *ngIf="frmColaborador.get('archivo_identificacion_reverso').value" type="button" class="btn btn-secondary" (click)="onImagenSeleccionadaCancelar(3)"><i class="pi pi-undo"></i></button>
-							<button *ngIf="frmColaborador.get('identificacion_reverso').value" type="button" class="btn btn-danger" (click)="onImagenEliminar(3)"><i class="pi pi-trash"></i></button>
-						</div>
+						<input type="file" class="form-control form-control-sm" accept=".png,.jpg,.jpeg" (change)="onImagenSeleccionada($event, 3)" />
+						<small *ngIf="Colaborador?.identificacion_reverso" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Colaborador.identificacion_reverso }}</small>
 					</div>
 				</div>
 			</div>
@@ -338,6 +208,11 @@
 					<div class="col-12 col-md-6">
 						<label>Fecha de Contratación</label>
 						<p-calendar [showIcon]="true" formControlName="fecha_inicio" dateFormat="dd-MM-yy" [appendTo]="dlgColaborador" [inputStyle]="{ 'text-align': 'right' }" inputStyleClass="uppercase"></p-calendar>
+					</div>
+					<div class="col-12 col-md-6">
+						<label>Contrato Laboral</label>
+						<input type="file" class="form-control form-control-sm" accept=".pdf" (change)="onContratoSeleccionado($event)" />
+						<small *ngIf="Colaborador?.contrato" class="text-muted d-block mt-1"><i class="pi pi-check-circle me-1" style="color:#10b981"></i>Archivo cargado: {{ Colaborador.contrato }}</small>
 					</div>
 				</div>
 			</div>
@@ -439,8 +314,10 @@
           <span *ngIf="!srcImagen" class="hoose-avatar-initials" style="color:#06b6d4">{{ (Colaborador.nombre || 'C').charAt(0) }}</span>
         </div>
         <div class="mb-2">
+          <div style="cursor:pointer" (click)="onColaboradorAlternarEstatus(Colaborador)" pTooltip="{{ Colaborador?.estatus == 1 ? 'Deshabilitar' : 'Habilitar' }} colaborador" tooltipPosition="top">
           <span class="hoose-badge-activo" *ngIf="Colaborador.estatus == 1"><span class="hoose-dot-green"></span> Activo</span>
           <span class="hoose-badge-inactivo" *ngIf="Colaborador.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
+          </div>
         </div>
         <h5 class="text-white mb-1">{{ Colaborador.nombre }} {{ Colaborador.apellidos || '' }}</h5>
         <small class="text-muted">{{ Colaborador.usuario }}</small>
@@ -512,7 +389,7 @@
       <!-- Contrato -->
       <div class="hoose-detalle-card p-3" *ngIf="Colaborador.contrato">
         <div class="d-flex align-items-center gap-2 mb-2"><div class="hoose-info-icon-sm" style="background:rgba(239,68,68,0.15)"><i class="pi pi-file-pdf" style="color:#ef4444"></i></div><h6 class="text-white mb-0">Contrato</h6></div>
-        <a style="color:#ef4444;text-decoration:none;cursor:pointer;font-size:0.9rem" (click)="onContratoMostrar(Colaborador)"><i class="pi pi-file-pdf me-1"></i>Ver contrato</a>
+        <a [href]="'http://api.residenciales.hoose.mx/uploads/usuarios/' + Colaborador.id_usuario + '/' + Colaborador.contrato" target="_blank" class="d-flex align-items-center gap-2" style="color:#ef4444;text-decoration:none;font-size:0.9rem"><i class="pi pi-file-pdf"></i><span>Contrato Laboral</span><i class="pi pi-external-link ms-1" style="font-size:0.75rem"></i></a>
       </div>
     </div>
   </div>

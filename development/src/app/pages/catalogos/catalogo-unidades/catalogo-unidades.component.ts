@@ -52,6 +52,24 @@ export class CatalogoUnidadesComponent implements OnInit {
 
 	frmUnidad: FormGroup;
 	esSuperAdminSinCondominio: boolean = false;
+esSuperAdmin: boolean = false;
+	filtroCondominio: number = null;
+	filtroTipo: string = null;
+	filtroEstatus: number = null;
+	filtroModo: string = null;
+
+	get UnidadesFiltradas() {
+		return this.Unidades.filter((u: any) => {
+			if (this.filtroCondominio && +u.fk_id_condominio !== this.filtroCondominio) return false;
+			if (this.filtroTipo && u.tipo_unidad !== this.filtroTipo) return false;
+			if (this.filtroModo && u.modo !== this.filtroModo) return false;
+			if (this.filtroEstatus !== null && this.filtroEstatus !== undefined && +u.estatus !== this.filtroEstatus) return false;
+			return true;
+		});
+	}
+	get kpiActivos() { return this.Unidades.filter((u: any) => u.estatus == 1).length; }
+	get kpiInactivos() { return this.Unidades.filter((u: any) => u.estatus != 1).length; }
+	limpiarFiltros() { this.filtroCondominio = null; this.filtroTipo = null; this.filtroEstatus = null; this.filtroModo = null; }
 	condominiosLista: any[] = [];
 	permitirAgregarEditar: boolean = false;
 	tiposUnidad: string[] = ['Departamento', 'Casa', 'Town House', 'Pent House', 'Local Comercial', 'Oficina', 'Loft', 'Estudio'];
@@ -89,6 +107,7 @@ export class CatalogoUnidadesComponent implements OnInit {
 		const idCond = this.sesionUsuarioService.obtenerIDCondominioUsuario();
 		this.permitirAgregarEditar = [1, 2].includes(perfil);
 		this.esSuperAdminSinCondominio = perfil === 1 && (!idCond || idCond === 0);
+this.esSuperAdmin = perfil === 1;
 		if (this.esSuperAdminSinCondominio) {
 			this.condominiosService.Listar(true).toPromise().then((r: any) => {
 				this.condominiosLista = (r['condominios'] || []).map((c: any) => ({ label: c.condominio, value: +c.id_condominio }));
