@@ -237,7 +237,7 @@ export function Error(error: any) {
 		if (instanceOfSweetAlertOptions(error)) {
 			respuesta = MensajeSimple.fire(error).then((r) => r);
 		} else if (error instanceof HttpErrorResponse) {
-			respuesta = MensajeSimple.fire(GenerarContenidoMensajeErrorREST(error)).then((r) => r);
+respuesta = MensajeSimple.fire(GenerarContenidoMensajeErrorREST(error)).then((r) => { if (error.status === 401 || (error.error && error.error.msg && error.error.msg.includes("desactivada"))) { localStorage.clear(); window.location.href = "/inicio-sesion"; } return r; });
 		} else if (error.message && typeof error.message === 'string') {
 			respuesta = MensajeSimple.fire(GenerarContenidoMensajeError(error.message)).then((r) => r);
 		}

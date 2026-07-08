@@ -178,7 +178,7 @@
 				<div class="row">
 					<div class="col-12 col-md-6">
 						<label>Usuario <span class="text-danger">*</span></label>
-						<input type="text" pInputText formControlName="usuario" class="lowercase w-100" (focus)="hlpApp.selectAllContent($event)" />
+						<input type="text" pInputText formControlName="usuario" class="lowercase w-100" (focus)="hlpApp.selectAllContent($event)" (blur)="onVerificarUsuario()" (input)="usuarioManualmenteEditado=true" />
 					</div>
 				</div>
 				<div class="row mt-2" *ngIf="frmColaborador.get('id_usuario').value == 0">

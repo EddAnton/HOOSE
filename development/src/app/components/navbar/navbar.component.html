@@ -28,8 +28,9 @@
 			</h3> -->
       <ul class="navbar-nav ms-auto">
         <li class="nav-item pe-1">
-          <a class="nav-link px-0" (click)="onMostrarDetallesUsuario()"><i class="bx bx-user bx-sm pe-2"></i>
-            <span class="badge text-bg-dark me-1">{{ getNombreUsuario() }}</span></a>
+          <a class="nav-link px-0" (click)="onMostrarDetallesUsuario()" style="display:flex;align-items:center;gap:8px">
+            <img [src]="srcImagenPerfilUsuario || './assets/img/imagen_no_disponible.png'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3)" />
+            <span class="badge text-bg-dark me-1 nav-username">{{ getNombreUsuario() }}</span></a>
         </li>
         <li class="nav-item pe-1">
           <a class="nav-link px-0" [ngStyle]="{ cursor: getIDPerfilUsuario() == 1 ? 'pointer' : 'default' }"
@@ -62,8 +63,7 @@
 					</ul>
 				</li> -->
         <li class="nav-item">
-          <a class="nav-link" (click)="onSalir()"><i
-              class="bx bx-power-off bx-sm"></i><!-- <span class="d-lg-none d-md-block">Salir</span> --></a>
+          <a class="nav-link" (click)="onSalir()" style="display:flex;align-items:center;gap:6px"><i class="bx bx-power-off bx-sm"></i><span class="d-lg-none nav-cerrar-sesion">Cerrar Sesión</span></a>
         </li>
       </ul>
     </div>

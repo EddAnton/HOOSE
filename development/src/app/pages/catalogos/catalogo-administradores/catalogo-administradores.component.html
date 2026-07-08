@@ -86,7 +86,7 @@
         <td class="hoose-td">
           <div class="d-flex align-items-center gap-2">
             <img class="rounded-circle" src="{{ Administrador.imagen ? appData.urlBackendUsuariosFiles + Administrador.id_usuario + '/' + Administrador.imagen : './assets/img/imagen_no_disponible.png' }}" style="width:32px;height:32px;object-fit:cover;flex-shrink:0" />
-            <strong class="hoose-nombre">{{ Administrador.nombre }}</strong>
+            <strong class="hoose-nombre">{{ Administrador.nombre }} {{ Administrador.apellidos || "" }}</strong>
           </div>
         </td>
         <td class="hoose-td">

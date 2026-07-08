@@ -1,3 +1,4 @@
+import { PropositoGeneralService } from '../../../services/proposito-general.service';
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -96,6 +97,7 @@ esSuperAdmin: boolean = false;
 		private tiposMiembrosService: TiposMiembrosService,
 		private formBuilder: FormBuilder,
 		private usuariosService: UsuariosService,
+private propositoGeneralService: PropositoGeneralService,
 		private sanitizer: DomSanitizer,
 	) {
 		this.frmColaborador = this.formBuilder.group(new ColaboradorModel());
@@ -606,5 +608,28 @@ this.esSuperAdmin = perfil === 1;
 			this.onActualizarInformacion();
 		}
 	}
+
+  usuarioManualmenteEditado: boolean = false;
+
+  async onVerificarUsuario() {
+    const usuario = (this.frmColaborador.get('usuario')?.value || '').trim();
+    if (!usuario) return;
+    try {
+      const r: any = await this.propositoGeneralService.VerificarUsuario(usuario).toPromise();
+      if (r.existe) {
+        const nombre = (this.frmColaborador.get('nombre')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const apellidos = (this.frmColaborador.get('apellidos')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const partes = apellidos.split(/\s+/);
+        const candidatos = [nombre + (partes[0] ? '.' + partes[0] : ''), nombre + (partes[1] ? '.' + partes[1] : ''), nombre + '.' + apellidos.replace(/\s+/g, '.'), usuario + '2', usuario + '3'];
+        for (const candidato of candidatos) {
+          const check: any = await this.propositoGeneralService.VerificarUsuario(candidato).toPromise();
+          if (!check.existe) { this.frmColaborador.patchValue({ usuario: candidato }); this.frmColaborador.get('usuario')?.setErrors(null); return; }
+        }
+        if (this.usuarioManualmenteEditado) { this.frmColaborador.get('usuario').setErrors({ duplicado: true }); }
+      } else {
+        this.frmColaborador.get('usuario')?.setErrors(null);
+      }
+    } catch(e) {}
+  }
 
 }

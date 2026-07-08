@@ -1,3 +1,4 @@
+import { PropositoGeneralService } from '../../../services/proposito-general.service';
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -105,7 +106,7 @@ esSuperAdmin: boolean = false;
     private formBuilder: FormBuilder,
     private usuariosService: UsuariosService,
     private sanitizer: DomSanitizer,
-  ) {
+  private propositoGeneralService: PropositoGeneralService) {
 		this.frmCondomino = this.formBuilder.group(new CondominoModel());
 		this.frmCondomino.addControl('apellidos', new FormControl(null));
 		this.frmCondomino.addControl('fecha_limite_pago', new FormControl(1));
@@ -950,5 +951,28 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
 			this.onActualizarInformacion();
 		}
 	}
+
+  usuarioManualmenteEditado: boolean = false;
+
+  async onVerificarUsuario() {
+    const usuario = (this.frmCondomino.get('usuario')?.value || '').trim();
+    if (!usuario) return;
+    try {
+      const r: any = await this.propositoGeneralService.VerificarUsuario(usuario).toPromise();
+      if (r.existe) {
+        const nombre = (this.frmCondomino.get('nombre')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const apellidos = (this.frmCondomino.get('apellidos')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const partes = apellidos.split(/\s+/);
+        const candidatos = [nombre + (partes[0] ? '.' + partes[0] : ''), nombre + (partes[1] ? '.' + partes[1] : ''), nombre + '.' + apellidos.replace(/\s+/g, '.'), usuario + '2', usuario + '3'];
+        for (const candidato of candidatos) {
+          const check: any = await this.propositoGeneralService.VerificarUsuario(candidato).toPromise();
+          if (!check.existe) { this.frmCondomino.patchValue({ usuario: candidato }); this.frmCondomino.get('usuario')?.setErrors(null); return; }
+        }
+        if (this.usuarioManualmenteEditado) { this.frmCondomino.get('usuario').setErrors({ duplicado: true }); }
+      } else {
+        this.frmCondomino.get('usuario')?.setErrors(null);
+      }
+    } catch(e) {}
+  }
 
 }

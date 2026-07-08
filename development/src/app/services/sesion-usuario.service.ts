@@ -187,6 +187,8 @@ export class SesionUsuarioService {
           sesionUsuario.condominio_usuario = usuario.condominio_usuario;
           sesionUsuario.token = usuario.token;
           sesionUsuario.tokenExpire = usuario.tokenExpire;
+          sesionUsuario.nombre = usuario.nombre || '';
+          sesionUsuario.apellidos = usuario.apellidos || '';
 
           this.guardarUsuario(sesionUsuario);
         }

@@ -14,6 +14,7 @@ export class SesionUsuarioModel {
 	id_usuario: number;
 	usuario: string;
 	nombre: string;
+apellidos: string;
 	email: string;
 	telefono: string;
 	id_perfil_usuario: number;
@@ -36,6 +37,7 @@ export class SesionUsuarioModel {
 			id_usuario: 0,
 			usuario: null,
 			nombre: null,
+apellidos: null,
 			email: null,
 			telefono: null,
 			id_perfil_usuario: 0,

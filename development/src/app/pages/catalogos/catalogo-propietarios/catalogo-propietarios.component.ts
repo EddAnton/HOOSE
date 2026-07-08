@@ -1,3 +1,4 @@
+import { PropositoGeneralService } from '../../../services/proposito-general.service';
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -86,6 +87,7 @@ export class CatalogoPropietariosComponent implements OnInit {
 		private unidadesService: UnidadesService,
 		private condominiosService: CondominiosService,
 		private usuariosService: UsuariosService,
+    private propositoGeneralService: PropositoGeneralService,
 	) {
 		this.frmPropietario = this.formBuilder.group(new PropietarioModel());
 		this.frmPropietario.addControl('apellidos', new FormControl(null));}
@@ -545,5 +547,28 @@ this.UnidadesSinPropietario = await this.unidadesService
 			this.onActualizarInformacion();
 		}
 	}
+
+  usuarioManualmenteEditado: boolean = false;
+
+  async onVerificarUsuario() {
+    const usuario = (this.frmPropietario.get('usuario')?.value || '').trim();
+    if (!usuario) return;
+    try {
+      const r: any = await this.propositoGeneralService.VerificarUsuario(usuario).toPromise();
+      if (r.existe) {
+        const nombre = (this.frmPropietario.get('nombre')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const apellidos = (this.frmPropietario.get('apellidos')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const partes = apellidos.split(/\s+/);
+        const candidatos = [nombre + (partes[0] ? '.' + partes[0] : ''), nombre + (partes[1] ? '.' + partes[1] : ''), nombre + '.' + apellidos.replace(/\s+/g, '.'), usuario + '2', usuario + '3'];
+        for (const candidato of candidatos) {
+          const check: any = await this.propositoGeneralService.VerificarUsuario(candidato).toPromise();
+          if (!check.existe) { this.frmPropietario.patchValue({ usuario: candidato }); this.frmPropietario.get('usuario')?.setErrors(null); return; }
+        }
+        if (this.usuarioManualmenteEditado) { this.frmPropietario.get('usuario').setErrors({ duplicado: true }); }
+      } else {
+        this.frmPropietario.get('usuario')?.setErrors(null);
+      }
+    } catch(e) {}
+  }
 
 }

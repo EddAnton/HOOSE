@@ -36,4 +36,12 @@ export class PropositoGeneralService {
 			}),
 		);
 	}
+  VerificarUsuario(usuario: string) {
+    const headers = new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+    return this.http.get(environment.urlBackend + 'proposito-general/verificar-usuario?usuario=' + encodeURIComponent(usuario), { headers }).pipe(map(r => r));
+  }
+
 }

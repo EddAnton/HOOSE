@@ -104,7 +104,7 @@ export class NavbarComponent implements OnInit {
 		return this.sesionUsuarioService.leerUsuario().imagen_archivo;
 	}
 	getNombreUsuario() {
-		return this.sesionUsuarioService.leerUsuario().nombre;
+		const u = this.sesionUsuarioService.leerUsuario(); return (u.nombre || "") + (u.apellidos ? " " + u.apellidos : "");
 	}
 	getEmailUsuario() {
 		return this.sesionUsuarioService.leerUsuario().email;

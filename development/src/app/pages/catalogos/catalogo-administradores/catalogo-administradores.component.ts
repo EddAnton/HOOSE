@@ -1,3 +1,4 @@
+import { PropositoGeneralService } from '../../../services/proposito-general.service';
 import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -116,6 +117,7 @@ esSuperAdmin: boolean = false;
     private router: Router,
     private propietariosService: UsuariosPropietariosService,
     private condominosService: UsuariosCondominosService,
+    private propositoGeneralService: PropositoGeneralService,
 	)
 {
 this.esSuperAdmin = +this.sesionUsuarioService.obtenerIDPerfilUsuario() === 1;
@@ -788,4 +790,49 @@ usuario += '.' + apellidos.toLowerCase().split(/\s+/)[0];
 usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
 this.frmAdministrador.patchValue({ usuario: usuario });
 }
+  usuarioManualmenteEditado: boolean = false;
+
+  async onVerificarUsuario() {
+    const usuario = (this.frmAdministrador.get('usuario')?.value || '').trim();
+    if (!usuario) return;
+    try {
+      const r: any = await this.propositoGeneralService.VerificarUsuario(usuario).toPromise();
+      if (r.existe) {
+        const nombre = (this.frmAdministrador.get('nombre')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const apellidos = (this.frmAdministrador.get('apellidos')?.value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
+        const partes = apellidos.split(/\s+/);
+        const candidatos = [nombre + (partes[0] ? '.' + partes[0] : ''), nombre + (partes[1] ? '.' + partes[1] : ''), nombre + '.' + apellidos.replace(/\s+/g, '.'), usuario + '2', usuario + '3'];
+        for (const candidato of candidatos) {
+          const check: any = await this.propositoGeneralService.VerificarUsuario(candidato).toPromise();
+          if (!check.existe) { this.frmAdministrador.patchValue({ usuario: candidato }); this.frmAdministrador.get('usuario')?.setErrors(null); return; }
+        }
+        if (this.usuarioManualmenteEditado) { this.frmAdministrador.get('usuario').setErrors({ duplicado: true }); }
+      } else {
+        this.frmAdministrador.get('usuario')?.setErrors(null);
+      }
+    } catch(e) {}
+  }
+
+  onAdministradorAlternarEstatus(administrador: any) {
+    hlpSwal
+    .Pregunta({
+      html: '¿Deseas ' + (administrador.estatus == 1 ? 'des' : '') + 'habilitar el Administrador?',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        try {
+          return await this.usuariosService.AlternarEstatus(administrador.id_usuario).toPromise();
+        } catch (e) {
+          return hlpSwal.Error(e).then(() => ({ err: true }));
+        }
+      },
+      allowOutsideClick: () => !hlpSwal.estaCargando,
+    })
+    .then((r) => {
+      if (r.value && !r.value.err) {
+        administrador.estatus = administrador.estatus == 1 ? 0 : 1;
+        hlpSwal.ExitoToast(r.value.msg);
+      }
+    });
+  }
+
 }
