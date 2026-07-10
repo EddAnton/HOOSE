@@ -356,18 +356,25 @@
 			[disabled]="!puedeGuardar"
 			(click)="onAdministradorGuardar()"
 		></button>
-		<!-- Botón Cancelar -->
-		<button
-			pButton
-			type="button"
-			label="Cancelar"
-			icon="pi pi-times"
-			class="p-button-raised p-button-warning ml-2"
-			pTooltip="Cancelar el proceso"
-			tooltipPosition="top"
-			(click)="onAdministradorCancelar()"
-		></button>
+<button pButton type="button" icon="pi pi-key" label="Restablecer contraseña" class="p-button-outlined p-button-warning me-2" *ngIf="Administrador.id_usuario > 0" (click)="onAbrirResetContrasenia(Administrador.id_usuario)"></button>
+<button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-raised p-button-warning ml-2" (click)="onAdministradorCancelar()"></button>
 	</ng-template>
+</p-dialog>
+
+<!-- Diálogo Restablecer Contraseña -->
+<p-dialog [(visible)]="mostrarDialogoResetContrasenia" [modal]="true" [dismissableMask]="true"
+  [style]="{ width: '380px' }" header="Restablecer contraseña" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="mb-3"><p>Nueva contraseña para el usuario:</p>
+    <div class="d-flex gap-2">
+      <input pInputText [(ngModel)]="nuevaContraseniaReset" [ngModelOptions]="{standalone:true}" class="w-100" placeholder="Nueva contraseña" />
+      <button pButton type="button" icon="pi pi-refresh" pTooltip="Sugerir" (click)="nuevaContraseniaReset = generarContrasenaSugerida()"></button>
+    </div></div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" class="p-button-warning me-2" (click)="mostrarDialogoResetContrasenia=false"></button>
+    <button pButton type="button" label="Guardar contraseña" icon="pi pi-check" class="p-button-success" (click)="onGuardarResetContrasenia()"></button>
+  </ng-template>
 </p-dialog>
 
 <!-- Diálogo Imagen del Administrador -->

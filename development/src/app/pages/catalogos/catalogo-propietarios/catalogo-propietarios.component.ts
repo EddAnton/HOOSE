@@ -50,7 +50,10 @@ export class CatalogoPropietariosComponent implements OnInit {
 	frmPropietario: FormGroup;
 	modoOpciones: any[] = [{label: 'Vivienda', value: 'Vivienda'}, {label: 'Alquiler', value: 'Alquiler'}, {label: 'Airbnb', value: 'Airbnb'}];
 	pagoCuotaOpciones: any[] = [{label: 'Propietario', value: 'Propietario'}, {label: 'Condómino', value: 'Condómino'}];
-	mostrarDialogoEdicionPropietario: boolean = false;
+	mostrarDialogoResetContrasenia: boolean = false;
+nuevaContraseniaReset: string = "";
+idUsuarioReset: number = 0;
+mostrarDialogoEdicionPropietario: boolean = false;
 	mostrarDialogoImagenPropietario: boolean = false;
 	mostrarDialogoDetallesPropietario: boolean = false;
 	srcImagen: string = null;
@@ -497,7 +500,10 @@ this.UnidadesSinPropietario = await this.unidadesService
 		}
 		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
 		if (this.frmPropietario.get('id_usuario').value == 0) {
-			this.frmPropietario.patchValue({ usuario: usuario });
+   this.usuarioManualmenteEditado = false;
+   this.frmPropietario.patchValue({ usuario: usuario });
+   this.frmPropietario.get('usuario')?.setErrors(null);
+   this.onVerificarUsuario();
 		}
 	}
 
@@ -570,5 +576,36 @@ this.UnidadesSinPropietario = await this.unidadesService
       }
     } catch(e) {}
   }
+
+generarContrasenaSugerida(): string {
+const words = ['Casa', 'Luna', 'Sol', 'Mar', 'Rio', 'Flor', 'Viento', 'Fuego'];
+const word = words[Math.floor(Math.random() * words.length)];
+const num = Math.floor(Math.random() * 900) + 100;
+const symbols = ['!', '@', '#', '$'];
+const sym = symbols[Math.floor(Math.random() * symbols.length)];
+return word + num + sym;
+}
+
+onAbrirResetContrasenia(idUsuario: number) {
+this.idUsuarioReset = idUsuario;
+this.nuevaContraseniaReset = this.generarContrasenaSugerida();
+this.mostrarDialogoResetContrasenia = true;
+}
+
+async onGuardarResetContrasenia() {
+if (!this.nuevaContraseniaReset || this.nuevaContraseniaReset.length < 6) {
+hlpSwal.Advertencia('La contraseña debe tener al menos 6 caracteres.');
+return;
+}
+hlpSwal.Cargando();
+try {
+const r: any = await this.usuariosService.EstablecerContrasenia(this.idUsuarioReset, this.nuevaContraseniaReset).toPromise();
+hlpSwal.Cerrar();
+if (!r.err) {
+hlpSwal.ExitoToast('Contraseña actualizada correctamente.');
+this.mostrarDialogoResetContrasenia = false;
+} else { hlpSwal.Error(r.msg); }
+} catch(e) { hlpSwal.Cerrar(); hlpSwal.Error(e); }
+}
 
 }

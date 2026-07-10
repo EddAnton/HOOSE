@@ -15,6 +15,7 @@ export class SesionUsuarioModel {
 	usuario: string;
 	nombre: string;
 apellidos: string;
+imagen_archivo: string;
 	email: string;
 	telefono: string;
 	id_perfil_usuario: number;
@@ -22,7 +23,6 @@ apellidos: string;
 	id_condominio_usuario: number;
 	condominio_usuario: string;
 	tiene_tablero_avisos: number;
-	imagen_archivo: string;
 	debe_cambiar_contrasenia: number;
 	id_tipo_miembro: number;
 	tipo_miembro: string;
@@ -38,6 +38,7 @@ apellidos: string;
 			usuario: null,
 			nombre: null,
 apellidos: null,
+imagen_archivo: null,
 			email: null,
 			telefono: null,
 			id_perfil_usuario: 0,
@@ -45,7 +46,6 @@ apellidos: null,
 			id_condominio_usuario: 0,
 			condominio_usuario: null,
 			tiene_tablero_avisos: 0,
-			imagen_archivo: null,
 			debe_cambiar_contrasenia: 0,
 			id_tipo_miembro: 0,
 			tipo_miembro: null,

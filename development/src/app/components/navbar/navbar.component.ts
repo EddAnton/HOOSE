@@ -1,3 +1,8 @@
+import { PropositoGeneralService } from "../../services/proposito-general.service";
+import { UsuariosPropietariosService } from "../../services/usuarios-propietarios.service";
+import { UsuariosCondominosService } from "../../services/usuarios-condominos.service";
+import { UsuariosColaboradoresService } from "../../services/usuarios-colaboradores.service";
+import { UsuariosAdministradoresService } from "../../services/usuarios-administradores.service";
 import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
@@ -32,6 +37,12 @@ export class NavbarComponent implements OnInit {
 
 	Condominios: CondominioResumenModel[] = [];
 	mostrarDialogoDetallesUsuario: boolean = false;
+datosPerfilUsuario: any = null;
+cargandoPerfil: boolean = false;
+modoEdicionPerfil: boolean = false;
+frmPerfil: FormGroup = null;
+guardandoPerfil: boolean = false;
+archivoImagenPerfil: File = null;
 	srcImagenPerfilUsuario: string = null;
 	mostrarDialogoCambiarContrasenia: boolean = false;
 	frmCambiarContrasenia: FormGroup;
@@ -67,6 +78,11 @@ export class NavbarComponent implements OnInit {
 		private condominiosService: CondominiosService,
 		private formBuilder: FormBuilder,
     private sidebarService: SidebarService,
+private propositoGeneralService: PropositoGeneralService,
+private propietariosService: UsuariosPropietariosService,
+private condominosService: UsuariosCondominosService,
+private colaboradoresService: UsuariosColaboradoresService,
+private administradoresService: UsuariosAdministradoresService,
 	) {
 		this.location = location;
 		this.sidebarVisible = false;
@@ -101,7 +117,9 @@ export class NavbarComponent implements OnInit {
 	}
 
 	getImagenPerfilUsuario() {
-		return this.sesionUsuarioService.leerUsuario().imagen_archivo;
+		const u = this.sesionUsuarioService.leerUsuario();
+if (u.imagen_archivo) return this.appData.urlBackendUsuariosFiles + u.id_usuario + "/" + u.imagen_archivo;
+return null;
 	}
 	getNombreUsuario() {
 		const u = this.sesionUsuarioService.leerUsuario(); return (u.nombre || "") + (u.apellidos ? " " + u.apellidos : "");
@@ -268,12 +286,28 @@ export class NavbarComponent implements OnInit {
 		this.mostrarDialogoSeleccionCondominio = false;
 	}
 
-	onMostrarDetallesUsuario() {
-		this.srcImagenPerfilUsuario = this.getImagenPerfilUsuario()
-			? this.appData.urlBackend + this.getImagenPerfilUsuario()
-			: null;
-		this.mostrarDialogoDetallesUsuario = true;
-	}
+async onMostrarDetallesUsuario() {
+this.srcImagenPerfilUsuario = this.getImagenPerfilUsuario();
+this.datosPerfilUsuario = null;
+this.cargandoPerfil = true;
+this.mostrarDialogoDetallesUsuario = true;
+try {
+const idUsuario = this.sesionUsuarioService.leerUsuario().id_usuario;
+const perfil = this.getIDPerfilUsuario();
+let r: any = null;
+if (perfil === 4) r = await this.propietariosService.ListarPropietario(idUsuario).toPromise();
+else if (perfil === 5) r = await this.condominosService.ListarCondomino(idUsuario).toPromise();
+else if (perfil === 3) r = await this.colaboradoresService.ListarColaborador(idUsuario).toPromise();
+else if (perfil === 2) r = await this.administradoresService.ListarAdministrador(idUsuario).toPromise();
+if (r) {
+const key = Object.keys(r).find((k:string) => k !== 'error' && k !== 'err' && k !== 'msg');
+this.datosPerfilUsuario = key ? r[key] : null;
+if (this.datosPerfilUsuario?.imagen_archivo) {
+this.srcImagenPerfilUsuario = this.appData.urlBackendUsuariosFiles + idUsuario + '/' + this.datosPerfilUsuario.imagen_archivo;
+}
+}
+} catch(e) {} finally { this.cargandoPerfil = false; }
+}
 
 	onCambiarContrasenia() {
 		try {
@@ -428,4 +462,58 @@ export class NavbarComponent implements OnInit {
     if (!c?.imagen) return './assets/img/imagen_no_disponible.png';
     return 'http://api.residenciales.hoose.mx/uploads/condominios/' + c.id_condominio + '/' + c.imagen;
   }
+onActivarEdicionPerfil() {
+const d = this.datosPerfilUsuario || {};
+const u = this.sesionUsuarioService.leerUsuario();
+this.frmPerfil = this.formBuilder.group({
+nombre: [d.nombre || u.nombre || ''],
+apellidos: [d.apellidos || u.apellidos || ''],
+email: [d.email || u.email || ''],
+telefono: [d.telefono || u.telefono || ''],
+domicilio: [d.domicilio || ''],
+});
+this.modoEdicionPerfil = true;
+}
+
+onCancelarEdicionPerfil() {
+this.modoEdicionPerfil = false;
+this.archivoImagenPerfil = null;
+}
+
+onImagenPerfilSeleccionada(event: any) {
+const file = event.target.files?.[0];
+if (!file) return;
+this.archivoImagenPerfil = file;
+const reader = new FileReader();
+reader.onload = (e: any) => { this.srcImagenPerfilUsuario = e.target.result; };
+reader.readAsDataURL(file);
+}
+
+async onGuardarPerfil() {
+if (!this.frmPerfil?.valid) return;
+this.guardandoPerfil = true;
+try {
+const idUsuario = this.sesionUsuarioService.leerUsuario().id_usuario;
+const perfil = this.getIDPerfilUsuario();
+const vals = this.frmPerfil.value;
+let obs: any = null;
+if (perfil === 4) obs = this.propietariosService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
+else if (perfil === 5) obs = this.condominosService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
+else if (perfil === 3) obs = this.colaboradoresService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
+else if (perfil === 2) obs = this.administradoresService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
+if (obs) {
+const r: any = await obs.toPromise();
+if (!r.error && !r.err) {
+hlpSwal.ExitoToast('Perfil actualizado correctamente.');
+this.modoEdicionPerfil = false;
+this.datosPerfilUsuario = { ...this.datosPerfilUsuario, ...vals };
+const u = this.sesionUsuarioService.leerUsuario();
+u.nombre = vals.nombre;
+u.apellidos = vals.apellidos;
+this.sesionUsuarioService.guardarUsuario(u);
+} else { hlpSwal.Error(r.msg); }
+} else { hlpSwal.ExitoToast('Perfil actualizado.'); this.modoEdicionPerfil = false; }
+} catch(e) { hlpSwal.Error(e); } finally { this.guardandoPerfil = false; }
+}
+
 }

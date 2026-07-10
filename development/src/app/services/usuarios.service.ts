@@ -146,4 +146,14 @@ export class UsuariosService {
     ).pipe(map(r => r));
   }
 
+  EstablecerContrasenia(idUsuario: number, contraseniaNew: string) {
+    const headers = new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+    const params = new FormData();
+    params.append('contrasenia_nueva', contraseniaNew);
+    return this.http.post(environment.urlBackend + 'usuarios/establecer-contrasenia/' + idUsuario, params, { headers }).pipe(map(r => r));
+  }
+
 }

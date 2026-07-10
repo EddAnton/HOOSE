@@ -189,6 +189,7 @@ export class SesionUsuarioService {
           sesionUsuario.tokenExpire = usuario.tokenExpire;
           sesionUsuario.nombre = usuario.nombre || '';
           sesionUsuario.apellidos = usuario.apellidos || '';
+          sesionUsuario.imagen_archivo = usuario.imagen_archivo || null;
 
           this.guardarUsuario(sesionUsuario);
         }

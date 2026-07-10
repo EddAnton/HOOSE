@@ -51,7 +51,10 @@ export class CatalogoCondominosComponent implements OnInit {
 
   frmCondomino: FormGroup;
   frmCondominoDeshabilitar: FormGroup;
-	mostrarDialogoEdicionCondomino: boolean = false;
+	mostrarDialogoResetContrasenia: boolean = false;
+nuevaContraseniaReset: string = "";
+idUsuarioReset: number = 0;
+mostrarDialogoEdicionCondomino: boolean = false;
 	serviciosDisponibles: string[] = ['Agua', 'Energía Eléctrica', 'Gas', 'Limpia Pública', 'Otros'];
 	serviciosSeleccionados: string[] = [];
 	penalizacionOpciones: any[] = [{label: 'No', value: '0'}, {label: 'Sí', value: '1'}];
@@ -894,7 +897,10 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
 			usuario += '.' + apellidos.toLowerCase().split(/\s+/)[0];
 		}
 		usuario = usuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.]/g, '');
-		this.frmCondomino.patchValue({ usuario: usuario });
+  this.usuarioManualmenteEditado = false;
+  this.frmCondomino.patchValue({ usuario: usuario });
+  this.frmCondomino.get('usuario')?.setErrors(null);
+  this.onVerificarUsuario();
 		}
 	
 
@@ -974,5 +980,36 @@ this.frmCondomino = this.formBuilder.group(this.Condomino);
       }
     } catch(e) {}
   }
+
+generarContrasenaSugerida(): string {
+const words = ['Casa', 'Luna', 'Sol', 'Mar', 'Rio', 'Flor', 'Viento', 'Fuego'];
+const word = words[Math.floor(Math.random() * words.length)];
+const num = Math.floor(Math.random() * 900) + 100;
+const symbols = ['!', '@', '#', '$'];
+const sym = symbols[Math.floor(Math.random() * symbols.length)];
+return word + num + sym;
+}
+
+onAbrirResetContrasenia(idUsuario: number) {
+this.idUsuarioReset = idUsuario;
+this.nuevaContraseniaReset = this.generarContrasenaSugerida();
+this.mostrarDialogoResetContrasenia = true;
+}
+
+async onGuardarResetContrasenia() {
+if (!this.nuevaContraseniaReset || this.nuevaContraseniaReset.length < 6) {
+hlpSwal.Advertencia('La contraseña debe tener al menos 6 caracteres.');
+return;
+}
+hlpSwal.Cargando();
+try {
+const r: any = await this.usuariosService.EstablecerContrasenia(this.idUsuarioReset, this.nuevaContraseniaReset).toPromise();
+hlpSwal.Cerrar();
+if (!r.err) {
+hlpSwal.ExitoToast('Contraseña actualizada correctamente.');
+this.mostrarDialogoResetContrasenia = false;
+} else { hlpSwal.Error(r.msg); }
+} catch(e) { hlpSwal.Cerrar(); hlpSwal.Error(e); }
+}
 
 }

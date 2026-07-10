@@ -71,55 +71,152 @@
 </nav>
 
 <!-- Diálogo de detalles del usuario -->
+
+<!-- Diálogo Mi Perfil -->
 <p-dialog [(visible)]="mostrarDialogoDetallesUsuario" [modal]="true" [dismissableMask]="true"
-  [style]="{ width: '450px' }" header="Perfil del usuario" styleClass="p-fluid"
-  (onHide)="(mostrarDialogoDetallesUsuario == false)">
+  [style]="{ width: '520px', 'max-width': '95vw' }" header="Mi Perfil" styleClass="p-fluid navbar-perfil-dialog"
+  (onHide)="mostrarDialogoDetallesUsuario = false">
   <ng-template pTemplate="content">
-    <div class="row pt-4">
-      <!-- Imagen de perfil del usuario -->
-      <div class="col-12 text-center">
-        <div>
-          <img class="imagenThumbnail img-thumbnail"
-            [src]="srcImagenPerfilUsuario ? srcImagenPerfilUsuario : './assets/img/imagen_no_disponible.png'" />
+    <div *ngIf="cargandoPerfil" class="text-center py-5">
+      <i class="pi pi-spin pi-spinner" style="font-size:2rem;color:#e91e8a"></i>
+    </div>
+    <div *ngIf="!cargandoPerfil">
+      <div class="row">
+        <div class="col-12 col-md-4 text-center mb-3">
+          <div style="width:100px;height:100px;border-radius:50%;overflow:hidden;border:3px solid #e91e8a;background:#1a1a2e;margin:0 auto 12px;display:flex;align-items:center;justify-content:center">
+            <img *ngIf="srcImagenPerfilUsuario" [src]="srcImagenPerfilUsuario" style="width:100%;height:100%;object-fit:cover" />
+            <span *ngIf="!srcImagenPerfilUsuario" style="font-size:2rem;font-weight:700;color:#e91e8a">{{ (getNombreUsuario() || 'U').charAt(0) }}</span>
+          </div>
+          <h6 class="text-white mb-1">{{ getNombreUsuario() }}</h6>
+          <small style="color:#6b7280">{{ datosPerfilUsuario?.usuario || sesionUsuarioService.leerUsuario().usuario }}</small>
+          <div class="mt-2 p-2" style="background:rgba(233,30,138,0.1);border-radius:8px">
+            <small style="color:#e91e8a;font-weight:600">{{ getPerfilUsuario() }}</small>
+          </div>
         </div>
-      </div>
-      <hr class="mt-3" />
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <label for="condominio">Nombre</label>
-        <input type="text" pInputText [value]="getNombreUsuario()" disabled />
-      </div>
-    </div>
-    <div class="row pt-2">
-      <div class="col-12">
-        <label for="condominio">Email</label>
-        <input type="text" pInputText [value]="getEmailUsuario()" disabled />
-      </div>
-    </div>
-    <div class="row pt-2">
-      <div class="col-12">
-        <label for="condominio">Teléfono</label>
-        <input type="text" pInputText [value]="getTelefonoUsuario()" disabled />
+        <div class="col-12 col-md-8">
+          <!-- Modo Vista -->
+          <div *ngIf="!modoEdicionPerfil" style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;margin-bottom:12px">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="pi pi-user" style="color:#e91e8a"></i>
+              <h6 class="mb-0 text-white">Información General</h6>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2"><small style="color:#6b7280;display:block">Nombre completo</small><span class="text-white">{{ (datosPerfilUsuario?.nombre || getNombreUsuario()) + (datosPerfilUsuario?.apellidos ? ' ' + datosPerfilUsuario.apellidos : '') }}</span></div>
+              <div class="col-12 mb-2"><small style="color:#6b7280;display:block">Email</small><span class="text-white">{{ datosPerfilUsuario?.email || getEmailUsuario() }}</span></div>
+              <div class="col-12 mb-2"><small style="color:#6b7280;display:block">Teléfono</small><span class="text-white">{{ datosPerfilUsuario?.telefono || getTelefonoUsuario() || 'No registrado' }}</span></div>
+              <div class="col-12 mb-2" *ngIf="datosPerfilUsuario?.domicilio"><small style="color:#6b7280;display:block">Domicilio</small><span class="text-white">{{ datosPerfilUsuario.domicilio }}</span></div>
+            </div>
+          </div>
+          <!-- Modo Edición -->
+          <div *ngIf="modoEdicionPerfil" [formGroup]="frmPerfil" style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;margin-bottom:12px">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="pi pi-pencil" style="color:#e91e8a"></i>
+              <h6 class="mb-0 text-white">Editar Información</h6>
+            </div>
+            <div class="text-center mb-3" style="position:relative;z-index:1">
+              <label style="cursor:pointer;display:inline-block">
+                <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #e91e8a;margin:0 auto;background:#1a1a2e">
+                  <img [src]="srcImagenPerfilUsuario || './assets/img/imagen_no_disponible.png'" style="width:100%;height:100%;object-fit:cover;display:block" />
+                </div>
+                <div><small style="color:#6b7280">Clic para cambiar foto</small></div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none" (change)="onImagenPerfilSeleccionada($event)" />
+              </label>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Nombre</label><input pInputText class="w-100" formControlName="nombre" /></div>
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Apellidos</label><input pInputText class="w-100" formControlName="apellidos" /></div>
+              <div class="col-12 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Email</label><input pInputText class="w-100" formControlName="email" /></div>
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Teléfono</label><input pInputText class="w-100" formControlName="telefono" /></div>
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Domicilio</label><input pInputText class="w-100" formControlName="domicilio" /></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <!-- Botón Cambiar contraseña -->
-    <button pButton type="button" label="Cambiar contraseña" icon="pi pi-key"
-      class="p-button-raised p-button-info me-sm-1" pTooltip="Cambiar la contraseña" tooltipPosition="top"
-      (click)="onCambiarContrasenia()"></button>
-    <!-- Botón Cancelar -->
-    <!-- <button
-			pButton
-			type="button"
-			label="Cancelar"
-			icon="pi pi-times"
-			class="p-button-raised p-button-warning ml-2"
-			pTooltip="Cancelar el proceso"
-			tooltipPosition="top"
-			(click)="onCancelarSeleccionarCondominio()"
-		></button> -->
+    <button *ngIf="!modoEdicionPerfil" pButton type="button" label="Editar perfil" icon="pi pi-pencil"
+      class="p-button-raised p-button-secondary me-2" (click)="onActivarEdicionPerfil()"></button>
+    <button *ngIf="modoEdicionPerfil" pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-raised p-button-warning me-2" (click)="onCancelarEdicionPerfil()"></button>
+    <button *ngIf="modoEdicionPerfil" pButton type="button" label="Guardar" icon="pi pi-check"
+      class="p-button-raised p-button-success me-2" [disabled]="guardandoPerfil" (click)="onGuardarPerfil()"></button>
+    <button *ngIf="!modoEdicionPerfil" pButton type="button" label="Cambiar contraseña" icon="pi pi-key"
+      class="p-button-raised p-button-info" (click)="onCambiarContrasenia()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Diálogo Mi Perfil -->
+<p-dialog [(visible)]="mostrarDialogoDetallesUsuario" [modal]="true" [dismissableMask]="true"
+  [style]="{ width: '520px', 'max-width': '95vw' }" header="Mi Perfil" styleClass="p-fluid navbar-perfil-dialog"
+  (onHide)="mostrarDialogoDetallesUsuario = false">
+  <ng-template pTemplate="content">
+    <div *ngIf="cargandoPerfil" class="text-center py-5">
+      <i class="pi pi-spin pi-spinner" style="font-size:2rem;color:#e91e8a"></i>
+    </div>
+    <div *ngIf="!cargandoPerfil">
+      <div class="row">
+        <div class="col-12 col-md-4 text-center mb-3">
+          <div style="width:100px;height:100px;border-radius:50%;overflow:hidden;border:3px solid #e91e8a;background:#1a1a2e;margin:0 auto 12px;display:flex;align-items:center;justify-content:center">
+            <img *ngIf="srcImagenPerfilUsuario" [src]="srcImagenPerfilUsuario" style="width:100%;height:100%;object-fit:cover" />
+            <span *ngIf="!srcImagenPerfilUsuario" style="font-size:2rem;font-weight:700;color:#e91e8a">{{ (getNombreUsuario() || 'U').charAt(0) }}</span>
+          </div>
+          <h6 class="text-white mb-1">{{ getNombreUsuario() }}</h6>
+          <small style="color:#6b7280">{{ datosPerfilUsuario?.usuario || sesionUsuarioService.leerUsuario().usuario }}</small>
+          <div class="mt-2 p-2" style="background:rgba(233,30,138,0.1);border-radius:8px">
+            <small style="color:#e91e8a;font-weight:600">{{ getPerfilUsuario() }}</small>
+          </div>
+        </div>
+        <div class="col-12 col-md-8">
+          <!-- Modo Vista -->
+          <div *ngIf="!modoEdicionPerfil" style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;margin-bottom:12px">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="pi pi-user" style="color:#e91e8a"></i>
+              <h6 class="mb-0 text-white">Información General</h6>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2"><small style="color:#6b7280;display:block">Nombre completo</small><span class="text-white">{{ (datosPerfilUsuario?.nombre || getNombreUsuario()) + (datosPerfilUsuario?.apellidos ? ' ' + datosPerfilUsuario.apellidos : '') }}</span></div>
+              <div class="col-12 mb-2"><small style="color:#6b7280;display:block">Email</small><span class="text-white">{{ datosPerfilUsuario?.email || getEmailUsuario() }}</span></div>
+              <div class="col-12 mb-2"><small style="color:#6b7280;display:block">Teléfono</small><span class="text-white">{{ datosPerfilUsuario?.telefono || getTelefonoUsuario() || 'No registrado' }}</span></div>
+              <div class="col-12 mb-2" *ngIf="datosPerfilUsuario?.domicilio"><small style="color:#6b7280;display:block">Domicilio</small><span class="text-white">{{ datosPerfilUsuario.domicilio }}</span></div>
+            </div>
+          </div>
+          <!-- Modo Edición -->
+          <div *ngIf="modoEdicionPerfil" [formGroup]="frmPerfil" style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;margin-bottom:12px">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="pi pi-pencil" style="color:#e91e8a"></i>
+              <h6 class="mb-0 text-white">Editar Información</h6>
+            </div>
+            <div class="text-center mb-3" style="position:relative;z-index:1">
+              <label style="cursor:pointer;display:inline-block">
+                <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #e91e8a;margin:0 auto;background:#1a1a2e">
+                  <img [src]="srcImagenPerfilUsuario || './assets/img/imagen_no_disponible.png'" style="width:100%;height:100%;object-fit:cover;display:block" />
+                </div>
+                <div><small style="color:#6b7280">Clic para cambiar foto</small></div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none" (change)="onImagenPerfilSeleccionada($event)" />
+              </label>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Nombre</label><input pInputText class="w-100" formControlName="nombre" /></div>
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Apellidos</label><input pInputText class="w-100" formControlName="apellidos" /></div>
+              <div class="col-12 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Email</label><input pInputText class="w-100" formControlName="email" /></div>
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Teléfono</label><input pInputText class="w-100" formControlName="telefono" /></div>
+              <div class="col-6 mb-2"><label class="form-label text-white" style="font-size:0.8rem">Domicilio</label><input pInputText class="w-100" formControlName="domicilio" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button *ngIf="!modoEdicionPerfil" pButton type="button" label="Editar perfil" icon="pi pi-pencil"
+      class="p-button-raised p-button-secondary me-2" (click)="onActivarEdicionPerfil()"></button>
+    <button *ngIf="modoEdicionPerfil" pButton type="button" label="Cancelar" icon="pi pi-times"
+      class="p-button-raised p-button-warning me-2" (click)="onCancelarEdicionPerfil()"></button>
+    <button *ngIf="modoEdicionPerfil" pButton type="button" label="Guardar" icon="pi pi-check"
+      class="p-button-raised p-button-success me-2" [disabled]="guardandoPerfil" (click)="onGuardarPerfil()"></button>
+    <button *ngIf="!modoEdicionPerfil" pButton type="button" label="Cambiar contraseña" icon="pi pi-key"
+      class="p-button-raised p-button-info" (click)="onCambiarContrasenia()"></button>
   </ng-template>
 </p-dialog>
 

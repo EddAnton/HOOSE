@@ -3,6 +3,7 @@ import { isDevMode } from '@angular/core';
 export class AdministradorResumenModel {
   id_usuario: number;
   nombre: string;
+apellidos: string;
   usuario: string;
   email: string;
   telefono: string;
@@ -21,6 +22,7 @@ export class AdministradorResumenModel {
     return {
       id_usuario: 0,
       nombre: null,
+apellidos: null,
       usuario: null,
       email: null,
       telefono: null,
@@ -42,6 +44,7 @@ export class AdministradorModel {
   id_usuario: number;
   usuario: string;
   nombre: string;
+apellidos: string;
   email: string;
   telefono: string;
   domicilio: string;
@@ -67,6 +70,7 @@ export class AdministradorModel {
       id_usuario: 0,
       usuario: isDevMode() ? 'administrador0' : null,
       nombre: isDevMode() ? 'administrador 0' : null,
+      apellidos: null,
       email: isDevMode() ? 'administrador0@pontevedra.com' : null,
       telefono: isDevMode() ? '2281505214' : null,
       domicilio: null,
