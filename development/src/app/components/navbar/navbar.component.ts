@@ -91,6 +91,7 @@ private administradoresService: UsuariosAdministradoresService,
 	ngOnInit() {
     if (window.innerWidth >= 991) { this.sidebarOpen(); } else { this.hideSidebar(); this.sidebarVisible = false; }
 		this.listTitles = mnuOpciones.filter((listTitle) => listTitle && listTitle.visible);
+this.srcImagenPerfilUsuario = this.getImagenPerfilUsuario();
     this.sidebarService.visible$.subscribe(v => { this.sidebarVisible = v; });
 		this.router.events.subscribe((event) => {
 			if (this.sidebarVisible) this.sidebarClose();
@@ -118,7 +119,10 @@ private administradoresService: UsuariosAdministradoresService,
 
 	getImagenPerfilUsuario() {
 		const u = this.sesionUsuarioService.leerUsuario();
-if (u.imagen_archivo) return this.appData.urlBackendUsuariosFiles + u.id_usuario + "/" + u.imagen_archivo;
+if (u.imagen_archivo) {
+if (u.imagen_archivo.startsWith('uploads/')) return this.appData.urlBackend.replace('index.php/', '') + u.imagen_archivo;
+return this.appData.urlBackendUsuariosFiles + u.id_usuario + '/' + u.imagen_archivo;
+}
 return null;
 	}
 	getNombreUsuario() {
@@ -142,7 +146,7 @@ return null;
 		return Number(this.sesionUsuarioService.leerUsuario().id_perfil_usuario);
 	}
 	getPerfilUsuario() {
-		return Number(this.sesionUsuarioService.leerUsuario().perfil_usuario);
+		return this.sesionUsuarioService.leerUsuario().perfil_usuario;
 	}
 
 	showSidebar() {
@@ -302,8 +306,10 @@ else if (perfil === 2) r = await this.administradoresService.ListarAdministrador
 if (r) {
 const key = Object.keys(r).find((k:string) => k !== 'error' && k !== 'err' && k !== 'msg');
 this.datosPerfilUsuario = key ? r[key] : null;
-if (this.datosPerfilUsuario?.imagen_archivo) {
-this.srcImagenPerfilUsuario = this.appData.urlBackendUsuariosFiles + idUsuario + '/' + this.datosPerfilUsuario.imagen_archivo;
+const imgField = this.datosPerfilUsuario?.imagen_archivo || this.datosPerfilUsuario?.imagen;
+if (imgField) {
+const imgUrl = imgField.startsWith('uploads/') ? this.appData.urlBackend.replace('index.php/', '') + imgField : this.appData.urlBackendUsuariosFiles + idUsuario + '/' + imgField;
+this.srcImagenPerfilUsuario = imgUrl;
 }
 }
 } catch(e) {} finally { this.cargandoPerfil = false; }
@@ -465,14 +471,17 @@ this.srcImagenPerfilUsuario = this.appData.urlBackendUsuariosFiles + idUsuario +
 onActivarEdicionPerfil() {
 const d = this.datosPerfilUsuario || {};
 const u = this.sesionUsuarioService.leerUsuario();
+const apellidos = d.apellidos || u.apellidos || '';
+const nombre = d.nombre || u.nombre || '';
 this.frmPerfil = this.formBuilder.group({
-nombre: [d.nombre || u.nombre || ''],
-apellidos: [d.apellidos || u.apellidos || ''],
+nombre: [nombre],
+apellidos: [apellidos],
 email: [d.email || u.email || ''],
 telefono: [d.telefono || u.telefono || ''],
 domicilio: [d.domicilio || ''],
 });
 this.modoEdicionPerfil = true;
+console.log('Perfil edicion:', { nombre, apellidos, d, u });
 }
 
 onCancelarEdicionPerfil() {
@@ -497,21 +506,24 @@ const idUsuario = this.sesionUsuarioService.leerUsuario().id_usuario;
 const perfil = this.getIDPerfilUsuario();
 const vals = this.frmPerfil.value;
 let obs: any = null;
-if (perfil === 4) obs = this.propietariosService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
-else if (perfil === 5) obs = this.condominosService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
-else if (perfil === 3) obs = this.colaboradoresService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
-else if (perfil === 2) obs = this.administradoresService.Guardar({ ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario } as any);
+const payload: any = { ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario };
+if (this.archivoImagenPerfil) payload.archivo_imagen = this.archivoImagenPerfil;
+if (perfil === 4) obs = this.propietariosService.Guardar(payload as any);
+else if (perfil === 5) obs = this.condominosService.Guardar(payload as any);
+else if (perfil === 3) obs = this.colaboradoresService.Guardar(payload as any);
+else if (perfil === 2) obs = this.administradoresService.Guardar(payload as any);
 if (obs) {
 const r: any = await obs.toPromise();
 if (!r.error && !r.err) {
 hlpSwal.ExitoToast('Perfil actualizado correctamente.');
 this.modoEdicionPerfil = false;
 this.datosPerfilUsuario = { ...this.datosPerfilUsuario, ...vals };
+if (this.archivoImagenPerfil) { const u2 = this.sesionUsuarioService.leerUsuario(); u2.imagen_archivo = 'uploads/usuarios/' + u2.id_usuario + '/'; this.sesionUsuarioService.guardarUsuario(u2); }
 const u = this.sesionUsuarioService.leerUsuario();
 u.nombre = vals.nombre;
 u.apellidos = vals.apellidos;
 this.sesionUsuarioService.guardarUsuario(u);
-} else { hlpSwal.Error(r.msg); }
+} else { console.error('Guardar perfil error:', r); hlpSwal.Error(r.msg); }
 } else { hlpSwal.ExitoToast('Perfil actualizado.'); this.modoEdicionPerfil = false; }
 } catch(e) { hlpSwal.Error(e); } finally { this.guardandoPerfil = false; }
 }

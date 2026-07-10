@@ -350,7 +350,7 @@ this.archivosPersonaMoral = {};
     if (!this.frmAdministrador.get('rfc')) this.frmAdministrador.addControl('rfc', new FormControl(this.Administrador.rfc || null));
     if (!this.frmAdministrador.get('sitio_web')) this.frmAdministrador.addControl('sitio_web', new FormControl(this.Administrador.sitio_web || null));
     if (!this.frmAdministrador.get('domicilio_fiscal')) this.frmAdministrador.addControl('domicilio_fiscal', new FormControl(this.Administrador.domicilio_fiscal || null));
-    if (!this.frmAdministrador.get("apellidos")) this.frmAdministrador.addControl("apellidos", new FormControl(this.Administrador["apellidos"] || null));
+    if (!this.frmAdministrador.get("apellidos")) { this.frmAdministrador.addControl("apellidos", new FormControl(this.Administrador["apellidos"] || null)); } else { this.frmAdministrador.patchValue({ apellidos: this.Administrador["apellidos"] || null }); }
     // Auto-llenar condominio del header
     const condHeader = this.sesionUsuarioService.obtenerIDCondominioUsuario() || 0;
     if (condHeader > 0 && this.frmAdministrador.get('fk_id_condominio')) {
