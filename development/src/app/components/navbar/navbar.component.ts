@@ -72,7 +72,7 @@ archivoImagenPerfil: File = null;
 	constructor(
 		location: Location,
 		private router: Router,
-		private sesionUsuarioService: SesionUsuarioService,
+		public sesionUsuarioService: SesionUsuarioService,
 		private cryptoService: CryptoService,
 		private usuariosService: UsuariosService,
 		private condominiosService: CondominiosService,
