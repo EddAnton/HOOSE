@@ -170,3 +170,19 @@ nav.navbar .badge.text-bg-primary {
 .nav-username { display: inline !important; }
 
 .nav-username { display: inline !important; }
+
+/* Mi Perfil - estilos del detalle */
+:host ::ng-deep .navbar-perfil-dialog .hoose-detalle-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+:host ::ng-deep .navbar-perfil-dialog .hoose-detalle-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-avatar-ring { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #e91e8a; display: flex; align-items: center; justify-content: center; background: rgba(233,30,138,0.08); overflow: hidden; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-avatar-initials { font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-stat-box { text-align: center; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-stat-val { font-size: 0.9rem; font-weight: 700; color: #fff; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-stat-label { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-info-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-info-icon-sm { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-detalle-icon-header { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+:host ::ng-deep .navbar-perfil-dialog .hoose-detalle-icon-header i { font-size: 1.3rem; }
+:host ::ng-deep .navbar-perfil-dialog .p-dialog-content { background: #12121f !important; border-radius: 16px !important; padding: 0 !important; }
+:host ::ng-deep .navbar-perfil-dialog .p-dialog { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 25px 60px rgba(0,0,0,0.5); }

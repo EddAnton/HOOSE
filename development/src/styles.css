@@ -1980,3 +1980,18 @@ app-catalogo-administradores {
   width: 28px !important;
   height: 28px !important;
 }
+
+/* Mi Perfil Navbar - estilos globales */
+.navbar-perfil-dialog .p-dialog { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; box-shadow: 0 25px 60px rgba(0,0,0,0.5) !important; }
+.navbar-perfil-dialog .p-dialog-content { background: #12121f !important; border-radius: 16px !important; padding: 0 !important; }
+.navbar-perfil-dialog .hoose-detalle-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.navbar-perfil-dialog .hoose-detalle-card { background: rgba(255,255,255,0.03) !important; border: 1px solid rgba(255,255,255,0.06) !important; border-radius: 12px !important; }
+.navbar-perfil-dialog .hoose-avatar-ring { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #e91e8a; display: flex; align-items: center; justify-content: center; background: rgba(233,30,138,0.08); overflow: hidden; margin: 0 auto; }
+.navbar-perfil-dialog .hoose-avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.navbar-perfil-dialog .hoose-avatar-initials { font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; }
+.navbar-perfil-dialog .hoose-stat-box { text-align: center; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; }
+.navbar-perfil-dialog .hoose-stat-val { font-size: 0.9rem; font-weight: 700; color: #fff; }
+.navbar-perfil-dialog .hoose-stat-label { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+.navbar-perfil-dialog .hoose-info-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.navbar-perfil-dialog .hoose-info-icon-sm { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.navbar-perfil-dialog .hoose-detalle-icon-header { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
