@@ -440,7 +440,7 @@
           <span class="hoose-badge-inactivo" *ngIf="Administrador.estatus != 1"><span class="hoose-dot-red"></span> Inactivo</span>
           </div>
         </div>
-        <h5 class="text-white mb-1">{{ Administrador.nombre }}</h5>
+        <h5 class="text-white mb-1">{{ Administrador.nombre }} {{ Administrador.apellidos || '' }}</h5>
         <small style="color:#8b5cf6;font-weight:500" *ngIf="Administrador.tipo_persona === 'MORAL'">Representante Legal</small>
         <br/>
         <small class="text-muted">{{ Administrador.usuario }}</small>
@@ -493,7 +493,7 @@
       <div class="hoose-detalle-card p-3 mb-3" *ngIf="Administrador.id_administrador_interno && Administrador.estructura_administracion === 'UNICO'">
         <div class="d-flex align-items-center gap-2 mb-3"><div class="hoose-info-icon-sm" style="background:rgba(139,92,246,0.15)"><i class="pi pi-user" style="color:#8b5cf6"></i></div><h6 class="text-white mb-0">Administrador Único</h6></div>
         <div class="row">
-          <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Administrador.nombre }}</span></div>
+          <div class="col-6 mb-2"><small class="text-muted d-block">Nombre</small><span class="text-white">{{ Administrador.nombre }} {{ Administrador.apellidos || '' }}</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Email</small><a *ngIf="Administrador.email" [href]="'mailto:' + Administrador.email" style="color:#3b82f6;text-decoration:none">{{ Administrador.email }}</a><span *ngIf="!Administrador.email" class="text-muted">No registrado</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Teléfono</small><a *ngIf="Administrador.telefono" [href]="'tel:' + Administrador.telefono" style="color:#10b981;text-decoration:none">{{ Administrador.telefono | phoneFormat }}</a><span *ngIf="!Administrador.telefono" class="text-muted">No registrado</span></div>
           <div class="col-6 mb-2"><small class="text-muted d-block">Condominio</small><span class="text-white">{{ Administrador.condominio_nombre }}</span></div>
