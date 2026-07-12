@@ -24,14 +24,9 @@ export class ConfiguracionComponent implements OnInit {
     { clave: 'orden_dia_minuta_apertura', label: 'Orden del Día - Lectura de Minuta', seccion: 'Acta' },
     { clave: 'orden_dia_votacion_cierre', label: 'Orden del Día - Cierre de Punto con Votación', seccion: 'Acta' },
     { clave: 'acta_cierre', label: 'Cierre del Acta', seccion: 'Acta' },
-    { clave: 'mail_host', label: 'Servidor SMTP', seccion: 'Correo' },
-    { clave: 'mail_port', label: 'Puerto', seccion: 'Correo' },
-    { clave: 'mail_user', label: 'Usuario (email)', seccion: 'Correo' },
-    { clave: 'mail_password', label: 'Contraseña', seccion: 'Correo' },
-    { clave: 'mail_from_name', label: 'Nombre remitente', seccion: 'Correo' },
   ];
 
-  secciones = ['Convocatoria', 'Acta', 'Correo'];
+  secciones = ['Convocatoria', 'Acta'];
 
   variablesConvocatoria = [
     { variable: '{{nombre_condominio}}', descripcion: 'Nombre del condominio' },
