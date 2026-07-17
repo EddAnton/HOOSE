@@ -156,4 +156,14 @@ export class UsuariosService {
     return this.http.post(environment.urlBackend + 'usuarios/establecer-contrasenia/' + idUsuario, params, { headers }).pipe(map(r => r));
   }
 
+  ActualizarPerfil(idUsuario: number, data: any) {
+    const headers = new HttpHeaders({
+      'X-API-KEY': environment.appKey,
+      Authorization: this.sesionUsuarioService.obtenerToken(),
+    });
+    const params = new FormData();
+    Object.entries(data).forEach(([k, v]) => { if (v != null) params.append(k, v as any); });
+    return this.http.post(environment.urlBackend + 'usuarios/actualizar/' + idUsuario, params, { headers }).pipe(map(r => r));
+  }
+
 }

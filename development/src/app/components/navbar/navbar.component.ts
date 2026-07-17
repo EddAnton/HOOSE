@@ -508,7 +508,8 @@ const vals = this.frmPerfil.value;
 let obs: any = null;
 const payload: any = { ...this.datosPerfilUsuario, ...vals, id_usuario: idUsuario };
 if (this.archivoImagenPerfil) payload.archivo_imagen = this.archivoImagenPerfil;
-if (perfil === 4) obs = this.propietariosService.Guardar(payload as any);
+if (perfil === 1) obs = this.usuariosService.ActualizarPerfil(idUsuario, payload as any);
+else if (perfil === 4) obs = this.propietariosService.Guardar(payload as any);
 else if (perfil === 5) obs = this.condominosService.Guardar(payload as any);
 else if (perfil === 3) obs = this.colaboradoresService.Guardar(payload as any);
 else if (perfil === 2) obs = this.administradoresService.Guardar(payload as any);
@@ -518,7 +519,7 @@ if (!r.error && !r.err) {
 hlpSwal.ExitoToast('Perfil actualizado correctamente.');
 this.modoEdicionPerfil = false;
 this.datosPerfilUsuario = { ...this.datosPerfilUsuario, ...vals };
-if (this.archivoImagenPerfil) { const u2 = this.sesionUsuarioService.leerUsuario(); u2.imagen_archivo = 'uploads/usuarios/' + u2.id_usuario + '/'; this.sesionUsuarioService.guardarUsuario(u2); }
+if (this.archivoImagenPerfil && r.imagen_archivo) { const u2 = this.sesionUsuarioService.leerUsuario(); u2.imagen_archivo = r.imagen_archivo; this.sesionUsuarioService.guardarUsuario(u2); this.srcImagenPerfilUsuario = this.getImagenPerfilUsuario(); }
 const u = this.sesionUsuarioService.leerUsuario();
 u.nombre = vals.nombre;
 u.apellidos = vals.apellidos;

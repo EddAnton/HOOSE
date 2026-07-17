@@ -141,7 +141,7 @@
     </div>
     <div class="col-12 col-md-8">
       <!-- Info General -->
-      <div class="hoose-detalle-card p-3 mb-3">
+      <div class="hoose-detalle-card p-3 mb-3" *ngIf="datosPerfilUsuario">
         <div class="d-flex flex-wrap gap-3">
           <div class="d-flex align-items-center gap-2" *ngIf="datosPerfilUsuario?.email || getEmailUsuario()">
             <div class="hoose-info-icon" style="background:rgba(59,130,246,0.15)"><i class="pi pi-envelope" style="color:#3b82f6"></i></div>
