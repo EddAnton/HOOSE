@@ -21,7 +21,6 @@ export function reset(tTabla: Table, elementIdClear: string = undefined) {
 
 	scrollTop(tTabla);
 
-	console.log(elementIdClear);
 
 	const txtInputFilter = document.getElementById(
 		elementIdClear ? elementIdClear : 'txtGlobalFilter',

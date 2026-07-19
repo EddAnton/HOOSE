@@ -9,7 +9,7 @@
         <span class="hoose-kpi-sub">Activos: <b>{{ kpiCardsActivos }}</b></span>
       </div>
     </div>
-    <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end" style="margin-left:auto">
+    <div class="d-flex align-items-center gap-2 flex-wrap" style="flex:1;min-width:0">
       <div class="als-vista-switcher als-switcher-center">
         <button [class.active]="vistaActual === 'cards'" (click)="cambiarVista('cards')">
           <i class="pi pi-th-large"></i> Cards
@@ -18,17 +18,17 @@
           <i class="pi pi-images"></i> Carrusel
         </button>
       </div>
-      <div class="hoose-tabla-search" style="border:1.5px solid #2d3150!important;box-shadow:none!important;min-width:220px">
+      <div class="hoose-tabla-search" style="border:1.5px solid #2d3150!important;box-shadow:none!important;flex:2;min-width:120px">
         <i class="pi pi-search"></i>
         <input type="text" placeholder="Buscar inmueble..." [(ngModel)]="filtroCardBusqueda" (ngModelChange)="filtrarCards()" />
       </div>
       <div class="als-filtros-group">
-        <select class="hoose-filtro-select" [(ngModel)]="filtroCardEstatus" (ngModelChange)="filtrarCards()">
+        <select class="hoose-filtro-select" style="flex:1;min-width:100px" [(ngModel)]="filtroCardEstatus" (ngModelChange)="filtrarCards()">
           <option [ngValue]="null">Estatus</option>
           <option [ngValue]="1">Activo</option>
           <option [ngValue]="0">Inactivo</option>
         </select>
-        <select class="hoose-filtro-select" [(ngModel)]="filtroCardTipo" (ngModelChange)="filtrarCards()">
+        <select class="hoose-filtro-select" style="flex:1;min-width:100px" [(ngModel)]="filtroCardTipo" (ngModelChange)="filtrarCards()">
           <option [ngValue]="null">Tipo</option>
           <option *ngFor="let t of tiposCondominio" [ngValue]="t.value">{{ t.label }}</option>
         </select>
@@ -39,14 +39,15 @@
         </button>
       </div>
     </div>
-
+    <div style="flex-shrink:0">
+      <button pButton type="button" icon="pi pi-plus" label="Nuevo Inmueble"
+        class="hoose-btn-nuevo" (click)="onCondominioEditar()">
+      </button>
+    </div>
   </div>
 
   <!-- ── Vista Cards ── -->
   <div *ngIf="vistaActual === 'cards'" style="padding:16px">
-
-    <!-- FAB flotante agregar -->
-    <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised hoose-fab" pTooltip="Nuevo inmueble" tooltipPosition="left" (click)="onCondominioEditar()"></button>
     <div *ngIf="cargandoCards" class="text-center p-5">
       <i class="pi pi-spin pi-spinner" style="font-size:2rem;color:#e91e8c"></i>
       <p class="text-muted mt-2">Cargando inmuebles...</p>
@@ -125,9 +126,6 @@
 
   <!-- ── Vista Carrusel ── -->
   <div *ngIf="vistaActual === 'carrusel'">
-
-  <!-- FAB flotante agregar -->
-  <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised hoose-fab" pTooltip="Nuevo inmueble" tooltipPosition="left" (click)="onCondominioEditar()"></button>
 
   <!-- RUEDA 3D -->
   <div class="cond-rueda-wrap" *ngIf="Condominios.length > 0">

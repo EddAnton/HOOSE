@@ -144,7 +144,6 @@ this.esSuperAdmin = perfil === 1;
 				label: 'Salarios',
 				icon: 'pi pi-money-bill',
 				command: () => {
-					console.log('Salarios :>> ', Colaborador);
 				},
 			},
 			{
@@ -152,7 +151,6 @@ this.esSuperAdmin = perfil === 1;
 				icon: 'pi pi-calendar',
 				visible: Colaborador.estatus == 1,
 				command: () => {
-					console.log('Solicitudes ausencia :>> ', Colaborador);
 				},
 			},
 		];

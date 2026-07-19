@@ -354,7 +354,6 @@ this.UnidadesSinPropietario = await this.unidadesService
 		delete propietario.identificacion_anverso;
 		delete propietario.identificacion_reverso;
 
-		console.log(propietario);
 
 		hlpSwal
 			.Pregunta({

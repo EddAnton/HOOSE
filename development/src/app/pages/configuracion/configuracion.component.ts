@@ -102,18 +102,13 @@ export class ConfiguracionComponent implements OnInit {
       // Cargar imágenes por separado para no afectar los textos
       try {
         const imgs: any = await this.configuracionService.ListarImagenes().toPromise();
-        console.log('Imágenes:', imgs);
         const imagenes = imgs['data'] || [];
-        console.log('imagenes array:', imagenes);
         const logo = imagenes.find((i: any) => i.opcion === 'login_logo');
-        console.log('logo encontrado:', logo);
         const logoDash = imagenes.find((i: any) => i.opcion === 'logo_dashboard');
         const fondo = imagenes.find((i: any) => i.opcion === 'login_background');
         this.srcLogo = logo ? this.urlImages + logo.valor : null;
         this.srcLogoDashboard = logoDash ? this.urlImages + logoDash.valor : null;
         this.srcFondo = fondo ? this.urlImages + fondo.valor : null;
-        console.log('srcLogo:', this.srcLogo);
-        console.log('urlImages:', this.urlImages);
       } catch(e) { console.error('Error cargando imágenes:', e); }
       const config = r['config'] || {};
       const controls: any = {};

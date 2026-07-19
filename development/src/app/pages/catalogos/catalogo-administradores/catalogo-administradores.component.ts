@@ -228,7 +228,6 @@ this.esSuperAdmin = +this.sesionUsuarioService.obtenerIDPerfilUsuario() === 1;
 					await hlpSwal.Error(e).then(() => null);
 				});
 			if (this.Administrador == null) return;
-console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any).acta_constitutiva_archivo, constancia: (this.Administrador as any).constancia_fiscal_archivo, logo: (this.Administrador as any).logotipo_archivo}));
 		} else {
 			this.Administrador = new AdministradorModel();
 		}
@@ -242,7 +241,6 @@ console.log('ADMIN EDIT DATA:', JSON.stringify({acta: (this.Administrador as any
 				{ label: this.Administrador['condominio_nombre'], value: idCond },
 				...this.opcionesCondominios
 			];
-			console.log('COND OPTIONS:', JSON.stringify(this.opcionesCondominios.slice(0,3)), 'FORM VALUE:', this.frmAdministrador?.get('fk_id_condominio')?.value);
 		}
 
 		try {
@@ -626,7 +624,6 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
 						const resp = this.tipoAcceso === 'INTERNO'
 							? await this.administradoresService.GuardarInterno(administrador).toPromise()
 							: await this.administradoresService.Guardar(administrador).toPromise();
-						console.log('RESPUESTA:', JSON.stringify(resp));
 						return resp;
 					} catch (e) {
 						return hlpSwal.Error(e).then(() => ({ err: true }));
@@ -698,7 +695,6 @@ administrador.borrar_imagen = this.bImagenBorrar ? 1 : 0;
     // Usar datos de la tabla directamente (ya tiene todos los campos)
     const admin = this.Administradores.find((a: any) => a.id_usuario == idUsuario);
     if (!admin) { hlpSwal.Error('Administrador no encontrado.'); return; }
-    console.log("ADMIN fk_id_condominio:", admin["fk_id_condominio"], typeof admin["fk_id_condominio"]);
     this.Administrador = admin as any;
     this.srcImagen = admin.imagen
       ? environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + admin.imagen

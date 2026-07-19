@@ -607,7 +607,6 @@ estatusDisponibles: any[] = [
 
 	public onCuotaMantenimientoMasivasGenerar() {
 		const f = this.frmCuotaMantenimientoMasiva.get('anio_mes').value;
-		console.log(f);
 
 		let cuotaMantenimientoMasiva = new CuotaMantenimientoMasivaModel();
 		cuotaMantenimientoMasiva.anio = f.getFullYear();

@@ -1,8 +1,5 @@
 <div class="hoose-tabla-wrapper" style="margin: 16px 16px 0 0;">
-
-  <!-- FAB flotante agregar -->
-  <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised hoose-fab" pTooltip="Nuevo condómino" tooltipPosition="left" (click)="onCondominoEditar()"></button>
-  <div class="hoose-tabla-toolbar" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:transparent;border:none;padding:0 0 12px 0">
+  <div class="hoose-tabla-toolbar" style="align-items:flex-start;gap:16px;flex-wrap:nowrap">
     <div style="flex-shrink:0;max-width:70%">
     <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
       <div class="hoose-kpi-icon"><i class="pi pi-users"></i></div>
@@ -13,8 +10,9 @@
       </div>
     </div>
     </div>
-    <div class="d-flex flex-column gap-2 justify-content-between" style="flex:1;min-width:0">
+    <div class="d-flex flex-column gap-2 justify-content-between">
       <div class="d-flex justify-content-end">
+        <button *ngIf="permitirAgregarEditar" pButton type="button" icon="pi pi-plus" label="Nuevo Condómino" class="hoose-btn-nuevo" tooltipPosition="left" (click)="onCondominoEditar()"></button>
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
         <div class="hoose-tabla-search">

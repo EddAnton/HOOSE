@@ -279,7 +279,6 @@ export class GastosMantenimientoComponent implements OnInit {
 		gastoMantenimiento.es_deducible = gastoMantenimiento.es_deducible ? 1 : 0;
 		delete gastoMantenimiento.comprobante;
 		delete gastoMantenimiento.archivo_comprobante?.src;
-		console.log(gastoMantenimiento);
 
 		hlpSwal
 			.Pregunta({

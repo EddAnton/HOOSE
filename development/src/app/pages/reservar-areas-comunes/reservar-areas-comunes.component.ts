@@ -111,7 +111,6 @@ export class ReservarAreasComunesComponent implements OnInit {
 	}
 
 	async onActualizarInformacion() {
-		console.log('Entró: onActualizarInformacion()');
 
 		hlpSwal.Cargando();
 
@@ -161,9 +160,7 @@ export class ReservarAreasComunesComponent implements OnInit {
 	}
 
 	private handleEvents(event: EventApi | any): void {
-		console.log('Entró: handleEvents()');
 		if (this.cambiandoVista) {
-			console.log('Saliendo. onCambiarVistaFecha() en ejecución');
 			return;
 		}
 
@@ -183,10 +180,8 @@ export class ReservarAreasComunesComponent implements OnInit {
 	}
 
 	onCambiarVistaFecha(fechaString: string = null) {
-		console.log('Entró: onCambiarVistaFecha()');
 		this.cambiandoVista = true;
 		if (this.calendarComponent.getApi().view.type == 'timeGridWeek') {
-			console.log('Vista actual ya era timeGridWeek');
 			this.cambiandoVista = false;
 			return;
 		}
@@ -206,7 +201,6 @@ export class ReservarAreasComunesComponent implements OnInit {
 	}
 
 	/* onMostrarAgregarEvento() {
-		console.log('Entró: onMostrarAgregarEvento()');
 	} */
 
 	async onReservacionMostrarDetalle(idReservacion: number = 0) {
@@ -367,7 +361,6 @@ export class ReservarAreasComunesComponent implements OnInit {
 			importe_total: reservacion.importe_total,
 			fecha_pago: reservacion.pagado == 1 ? hlpApp.formatDateToMySQL(reservacion.fecha_pago).substring(0, 10) : null,
 		};
-		console.log('reservacion :>> ', data);
 
 		hlpSwal
 			.Pregunta({

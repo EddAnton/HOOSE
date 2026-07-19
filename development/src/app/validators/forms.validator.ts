@@ -95,7 +95,6 @@ export class FormsValidator {
 			}
 
 			if (date1 <= date2) {
-				console.log('Fecha1 menor o igual a Fecha2');
 				return { fechaMenorOIgual: true };
 			}
 			return null;
@@ -120,7 +119,6 @@ export class FormsValidator {
 			}
 
 			if (date1 >= date2) {
-				console.log('Fecha1 mayor o igual a Fecha2');
 				return { fechaMayorOIgual: true };
 			}
 			return null;

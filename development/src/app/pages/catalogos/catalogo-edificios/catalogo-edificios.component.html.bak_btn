@@ -4,7 +4,7 @@
   <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised hoose-fab" pTooltip="Nuevo edificio" tooltipPosition="left" (click)="onEdificioEditar()"></button>
 
   <!-- Toolbar -->
-  <div class="hoose-tabla-toolbar" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:transparent;border:none;padding:0 0 12px 0">
+  <div class="hoose-tabla-toolbar" style="align-items:stretch;gap:16px">
     <!-- Izquierda: KPI card -->
     <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
       <div class="hoose-kpi-icon"><i class="pi pi-building"></i></div>
@@ -17,6 +17,7 @@
     <!-- Derecha: botón nuevo arriba + filtros abajo -->
     <div class="d-flex flex-column gap-2 justify-content-between" style="flex:1;min-width:0">
       <div class="d-flex justify-content-end">
+        <button pButton type="button" icon="pi pi-plus" label="Nuevo Edificio" class="hoose-btn-nuevo" pTooltip="Agregar edificio" tooltipPosition="left" (click)="onEdificioEditar()"></button>
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
         <div class="hoose-tabla-search">

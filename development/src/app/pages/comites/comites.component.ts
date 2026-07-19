@@ -123,7 +123,6 @@ export class ComitesComponent implements OnInit {
   }
 
   onTipoChange(val: any) {
-    console.log('onTipoChange val:', val, typeof val);
     const id = +val;
     this.frmMiembro.patchValue({ id_cargo_comite: null, es_unico: 0 });
     this.esAdminUnico = false;

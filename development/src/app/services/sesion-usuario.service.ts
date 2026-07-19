@@ -269,7 +269,6 @@ export class SesionUsuarioService {
 
     const rolEncontrado =
       data.allowedRoles.filter((rol) => rol.PeU.includes(this.usuarioSesion.id_perfil_usuario)).length > 0;
-    console.log('Usuario ' + (!rolEncontrado ? 'NO ' : '') + 'autenticado por rol.');
 
     return rolEncontrado ? 1 : 0;
   } */

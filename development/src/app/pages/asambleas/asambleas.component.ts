@@ -1758,7 +1758,6 @@ export class AsambleasComponent implements OnInit {
       delete acta.orden_dia_votacion;
     } */
 
-    console.log('Acta :>> ', acta);
 
     hlpSwal
       .Pregunta({

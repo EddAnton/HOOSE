@@ -5,9 +5,9 @@
   <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised hoose-fab" pTooltip="Nuevo administrador" tooltipPosition="left" (click)="onAdministradorEditar()"></button>
 
   <!-- Toolbar con KPIs y filtros -->
-  <div class="hoose-tabla-toolbar" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:transparent;border:none;padding:0 0 12px 0">
+  <div class="hoose-tabla-toolbar" style="align-items:stretch;gap:12px;flex-wrap:wrap">
     <!-- KPIs -->
-    <div class="d-flex gap-2 flex-wrap" style="flex:0 1 auto;min-width:0">
+    <div class="d-flex gap-2 flex-wrap">
       <div class="admin-kpi admin-kpi--pink" style="border-radius:10px;padding:10px 14px">
         <div class="admin-kpi-icon"><i class="pi pi-users"></i></div>
         <div class="admin-kpi-body">
@@ -33,9 +33,10 @@
         </div>
       </div>
     </div>
-    <!-- Filtros: estructura Alsa (ocupan el espacio residual de los cards) -->
+    <!-- Botón + Filtros -->
     <div class="d-flex flex-column gap-2 justify-content-between" style="flex:1;min-width:0">
       <div class="d-flex justify-content-end">
+        <button pButton type="button" icon="pi pi-plus" label="Nuevo Administrador" class="hoose-btn-nuevo" tooltipPosition="left" (click)="onAdministradorEditar()"></button>
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
         <div class="hoose-tabla-search">

@@ -60,7 +60,7 @@
 @media screen and (max-width: 991px) {
 	.sidebar-section {
 		position: fixed;
-		z-index: 11;
+		z-index: 12;
 		height: 100%;
 	}
 	.sidebar-section .sidebar {

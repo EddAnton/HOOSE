@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SidebarService } from '../services/sidebar.service';
 import { Router, ActivationEnd } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
@@ -50,7 +50,7 @@ export class LayoutComponent implements OnDestroy {
     if (!overlay) {
       overlay = document.createElement('div');
       overlay.id = 'sidebar-overlay-global';
-      overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:11;cursor:pointer;';
+      overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:10;cursor:pointer;';
       overlay.addEventListener('click', () => this.onCloseSidebar());
       document.body.appendChild(overlay);
     }
@@ -58,17 +58,6 @@ export class LayoutComponent implements OnDestroy {
       overlay.style.display = 'block';
     } else {
       overlay.style.display = 'none';
-    }
-  }
-
-  @HostListener('window:resize')
-  onResize() {
-    // Overlay sólo si el menú fue abierto por el usuario (estado real del servicio)
-    const abierto = this.sidebarService.visible;
-    if (window.innerWidth < 992 && abierto) {
-      this.toggleOverlay(true);
-    } else {
-      this.toggleOverlay(false);
     }
   }
 

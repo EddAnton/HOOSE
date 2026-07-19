@@ -4,7 +4,7 @@
   <button pButton type="button" icon="pi pi-plus" class="p-button-rounded p-button-raised hoose-fab" pTooltip="Nuevo edificio" tooltipPosition="left" (click)="onEdificioEditar()"></button>
 
   <!-- Toolbar -->
-  <div class="hoose-tabla-toolbar" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:transparent;border:none;padding:0 0 12px 0">
+  <div class="hoose-tabla-toolbar" style="align-items:stretch;gap:16px">
     <!-- Izquierda: KPI card -->
     <div class="hoose-kpi-card hoose-kpi-pink" style="margin:0">
       <div class="hoose-kpi-icon"><i class="pi pi-building"></i></div>

@@ -481,7 +481,6 @@ telefono: [d.telefono || u.telefono || ''],
 domicilio: [d.domicilio || ''],
 });
 this.modoEdicionPerfil = true;
-console.log('Perfil edicion:', { nombre, apellidos, d, u });
 }
 
 onCancelarEdicionPerfil() {

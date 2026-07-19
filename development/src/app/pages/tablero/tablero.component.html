@@ -50,7 +50,7 @@
   <div class="tb-grid" (dragover)="$event.preventDefault()" (drop)="onDropGrid($event)">
     <ng-container *ngFor="let w of widgets">
 
-      <div *ngIf="w.id === 'condominios' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'condominios' && metricas?.catalogo?.condominios !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'edificios' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'edificios' && metricas?.catalogo?.edificios !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'unidades' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'unidades' && metricas?.catalogo?.unidades !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -83,7 +83,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'propietarios' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'propietarios' && metricas?.catalogo?.propietarios !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -94,7 +94,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'condominos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'condominos' && metricas?.catalogo?.condominos !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -105,7 +105,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'colaboradores' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'colaboradores' && metricas?.catalogo?.colaboradores !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -116,7 +116,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'areas_comunes' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'areas_comunes' && metricas?.catalogo?.unidades !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>
@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <div *ngIf="w.id === 'avisos' && metricas" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
+      <div *ngIf="w.id === 'avisos' && metricas?.catalogo?.avisos !== undefined" class="tb-widget" [ngStyle]="getWidgetStyle(w)"
         draggable="true" (dragstart)="onDragStart($event, w)" (dragover)="onDragOver($event, w)"
         (drop)="onDrop($event, w)" (dragend)="onDragEnd()" [class.drag-over]="dragOverWidget?.id === w.id">
         <div class="widget-handle"><i class="pi pi-ellipsis-v"></i></div>

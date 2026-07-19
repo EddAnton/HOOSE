@@ -153,6 +153,9 @@ export class CatalogoCondominiosComponent implements OnInit {
       condominio = new CondominioModel();
     }
 
+    // Estado de documentos/archivos: refleja el registro actual (vacío si es nuevo)
+    this.CondominioSeleccionado = condominio;
+
     this.srcImagen = condominio.imagen
       ? environment.urlBackendCondominiosFiles + condominio.id_condominio + '/' + condominio.imagen
       : null;
@@ -248,7 +251,6 @@ export class CatalogoCondominiosComponent implements OnInit {
     // DEBUG
 const debugData: any = {};
 formData.forEach((v, k) => debugData[k] = v instanceof File ? v.name : v);
-console.log('GUARDAR CONDO:', JSON.stringify(debugData));
 hlpSwal.Pregunta({
       html: '¿Deseas guardar la información?',
       showLoaderOnConfirm: true,
@@ -367,7 +369,6 @@ hlpSwal.Pregunta({
         label: a.nombre + (a.email ? ' — ' + a.email : ''),
         value: +a.id_usuario
       }));
-      console.log('ADMINS ANTES DE ABRIR:', JSON.stringify(this.AdminsSinAsignar));
       this.mostrarPanelAdmin = true;
     }).catch(async (e) => await hlpSwal.Error(e));
   }
