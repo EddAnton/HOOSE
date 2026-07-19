@@ -487,12 +487,12 @@
 .als-inmueble-card { background: #22253a; border: 1px solid #2d3150; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); height: 100%; display: flex; flex-direction: column; }
 .als-inmueble-card:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.2); transform: translateY(-2px); border-color: #e91e8c; }
 
-.als-card-body { padding: 6px 10px; flex: 1; }
+.als-card-body { padding: 8px 12px; flex: 1; }
 .als-card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
 .als-card-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid #1a1d2e; flex-shrink: 0; }
 .als-card-title-wrap { flex: 1; min-width: 0; }
 .als-card-tipo-pill { font-size: 0.6rem; background: rgba(233,30,140,0.15); color: #e91e8c; border-radius: 4px; padding: 2px 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.08em; }
-.als-card-title { font-size: 1.02rem; font-weight: 800; color: #ffffff; margin: 3px 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.als-card-title { font-size: 0.88rem; font-weight: 700; color: #ffffff; margin: 3px 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .als-card-dir { font-size: 0.72rem; color: #94a3b8; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .als-card-dir i { margin-right: 4px; }
 
@@ -512,20 +512,13 @@
 .als-stat-lbl { font-size: 0.62rem; color: #8a8f9e; text-transform: uppercase; letter-spacing: 0.05em; }
 
 .als-card-divider { border: none; border-top: 1px solid #2d3150; margin: 6px 0; }
-.als-card-financiero { display: flex; justify-content: space-between; gap: 0; background: #1a1d2e; border-radius: 8px; padding: 10px 6px; margin-bottom: 4px; }
+.als-card-financiero { display: flex; justify-content: space-between; gap: 4px; }
 .als-fin-item { flex: 1; text-align: center; }
 .als-fin-lbl { display: block; font-size: 0.62rem; color: #8a8f9e; text-transform: uppercase; }
 .als-fin-val { display: block; font-size: 1.1rem; font-weight: 800; }
 
-.als-card-admin { display: flex; align-items: center; gap: 6px; font-size: 0.6rem; color: #8a8f9e; margin-top: 6px; padding-top: 6px; border-top: 1px solid #2d3150; }
+.als-card-admin { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #8a8f9e; margin-top: 6px; padding-top: 6px; border-top: 1px solid #2d3150; }
 .als-card-admin i { color: #e91e8c; font-size: 0.8rem; }
 .als-card-admin-empty { color: #cbd5e1; font-style: italic; }
 
 .als-filtros-group { display: flex; gap: 8px; align-items: center; flex: 1 1 100%; min-width: 0; }
-
-/* === Rediseño card Hoose === */
-.als-card-financiero .als-fin-item + .als-fin-item { border-left: 1px solid #2d3150; }
-.als-card-admin-foto { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1.5px solid #2d3150; flex-shrink: 0; }
-.als-card-admin-iniciales { width: 26px; height: 26px; border-radius: 50%; background: #e91e8c; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 700; flex-shrink: 0; }
-
-.als-card-admin span { font-size: 0.72rem !important; }

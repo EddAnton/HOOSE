@@ -454,6 +454,11 @@ hlpSwal.Pregunta({
     return environment.urlBackendCondominiosFiles + card.id_condominio + '/' + card.imagen;
   }
 
+  getFotoAdmin(admin: any): string {
+    if (!admin || !admin.imagen_archivo) return null;
+    return environment.urlBackendUsuariosFiles + admin.id_usuario + '/' + admin.imagen_archivo;
+  }
+
   onVerDetalleCard(card: any) {
     const idx = this.Condominios.findIndex(c => c.id_condominio === card.id_condominio);
     if (idx >= 0) {

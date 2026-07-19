@@ -9,22 +9,20 @@
         <span class="hoose-kpi-sub">Activos: <b>{{ kpiCardsActivos }}</b></span>
       </div>
     </div>
-    <div class="d-flex flex-column gap-2 justify-content-between" style="flex:1;min-width:0;margin-left:auto">
-      <div class="d-flex justify-content-end">
-        <div class="als-vista-switcher als-switcher-center">
-          <button [class.active]="vistaActual === 'cards'" (click)="cambiarVista('cards')">
-            <i class="pi pi-th-large"></i> Cards
-          </button>
-          <button [class.active]="vistaActual === 'carrusel'" (click)="cambiarVista('carrusel')">
-            <i class="pi pi-images"></i> Carrusel
-          </button>
-        </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end" style="margin-left:auto">
+      <div class="als-vista-switcher als-switcher-center">
+        <button [class.active]="vistaActual === 'cards'" (click)="cambiarVista('cards')">
+          <i class="pi pi-th-large"></i> Cards
+        </button>
+        <button [class.active]="vistaActual === 'carrusel'" (click)="cambiarVista('carrusel')">
+          <i class="pi pi-images"></i> Carrusel
+        </button>
       </div>
-      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        <div class="hoose-tabla-search" style="border:1.5px solid #2d3150!important;box-shadow:none!important;">
-          <i class="pi pi-search"></i>
-          <input type="text" placeholder="Buscar inmueble..." [(ngModel)]="filtroCardBusqueda" (ngModelChange)="filtrarCards()" />
-        </div>
+      <div class="hoose-tabla-search" style="border:1.5px solid #2d3150!important;box-shadow:none!important;min-width:220px">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Buscar inmueble..." [(ngModel)]="filtroCardBusqueda" (ngModelChange)="filtrarCards()" />
+      </div>
+      <div class="als-filtros-group">
         <select class="hoose-filtro-select" [(ngModel)]="filtroCardEstatus" (ngModelChange)="filtrarCards()">
           <option [ngValue]="null">Estatus</option>
           <option [ngValue]="1">Activo</option>
@@ -54,7 +52,7 @@
       <p class="text-muted mt-2">Cargando inmuebles...</p>
     </div>
     <div *ngIf="!cargandoCards" class="row g-3">
-      <div *ngFor="let card of CardsFiltradas" class="col-12 col-sm-6 col-lg-3">
+      <div *ngFor="let card of CardsFiltradas" class="col-12 col-sm-6 col-lg-4 col-xl-3">
         <div class="als-inmueble-card" (click)="onVerDetalleCard(card)">
           <div class="als-card-body">
             <div class="als-card-top">
@@ -86,6 +84,7 @@
                 <span class="als-stat-lbl">Unidades</span>
               </div>
             </div>
+            <hr class="als-card-divider" />
             <div class="als-card-financiero">
               <div class="als-fin-item">
                 <span class="als-fin-lbl">Recaudación</span>
@@ -107,8 +106,7 @@
               </div>
             </div>
             <div class="als-card-admin" *ngIf="card.administrador">
-              <img *ngIf="card.administrador.imagen_archivo" class="als-card-admin-foto" [src]="getFotoAdmin(card.administrador)" [alt]="card.administrador.nombre" />
-              <span *ngIf="!card.administrador.imagen_archivo" class="als-card-admin-iniciales">{{ (card.administrador.nombre || '?').charAt(0) }}{{ (card.administrador.apellidos || '').charAt(0) }}</span>
+              <i class="pi pi-user"></i>
               <span>{{ card.administrador.nombre }} {{ card.administrador.apellidos }}</span>
             </div>
             <div class="als-card-admin als-card-admin-empty" *ngIf="!card.administrador">
